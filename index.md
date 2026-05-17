@@ -1,0 +1,21 @@
+---
+layout: home
+hero:
+  name: REA Language
+  text: Interactive Story Markup
+  tagline: Write branching narratives with a simple, expressive syntax
+  actions:
+    - theme: brand
+      text: Specification
+      link: /spec/01-basics
+    - theme: alt
+      text: Cheatsheet
+      link: /spec/REA-CHEATSHEET
+features:
+  - title: Simple Syntax
+    details: REA uses curly-brace commands embedded in natural prose — no programming required.
+  - title: Rich Logic
+    details: Variables, conditions, expressions, random values, and computed text.
+  - title: Player Component
+    details: Embed stories anywhere with the <reast-player> web component.
+---
