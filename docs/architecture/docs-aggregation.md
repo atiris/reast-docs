@@ -195,8 +195,8 @@ npm run build
 # Output: .vitepress/dist/
 ```
 
-## Future Considerations
+## Completed Enhancements
 
-- **Versioning**: VitePress supports version switching. When the engine reaches v1.0, add version selectors. *(Prepared: version displayed in hero tagline.)*
-- **TypeDoc integration**: Link to auto-generated API docs hosted separately (player's `docs-api/`). *(Implemented: `build:api` script copies TypeDoc output to `api-reference/`, `build:full` runs both.)*
-- **Playground**: Embed a live `<reast-player>` on spec pages for try-it-now examples. *(Implemented: `/docs/playground` with split-pane editor + live preview.)*
+- **Versioning**: Version displayed in hero tagline. Full version switching will be added when the engine reaches v1.0.
+- **TypeDoc integration**: `build:api` script copies TypeDoc output to `api-reference/`, `build:full` runs both VitePress and API docs builds.
+- **Playground**: Live `<reast-player>` embedded at `/docs/playground` with split-pane editor and live preview.

@@ -7,11 +7,19 @@ export default defineConfig({
   outDir: './dist',
   themeConfig: {
     nav: [
-      { text: 'Specification', link: '/spec/' },
-      { text: 'Guides', link: '/guides/' },
-      { text: 'API', link: '/api/' },
+      { text: 'Specification', link: '/spec/01-basics' },
+      { text: 'Player', link: '/player/getting-started' },
+      { text: 'API', link: '/player/api' },
       { text: 'Playground', link: '/docs/playground' },
+      { text: 'Platform', link: '/platform/architecture/' },
       { text: 'Glossary', link: '/docs/glossary' },
+      {
+        text: 'v0.1.0',
+        items: [
+          { text: 'v0.1.0 (current)', link: '/changelog' },
+          { text: 'Changelog', link: '/changelog' },
+        ],
+      },
     ],
     sidebar: {
       '/spec/': [
@@ -27,9 +35,43 @@ export default defineConfig({
           ],
         },
       ],
+      '/player/': [
+        {
+          text: 'Player',
+          items: [
+            { text: 'Getting Started', link: '/player/getting-started' },
+            { text: 'Embedding', link: '/player/embedding' },
+            { text: 'Theming', link: '/player/theming' },
+            { text: 'Extending', link: '/player/extending' },
+            { text: 'API Reference', link: '/player/api' },
+          ],
+        },
+      ],
+      '/docs/': [
+        {
+          text: 'Documentation',
+          items: [
+            { text: 'Glossary', link: '/docs/glossary' },
+            { text: 'Playground', link: '/docs/playground' },
+          ],
+        },
+        {
+          text: 'Architecture',
+          items: [{ text: 'Docs Aggregation', link: '/docs/architecture/docs-aggregation' }],
+        },
+      ],
+      '/platform/': [
+        {
+          text: 'Platform',
+          items: [
+            { text: 'Architecture', link: '/platform/architecture/' },
+            { text: 'Deployment', link: '/platform/deployment/' },
+            { text: 'Security', link: '/platform/security/' },
+            { text: 'Design System', link: '/platform/design/' },
+          ],
+        },
+      ],
     },
-    socialLinks: [
-      { icon: 'github', link: 'https://github.com/atiris/reast-docs' },
-    ],
+    socialLinks: [{ icon: 'github', link: 'https://github.com/atiris/reast-docs' }],
   },
 });
