@@ -10,6 +10,7 @@ export default defineConfig({
       { text: 'Specification', link: '/spec/' },
       { text: 'Guides', link: '/guides/' },
       { text: 'API', link: '/api/' },
+      { text: 'Playground', link: '/docs/playground' },
       { text: 'Glossary', link: '/docs/glossary' },
     ],
     sidebar: {

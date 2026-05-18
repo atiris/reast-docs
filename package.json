@@ -7,6 +7,8 @@
   "scripts": {
     "dev": "vitepress dev",
     "build": "vitepress build",
+    "build:full": "npm run build:api && vitepress build",
+    "build:api": "cd ../player && npx typedoc && cp -r docs-api ../docs/api-reference || true",
     "preview": "vitepress preview"
   },
   "devDependencies": {

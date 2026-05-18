@@ -3,7 +3,7 @@ layout: home
 hero:
   name: REA Language
   text: Interactive Story Markup
-  tagline: Write branching narratives with a simple, expressive syntax
+  tagline: Write branching narratives with a simple, expressive syntax — v0.1.0
   actions:
     - theme: brand
       text: Specification
@@ -11,6 +11,9 @@ hero:
     - theme: alt
       text: Cheatsheet
       link: /spec/REA-CHEATSHEET
+    - theme: alt
+      text: Try It Now
+      link: /docs/playground
 features:
   - title: Simple Syntax
     details: REA uses curly-brace commands embedded in natural prose — no programming required.
