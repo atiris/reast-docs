@@ -11,13 +11,13 @@ The `docs.rea.st` documentation site aggregates content from two source types in
 │                     docs.rea.st                         │
 │                  (reast-docs repo)                      │
 │                                                         │
-│  ┌─────────────┐  ┌──────────────┐  ┌───────────────┐  │
-│  │  /spec/      │  │  /player/    │  │  /platform/   │  │
-│  │  /guides/    │  │  embedding   │  │  /deployment/ │  │
-│  │  REA lang    │  │  theming     │  │  architecture │  │
-│  │  (native)    │  │  API ref     │  │  security     │  │
-│  │              │  │  (native)    │  │  (synced)     │  │
-│  └─────────────┘  └──────────────┘  └───────────────┘  │
+│  ┌─────────────┐  ┌──────────────┐  ┌───────────────┐   │
+│  │  /spec/     │  │  /player/    │  │  /platform/   │   │
+│  │  /guides/   │  │  embedding   │  │  /deployment/ │   │
+│  │  REA lang   │  │  theming     │  │  architecture │   │
+│  │  (native)   │  │  API ref     │  │  security     │   │
+│  │             │  │  (native)    │  │  (synced)     │   │
+│  └─────────────┘  └──────────────┘  └───────────────┘   │
 │                                                         │
 │           VitePress + search + navigation               │
 └─────────────────────────────────────────────────────────┘
