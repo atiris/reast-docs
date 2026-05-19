@@ -64,10 +64,8 @@ export default defineConfig({
         {
           text: 'Platform',
           items: [
-            { text: 'Architecture', link: '/platform/architecture/' },
-            { text: 'Deployment', link: '/platform/deployment/' },
-            { text: 'Security', link: '/platform/security/' },
             { text: 'Design System', link: '/platform/design/' },
+            { text: 'Security & Privacy', link: '/platform/security/' },
           ],
         },
       ],

@@ -25,15 +25,18 @@ jobs:
         run: |
           mkdir -p platform
 
-          # Sync only public documentation directories
-          for dir in architecture deployment security design; do
+          # Only sync user-facing documentation (not developer internals)
+          # Public: design (visual identity for authors), security (trust/privacy for users)
+          # Internal (dev-only, served locally): architecture, api, auth, cli,
+          #   conventions, deployment, infrastructure, setup, testing, web
+          for dir in design security; do
             if [ -d "_platform/docs/$dir" ]; then
               rm -rf "platform/$dir"
               cp -r "_platform/docs/$dir" "platform/$dir"
             fi
           done
 
-          # Adjust relative links: ../../ → platform-internal references become notes
+          # Adjust relative links
           find platform -name '*.md' -exec sed -i \
             -e 's|\.\./\.\./|\.\./|g' \
             -e 's|\.\./apps/|../|g' \
