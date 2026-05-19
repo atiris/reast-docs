@@ -930,7 +930,7 @@ Adding `optional` means the feature enhances the story but isn't required. The `
 GPS coordinates use the `@` point literal and `@@` area literal:
 
 ```rea
-{if world.location matches @@48.14,17.10/500 begin}
+{if world.location matches @@48.14;17.10/500 begin}
   You feel a strange resonance. This is the place from the story!
 {end if}
 ```
@@ -952,13 +952,13 @@ GPS coordinates use the `@` point literal and `@@` area literal:
 Inspired by geocaching, waypoints define named locations that the reader must visit:
 
 ```rea
-{waypoint old_bridge, @@48.1432,17.1056/50 begin}
+{waypoint old_bridge, @@48.1432;17.1056/50 begin}
   The old bridge creaks beneath your feet. Under the third plank,
   you find a leather pouch with a strange symbol.
   {set story.symbol_found = true}
 {end waypoint}
 
-{waypoint castle_ruins, @@48.1510,17.1120/100, require=story.symbol_found begin}
+{waypoint castle_ruins, @@48.1510;17.1120/100, require=story.symbol_found begin}
   The symbol glows as you approach the ruins.
   A hidden passage reveals itself in the eastern wall.
 {end waypoint}
@@ -994,7 +994,7 @@ Setting `sequential` forces visiting waypoints in order. Without it, readers can
 Define areas that trigger events when the reader enters or exits:
 
 ```rea
-{zone dark_forest @@48.14,17.10@48.15,17.10@48.15,17.11@48.14,17.11 begin}
+{zone dark_forest @@48.14;17.10@48.15;17.10@48.15;17.11@48.14;17.11 begin}
   {on enter begin}
     The trees close in around you. The forest feels alive.
     {set world.ambient = "forest"}
@@ -1209,7 +1209,7 @@ Combine multiple sensors into challenge-style interactions inspired by geocachin
 ```rea
 {challenge night_vigil begin}
   require: world.hour >= 23 and world.light < 20
-  require: world.location matches @@48.14,17.10/200
+  require: world.location matches @@48.14;17.10/200
   timeout: 30m
   hint: "Find the old chapel after midnight. Bring no light."
 

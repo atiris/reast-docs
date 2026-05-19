@@ -43,7 +43,7 @@ Features marked with status indicators reflect the current proof-of-concept pars
 | `{switch}`/`{case}`                    | ✅     | Expression match, multiple cases, default, nested                                   |
 | `{once}`/`{then}`/`{end once}`         | ✅     | First-visit content with optional fallback                                          |
 | `{cycle}`/`{replace}`                  | ✅     | Inline varying text with 4 modes                                                    |
-| Built-in functions                     | ✅     | Math, string, type, array, localization (spec §30)                                   |
+| Built-in functions                     | ✅     | Math, string, type, array, localization (spec §30)                                  |
 | Storylets & decks                      | 📋     | Spec-only                                                                           |
 | Cards (characters, items, actions)     | 📋     | Spec-only                                                                           |
 | Voice & audio commands                 | 📋     | Spec-only                                                                           |
@@ -316,8 +316,8 @@ Features marked with status indicators reflect the current proof-of-concept pars
 ```rea
 {require gps}
 {require nfc optional}
-{waypoint old_bridge, @@48.14,17.10/50 begin} ... {end waypoint}
-{zone dark_forest @@48.14,17.10@48.15,17.10@48.15,17.11@48.14,17.11 begin}
+{waypoint old_bridge, @@48.14;17.10/50 begin} ... {end waypoint}
+{zone dark_forest @@48.14;17.10@48.15;17.10@48.15;17.11@48.14;17.11 begin}
   {on enter begin} ... {end on}
   {on exit begin} ... {end on}
 {end zone}

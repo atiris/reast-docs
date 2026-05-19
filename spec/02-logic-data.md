@@ -247,10 +247,10 @@ TODO: Comma in coordinates is a potential source of confusion with attribute sep
 Points use `@`, areas use `@@`. Radius is always in meters. Examples:
 
 ```rea
-{set home = @48.14,17.10}
-{set park = @@48.14,17.10/500}
-{set forest = @@48.14,17.10@48.15,17.10@48.15,17.11@48.14,17.11}
-{set donut = @@48.14,17.10/1000 - @@48.14,17.10/200}
+{set home = @48.14;17.10}
+{set park = @@48.14;17.10/500}
+{set forest = @@48.14;17.10@48.15;17.10@48.15;17.11@48.14;17.11}
+{set donut = @@48.14;17.10/1000 - @@48.14;17.10/200}
 ```
 
 ### DateTime wildcards

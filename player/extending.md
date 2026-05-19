@@ -14,8 +14,8 @@ import { definePlugin } from '@reast/engine';
 const analyticsPlugin = definePlugin({
   name: 'analytics',
 
-  onInit(ctx) {
-    console.log('Story loaded:', ctx.storyId);
+  onStoryLoaded(ctx) {
+    console.log('Story loaded:', ctx.src);
   },
 
   beforeRenderNode(ctx) {
@@ -29,11 +29,16 @@ const analyticsPlugin = definePlugin({
   },
 
   onChoiceSelected(ctx) {
-    trackEvent('choice', { groupId: ctx.groupId, index: ctx.index });
+    trackEvent('choice', { index: ctx.index });
   },
 
-  onComplete(ctx) {
-    trackEvent('story-complete', { duration: ctx.duration });
+  onStoryComplete(ctx) {
+    trackEvent('story-complete', { readingTimeMs: ctx.readingTimeMs });
+  },
+
+  onDisconnect(ctx) {
+    // Cleanup when player is removed from DOM
+    cleanup();
   },
 });
 ```
@@ -54,13 +59,36 @@ clearPlugins();
 
 ### Plugin Hooks
 
-| Hook               | Context               | Can Veto?            | Description                        |
-| ------------------ | --------------------- | -------------------- | ---------------------------------- |
-| `onInit`           | `PluginContext`       | No                   | Called when the player initializes |
-| `beforeRenderNode` | `RenderHookContext`   | Yes (`return false`) | Before a node is rendered to DOM   |
-| `afterRenderNode`  | `RenderHookContext`   | No                   | After a node is rendered           |
-| `onChoiceSelected` | `ChoiceHookContext`   | No                   | When the reader selects a choice   |
-| `onComplete`       | `CompleteHookContext` | No                   | When the story reaches its end     |
+| Hook               | Context               | Can Veto?            | Description                              |
+| ------------------ | --------------------- | -------------------- | ---------------------------------------- |
+| `onStoryLoaded`    | `PluginContext`       | No                   | Called after story is loaded and parsed  |
+| `beforeRenderNode` | `RenderHookContext`   | Yes (`return false`) | Before a node is rendered to DOM         |
+| `afterRenderNode`  | `RenderHookContext`   | No                   | After a node is rendered                 |
+| `onChoiceSelected` | `ChoiceHookContext`   | No                   | When the reader selects a choice         |
+| `onStoryComplete`  | `CompleteHookContext` | No                   | When the story reaches its end           |
+| `onDisconnect`     | `PluginContext`       | No                   | When the player is disconnected from DOM |
+
+### Hook Context Types
+
+```ts
+interface PluginContext {
+  readonly host: HTMLElement;
+  readonly src?: string;
+}
+
+interface RenderHookContext extends PluginContext {
+  readonly node: ReaNode;
+  readonly element?: HTMLElement | null;
+}
+
+interface ChoiceHookContext extends PluginContext {
+  readonly index: number;
+}
+
+interface CompleteHookContext extends PluginContext {
+  readonly readingTimeMs?: number;
+}
+```
 
 ## CSS Custom Properties
 
@@ -176,7 +204,7 @@ bus.on('story-complete', (data) => {
 
 ## Project Structure
 
-```
+```text
 src/
 ├── parser/          # REA source → AST
 │   ├── lexer.ts         # Tokenizer (line-level)
