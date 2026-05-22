@@ -53,6 +53,7 @@ export default defineConfig({
           items: [
             { text: 'Glossary', link: '/docs/glossary' },
             { text: 'Playground', link: '/docs/playground' },
+            { text: 'Contributing', link: '/docs/contributing' },
           ],
         },
         {
@@ -64,6 +65,7 @@ export default defineConfig({
         {
           text: 'Platform',
           items: [
+            { text: 'Overview', link: '/platform/' },
             { text: 'Design System', link: '/platform/design/' },
             { text: 'Security & Privacy', link: '/platform/security/' },
           ],

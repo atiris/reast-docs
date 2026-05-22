@@ -1,13 +1,13 @@
-# Keycloak Themes Customization Guide
+# identity platform Themes Customization Guide
 
-Guide for customizing the Reast Keycloak login theme.
+Guide for customizing the Reast identity platform login theme.
 
 ---
 
 ## Directory Structure
 
 ```text
-config/keycloak/themes/reast/
+config/identity platform/themes/reast/
 └── login/
     ├── theme.properties          # Theme config (parent, imports, stylesheets)
     ├── template.ftl              # Master HTML layout (all pages inherit this)
@@ -23,12 +23,12 @@ config/keycloak/themes/reast/
             └── logo-reast.svg    # Reast logo
 ```
 
-The theme is mounted into the Keycloak container as a read-only volume:
+The theme is mounted into the identity platform container as a read-only volume:
 
 ```yaml
 # config/docker/compose.dev.yaml
 volumes:
-  - ../config/keycloak/themes:/opt/keycloak/themes:ro
+  - ../config/identity platform/themes:/opt/identity platform/themes:ro
 ```
 
 ---
@@ -38,8 +38,8 @@ volumes:
 ### theme.properties
 
 ```properties
-parent=keycloak          # Inherit from the default Keycloak theme
-import=common/keycloak   # Import shared resources (JS, vendor libs)
+parent=identity platform          # Inherit from the default identity platform theme
+import=common/identity platform   # Import shared resources (JS, vendor libs)
 
 styles=css/login.css     # Custom stylesheet (loaded after parent styles)
 ```
@@ -48,8 +48,8 @@ styles=css/login.css     # Custom stylesheet (loaded after parent styles)
 
 | Property       | Purpose                                                 | Example                               |
 | -------------- | ------------------------------------------------------- | ------------------------------------- |
-| `parent`       | Base theme to extend                                    | `keycloak` (default) or `keycloak.v2` |
-| `import`       | Import shared resources from another theme              | `common/keycloak`                     |
+| `parent`       | Base theme to extend                                    | `identity platform` (default) or `identity platform.v2` |
+| `import`       | Import shared resources from another theme              | `common/identity platform`                     |
 | `styles`       | Space-separated CSS files from `resources/`             | `css/login.css css/extra.css`         |
 | `scripts`      | Space-separated JS files from `resources/`              | `js/custom.js`                        |
 | `stylesCommon` | CSS from the `common` theme resources                   | `web_modules/@patternfly/...`         |
@@ -59,7 +59,7 @@ styles=css/login.css     # Custom stylesheet (loaded after parent styles)
 
 ## FreeMarker Template Structure
 
-Keycloak uses [FreeMarker](https://freemarker.apache.org/) (`.ftl`) for server-side HTML rendering.
+identity platform uses [FreeMarker](https://freemarker.apache.org/) (`.ftl`) for server-side HTML rendering.
 
 ### template.ftl — Master Layout
 
@@ -113,7 +113,7 @@ Each login flow page overrides the `template.ftl` macro:
 
 ## Common FreeMarker Variables
 
-These are provided by Keycloak to all templates:
+These are provided by identity platform to all templates:
 
 ### URL Variables (`url.*`)
 
@@ -234,11 +234,11 @@ To add a new element that respects dark mode, add light-mode styles in the main 
 
 ## Adding New Pages
 
-To add a new Keycloak page (e.g., `login-otp.ftl`, `login-verify-email.ftl`):
+To add a new identity platform page (e.g., `login-otp.ftl`, `login-verify-email.ftl`):
 
 ### Step 1: Identify the Template Name
 
-Keycloak maps login flows to FTL file names. Common templates you might add:
+identity platform maps login flows to FTL file names. Common templates you might add:
 
 | File                         | Flow                            |
 | ---------------------------- | ------------------------------- |
@@ -294,7 +294,7 @@ If the new page needs custom CSS, add rules to `login.css` scoped by the `data-p
 
 ### Step 4: Test
 
-Trigger the flow in Keycloak (e.g., enable OTP in the realm → sign in → OTP page appears).
+Trigger the flow in identity platform (e.g., enable OTP in the realm → sign in → OTP page appears).
 
 ---
 
@@ -344,7 +344,7 @@ The logo is set to 48×48px (40×40 on mobile via the `@media (max-width: 480px)
 
 ## Theme Caching
 
-Keycloak aggressively caches themes in production. During development:
+identity platform aggressively caches themes in production. During development:
 
 ### Dev Mode (Automatic)
 
@@ -358,12 +358,12 @@ In dev mode, templates and CSS reload on every page refresh — no restart neede
 
 ### Production Mode
 
-In production (`start --optimized`), Keycloak caches compiled FreeMarker templates and static resources. To force a refresh:
+In production (`start --optimized`), identity platform caches compiled FreeMarker templates and static resources. To force a refresh:
 
 #### Option 1: Restart the container
 
 ```bash
-docker compose restart keycloak
+docker compose restart identity platform
 ```
 
 #### Option 2: Disable caching via environment variable
@@ -380,8 +380,8 @@ environment:
 #### Option 3: Clear the theme cache directory
 
 ```bash
-docker exec reast-keycloak rm -rf /opt/keycloak/data/tmp/kc-gzip-cache
-docker compose restart keycloak
+docker exec reast-identity platform rm -rf /opt/identity platform/data/tmp/kc-gzip-cache
+docker compose restart identity platform
 ```
 
 ### Browser Caching
@@ -414,7 +414,7 @@ ${login.username!''}
 
 **`Expected hash, got string`**
 
-Using `.property` on a string variable instead of a hash. Check the Keycloak source for the correct variable type.
+Using `.property` on a string variable instead of a hash. Check the identity platform source for the correct variable type.
 
 **`?no_esc is not allowed on a non-markup-output value`**
 
@@ -430,20 +430,20 @@ ${message.summary?no_esc}
 
 #### Template not found
 
-Keycloak falls back to the parent theme (`keycloak`) for any missing template. If your custom page isn't rendering:
+identity platform falls back to the parent theme (`identity platform`) for any missing template. If your custom page isn't rendering:
 
-- Check the filename matches Keycloak's expected name exactly
-- Check `theme.properties` has `parent=keycloak`
-- Check container logs: `docker compose logs keycloak | grep -i theme`
+- Check the filename matches identity platform's expected name exactly
+- Check `theme.properties` has `parent=identity platform`
+- Check container logs: `docker compose logs identity platform | grep -i theme`
 
 ### Checking Logs
 
 ```bash
-# All Keycloak logs
-docker compose logs -f keycloak
+# All identity platform logs
+docker compose logs -f identity platform
 
 # Filter for theme/template errors
-docker compose logs keycloak 2>&1 | grep -iE "freemarker|theme|template"
+docker compose logs identity platform 2>&1 | grep -iE "freemarker|theme|template"
 ```
 
 ### Theme Not Appearing in Admin Console
@@ -451,12 +451,12 @@ docker compose logs keycloak 2>&1 | grep -iE "freemarker|theme|template"
 1. Verify the volume mount maps correctly:
 
    ```text
-   config/keycloak/themes/reast/ → /opt/keycloak/themes/reast/
+   config/identity platform/themes/reast/ → /opt/identity platform/themes/reast/
    ```
 
 2. Check the `reast` folder contains `login/theme.properties`
-3. In Keycloak admin (<http://localhost:9995/admin>) → Realm Settings → Themes → Login theme → select `reast`
-4. If `reast` doesn't appear in the dropdown, restart Keycloak
+3. In identity platform admin (<http://localhost:9995/admin>) → Realm Settings → Themes → Login theme → select `reast`
+4. If `reast` doesn't appear in the dropdown, restart identity platform
 
 ### Styles Not Loading
 
@@ -470,6 +470,6 @@ docker compose logs keycloak 2>&1 | grep -iE "freemarker|theme|template"
 To preview FTL changes without full Docker stack:
 
 1. Edit the `.ftl` / `.css` files locally
-2. Restart only Keycloak: `docker compose restart keycloak`
+2. Restart only identity platform: `docker compose restart identity platform`
 3. Navigate to <http://localhost:9995/realms/reast/account> (or any login-triggering URL)
 4. In dev mode (`start-dev`), changes to CSS take effect on page refresh without restart
