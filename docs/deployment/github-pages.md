@@ -20,11 +20,11 @@ modules/docs/           ← VitePress source
 
 ## Public vs Internal Documentation
 
-| Scope | Location | Deployment |
-|-------|----------|------------|
-| REA spec, player API, embedding guide | `spec/`, `player/`, `docs/` | GitHub Pages (public) |
-| Design system, security/privacy | `platform/design/`, `platform/security/` | GitHub Pages (public, synced weekly) |
-| Architecture, conventions, testing, infra | `modules/platform/docs/` | Local dev server only |
+| Scope                                     | Location                                 | Deployment                           |
+| ----------------------------------------- | ---------------------------------------- | ------------------------------------ |
+| REA spec, player API, embedding guide     | `spec/`, `player/`, `docs/`              | GitHub Pages (public)                |
+| Design system, security/privacy           | `platform/design/`, `platform/security/` | GitHub Pages (public, synced weekly) |
+| Architecture, conventions, testing, infra | `modules/platform/docs/`                 | Local dev server only                |
 
 Internal documentation (architecture, API internals, deployment guides, CLI docs) lives in `modules/platform/docs/` and is never published to the public site. It is served locally via `npm run dev` in the docs package.
 

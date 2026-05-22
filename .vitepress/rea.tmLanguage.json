@@ -1,0 +1,184 @@
+{
+  "name": "rea",
+  "scopeName": "source.rea",
+  "fileTypes": ["rea"],
+  "patterns": [
+    { "include": "#comment-inline" },
+    { "include": "#comment-block" },
+    { "include": "#heading" },
+    { "include": "#horizontal-rule" },
+    { "include": "#choice" },
+    { "include": "#gather" },
+    { "include": "#divert" },
+    { "include": "#dialogue" },
+    { "include": "#command" },
+    { "include": "#blockquote" },
+    { "include": "#alignment" },
+    { "include": "#anchor" },
+    { "include": "#footnote" },
+    { "include": "#link" },
+    { "include": "#media" },
+    { "include": "#inline" }
+  ],
+  "repository": {
+    "comment-inline": {
+      "match": "\\{//[^}]*\\}",
+      "name": "comment.line.rea"
+    },
+    "comment-block": {
+      "begin": "\\{comment\\s+begin\\}",
+      "end": "\\{end\\s+comment\\}",
+      "name": "comment.block.rea"
+    },
+    "heading": {
+      "match": "^(#{1,5})\\s+(.*)",
+      "captures": {
+        "1": { "name": "punctuation.definition.heading.rea" },
+        "2": { "name": "markup.heading.rea" }
+      }
+    },
+    "horizontal-rule": {
+      "match": "^-{3,5}\\s*$",
+      "name": "meta.separator.rea"
+    },
+    "choice": {
+      "match": "^(\\s*)(\\*|\\+)\\s*(\\[([^\\]]*)\\])?",
+      "captures": {
+        "2": { "name": "keyword.operator.choice.rea" },
+        "3": { "name": "string.other.choice-label.rea" },
+        "4": { "name": "entity.name.choice.rea" }
+      }
+    },
+    "gather": {
+      "match": "^(\\s*)(-)(\\s)",
+      "captures": {
+        "2": { "name": "keyword.operator.gather.rea" }
+      }
+    },
+    "divert": {
+      "match": "(->->|->)\\s*(\\w[\\w.]*)?",
+      "captures": {
+        "1": { "name": "keyword.control.divert.rea" },
+        "2": { "name": "entity.name.label.rea" }
+      }
+    },
+    "dialogue": {
+      "match": "^(@)(\\w+)(:\\s*)(\"[^\"]*\"|.*)",
+      "captures": {
+        "1": { "name": "punctuation.definition.dialogue.rea" },
+        "2": { "name": "entity.name.character.rea" },
+        "3": { "name": "punctuation.separator.rea" },
+        "4": { "name": "string.quoted.dialogue.rea" }
+      }
+    },
+    "command": {
+      "patterns": [
+        { "include": "#command-control" },
+        { "include": "#command-define" },
+        { "include": "#command-set" },
+        { "include": "#command-label" },
+        { "include": "#command-expression" }
+      ]
+    },
+    "command-control": {
+      "match": "\\{(if|else\\s*if|else|end\\s+if|for|end\\s+for|while|end\\s+while|switch|case|default|end\\s+switch|once|then|end\\s+once|function|return|end\\s+function|cycle|replace|end\\s+cycle|end\\s+replace)\\b([^}]*)\\}",
+      "captures": {
+        "1": { "name": "keyword.control.rea" },
+        "2": { "name": "source.rea.embedded" }
+      }
+    },
+    "command-define": {
+      "match": "\\{(define|end\\s+define)\\b([^}]*)\\}",
+      "captures": {
+        "1": { "name": "storage.type.rea" },
+        "2": { "name": "entity.name.type.rea" }
+      }
+    },
+    "command-set": {
+      "match": "\\{(set)\\s+([^}]*)\\}",
+      "captures": {
+        "1": { "name": "keyword.operator.assignment.rea" },
+        "2": { "name": "variable.other.rea" }
+      }
+    },
+    "command-label": {
+      "match": "\\{(label)\\s+(\\w[\\w.]*)\\}",
+      "captures": {
+        "1": { "name": "keyword.control.label.rea" },
+        "2": { "name": "entity.name.label.rea" }
+      }
+    },
+    "command-expression": {
+      "match": "\\{([^/][^}]*)\\}",
+      "name": "meta.expression.rea",
+      "captures": {
+        "1": { "name": "variable.other.expression.rea" }
+      }
+    },
+    "blockquote": {
+      "match": "^(\\|)\\s?(.*)",
+      "captures": {
+        "1": { "name": "punctuation.definition.quote.rea" },
+        "2": { "name": "markup.quote.rea" }
+      }
+    },
+    "alignment": {
+      "match": "^([=><])\\s(.*)",
+      "captures": {
+        "1": { "name": "keyword.operator.alignment.rea" },
+        "2": { "name": "string.unquoted.rea" }
+      }
+    },
+    "anchor": {
+      "match": "\\[#(\\w[\\w.]*)\\]",
+      "captures": {
+        "0": { "name": "entity.name.anchor.rea" },
+        "1": { "name": "entity.name.label.rea" }
+      }
+    },
+    "footnote": {
+      "match": "^(\\[\\^)(\\w+)(\\]:)\\s*(.*)",
+      "captures": {
+        "1": { "name": "punctuation.definition.footnote.rea" },
+        "2": { "name": "entity.name.footnote.rea" },
+        "3": { "name": "punctuation.definition.footnote.rea" },
+        "4": { "name": "string.unquoted.rea" }
+      }
+    },
+    "link": {
+      "match": "\\[([^\\]]+)\\s*>\\s*([^\\]]*)\\]",
+      "captures": {
+        "1": { "name": "string.other.link.title.rea" },
+        "2": { "name": "markup.underline.link.rea" }
+      }
+    },
+    "media": {
+      "match": "\\[([!>?])([^\\]]*)\\]\\(([^)]+)\\)",
+      "captures": {
+        "1": { "name": "keyword.operator.media.rea" },
+        "2": { "name": "string.other.media-alt.rea" },
+        "3": { "name": "markup.underline.link.rea" }
+      }
+    },
+    "inline": {
+      "patterns": [
+        {
+          "match": "(_\\*[^*]+\\*_)",
+          "name": "markup.bold.italic.rea"
+        },
+        {
+          "match": "(\\*[^*\\n]+\\*)",
+          "name": "markup.bold.rea"
+        },
+        {
+          "match": "(_[^_\\n]+_)",
+          "name": "markup.italic.rea"
+        },
+        {
+          "match": "(`[^`\\n]+`)",
+          "name": "markup.raw.inline.rea"
+        }
+      ]
+    }
+  }
+}

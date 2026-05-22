@@ -1,10 +1,14 @@
 import { defineConfig } from 'vitepress';
+import reaGrammar from './rea.tmLanguage.json';
 
 export default defineConfig({
   title: 'REA Language',
   description: 'Interactive story language specification and documentation',
   base: '/',
   outDir: './dist',
+  markdown: {
+    languages: [reaGrammar as any],
+  },
   themeConfig: {
     nav: [
       { text: 'Specification', link: '/spec/01-basics' },
