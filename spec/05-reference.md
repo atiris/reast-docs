@@ -43,9 +43,7 @@ The manifest is the single source of all story metadata, permissions, and platfo
   "id": "019e03f6-f9ec-7000-801c-fd76eb1968dd",
   "rea": "1.0",
   "title": "The Last Lantern",
-  "author": [
-    { "name": "Elena Voss", "id": "019d8a2b-1234-7000-8000-abcdef012345" }
-  ],
+  "author": [{ "name": "Elena Voss", "id": "019d8a2b-1234-7000-8000-abcdef012345" }],
   "version": "1.0.0",
   "language": "en",
   "genre": "fantasy",
