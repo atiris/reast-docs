@@ -541,7 +541,7 @@ Plugins can define new card types beyond the built-in `@`, `$`, `&`:
   name: The Rusty Anchor
   description: A dimly lit tavern near the docks.
   image: media/tavern.jpg
-  coordinates: @48.1486,17.1077
+  coordinates: @48.1486;17.1077
 {end define}
 
 You arrive at [📍tavern].

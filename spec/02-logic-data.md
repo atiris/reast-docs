@@ -231,18 +231,16 @@ When mixing positional and named items, positional items must come before named 
 
 **Coordinate literals** (geographic types with `@` syntax):
 
-TODO: Comma in coordinates is a potential source of confusion with attribute separators. Consider using semicolons for coordinates: `@48.14;17.10` and `@@48.14;17.10/500`.
-
-| Literal             | Description                                   |
-| ------------------- | --------------------------------------------- |
-| `@lat,lng`          | Geographic point                              |
-| `@p1@p2@p3`         | Route/line (chain of points)                  |
-| `@@lat,lng/radius`  | Circle (radius in meters)                     |
-| `@@p1@p2/radius`    | Corridor (line with radius buffer, meters)    |
-| `@@p1@p2@p3@p1`     | Polygon (closed chain of points)              |
-| `@@.../radius`      | Inflated polygon (polygon with radius buffer) |
-| `@@area1 + @@area2` | Union of areas                                |
-| `@@area1 - @@area2` | Difference of areas (donut, exclusion)        |
+| Literal              | Description                                   |
+| -------------------- | --------------------------------------------- |
+| `@lat;lng`           | Geographic point                              |
+| `@p1@p2@p3`          | Route/line (chain of points)                  |
+| `@@lat;lng/radius`   | Circle (radius in meters)                     |
+| `@@p1@p2/radius`     | Corridor (line with radius buffer, meters)    |
+| `@@p1@p2@p3@p1`      | Polygon (closed chain of points)              |
+| `@@.../radius`       | Inflated polygon (polygon with radius buffer) |
+| `@@area1 + @@area2`  | Union of areas                                |
+| `@@area1 - @@area2`  | Difference of areas (donut, exclusion)        |
 
 Points use `@`, areas use `@@`. Radius is always in meters. Examples:
 

@@ -12,11 +12,11 @@ Last audited: 2026-05-16 (batches 373–381)
 - [x] Role-based access control (`RolesGuard` with `@Roles()` decorator, enforces creator/administrator on write endpoints)
 - [x] Ownership checks on story update/delete (only owner or administrator)
 - [x] Slug params validated via `ParseSlugPipe` (rejects path traversal)
-- [x] Session IDs validated via `ParseUuidPipe` (prevents path traversal to identity platform)
+- [x] Session IDs validated via `ParseUuidPipe` (prevents path traversal to authentication platform)
 
 ### A02: Cryptographic Failures
 
-- [x] RS256 asymmetric JWT signing via identity platform JWKS
+- [x] RS256 asymmetric JWT signing via authentication platform JWKS
 - [x] TLS termination at reverse proxy (Caddy)
 - [x] No secrets in tracked `.env` file (only config defaults)
 
@@ -32,7 +32,7 @@ Last audited: 2026-05-16 (batches 373–381)
 
 - [x] Auth-by-default pattern (all routes require JWT unless `@Public()`)
 - [x] Separation of concerns (auth, health, stories, database modules)
-- [x] identity platform handles user management externally
+- [x] authentication platform handles user management externally
 
 ### A05: Security Misconfiguration
 
@@ -59,7 +59,7 @@ Last audited: 2026-05-16 (batches 373–381)
 
 ### A08: Software and Data Integrity Failures
 
-- [x] JWKS source validated against identity platform issuer URL
+- [x] JWKS source validated against authentication platform issuer URL
 - [x] No deserialization of untrusted data
 
 ### A09: Security Logging and Monitoring Failures
@@ -73,7 +73,7 @@ Last audited: 2026-05-16 (batches 373–381)
 
 - [x] No user-controlled URL fetching
 - [x] JWKS URI derived from config, not user input
-- [x] Session/identity platform account URLs derived from config
+- [x] Session/authentication platform account URLs derived from config
 
 ## Rate Limiting
 
@@ -119,13 +119,13 @@ Last audited: 2026-05-16 (batches 373–381)
 
 - [x] All containers: `security_opt: no-new-privileges:true`
 - [x] Stateless containers (API, Caddy, Valkey): `read_only: true` + tmpfs mounts
-- [x] Capability drop: `cap_drop: ALL` on identity platform, GlitchTip, API, Caddy
+- [x] Capability drop: `cap_drop: ALL` on authentication platform, GlitchTip, API, Caddy
 - [x] Caddy retains only `NET_BIND_SERVICE` capability
 - [x] Resource limits (memory + CPU) on all services
 - [x] Health checks on all services for orchestrator awareness
 - [x] Init process (`init: true`) prevents zombie processes
 
-## identity platform Security (2026-05-16)
+## authentication platform Security (2026-05-16)
 
 - [x] Password policy: 8+ chars, mixed case, digits, special, not username/email, history 3
 - [x] Brute force protection: 5 failures → progressive lockout (max 15 min wait)
@@ -159,8 +159,8 @@ CSP is configured in three layers (any of which may apply depending on deploymen
 - `style-src 'self' 'unsafe-inline' fonts.googleapis.com` — inline styles for Angular
 - `font-src 'self' fonts.gstatic.com` — Google Fonts only
 - `img-src 'self' data: blob: files.rea.st` — data URIs for icons, blob for canvas
-- `connect-src 'self' auth.rea.st files.rea.st errors.rea.st` — API, identity platform, S3, Sentry
-- `frame-src 'self' auth.rea.st` — only identity platform login iframe
+- `connect-src 'self' auth.rea.st files.rea.st errors.rea.st` — API, authentication platform, S3, Sentry
+- `frame-src 'self' auth.rea.st` — only authentication platform login iframe
 - `frame-ancestors 'self'` — prevents embedding in external sites
 - `object-src 'none'` — blocks Flash/Java/plugin embeds
 - `worker-src 'self' blob:` — service worker + web workers
@@ -179,7 +179,7 @@ CSP is configured in three layers (any of which may apply depending on deploymen
 
 HTTP interceptor chain (in order):
 
-1. **`includeBearerTokenInterceptor`** — identity platform token injection with auto-refresh (5 min)
+1. **`includeBearerTokenInterceptor`** — authentication platform token injection with auto-refresh (5 min)
 2. **`retryInterceptor`** — Exponential backoff for transient failures
 3. **`authErrorInterceptor`** — Error classification and user notification
 
@@ -193,7 +193,7 @@ HTTP interceptor chain (in order):
 
 **Auth error handling** (`authErrorInterceptor`):
 
-- 401: Redirect to identity platform (with loop protection via `recentlyAuthenticated()`)
+- 401: Redirect to authentication platform (with loop protection via `recentlyAuthenticated()`)
 - 403: Permission denied toast
 - 429: Rate limit toast
 - 0: Network error toast (suppressed when offline banner is visible)
