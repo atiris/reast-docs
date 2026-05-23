@@ -4,7 +4,7 @@ The documentation site is deployed automatically to GitHub Pages at [docs.rea.st
 
 ## Architecture
 
-```
+```text
 modules/docs/           ← VitePress source
 ├── .github/workflows/
 │   ├── deploy.yml      ← Builds + deploys to GitHub Pages
