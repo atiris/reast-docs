@@ -38,14 +38,112 @@ After DNS propagates (usually 1-30 minutes), the site will be live at
 ## Structure
 
 ```txt
-spec/         — REA language specification (canonical)
-player/       — Player documentation and guides
-platform/     — Public platform docs (synced from reast-platform)
-docs/         — General docs (glossary, playground, architecture)
+spec/         — REA language specification (canonical, English)
+player/       — Player documentation and guides (English)
+platform/     — Public platform docs (synced from reast-platform, English)
+docs/         — General docs (glossary, playground, architecture, English)
+sk/           — Slovak translations (mirrors the above structure)
 public/       — Static assets (CNAME, images)
-.vitepress/   — VitePress configuration
+.vitepress/   — VitePress configuration (i18n, theme, grammar)
 .github/      — CI workflows (deploy, sync)
 ```
+
+## Internationalization (i18n)
+
+The documentation supports multiple languages using VitePress built-in i18n.
+
+### Architecture
+
+- **Root** (`/`) = English (default, fallback)
+- **`/sk/`** = Slovak translation
+- Future languages follow the same pattern: `/de/`, `/cs/`, etc.
+
+The language switcher appears automatically in the navigation bar. VitePress
+falls back to English when a translated page doesn't exist.
+
+### Language persistence
+
+A cookie (`reast_docs_lang`) stores the user's language preference. The
+platform sets this cookie before redirecting users to docs, ensuring they
+see documentation in their platform language. The cookie persists across
+browsing sessions until the user switches language manually.
+
+### Adding a new language
+
+1. **Create the locale directory** — e.g., `cs/` for Czech
+2. **Mirror the English structure** — create translated files at the same
+   relative paths:
+
+   ```txt
+   cs/
+   ├── index.md
+   ├── spec/
+   │   ├── 01-basics.md
+   │   └── ...
+   ├── player/
+   │   ├── index.md
+   │   └── ...
+   ├── platform/
+   │   └── ...
+   └── docs/
+       └── ...
+   ```
+
+3. **Register the locale** in `.vitepress/config.ts`:
+
+   ```ts
+   locales: {
+     // ... existing locales ...
+     cs: {
+       label: 'Čeština',
+       lang: 'cs',
+       title: 'Jazyk REA',
+       description: '...',
+       themeConfig: {
+         nav: csNav,
+         sidebar: { '/cs/spec/': csSidebar, ... },
+       },
+     },
+   }
+   ```
+
+4. **Define nav and sidebar arrays** for the new locale (translated labels,
+   paths prefixed with `/cs/`)
+5. **Translate content** — start with high-traffic pages:
+   - `index.md` (home)
+   - `spec/01-basics.md` (language basics)
+   - `player/getting-started.md`
+   - `platform/index.md`
+6. **Build and verify** — `npm run build` must pass without dead links
+
+### Translation guidelines
+
+- **File names stay English** — only content is translated
+- **Code examples stay unchanged** — REA syntax is language-independent
+- **Links use locale prefix** — `/sk/spec/01-basics` not `/spec/01-basics`
+- **Technical terms** may keep English in parentheses on first use:
+  e.g., "párové príkazy (paired commands)"
+- **Keep structure in sync** — when English content changes, update all
+  translations. Use `git diff` against the last translated commit to find
+  what changed.
+
+### Updating translations after English changes
+
+```bash
+# See what changed in English since the last translation update:
+git log --oneline --since="2026-05-01" -- spec/ player/ platform/ docs/
+
+# For each changed file, update the corresponding sk/ file:
+# Compare the English diff and apply equivalent changes to the Slovak version.
+```
+
+### Platform integration
+
+The platform (`apps/web`) sets the `reast_docs_lang` cookie when linking to
+docs. The value matches the platform's active locale (e.g., `sk`, `en`).
+On arrival at docs.rea.st, the language picker reflects this choice. If the
+user navigates away from the platform-set language, their manual choice
+takes precedence until the next platform redirect.
 
 ## License
 
