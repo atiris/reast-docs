@@ -1,5 +1,8 @@
 import { defineConfig } from 'vitepress';
 import reaGrammar from './rea.tmLanguage.json';
+import pkg from '../package.json';
+
+const currentVersion = pkg.version;
 
 const enNav = [
   { text: 'Specification', link: '/spec/01-basics' },
@@ -159,7 +162,7 @@ export default defineConfig({
       title: 'Jazyk REA',
       description: 'Špecifikácia a dokumentácia interaktívneho naratívneho jazyka',
       themeConfig: {
-        nav: skNav,
+        nav: [...skNav, { text: `v${currentVersion}`, link: '/changelog' }],
         sidebar: {
           '/sk/spec/': skSpecSidebar,
           '/sk/player/': skPlayerSidebar,
@@ -176,7 +179,24 @@ export default defineConfig({
     },
   },
   themeConfig: {
-    nav: enNav,
+    search: {
+      provider: 'local',
+      options: {
+        locales: {
+          sk: {
+            translations: {
+              button: { buttonText: 'Hľadať', buttonAriaLabel: 'Hľadať' },
+              modal: {
+                noResultsText: 'Žiadne výsledky pre',
+                resetButtonTitle: 'Vymazať',
+                footer: { selectText: 'vybrať', navigateText: 'navigovať', closeText: 'zatvoriť' },
+              },
+            },
+          },
+        },
+      },
+    },
+    nav: [...enNav, { text: `v${currentVersion}`, link: '/changelog' }],
     sidebar: {
       '/spec/': specSidebar,
       '/player/': playerSidebar,
