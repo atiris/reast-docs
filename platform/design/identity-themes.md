@@ -7,7 +7,7 @@ Guide for customizing the Reast authentication platform login theme.
 ## Directory Structure
 
 ```text
-config/authentication platform/themes/reast/
+confi./authentication-platform/themes/reast/
 └── login/
     ├── theme.properties          # Theme config (parent, imports, stylesheets)
     ├── template.ftl              # Master HTML layout (all pages inherit this)
@@ -28,7 +28,7 @@ The theme is mounted into the authentication platform container as a read-only v
 ```yaml
 # config/docker/compose.dev.yaml
 volumes:
-  - ../config/authentication platform/themes:/opt/authentication platform/themes:ro
+  - ../confi./authentication-platform/themes:/op./authentication-platform/themes:ro
 ```
 
 ---
@@ -39,7 +39,7 @@ volumes:
 
 ```properties
 parent=authentication platform          # Inherit from the default authentication platform theme
-import=common/authentication platform   # Import shared resources (JS, vendor libs)
+import=commo./authentication-platform   # Import shared resources (JS, vendor libs)
 
 styles=css/login.css     # Custom stylesheet (loaded after parent styles)
 ```
@@ -49,7 +49,7 @@ styles=css/login.css     # Custom stylesheet (loaded after parent styles)
 | Property       | Purpose                                                 | Example                               |
 | -------------- | ------------------------------------------------------- | ------------------------------------- |
 | `parent`       | Base theme to extend                                    | `authentication platform` (default) or `authentication platform.v2` |
-| `import`       | Import shared resources from another theme              | `common/authentication platform`                     |
+| `import`       | Import shared resources from another theme              | `commo./authentication-platform`                     |
 | `styles`       | Space-separated CSS files from `resources/`             | `css/login.css css/extra.css`         |
 | `scripts`      | Space-separated JS files from `resources/`              | `js/custom.js`                        |
 | `stylesCommon` | CSS from the `common` theme resources                   | `web_modules/@patternfly/...`         |
@@ -380,7 +380,7 @@ environment:
 #### Option 3: Clear the theme cache directory
 
 ```bash
-docker exec reast-authentication platform rm -rf /opt/authentication platform/data/tmp/kc-gzip-cache
+docker exec reast-authentication platform rm -rf /op./authentication-platform/data/tmp/kc-gzip-cache
 docker compose restart authentication platform
 ```
 
@@ -451,7 +451,7 @@ docker compose logs authentication platform 2>&1 | grep -iE "freemarker|theme|te
 1. Verify the volume mount maps correctly:
 
    ```text
-   config/authentication platform/themes/reast/ → /opt/authentication platform/themes/reast/
+   confi./authentication-platform/themes/reast/ → /op./authentication-platform/themes/reast/
    ```
 
 2. Check the `reast` folder contains `login/theme.properties`

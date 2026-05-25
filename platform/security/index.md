@@ -12,11 +12,11 @@ Last audited: 2026-05-16 (batches 373–381)
 - [x] Role-based access control (`RolesGuard` with `@Roles()` decorator, enforces creator/administrator on write endpoints)
 - [x] Ownership checks on story update/delete (only owner or administrator)
 - [x] Slug params validated via `ParseSlugPipe` (rejects path traversal)
-- [x] Session IDs validated via `ParseUuidPipe` (prevents path traversal to authentication platform)
+- [x] Session IDs validated via `ParseUuidPipe` (prevents path traversal to IdP)
 
 ### A02: Cryptographic Failures
 
-- [x] RS256 asymmetric JWT signing via authentication platform JWKS
+- [x] RS256 asymmetric JWT signing via Zitadel JWKS
 - [x] TLS termination at reverse proxy (Caddy)
 - [x] No secrets in tracked `.env` file (only config defaults)
 
@@ -32,7 +32,7 @@ Last audited: 2026-05-16 (batches 373–381)
 
 - [x] Auth-by-default pattern (all routes require JWT unless `@Public()`)
 - [x] Separation of concerns (auth, health, stories, database modules)
-- [x] authentication platform handles user management externally
+- [x] Zitadel handles user management externally
 
 ### A05: Security Misconfiguration
 
@@ -52,14 +52,14 @@ Last audited: 2026-05-16 (batches 373–381)
 ### A07: Identification and Authentication Failures
 
 - [x] JWT expiration enforced (`ignoreExpiration: false`)
-- [x] Issuer validation against `KC_ISSUER`
-- [x] Audience validation (`audience: "account"`)
+- [x] Issuer validation against `OIDC_ISSUER`
+- [x] Audience validation via OIDC discovery
 - [x] JWKS rate limiting (5 requests/min) with caching
 - [x] RS256 algorithm enforced (no algorithm confusion attacks)
 
 ### A08: Software and Data Integrity Failures
 
-- [x] JWKS source validated against authentication platform issuer URL
+- [x] JWKS source validated against OIDC issuer URL
 - [x] No deserialization of untrusted data
 
 ### A09: Security Logging and Monitoring Failures
@@ -73,11 +73,31 @@ Last audited: 2026-05-16 (batches 373–381)
 
 - [x] No user-controlled URL fetching
 - [x] JWKS URI derived from config, not user input
-- [x] Session/authentication platform account URLs derived from config
+- [x] Session/IdP account URLs derived from config
 
 ## Rate Limiting
 
 - [x] `ThrottlerModule` — short burst: 10 req/sec, sustained: 100 req/min
+- [x] Per-user tracking (`UserThrottlerGuard`) — authenticated users identified by `sub`, anonymous by IP
+- [x] Health endpoints excluded via `@SkipThrottle()`
+
+### Per-Endpoint Overrides
+
+| Endpoint             | Burst       | Sustained     | Extra                          |
+| -------------------- | ----------- | ------------- | ------------------------------ |
+| `POST /me/reports`   | 5 req/60s   | (global)      | + 10 reports/24h (DB-enforced) |
+| `GET /catalog/*`     | 5 req/sec   | 30 req/min    | —                              |
+| `POST /csp-report`   | 10 req/sec  | 100 req/min   | —                              |
+| Catalog groups write | 3–5 req/sec | 10–20 req/min | —                              |
+
+### Error Responses
+
+When a rate limit is hit, the API returns:
+
+- **429 Too Many Requests** — burst/sustained throttler exceeded. Body: `{ statusCode: 429, message: "ThrottlerException: Too Many Requests" }`
+- **409 Conflict** — daily report limit (10/24h). Body: `{ statusCode: 409, code: "REPORT_RATE_LIMITED", message: "Report rate limit exceeded" }`
+
+Response headers on throttled endpoints: `X-RateLimit-Limit-*`, `X-RateLimit-Remaining-*`, `Retry-After` (on 429).
 
 ## Request Size Limits
 
@@ -119,22 +139,22 @@ Last audited: 2026-05-16 (batches 373–381)
 
 - [x] All containers: `security_opt: no-new-privileges:true`
 - [x] Stateless containers (API, Caddy, Valkey): `read_only: true` + tmpfs mounts
-- [x] Capability drop: `cap_drop: ALL` on authentication platform, GlitchTip, API, Caddy
+- [x] Capability drop: `cap_drop: ALL` on Zitadel, GlitchTip, API, Caddy
 - [x] Caddy retains only `NET_BIND_SERVICE` capability
 - [x] Resource limits (memory + CPU) on all services
 - [x] Health checks on all services for orchestrator awareness
 - [x] Init process (`init: true`) prevents zombie processes
 
-## authentication platform Security (2026-05-16)
+## Zitadel Security (2026-05-20)
 
-- [x] Password policy: 8+ chars, mixed case, digits, special, not username/email, history 3
-- [x] Brute force protection: 5 failures → progressive lockout (max 15 min wait)
-- [x] Mandatory OTP/TOTP for administrator, moderator, and support roles
-- [x] PKCE S256 required, implicit flow disabled, direct access grants disabled
-- [x] Refresh token rotation (revokeRefreshToken: true, maxReuse: 0)
-- [x] Access token lifetime: 15 minutes
-- [x] Event logging enabled (login, logout, register, password reset, email verify)
-- [x] Admin events with details enabled
+- [x] Password policy configured via Zitadel default settings
+- [x] Brute force / lockout protection via Zitadel login policies
+- [x] MFA enforcement for administrator and moderator roles via Zitadel actions
+- [x] PKCE S256 required, implicit flow disabled
+- [x] Refresh token rotation enabled
+- [x] Access token lifetime: 15 minutes (configurable via Zitadel console)
+- [x] Event logging (login, logout, register) via Zitadel audit log
+- [x] Admin events stored in Zitadel event store
 
 ## Deploy Security (2026-05-16)
 
@@ -146,11 +166,11 @@ Last audited: 2026-05-16 (batches 373–381)
 
 CSP is configured in three layers (any of which may apply depending on deployment):
 
-| Layer             | File                             | Purpose                        |
-| ----------------- | -------------------------------- | ------------------------------ |
-| Caddy (prod)      | `config/prod/Caddyfile`          | Reverse proxy adds CSP headers |
-| Caddy (test)      | `config/test/Caddyfile`          | Test environment headers       |
-| nginx (container) | `apps/web/security-headers.conf` | Standalone web container       |
+| Layer             | File                                              | Purpose                        |
+| ----------------- | ------------------------------------------------- | ------------------------------ |
+| Caddy (prod)      | `config/prod/Caddyfile`                           | Reverse proxy adds CSP headers |
+| Caddy (test)      | `config/test/Caddyfile`                           | Test environment headers       |
+| nginx (container) | `modules/platform/apps/web/security-headers.conf` | Standalone web container       |
 
 **CSP directives** (consistent across all layers):
 
@@ -159,8 +179,8 @@ CSP is configured in three layers (any of which may apply depending on deploymen
 - `style-src 'self' 'unsafe-inline' fonts.googleapis.com` — inline styles for Angular
 - `font-src 'self' fonts.gstatic.com` — Google Fonts only
 - `img-src 'self' data: blob: files.rea.st` — data URIs for icons, blob for canvas
-- `connect-src 'self' auth.rea.st files.rea.st errors.rea.st` — API, authentication platform, S3, Sentry
-- `frame-src 'self' auth.rea.st` — only authentication platform login iframe
+- `connect-src 'self' auth.rea.st files.rea.st errors.rea.st` — API, Zitadel, S3, Sentry
+- `frame-src 'self' auth.rea.st` — only Zitadel login / silent-renew iframe
 - `frame-ancestors 'self'` — prevents embedding in external sites
 - `object-src 'none'` — blocks Flash/Java/plugin embeds
 - `worker-src 'self' blob:` — service worker + web workers
@@ -179,7 +199,7 @@ CSP is configured in three layers (any of which may apply depending on deploymen
 
 HTTP interceptor chain (in order):
 
-1. **`includeBearerTokenInterceptor`** — authentication platform token injection with auto-refresh (5 min)
+1. **`oidcBearerInterceptor`** — OIDC token injection from session storage
 2. **`retryInterceptor`** — Exponential backoff for transient failures
 3. **`authErrorInterceptor`** — Error classification and user notification
 
@@ -193,7 +213,7 @@ HTTP interceptor chain (in order):
 
 **Auth error handling** (`authErrorInterceptor`):
 
-- 401: Redirect to authentication platform (with loop protection via `recentlyAuthenticated()`)
+- 401: Redirect to Zitadel login (with loop protection via `recentlyAuthenticated()`)
 - 403: Permission denied toast
 - 429: Rate limit toast
 - 0: Network error toast (suppressed when offline banner is visible)
@@ -205,3 +225,63 @@ HTTP interceptor chain (in order):
 - Visual blink indicator on reconnection
 - `SessionSyncService` syncs offline data when connection restores
 - Multi-tab session awareness via BroadcastChannel
+
+## Related Documents
+
+- [Input Validation](input-validation.md) — detailed breakdown of all validation layers
+
+## Threat Model
+
+### Trust Boundaries
+
+```text
+┌──────────────────────────────────────────────────────────┐
+│  Internet (untrusted)                                    │
+│   ├─ Anonymous readers                                   │
+│   └─ Authenticated users (Zitadel JWT)                   │
+├──────────────────────────────────────────────────────────┤
+│  Reverse Proxy — Caddy (TLS termination, CSP, headers)   │
+├──────────────────────────────────────────────────────────┤
+│  Application Layer (trusted internal network)            │
+│   ├─ Web (Angular SPA, static files via nginx)           │
+│   ├─ API (NestJS, JWT validation, rate limiting)         │
+│   ├─ Zitadel (identity provider, OIDC/PKCE)             │
+│   └─ Valkey (session cache, rate-limit counters)         │
+├──────────────────────────────────────────────────────────┤
+│  Data Layer (restricted)                                 │
+│   ├─ PostgreSQL (user data, stories, audit events)       │
+│   └─ SeaweedFS (avatar images, story assets)             │
+└──────────────────────────────────────────────────────────┘
+```
+
+### Threat Categories (STRIDE)
+
+| Threat                     | Example                               | Mitigation                                                     |
+| -------------------------- | ------------------------------------- | -------------------------------------------------------------- |
+| **Spoofing**               | Forged JWT, session hijacking         | RS256 via Zitadel JWKS, PKCE S256, refresh token rotation      |
+| **Tampering**              | Modified story content, SQL injection | Parameterized queries, ValidationPipe, whitelist DTOs          |
+| **Repudiation**            | Deny unauthorized access              | Audit event logging with retention, Zitadel event log          |
+| **Information Disclosure** | Stack traces, internal paths          | Generic 500 messages, no source maps in prod, CSP              |
+| **Denial of Service**      | API flooding, large payloads          | ThrottlerModule, 1MB body limit, resource limits on containers |
+| **Elevation of Privilege** | Role bypass, path traversal           | RolesGuard, ParseSlugPipe, ParseUuidPipe, ownership checks     |
+
+### Attack Surface
+
+| Surface        | Exposure                                       | Controls                                                    |
+| -------------- | ---------------------------------------------- | ----------------------------------------------------------- |
+| Web UI         | Public                                         | CSP, SRI, no inline scripts, service worker HTTPS-only      |
+| REST API       | Public (auth-required except health + catalog) | JWT guard, rate limiting, input validation                  |
+| Zitadel admin  | Internal only                                  | Not exposed via Caddy in prod, MFA required for admin roles |
+| PostgreSQL     | Internal only                                  | No public port, connection via internal Docker network      |
+| SeaweedFS      | Internal (proxied)                             | Accessed via API presigned URLs, no direct public access    |
+
+### Data Classification
+
+| Data                     | Sensitivity | Protection                                             |
+| ------------------------ | ----------- | ------------------------------------------------------ |
+| User credentials         | Critical    | Managed by Zitadel, never stored in app DB             |
+| JWT tokens               | High        | Short-lived (15 min), HttpOnly where possible, RS256   |
+| Story content            | Medium      | Ownership-enforced CRUD, slug sanitization             |
+| Reading progress / notes | Medium      | User-scoped, data retention cleanup (configurable TTL) |
+| Audit logs               | Medium      | Parameterized retention cleanup, no PII in metadata    |
+| Health endpoints         | Low         | Public, rate-limited, no sensitive data exposed        |
