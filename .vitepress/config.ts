@@ -133,6 +133,9 @@ export default defineConfig({
   description: 'Interactive story language specification and documentation',
   base: '/',
   outDir: './dist',
+  head: [
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo-rea.svg' }],
+  ],
   ignoreDeadLinks: [
     /\/REA$/,
     /\.\/\.\.\/REA$/,
@@ -204,5 +207,6 @@ export default defineConfig({
       '/platform/': platformSidebar,
     },
     socialLinks: [{ icon: 'github', link: 'https://github.com/atiris/reast-docs' }],
+    logo: '/logo-rea.svg',
   },
 });
