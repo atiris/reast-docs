@@ -740,7 +740,7 @@ Authors contribute to accessibility through existing syntax:
 
 ## Design Notes
 
-For detailed provenance tables, brainstorm material, and community research, see [DESIGN-NOTES.md](../research/DESIGN-NOTES.md).
+For detailed provenance tables, brainstorm material, and community research, see [DESIGN-NOTES.md](https://github.com/user/reast/blob/dev/research/DESIGN-NOTES.md).
 
 ### What Rea intentionally omits
 
