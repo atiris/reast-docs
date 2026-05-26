@@ -133,12 +133,8 @@ export default defineConfig({
   description: 'Interactive story language specification and documentation',
   base: '/',
   outDir: './dist',
-  head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo-rea.svg' }],
-  ],
+  head: [['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo-rea.svg' }]],
   ignoreDeadLinks: [
-    /\/REA$/,
-    /\.\/\.\.\/REA$/,
     /\.\/\.\.\/LICENSE$/,
     /\.\/\.\.\/research\//,
     /localhost/,

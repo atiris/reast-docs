@@ -1,149 +1,254 @@
-# Jazyk Rea — Ťahák
+# Jazyk REA — Ťahák
 
 > Čistý text je platný obsah. Jednoducho píšte.
 
-## Stav implementácie
+## Dva základné symboly
 
-Funkcie označené indikátormi stavu odrážajú aktuálny stav proof-of-concept parsera.
+Celý jazyk REA stojí na dvoch znakoch:
 
-| Stav | Význam                                                        |
-| ---- | ------------------------------------------------------------- |
-| ✅   | Plne implementované a otestované v parseri/platforme          |
-| 🔶   | Čiastočne implementované (základná podpora, niektoré chýbajú) |
-| 📋   | Špecifikované, ale zatiaľ neimplementované (plánované)        |
+| Symbol | Účel | Pamätaj si |
+| ------ | ---- | ---------- |
+| `{ }` | **Príkazy** — všetko čo „robí" (logika, premenné, riadenie) | Kučeravé = kód |
+| `[ ]` | **Odkazy** — všetko čo „ukazuje" (linky, médiá, kotvy) | Hranaté = odkaz |
 
-## Formátovanie
+Všetko ostatné je text príbehu.
 
-| Syntax       | Výsledok      | Príklad              |
-| ------------ | ------------- | -------------------- |
-| `_text_`     | Kurzíva       | `_zašepkal potichu_` |
-| `*text*`     | Tučné         | `*dvere buchli*`     |
-| `_*text*_`   | Tučná kurzíva | `_*nemožné!*_`       |
-| `` `text` `` | Inline kód    | `` `premenná` ``     |
+---
 
-## Nadpisy
+## Text a formátovanie
 
 ```rea
-# Kapitola (úroveň 1)
-## Sekcia (úroveň 2)
-### Scéna (úroveň 3)
-#### Podscéna (úroveň 4)
-##### Detail (úroveň 5)
+Obyčajný text. Stačí písať.
+
+_kurzíva_     *tučné*     _*tučná kurzíva*_     `monospace`
+{underline begin}podčiarknuté{end underline}
+{strike begin}prečiarknuté{end strike}
 ```
 
-## Zarovnanie
+**Štruktúra:**
 
 ```rea
-= Centrovaný text
-> Text zarovnaný doprava
-< Vynútene doľava
+# Kapitola       ## Sekcia       ### Scéna
+= centrované     > doprava       < doľava
+| blokový citát  || vnorený citát
+---              Horizontálna čiara (1–5 pomlčiek = 5 hrúbok)
 ```
 
-## Horizontálne čiary
+---
 
-| Syntax  | Váha               |
-| ------- | ------------------ |
-| `-`     | Ťažká (najhrubšia) |
-| `--`    | Stredne ťažká      |
-| `---`   | Stredná            |
-| `----`  | Ľahká              |
-| `-----` | Jemná (najtenšia)  |
+## Odkazy a médiá `[ ]`
 
-## Odkazy a médiá
+Prvý znak za `[` určuje typ:
+
+| Prefix | Typ | Príklad |
+| ------ | --- | ------- |
+| *(žiadny)* | Odkaz | `[Choď ďalej > #les]` |
+| `!` | Obrázok | `[!Mapa lesa < media/mapa.jpg]` |
+| `>` | Video | `[>Intro < media/intro.mp4]` |
+| `?` | Audio | `[?Dážď < media/rain.ogg volume=0.5, loop]` |
+| `#` | Kotva (definícia) | `[#les]` |
+| `^` | Poznámka pod čiarou | `[^1]: Vysvetlenie` |
+
+**Smer šípok:** `>` = kam smeruje odkaz, `<` = odkiaľ pochádza zdroj.
+
+---
+
+## Premenné a tlač `{set}` `{meno}`
 
 ```rea
-[text odkazu > #kotva]
-[text odkazu > subor.rea]
-[!alt text < media/obr.jpg]
-[>titulok < media/video.mp4]
-[?titulok < media/audio.ogg]
+{set player.gold = 100}              Číslo
+{set player.name = "Aria"}           Text (vždy v úvodzovkách)
+{set player.items = ["meč", "štít"]} Pole
+{set stats = [hp=100, sila=8]}       Pomenované položky
+
+Ahoj, {player.name}! Máš {player.gold} zlatých.
+{player.gold > 50 ? "bohatý" : "chudobný"}
 ```
 
-## Premenné
+**Doménové prefixy** (read-only platformové dáta):
+`reader.*` `story.*` `world.*` `device.*` `group.*`
 
-```rea
-{set player.name = "Aria"}
-{set player.gold = 100}
-{set player.items = ["meč", "štít"]}
-Ahoj, {player.name}!
-```
+---
 
 ## Riadenie toku
 
 ```rea
-{if podmienka}
-  ...
-{else if ina_podmienka}
-  ...
-{else}
-  ...
-{end if}
-
-{for item in pole}
-  {item}
-{end for}
-
-{while podmienka}
-  ...
-{end while}
-
-{switch vyraz}
-  {case "hodnota"} ...
-  {default} ...
+{if player.gold > 10 begin}         {for item in player.items begin}
+  Máš dosť zlata.                     - {item}
+{else if player.gold > 0}           {end for}
+  Ešte niečo máš.
+{else}                               {while fuel > 0 begin}
+  Si na mizine.                        Idem ďalej...
+{end if}                               {set fuel = fuel - 1}
+                                     {end while}
+{switch weapon begin}
+  {case "meč"} Blízky boj.          {case "luk"} Streľba.
+  {default} Päste.
 {end switch}
 ```
 
-## Voľby
+---
+
+## Voľby a vetvenie
 
 ```rea
-* [Jednorazová voľba]
-  Obsah po výbere.
+* [Jednorazová voľba]               Zmizne po výbere
+  Text po výbere.
 
-+ [Lepivá voľba (opakovateľná)]
-  Obsah po výbere.
++ [Lepivá voľba]                     Zostáva vždy dostupná
+  Text po výbere.
 
-- Zhromažďovací bod (vetvy sa zbiehajú)
+* {player.gold >= 10} [Kúp lektvar]  Podmienená voľba
+  {set player.gold = player.gold - 10}
 
--> odklon_na_kotvu
-->-> tunel (vráti sa späť)
+* * [Vnorená voľba]                  Druhá úroveň
+
+- Zhromažďovací bod                  Vetvy sa tu zbiehajú
+-> nazov_kotvy                       Odklon (skok)
+->-> nazov_sekcie                    Tunel (skok + návrat)
+* ->                                 Fallback (auto-výber keď nič nezostalo)
 ```
 
-## Podmienené voľby
-
-```rea
-* {if player.key} [Odomknúť dvere]
-  Dvere sa otvárajú.
-```
+---
 
 ## Funkcie
 
 ```rea
-{function heal(amount = 10)}
-  {set player.health = player.health + amount}
-  {return player.health}
+{function pozdrav(meno, titul = "dobrodruh") begin}
+  Vitaj, {meno} — {titul}!
 {end function}
 
-{heal(25)}
+{pozdrav("Aria")}                    Volanie (vykreslí text)
+{set dmg = damage(10, 1.5)}         Volanie (vráti hodnotu)
 ```
+
+**Vstavané:** `abs` `min` `max` `round` `random(1,6)` `clamp` `length` `upper` `lower` `trim` `contains` `replace` `split` `join` `append` `remove` `shuffle` `sort`
+
+---
 
 ## Dialóg
 
 ```rea
-@Aria: Vitaj, cestovateľ!
-@Obchodník: Máš záujem o moje tovary?
+@elena: "Poď za mnou!"              Reč postavy (s úvodzovkami)
+@rozprávač: Cesta stmavla.          Rozprávač (bez úvodzoviek)
 ```
 
-## Premenný text
+---
+
+## Naratívne nástroje
 
 ```rea
-{first|druhý|tretí}
-{cycle "ráno"|"večer"}
-{once}Prvá návšteva.{then}Ďalšia návšteva.{end once}
+{once begin} Prvá návšteva. {then} Opakovaná návšteva. {end once}
+
+{first|druhý|tretí}                  Sekvencia (zastaví na poslednom)
+{&a|b|c}                             Cyklus (opakuje dookola)
+{!raz|dva|hotovo}                    Jednorazové (potom prázdne)
+{~opt1|opt2|opt3}                    Náhodné (shuffle)
 ```
 
-## Lokalizácia
+---
+
+## Kooperatívne čítanie
 
 ```rea
-{plural(n, one="1 minca", few="{n} mince", other="{n} mincí")}
-{select(gender, male="hrdina", female="hrdinka")}
+{define role prieskumník begin}      Definícia role
+  max: 1
+{end define}
+
+{vote timeout=60 begin}              Hlasovanie skupiny
+  * [Doľava]   * [Doprava]
+{end vote}
+
+{whisper to="kapitán" begin}         Tajná správa
+  Vidím strážcov.
+{end whisper}
+
+{broadcast begin} Všetci počujú. {end broadcast}
+{wait readers=all begin} Čakáme... {end wait}
+{set shared.score = shared.score + 1}  Zdieľaná premenná
 ```
+
+---
+
+## Interakcie s reálnym svetom
+
+```rea
+{require gps}                         Vyžaduje senzor
+{require nfc optional}                Voliteľný senzor
+
+{waypoint most, @@48.14;17.10/50 begin}
+  Stojíš na starom moste.
+{end waypoint}
+
+{timer duration=30, on_expire="-> timeout" begin}
+  Ponáhľaj sa!
+{end timer}
+```
+
+---
+
+## Hlas a audio
+
+```rea
+{voice speed=5, pitch=5, emotion="whisper" begin}
+  Jaskyňa ozvučila šepot.
+{end voice}
+
+{stop ambient_music}
+```
+
+---
+
+## Karty (postavy, predmety)
+
+```rea
+{define character elena begin}
+  name: Elena Voss
+  image: media/elena.png
+{end define}
+
+[@elena]                    Referencia na postavu
+[$zlatý_kľúč]              Referencia na predmet
+{give zlatý_kľúč}          Daj predmet čitateľovi
+{take zlatý_kľúč}          Odobrať predmet
+```
+
+---
+
+## Vstup a interakcia
+
+```rea
+{input name=meno_hraca, placeholder="Tvoje meno"}
+{input name=tip, type="number", min=1, max=100}
+{button label="Pokračovať", target=dalsia_kapitola}
+```
+
+---
+
+## Komentáre a nástroje autora
+
+```rea
+{// Jednoriadkový komentár}
+{comment begin}
+  Viacriadkový komentár — čitatelia nevidia.
+{end comment}
+
+\{nie je príkaz\}                    Escapovanie
+{raw begin} Doslova všetko. {end raw}
+
+{todo: Opraviť túto scénu}          Upozornenie v dev móde
+{strict on}                          Zobraziť varovania
+```
+
+---
+
+## Pravidlá na zapamätanie
+
+1. **`{ }` = akcia**, **`[ ]` = odkaz** — nič viac nepotrebujete
+2. **`begin` / `end`** — všetky blokové príkazy používajú tento pár
+3. **Jedno `=` na porovnanie** (nie `==`), priradenie je vždy `{set x = ...}`
+4. **Doménové prefixy** oddeľujú autor-premenné (`player.*`) od platformy (`reader.*`)
+5. **`*` = jednorazová voľba**, **`+` = lepivá voľba**, **`-` = zbiehanie vetiev**
+6. **`->` = skok**, **`->->` = tunel (skok + automatický návrat)**
+7. **Prvý znak v `[ ]`** rozhoduje: `!` obrázok, `>` video, `?` audio, `#` kotva
+8. **Čistý text je platný príbeh** — syntaxu pridávate len keď ju potrebujete

@@ -1,6 +1,6 @@
 # Špecifikácia jazyka Rea — Časť 1: Základy (Sekcie 1–9)
 
-> [Späť na hlavnú špecifikáciu](/REA)
+> [Späť na hlavnú špecifikáciu](/sk/)
 >
 > **Stav implementácie:** Sekcie 1–9 sú implementované v klientskom parseri. Extrakcia metadát, formátovanie textu, nadpisy, blokové citáty, horizontálne čiary, odkazy, médiá, kotvy, rozšírené formátovacie príkazy (podčiarknutie, prečiarknutie, neproporcionálne písmo), poznámky pod čiarou (pomenované a automaticky číslované), vnorené inline formátovanie a podpora premenných fungujú podľa špecifikácie. Pozrite [REA-CHEATSHEET.md](REA-CHEATSHEET.md) pre podrobný stav.
 
@@ -14,11 +14,11 @@ Rea príbehy existujú v hierarchii:
 Séria → Reast → Časť → Kapitola → Sekcia → Scéna → Odsek
 ```
 
-Každý `.rea` súbor reprezentuje jeden **reast** (príbeh). Väčšie kompilácie používajú balíkový formát `.reast` (pozri [Formát súboru a balenie](05-reference.md#28-file-format--packaging)).
+Každý príbeh sa distribuuje ako balík `.reast` — ZIP archív obsahujúci jeden alebo viac `.rea` súborov s obsahom, manifest (`reast.json`) a voliteľné assety (pozri [Formát súboru a balenie](05-reference.md#28-file-format--packaging)). Samostatný `.rea` súbor je možné použiť počas písania, ale platforma vždy pracuje s `.reast` balíkmi.
 
 Séria zoskupuje viaceré reasty pod spoločný názov (napr. „Priatelia"). V rámci série voliteľné pole metadát **season** zoskupuje reasty do logických blokov (číslovaných alebo pomenovaných). Samostatný príbeh nepotrebuje ani jedno — je jednoducho reast.
 
-Minimálny príbeh je len text:
+Minimálny `.rea` súbor s obsahom je len text:
 
 ```rea
 Raz dávno, v ďalekej krajine, mladý cestovateľ sa vydal na cestu.
@@ -26,7 +26,7 @@ Raz dávno, v ďalekej krajine, mladý cestovateľ sa vydal na cestu.
 Cesta sa pred ním tiahla donekonečna.
 ```
 
-Žiadne metadáta, žiadne hlavičky — text stačí. Platforma ho automaticky zabalí ako jednodielny, jednoscénový príbeh.
+Žiadne hlavičky, žiadna špeciálna syntax — obyčajná próza je platný obsah. Na publikovanie autor zabalí tento `.rea` súbor do archívu `.reast` s minimálnym manifestom `reast.json`. Autorské nástroje to robia automaticky.
 
 ### Metadáta
 

@@ -1,7 +1,7 @@
 # Rea Language Specification — Part 3: Narrative & Interaction (Sections 16–21)
 
-> [Back to main specification](../REA.md)
-
+> [Back to main specification](/)
+>
 > **Implementation status:** Choices and branching (16) including nested, conditional, sticky, and fallback choices are fully implemented. Dialogue attribution (via `@speaker:`) works. First-visit content (`{once}`/`{then}`/`{end once}`) is implemented. Narrative utilities within Section 16 (`{cycle}`/`{replace}`), Cards (17), Voice & Audio (18), Input & Interaction (19), Cooperative Reading (20), and Real-World Interactions (21) are specified but not yet implemented. See [REA-CHEATSHEET.md](REA-CHEATSHEET.md) for detailed status.
 
 ---

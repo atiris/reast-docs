@@ -1,7 +1,7 @@
 # Rea Language Specification — Part 4: Utilities (Sections 22–27)
 
-> [Back to main specification](../REA.md)
-
+> [Back to main specification](/)
+>
 > **Implementation status:** Sections 22–27 describe advanced features (pluralization & localization, content protection, captions, escaping, comments, error handling) that are specified but not yet implemented in the proof-of-concept parser. The error handling philosophy (graceful degradation) is followed in the parser design. See [REA-CHEATSHEET.md](REA-CHEATSHEET.md) for detailed status.
 
 ---

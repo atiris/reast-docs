@@ -1,7 +1,7 @@
 # Rea Language Specification — Part 1: Basics (Sections 1–9)
 
-> [Back to main specification](../REA.md)
-
+> [Back to main specification](/)
+>
 > **Implementation status:** Sections 1–9 are implemented in the client-side parser. Metadata extraction, text formatting, headings, blockquotes, horizontal rules, links, media, anchors, extended formatting commands (underline, strikethrough, monospace), footnotes (named and auto-numbered), nested inline formatting, and variable support work as specified. See [REA-CHEATSHEET.md](REA-CHEATSHEET.md) for detailed status.
 
 ---
@@ -14,11 +14,11 @@ Rea stories exist in a hierarchy:
 Series → Reast → Part → Chapter → Section → Scene → Paragraph
 ```
 
-Every `.rea` file represents a single **reast** (story). Larger compilations use the `.reast` package format (see [File Format & Packaging](05-reference.md#28-file-format--packaging)).
+Every story is distributed as a `.reast` package — a ZIP archive containing one or more `.rea` content files, a manifest (`reast.json`), and optional assets (see [File Format & Packaging](05-reference.md#28-file-format--packaging)). A standalone `.rea` file can be used during authoring, but the platform always works with `.reast` packages.
 
 A series groups multiple reasts under a common title (e.g., "Friends"). Within a series, an optional **season** metadata field groups reasts into logical blocks (numbered or named). A standalone story needs neither — it is simply a reast.
 
-A minimal story is just text:
+A minimal `.rea` content file is just text:
 
 ```rea
 Once upon a time, in a land far away, a young traveler set out on a journey.
@@ -26,7 +26,7 @@ Once upon a time, in a land far away, a young traveler set out on a journey.
 The road stretched endlessly before them.
 ```
 
-No metadata, no headers — text is enough. The platform wraps it automatically as a single-chapter, single-scene story.
+No headers, no special syntax — plain prose is valid content. To publish, the author packages this `.rea` file into a `.reast` archive with a minimal `reast.json` manifest. Authoring tools handle this automatically.
 
 ### Metadata
 

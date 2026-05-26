@@ -1,6 +1,6 @@
 # Špecifikácia jazyka Rea — Časť 4: Utility (Sekcie 22–27)
 
-> [Späť na hlavnú špecifikáciu](/REA)
+> [Späť na hlavnú špecifikáciu](/sk/)
 >
 > **Stav implementácie:** Pozrite [REA-CHEATSHEET.md](REA-CHEATSHEET.md) pre podrobný stav jednotlivých funkcií.
 

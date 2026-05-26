@@ -1,6 +1,6 @@
 # Špecifikácia jazyka Rea — Časť 3: Naratív a interakcia (Sekcie 16–21)
 
-> [Späť na hlavnú špecifikáciu](/REA)
+> [Späť na hlavnú špecifikáciu](/sk/)
 >
 > **Stav implementácie:** Voľby a vetvenie (16) vrátane vnorených, podmienených, lepivých a záložných volieb sú plne implementované. Dialógová atribúcia (cez `@hovoriaci:`) funguje. Obsah prvej návštevy (`{once}`/`{then}`/`{end once}`) je implementovaný. Naratívne utility v Sekcii 16 (`{cycle}`/`{replace}`), Karty (17), Hlas a Audio (18), Vstup a Interakcia (19), Kooperatívne čítanie (20) a Interakcie s reálnym svetom (21) sú špecifikované, ale zatiaľ neimplementované. Pozrite [REA-CHEATSHEET.md](REA-CHEATSHEET.md) pre podrobný stav.
 
