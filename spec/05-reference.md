@@ -17,31 +17,60 @@ A `.rea` file is a UTF-8 plain text file. It contains a single story (reast) wit
 A `.reast` file is a ZIP archive (like EPUB) containing:
 
 ```txt
-story.reast/
+story.reast/                    (v2 format — rea: "2.0")
+├── manifest.json               (package manifest — metadata, parts list)
+├── reast.json                  (optional — session settings / variables)
+├── README.md                   (optional — for GitHub versioning)
 ├── META-REA/
 │   ├── checksum.sha256
-│   ├── signature.sig (optional, Ed25519)
-│   └── author.pub (optional, author public key)
-├── reast.json          (manifest)
-├── part-00001.rea      (first part / intro)
-├── part-00002.rea      (second part)
-├── part-00003.rea      (...)
-└── assets/
-    ├── cover.jpg
-    ├── forest.jpg
-    └── theme.ogg
+│   ├── signature.sig           (optional, Ed25519)
+│   └── author.pub             (optional, author public key)
+├── story/
+│   ├── part-00001.rea          (first part / intro)
+│   ├── part-00002.rea          (second part)
+│   └── part-00003.rea          (...)
+├── media/
+│   ├── cover.jpg
+│   ├── forest.jpg
+│   └── theme.ogg
+└── moderator/
+    ├── instructions.rea        (main moderator file — declared in manifest)
+    ├── setup-guide.rea         (additional moderator content)
+    └── media/
+        ├── npc-portraits.pdf
+        └── session-map.png
 ```
+
+**Legacy format** (rea: "1.0" / "1.1") remains supported for backward compatibility:
+
+```txt
+story.reast/                    (legacy format)
+├── reast.json                  (manifest — legacy location)
+├── part-00001.rea              (parts in root or parts/ directory)
+├── part-00002.rea
+└── assets/
+    └── cover.jpg
+```
+
+**Key differences v1 → v2:**
+
+- Manifest moved from `reast.json` to `manifest.json`
+- `reast.json` repurposed as session settings / preparation variables
+- Story `.rea` files live in `story/` directory (not root or `parts/`)
+- Moderator media lives in `moderator/media/` (not `moderator/assets/`)
+- `README.md` allowed at root for GitHub-hosted reast packages
+- Platform can import directly from a public GitHub repository URL
 
 Each language translation is a **separate** `.reast` archive — not bundled together. Device capabilities (GPS, camera, gyroscope) are declared in the manifest `sensors` array; the reader loads only the capabilities the device supports. There is no separate `lib/` or `plugins/` directory — shared logic goes in parts, and sensor-dependent features are conditionally loaded by the reader based on the `sensors` declaration.
 
-### The `reast.json` manifest
+### The `manifest.json` manifest
 
-The manifest is the single source of all story metadata, permissions, and platform configuration. A `.rea` file contains only story content — all metadata lives here.
+The manifest is the single source of all story metadata, permissions, and platform configuration. A `.rea` file contains only story content — all metadata lives here. In v2 format the manifest is `manifest.json`; legacy packages use `reast.json` as the manifest.
 
 ```json
 {
   "id": "019e03f6-f9ec-7000-801c-fd76eb1968dd",
-  "rea": "1.0",
+  "rea": "2.0",
   "title": "The Last Lantern",
   "author": [{ "name": "Elena Voss", "id": "019d8a2b-1234-7000-8000-abcdef012345" }],
   "version": "1.0.0",
@@ -50,7 +79,7 @@ The manifest is the single source of all story metadata, permissions, and platfo
   "description": "A story about finding light in darkness.",
   "cover": "media/cover.jpg",
   "tags": ["fantasy", "adventure"],
-  "parts": ["part-00001.rea", "part-00002.rea"],
+  "parts": ["story/part-00001.rea", "story/part-00002.rea"],
   "readers": [1, 2, 3, 4, 5],
   "age": { "min": 12 },
   "sensors": ["gps", "camera"],
@@ -93,9 +122,22 @@ The manifest is the single source of all story metadata, permissions, and platfo
 | `storage`          | string   | Storage hint: `"none"`, `"local"` (default), `"cloud"`                                                                        |
 | `signed`           | boolean  | Whether the package is cryptographically signed                                                                               |
 
-Custom keys are allowed and stored but ignored by the platform. For single-file stories, the platform auto-wraps the `.rea` file into a minimal `.reast` package with a generated `reast.json`.
+Custom keys are allowed and stored but ignored by the platform. For single-file stories, the platform auto-wraps the `.rea` file into a minimal `.reast` package with a generated `manifest.json`.
 
-````
+### The `reast.json` settings file
+
+In v2 format, `reast.json` is a separate file containing **session preparation settings** — variables and configuration for running the story in a specific context (e.g., number of players, difficulty level, chosen scenario variant). This file is optional.
+
+```json
+{
+  "players": 4,
+  "difficulty": "hard",
+  "scenario": "night-forest",
+  "custom_npc_names": ["Aria", "Theron", "Kael"]
+}
+```
+
+The platform reads `reast.json` at session start and injects its values into the story's variable space. Authors define which settings are expected in their story's `@config` directives.
 
 ### Progressive loading
 
@@ -108,7 +150,7 @@ Large stories load part-by-part rather than all at once. The manifest declares a
   "preload": ["part-00001.rea"],
   "locked": ["part-00003.rea"]
 }
-````
+```
 
 With progressive loading:
 
@@ -226,20 +268,22 @@ A `.reast` package may include a **moderator instructions bundle** — content i
 #### Package structure
 
 ```txt
-story.reast/
-├── reast.json
-├── part-00001.rea
+story.reast/                       (v2 format)
+├── manifest.json
+├── story/
+│   └── part-00001.rea
 ├── moderator/
-│   ├── instructions.rea     (main DM instructions in REA format)
-│   └── assets/
-│       ├── handout-map.pdf   (printable handout)
-│       ├── setup-video.mp4   (setup tutorial)
-│       └── npc-portraits.zip (supplementary material)
-└── assets/
+│   ├── instructions.rea           (main DM instructions — declared in manifest)
+│   ├── setup-guide.rea            (additional moderator .rea files)
+│   └── media/
+│       ├── handout-map.pdf        (printable handout)
+│       ├── setup-video.mp4        (setup tutorial)
+│       └── npc-portraits.png      (supplementary material)
+└── media/
     └── ...
 ```
 
-The `moderator/` directory sits alongside the regular story parts. Its `instructions.rea` file uses standard REA syntax (headings, paragraphs, media embeds, choice branches for conditional setup paths). Supplementary files (PDFs to print, videos to watch, images, archives) live in `moderator/assets/`.
+The `moderator/` directory sits alongside the story directory. Its `.rea` files use standard REA syntax (headings, paragraphs, media embeds, choice branches for conditional setup paths). Supplementary files (PDFs to print, videos to watch, images, archives) live in `moderator/media/`. The entire `moderator/` directory can be cleanly removed if the package should be distributed without DM content.
 
 #### Manifest declaration
 
