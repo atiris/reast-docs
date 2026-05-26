@@ -71,6 +71,7 @@ const platformSidebar = [
       { text: 'Overview', link: '/platform/' },
       { text: 'Design System', link: '/platform/design/' },
       { text: 'Security & Privacy', link: '/platform/security/' },
+      { text: 'Help & Guide', link: '/platform/help' },
     ],
   },
 ];
@@ -124,6 +125,7 @@ const skPlatformSidebar = [
       { text: 'Prehľad', link: '/sk/platform/' },
       { text: 'Dizajn systém', link: '/sk/platform/design/' },
       { text: 'Bezpečnosť a súkromie', link: '/sk/platform/security/' },
+      { text: 'Pomoc a sprievodca', link: '/sk/platform/help' },
     ],
   },
 ];

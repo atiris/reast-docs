@@ -6,10 +6,10 @@
 
 Celý jazyk REA stojí na dvoch znakoch:
 
-| Symbol | Účel | Pamätaj si |
-| ------ | ---- | ---------- |
-| `{ }` | **Príkazy** — všetko čo „robí" (logika, premenné, riadenie) | Kučeravé = kód |
-| `[ ]` | **Odkazy** — všetko čo „ukazuje" (linky, médiá, kotvy) | Hranaté = odkaz |
+| Symbol | Účel                                                        | Pamätaj si      |
+| ------ | ----------------------------------------------------------- | --------------- |
+| `{ }`  | **Príkazy** — všetko čo „robí" (logika, premenné, riadenie) | Kučeravé = kód  |
+| `[ ]`  | **Odkazy** — všetko čo „ukazuje" (linky, médiá, kotvy)      | Hranaté = odkaz |
 
 Všetko ostatné je text príbehu.
 
@@ -40,14 +40,14 @@ _kurzíva_     *tučné*     _*tučná kurzíva*_     `monospace`
 
 Prvý znak za `[` určuje typ:
 
-| Prefix | Typ | Príklad |
-| ------ | --- | ------- |
-| *(žiadny)* | Odkaz | `[Choď ďalej > #les]` |
-| `!` | Obrázok | `[!Mapa lesa < media/mapa.jpg]` |
-| `>` | Video | `[>Intro < media/intro.mp4]` |
-| `?` | Audio | `[?Dážď < media/rain.ogg volume=0.5, loop]` |
-| `#` | Kotva (definícia) | `[#les]` |
-| `^` | Poznámka pod čiarou | `[^1]: Vysvetlenie` |
+| Prefix     | Typ                 | Príklad                                     |
+| ---------- | ------------------- | ------------------------------------------- |
+| _(žiadny)_ | Odkaz               | `[Choď ďalej > #les]`                       |
+| `!`        | Obrázok             | `[!Mapa lesa < media/mapa.jpg]`             |
+| `>`        | Video               | `[>Intro < media/intro.mp4]`                |
+| `?`        | Audio               | `[?Dážď < media/rain.ogg volume=0.5, loop]` |
+| `#`        | Kotva (definícia)   | `[#les]`                                    |
+| `^`        | Poznámka pod čiarou | `[^1]: Vysvetlenie`                         |
 
 **Smer šípok:** `>` = kam smeruje odkaz, `<` = odkiaľ pochádza zdroj.
 

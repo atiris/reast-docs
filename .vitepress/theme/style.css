@@ -4,7 +4,7 @@
   box-shadow: 0 0 6px 1px rgba(128, 128, 128, 0.4);
 }
 
-:root:not(.dark) .VPImage.image-src[src*="logo-rea"] {
+:root:not(.dark) .VPImage.image-src[src*='logo-rea'] {
   border-radius: 6px;
   box-shadow: 0 0 8px 2px rgba(128, 128, 128, 0.35);
 }

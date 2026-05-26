@@ -6,10 +6,10 @@
 
 The entire REA language builds on two characters:
 
-| Symbol | Purpose | Remember |
-| ------ | ------- | -------- |
-| `{ }` | **Commands** — everything that "does" (logic, variables, control) | Curly = code |
-| `[ ]` | **References** — everything that "points" (links, media, anchors) | Square = link |
+| Symbol | Purpose                                                           | Remember      |
+| ------ | ----------------------------------------------------------------- | ------------- |
+| `{ }`  | **Commands** — everything that "does" (logic, variables, control) | Curly = code  |
+| `[ ]`  | **References** — everything that "points" (links, media, anchors) | Square = link |
 
 Everything else is story text.
 
@@ -40,14 +40,14 @@ _italic_     *bold*     _*bold italic*_     `monospace`
 
 The first character after `[` determines the type:
 
-| Prefix | Type | Example |
-| ------ | ---- | ------- |
-| *(none)* | Link | `[Continue > #forest]` |
-| `!` | Image | `[!Forest map < media/map.jpg]` |
-| `>` | Video | `[>Intro < media/intro.mp4]` |
-| `?` | Audio | `[?Rain < media/rain.ogg volume=0.5, loop]` |
-| `#` | Anchor (define) | `[#forest]` |
-| `^` | Footnote | `[^1]: Explanation` |
+| Prefix   | Type            | Example                                     |
+| -------- | --------------- | ------------------------------------------- |
+| _(none)_ | Link            | `[Continue > #forest]`                      |
+| `!`      | Image           | `[!Forest map < media/map.jpg]`             |
+| `>`      | Video           | `[>Intro < media/intro.mp4]`                |
+| `?`      | Audio           | `[?Rain < media/rain.ogg volume=0.5, loop]` |
+| `#`      | Anchor (define) | `[#forest]`                                 |
+| `^`      | Footnote        | `[^1]: Explanation`                         |
 
 **Arrow direction:** `>` = where the link goes, `<` = where the source comes from.
 
