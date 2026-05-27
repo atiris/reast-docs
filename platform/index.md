@@ -1,6 +1,6 @@
 # Reast Platform
 
-Reast is a web platform for reading and creating interactive stories written in the REA language.
+Reast is a web platform for reading and creating interactive stories written in the Rea language.
 
 ## For Readers
 
@@ -13,7 +13,7 @@ Reast is a web platform for reading and creating interactive stories written in 
 
 ## For Authors
 
-- **Write in REA** — Simple markup language for branching narratives
+- **Write in Rea** — Simple markup language for branching narratives
 - **Built-in editor** — Write, preview, and test stories directly in the browser
 - **Builder tool** — Visual story structure editor for complex narratives
 - **Publish instantly** — Share your work with the community
@@ -30,6 +30,6 @@ Reast is a web platform for reading and creating interactive stories written in 
 
 ## Getting Help
 
-- [REA Language Specification](/spec/01-basics) — Learn to write interactive stories
+- [Rea Language Specification](/spec/01-basics) — Learn to write interactive stories
 - [Player Documentation](/player/getting-started) — Embed stories on your own website
 - [Contributing](/docs/contributing) — Help improve the platform

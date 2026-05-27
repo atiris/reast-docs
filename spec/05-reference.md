@@ -283,7 +283,7 @@ story.reast/                       (v2 format)
     └── ...
 ```
 
-The `moderator/` directory sits alongside the story directory. Its `.rea` files use standard REA syntax (headings, paragraphs, media embeds, choice branches for conditional setup paths). Supplementary files (PDFs to print, videos to watch, images, archives) live in `moderator/media/`. The entire `moderator/` directory can be cleanly removed if the package should be distributed without DM content.
+The `moderator/` directory sits alongside the story directory. Its `.rea` files use standard Rea syntax (headings, paragraphs, media embeds, choice branches for conditional setup paths). Supplementary files (PDFs to print, videos to watch, images, archives) live in `moderator/media/`. The entire `moderator/` directory can be cleanly removed if the package should be distributed without DM content.
 
 #### Manifest declaration
 
@@ -313,7 +313,7 @@ The manifest declares the moderator bundle via a `moderator` key:
 
 #### Content guidelines for moderator instructions
 
-The `instructions.rea` file follows standard REA syntax. Recommended structure:
+The `instructions.rea` file follows standard Rea syntax. Recommended structure:
 
 ```rea
 # Setup

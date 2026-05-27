@@ -1,6 +1,6 @@
 # Reast Player
 
-The Reast Player (`<reast-player>`) is a web component that renders interactive REA stories in any browser. It can be embedded on any website with a single script tag — no framework required.
+The Reast Player (`<reast-player>`) is a web component that renders interactive Rea stories in any browser. It can be embedded on any website with a single script tag — no framework required.
 
 ## Quick Start
 

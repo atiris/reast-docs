@@ -80,7 +80,7 @@ my-story.reast (ZIP)
 
 ### Sandbox
 
-Player vykonáva REA príbehy v izolovanom sandboxe:
+Player vykonáva Rea príbehy v izolovanom sandboxe:
 
 - Žiadny prístup k súborovému systému hostiteľa
 - Žiadne sieťové požiadavky okrem deklarovaných v `allowed_urls`

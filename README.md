@@ -1,6 +1,6 @@
-# REA Language Documentation
+# Rea Language Documentation
 
-Public documentation for the REA interactive story language and the reast platform.
+Public documentation for the Rea interactive story language and the reast platform.
 Deployed to [docs.rea.st](https://docs.rea.st) via GitHub Pages.
 
 ## Development
@@ -38,7 +38,7 @@ After DNS propagates (usually 1-30 minutes), the site will be live at
 ## Structure
 
 ```txt
-spec/         — REA language specification (canonical, English)
+spec/         — Rea language specification (canonical, English)
 player/       — Player documentation and guides (English)
 platform/     — Public platform docs (synced from reast-platform, English)
 docs/         — General docs (glossary, playground, architecture, English)
@@ -97,7 +97,7 @@ browsing sessions until the user switches language manually.
      cs: {
        label: 'Čeština',
        lang: 'cs',
-       title: 'Jazyk REA',
+       title: 'Jazyk Rea',
        description: '...',
        themeConfig: {
          nav: csNav,
@@ -119,7 +119,7 @@ browsing sessions until the user switches language manually.
 ### Translation guidelines
 
 - **File names stay English** — only content is translated
-- **Code examples stay unchanged** — REA syntax is language-independent
+- **Code examples stay unchanged** — Rea syntax is language-independent
 - **Links use locale prefix** — `/sk/spec/01-basics` not `/spec/01-basics`
 - **Technical terms** may keep English in parentheses on first use:
   e.g., "párové príkazy (paired commands)"

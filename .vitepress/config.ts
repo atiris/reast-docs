@@ -24,7 +24,7 @@ const skNav = [
 
 const specSidebar = [
   {
-    text: 'REA Language Specification',
+    text: 'Rea Language Specification',
     items: [
       { text: 'Basics', link: '/spec/01-basics' },
       { text: 'Logic & Data', link: '/spec/02-logic-data' },
@@ -78,7 +78,7 @@ const platformSidebar = [
 
 const skSpecSidebar = [
   {
-    text: 'Špecifikácia jazyka REA',
+    text: 'Špecifikácia jazyka Rea',
     items: [
       { text: 'Základy', link: '/sk/spec/01-basics' },
       { text: 'Logika a dáta', link: '/sk/spec/02-logic-data' },
@@ -131,7 +131,7 @@ const skPlatformSidebar = [
 ];
 
 export default defineConfig({
-  title: 'REA Language',
+  title: 'Rea Language',
   description: 'Interactive story language specification and documentation',
   base: '/',
   outDir: './dist',
@@ -160,7 +160,7 @@ export default defineConfig({
     sk: {
       label: 'Slovenčina',
       lang: 'sk',
-      title: 'Jazyk REA',
+      title: 'Jazyk Rea',
       description: 'Špecifikácia a dokumentácia interaktívneho naratívneho jazyka',
       themeConfig: {
         nav: [...skNav, { text: `v${currentVersion}`, link: '/changelog' }],

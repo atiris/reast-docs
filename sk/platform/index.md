@@ -1,6 +1,6 @@
 # Platforma Reast
 
-Reast je webová platforma na čítanie a tvorbu interaktívnych príbehov napísaných v jazyku REA.
+Reast je webová platforma na čítanie a tvorbu interaktívnych príbehov napísaných v jazyku Rea.
 
 ## Pre čitateľov
 
@@ -13,7 +13,7 @@ Reast je webová platforma na čítanie a tvorbu interaktívnych príbehov napí
 
 ## Pre autorov
 
-- **Píšte v REA** — Jednoduchý značkovací jazyk pre rozvetvené naratívy
+- **Píšte v Rea** — Jednoduchý značkovací jazyk pre rozvetvené naratívy
 - **Vstavaný editor** — Píšte, prezerajte a testujte príbehy priamo v prehliadači
 - **Nástroj Builder** — Vizuálny editor štruktúry príbehu pre komplexné naratívy
 - **Publikujte okamžite** — Zdieľajte svoju prácu s komunitou
@@ -30,6 +30,6 @@ Reast je webová platforma na čítanie a tvorbu interaktívnych príbehov napí
 
 ## Získanie pomoci
 
-- [Špecifikácia jazyka REA](/sk/spec/01-basics) — Naučte sa písať interaktívne príbehy
+- [Špecifikácia jazyka Rea](/sk/spec/01-basics) — Naučte sa písať interaktívne príbehy
 - [Dokumentácia playera](/sk/player/getting-started) — Vložte príbehy na vlastnú stránku
 - [Prispievanie](/sk/docs/contributing) — Pomôžte zlepšiť platformu

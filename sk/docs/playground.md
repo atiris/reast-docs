@@ -1,13 +1,13 @@
 # Ihrisko
 
-Vyskúšajte jazyk REA naživo vo vašom prehliadači. Napíšte REA markup do editora a sledujte okamžité vykreslenie webovým komponentom `<reast-player>`.
+Vyskúšajte jazyk Rea naživo vo vašom prehliadači. Napíšte Rea markup do editora a sledujte okamžité vykreslenie webovým komponentom `<reast-player>`.
 
 <script setup>
 import { ref, onMounted, watch, nextTick } from 'vue';
 
 const defaultStory = `# Môj prvý príbeh
 
-Vitajte v REA ihrisku!
+Vitajte v Rea ihrisku!
 
 Toto je jednoduchý rozvetvený príbeh. Skúste ho upraviť.
 
@@ -74,12 +74,12 @@ watch(source, () => {
 
 <div class="playground">
   <div class="playground-editor">
-    <h3>REA zdrojový kód</h3>
+    <h3>Rea zdrojový kód</h3>
     <textarea
       v-model="source"
       spellcheck="false"
       class="playground-textarea"
-      placeholder="Napíšte svoj REA príbeh tu..."
+      placeholder="Napíšte svoj Rea príbeh tu..."
     ></textarea>
   </div>
   <div class="playground-preview">

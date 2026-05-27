@@ -78,7 +78,7 @@ Balík `@reast/engine` sprístupňuje viaceré subpath importy:
 | Export                  | Popis                                                                      |
 | ----------------------- | -------------------------------------------------------------------------- |
 | `@reast/engine`         | Hlavný barrel — bezpečný pre Node (parser, loader, runtime, errors, types) |
-| `@reast/engine/parser`  | REA lexer + parser                                                         |
+| `@reast/engine/parser`  | Rea lexer + parser                                                         |
 | `@reast/engine/loader`  | Loader `.reast` archívov (extrakcia, dešifrovanie, manifest)               |
 | `@reast/engine/runtime` | StoryEngine, evaluátor výrazov, správca stavu                              |
 | `@reast/engine/player`  | `<reast-player>` webový komponent (iba prehliadač)                         |

@@ -1,6 +1,6 @@
 # Reast Player
 
-Reast Player (`<reast-player>`) je webový komponent, ktorý zobrazuje interaktívne REA príbehy v ľubovoľnom prehliadači. Dá sa vložiť na ľubovoľnú stránku jediným script tagom — bez potreby frameworku.
+Reast Player (`<reast-player>`) je webový komponent, ktorý zobrazuje interaktívne Rea príbehy v ľubovoľnom prehliadači. Dá sa vložiť na ľubovoľnú stránku jediným script tagom — bez potreby frameworku.
 
 ## Rýchly štart
 

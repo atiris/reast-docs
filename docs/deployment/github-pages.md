@@ -9,7 +9,7 @@ modules/docs/           ← VitePress source
 ├── .github/workflows/
 │   ├── deploy.yml      ← Builds + deploys to GitHub Pages
 │   └── sync-docs.yml   ← Weekly sync of public platform docs
-├── spec/               ← REA language specification (public)
+├── spec/               ← Rea language specification (public)
 ├── player/             ← Player embedding & API docs (public)
 ├── docs/               ← General documentation (public)
 ├── platform/           ← Synced subset of platform docs (public)
@@ -22,7 +22,7 @@ modules/docs/           ← VitePress source
 
 | Scope                                     | Location                                 | Deployment                           |
 | ----------------------------------------- | ---------------------------------------- | ------------------------------------ |
-| REA spec, player API, embedding guide     | `spec/`, `player/`, `docs/`              | GitHub Pages (public)                |
+| Rea spec, player API, embedding guide     | `spec/`, `player/`, `docs/`              | GitHub Pages (public)                |
 | Design system, security/privacy           | `platform/design/`, `platform/security/` | GitHub Pages (public, synced weekly) |
 | Architecture, conventions, testing, infra | `modules/platform/docs/`                 | Local dev server only                |
 

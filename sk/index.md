@@ -1,7 +1,7 @@
 ---
 layout: home
 hero:
-  name: Jazyk REA
+  name: Jazyk Rea
   text: Interaktívny naratívny markup
   tagline: Píšte rozvetvené príbehy s jednoduchou, výraznou syntaxou — v0.1.0
   actions:
@@ -16,18 +16,18 @@ hero:
       link: /sk/docs/playground
 features:
   - title: Jednoduchá syntax
-    details: REA používa príkazy v zložených zátvorkách vložené do prirodzenej prózy — programovanie nie je potrebné.
+    details: Rea používa príkazy v zložených zátvorkách vložené do prirodzenej prózy — programovanie nie je potrebné.
   - title: Bohatá logika
     details: Premenné, podmienky, výrazy, náhodné hodnoty a vypočítaný text.
   - title: Player komponent
     details: Vložte príbehy kamkoľvek pomocou webového komponentu <reast-player>.
 ---
 
-## Prečo vznikol jazyk REA?
+## Prečo vznikol jazyk Rea?
 
-Interaktívna fikcia a rozvetvené príbehy doteraz vyžadovali buď programátorské znalosti, alebo kompromisy v tom, čo dokážete vyjadriť. REA vznikol s cieľom odstrániť túto bariéru — poskytnúť autorom jazyk, ktorý je rovnako čitateľný ako samotný príbeh, a pritom dostatočne silný na to, aby zvládol komplexné naratívne mechaniky.
+Interaktívna fikcia a rozvetvené príbehy doteraz vyžadovali buď programátorské znalosti, alebo kompromisy v tom, čo dokážete vyjadriť. Rea vznikol s cieľom odstrániť túto bariéru — poskytnúť autorom jazyk, ktorý je rovnako čitateľný ako samotný príbeh, a pritom dostatočne silný na to, aby zvládol komplexné naratívne mechaniky.
 
-### Čo REA ponúka
+### Čo Rea ponúka
 
 - **Čistý text je platný príbeh** — žiadny boilerplate, žiadna konfigurácia na začiatok. Stačí písať.
 - **Progresívna zložitosť** — jednoduché príbehy nepotrebujú nič viac ako formátovanie textu. Vetvenie, premenné, logika a multimédiá sú voliteľné vrstvy, ktoré pridáte len keď ich potrebujete.

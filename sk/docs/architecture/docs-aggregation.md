@@ -2,7 +2,7 @@
 
 ## Prehľad
 
-Dokumentačná stránka `docs.rea.st` agreguje obsah z dvoch typov zdrojov do jednotnej VitePress stránky servovanej z repozitára `reast-docs`. **Natívny obsah** (špecifikácia jazyka REA a dokumentácia playera) žije priamo v reast-docs repozitári. **Synchronizovaný obsah** (dokumentácia platformy) sa sťahuje z repozitára reast-platform počas CI buildov.
+Dokumentačná stránka `docs.rea.st` agreguje obsah z dvoch typov zdrojov do jednotnej VitePress stránky servovanej z repozitára `reast-docs`. **Natívny obsah** (špecifikácia jazyka Rea a dokumentácia playera) žije priamo v reast-docs repozitári. **Synchronizovaný obsah** (dokumentácia platformy) sa sťahuje z repozitára reast-platform počas CI buildov.
 
 ## Architektúra
 
@@ -14,7 +14,7 @@ Dokumentačná stránka `docs.rea.st` agreguje obsah z dvoch typov zdrojov do je
 │  ┌─────────────┐  ┌──────────────┐  ┌───────────────┐   │
 │  │  /spec/     │  │  /player/    │  │  /platform/   │   │
 │  │  /guides/   │  │  embedding   │  │  /deployment/ │   │
-│  │  REA jazyk  │  │  theming     │  │  architektúra │   │
+│  │  Rea jazyk  │  │  theming     │  │  architektúra │   │
 │  │  (natívny)  │  │  API ref     │  │  bezpečnosť   │   │
 │  │             │  │  (natívny)   │  │  (sync.)      │   │
 │  └─────────────┘  └──────────────┘  └───────────────┘   │
@@ -30,16 +30,16 @@ Dokumentačná stránka `docs.rea.st` agreguje obsah z dvoch typov zdrojov do je
 
 ## Zdroje obsahu
 
-### 1. REA jazykové dokumenty (natívne v reast-docs)
+### 1. Rea jazykové dokumenty (natívne v reast-docs)
 
 Už v repozitári pod `spec/`. Toto je primárny obsah.
 
-- `/spec/` — Špecifikácia jazyka REA (5 kapitol + ťahák)
+- `/spec/` — Špecifikácia jazyka Rea (5 kapitol + ťahák)
 - `/guides/` — Tutoriály a návody (budúcnosť)
 
 ### 2. Dokumentácia playera (natívna v reast-docs)
 
-Dokumentácia playera žije natívne v reast-docs, pretože player (webový komponent, CDN bundle, embedding API) je základnou súčasťou ekosystému REA — jeho dokumentácia patrí k špecifikácii jazyka, nie skrytá v zdrojovom kóde enginu.
+Dokumentácia playera žije natívne v reast-docs, pretože player (webový komponent, CDN bundle, embedding API) je základnou súčasťou ekosystému Rea — jeho dokumentácia patrí k špecifikácii jazyka, nie skrytá v zdrojovom kóde enginu.
 
 - `/player/getting-started` — Rýchle CDN nastavenie
 - `/player/embedding` — npm, integrácia do frameworkov

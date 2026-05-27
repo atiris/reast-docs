@@ -7,7 +7,7 @@ We welcome contributions to the Reast platform! This guide explains how to get i
 - **Report bugs** — Open an issue describing the problem, steps to reproduce, and expected behaviour
 - **Suggest features** — Describe the use case and why it would benefit readers or authors
 - **Improve documentation** — Fix typos, clarify explanations, add examples
-- **Write REA stories** — Create sample stories that showcase language features
+- **Write Rea stories** — Create sample stories that showcase language features
 - **Submit code** — Fix bugs, implement features, improve tests
 
 ## Development Setup
@@ -44,7 +44,7 @@ We welcome contributions to the Reast platform! This guide explains how to get i
 | ------------- | ---------------------------- | ---------------------------------- |
 | Platform API  | `modules/platform/apps/api/` | NestJS REST backend                |
 | Platform Web  | `modules/platform/apps/web/` | Angular PWA frontend               |
-| Player Engine | `modules/player/`            | REA parser, runtime, web component |
+| Player Engine | `modules/player/`            | Rea parser, runtime, web component |
 | Documentation | `modules/docs/`              | This documentation site            |
 | CLI Tool      | `cli/`                       | `reast` command-line interface     |
 
@@ -62,7 +62,7 @@ We welcome contributions to the Reast platform! This guide explains how to get i
 Use conventional commit format:
 
 ```
-feat: add timer command to REA language
+feat: add timer command to Rea language
 fix: correct choice rendering in RTL mode
 docs: update player embedding guide
 test: add parser fuzz tests for nested commands

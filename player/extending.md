@@ -107,7 +107,7 @@ reast-player {
 
 ## Custom Built-in Functions
 
-The runtime supports registering custom functions that REA stories can call:
+The runtime supports registering custom functions that Rea stories can call:
 
 ```ts
 import { StoryEngine } from '@reast/engine';
@@ -206,7 +206,7 @@ bus.on('story-complete', (data) => {
 
 ```text
 src/
-├── parser/          # REA source → AST
+├── parser/          # Rea source → AST
 │   ├── lexer.ts         # Tokenizer (line-level)
 │   ├── block-parser.ts  # Token stream → node tree
 │   ├── inline-parser.ts # Inline formatting

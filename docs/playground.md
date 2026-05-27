@@ -1,13 +1,13 @@
 # Playground
 
-Try the REA language live in your browser. Type REA markup in the editor below and see it rendered instantly by the `<reast-player>` web component.
+Try the Rea language live in your browser. Type Rea markup in the editor below and see it rendered instantly by the `<reast-player>` web component.
 
 <script setup>
 import { ref, onMounted, watch, nextTick } from 'vue';
 
 const defaultStory = `# My First Story
 
-Welcome to the REA playground!
+Welcome to the Rea playground!
 
 This is a simple branching story. Try editing it.
 
@@ -75,12 +75,12 @@ watch(source, () => {
 
 <div class="playground">
   <div class="playground-editor">
-    <h3>REA Source</h3>
+    <h3>Rea Source</h3>
     <textarea
       v-model="source"
       spellcheck="false"
       class="playground-textarea"
-      placeholder="Type your REA story here..."
+      placeholder="Type your Rea story here..."
     ></textarea>
   </div>
   <div class="playground-preview">
@@ -155,11 +155,11 @@ watch(source, () => {
 
 ## How it works
 
-The playground creates a `<reast-player>` web component and feeds it your REA source as a blob URL. The player parses the markup using `@reast/engine` and renders the interactive story directly in the browser.
+The playground creates a `<reast-player>` web component and feeds it your Rea source as a blob URL. The player parses the markup using `@reast/engine` and renders the interactive story directly in the browser.
 
 ### Supported syntax
 
-Everything from the [REA specification](/spec/01-basics) works in the playground:
+Everything from the [Rea specification](/spec/01-basics) works in the playground:
 
 - **Plain text** — paragraphs, headings, emphasis
 - **Choices** — `{choice}` / `{option}` / `{end choice}`

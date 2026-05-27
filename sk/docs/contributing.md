@@ -7,7 +7,7 @@ Vítame príspevky do platformy Reast! Tento návod vysvetľuje ako sa zapojiť.
 - **Nahlasujte chyby** — Otvorte issue s popisom problému, krokmi na reprodukciu a očakávaným správaním
 - **Navrhujte funkcie** — Popíšte prípad použitia a prečo by to prospelo čitateľom alebo autorom
 - **Vylepšujte dokumentáciu** — Opravujte preklepy, spresňujte vysvetlenia, pridávajte príklady
-- **Píšte REA príbehy** — Vytvárajte ukážkové príbehy demonštrujúce funkcie jazyka
+- **Píšte Rea príbehy** — Vytvárajte ukážkové príbehy demonštrujúce funkcie jazyka
 - **Prispievajte kódom** — Opravujte chyby, implementujte funkcie, vylepšujte testy
 
 ## Vývojové prostredie
@@ -45,7 +45,7 @@ Vítame príspevky do platformy Reast! Tento návod vysvetľuje ako sa zapojiť.
 | ------------- | ---------------------------- | -------------------------------- |
 | Platform API  | `modules/platform/apps/api/` | NestJS REST backend              |
 | Platform Web  | `modules/platform/apps/web/` | Angular PWA frontend             |
-| Player Engine | `modules/player/`            | REA parser, runtime, komponent   |
+| Player Engine | `modules/player/`            | Rea parser, runtime, komponent   |
 | Dokumentácia  | `modules/docs/`              | Táto dokumentačná stránka        |
 | CLI nástroj   | `cli/`                       | `reast` rozhranie príkaz. riadku |
 
@@ -63,7 +63,7 @@ Vítame príspevky do platformy Reast! Tento návod vysvetľuje ako sa zapojiť.
 Používajte konvenčný formát commitov:
 
 ```text
-feat: add timer command to REA language
+feat: add timer command to Rea language
 fix: correct choice rendering in RTL mode
 docs: update player embedding guide
 test: add parser fuzz tests for nested commands

@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `docs.rea.st` documentation site aggregates content from two source types into a unified VitePress-based site served from the `reast-docs` repository. **Native content** (REA language specification and player documentation) lives directly in the reast-docs repo. **Synced content** (platform documentation) is pulled from the reast-platform repository during CI builds.
+The `docs.rea.st` documentation site aggregates content from two source types into a unified VitePress-based site served from the `reast-docs` repository. **Native content** (Rea language specification and player documentation) lives directly in the reast-docs repo. **Synced content** (platform documentation) is pulled from the reast-platform repository during CI builds.
 
 ## Architecture
 
@@ -14,7 +14,7 @@ The `docs.rea.st` documentation site aggregates content from two source types in
 │  ┌─────────────┐  ┌──────────────┐  ┌───────────────┐   │
 │  │  /spec/     │  │  /player/    │  │  /platform/   │   │
 │  │  /guides/   │  │  embedding   │  │  /deployment/ │   │
-│  │  REA lang   │  │  theming     │  │  architecture │   │
+│  │  Rea lang   │  │  theming     │  │  architecture │   │
 │  │  (native)   │  │  API ref     │  │  security     │   │
 │  │             │  │  (native)    │  │  (synced)     │   │
 │  └─────────────┘  └──────────────┘  └───────────────┘   │
@@ -30,16 +30,16 @@ The `docs.rea.st` documentation site aggregates content from two source types in
 
 ## Content Sources
 
-### 1. REA Language Docs (native in reast-docs)
+### 1. Rea Language Docs (native in reast-docs)
 
 Already in the repository under `spec/`. This is the primary content.
 
-- `/spec/` — REA language specification (5 chapters + cheatsheet)
+- `/spec/` — Rea language specification (5 chapters + cheatsheet)
 - `/guides/` — Tutorials and how-to guides (future)
 
 ### 2. Player Docs (native in reast-docs)
 
-Player documentation lives natively in reast-docs because the player (web component, CDN bundle, embedding API) is a core part of the REA ecosystem — its docs belong alongside the language spec, not hidden in the engine repo's source tree.
+Player documentation lives natively in reast-docs because the player (web component, CDN bundle, embedding API) is a core part of the Rea ecosystem — its docs belong alongside the language spec, not hidden in the engine repo's source tree.
 
 - `/player/getting-started` — Quick CDN setup
 - `/player/embedding` — npm, framework integration
@@ -63,14 +63,14 @@ Synced to: `reast-docs/platform/`
 
 | Content                  | Location            | Visibility                 |
 | ------------------------ | ------------------- | -------------------------- |
-| REA language spec        | reast-docs (native) | Public                     |
+| Rea language spec        | reast-docs (native) | Public                     |
 | Player docs              | reast-docs (native) | Public                     |
 | Platform docs (public)   | reast-docs (synced) | Public                     |
 | Platform docs (internal) | reast-platform only | Admin-only (authenticated) |
 
 ## Sync Mechanism
 
-A GitHub Actions workflow in the `reast-docs` repo pulls **public** markdown from the reast-platform repository on each push. Player and REA spec docs are native — they are edited directly in reast-docs and do not need syncing.
+A GitHub Actions workflow in the `reast-docs` repo pulls **public** markdown from the reast-platform repository on each push. Player and Rea spec docs are native — they are edited directly in reast-docs and do not need syncing.
 
 The workflow:
 
@@ -127,7 +127,7 @@ Updated `config.ts` with unified navigation:
 ```typescript
 export default defineConfig({
   title: 'Reast Documentation',
-  description: 'REA language, player, and platform documentation',
+  description: 'Rea language, player, and platform documentation',
 
   themeConfig: {
     nav: [
@@ -139,7 +139,7 @@ export default defineConfig({
     sidebar: {
       '/spec/': [
         {
-          text: 'REA Specification',
+          text: 'Rea Specification',
           items: [
             { text: 'Basics', link: '/spec/01-basics' },
             { text: 'Logic & Data', link: '/spec/02-logic-data' },

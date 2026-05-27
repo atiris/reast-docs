@@ -4,7 +4,7 @@
 
 ## Two Core Symbols
 
-The entire REA language builds on two characters:
+The entire Rea language builds on two characters:
 
 | Symbol | Purpose                                                           | Remember      |
 | ------ | ----------------------------------------------------------------- | ------------- |

@@ -1,10 +1,10 @@
-# Jazyk REA — Ťahák
+# Jazyk Rea — Ťahák
 
 > Čistý text je platný obsah. Jednoducho píšte.
 
 ## Dva základné symboly
 
-Celý jazyk REA stojí na dvoch znakoch:
+Celý jazyk Rea stojí na dvoch znakoch:
 
 | Symbol | Účel                                                        | Pamätaj si      |
 | ------ | ----------------------------------------------------------- | --------------- |

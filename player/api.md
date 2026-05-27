@@ -78,7 +78,7 @@ The `@reast/engine` package exposes multiple subpath imports:
 | Export                  | Description                                                      |
 | ----------------------- | ---------------------------------------------------------------- |
 | `@reast/engine`         | Main barrel — Node-safe (parser, loader, runtime, errors, types) |
-| `@reast/engine/parser`  | REA language lexer + parser                                      |
+| `@reast/engine/parser`  | Rea language lexer + parser                                      |
 | `@reast/engine/loader`  | `.reast` archive loader (extraction, decryption, manifest)       |
 | `@reast/engine/runtime` | StoryEngine, expression evaluator, state manager                 |
 | `@reast/engine/player`  | `<reast-player>` web component (browser-only)                    |
