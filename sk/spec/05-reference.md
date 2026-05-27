@@ -56,12 +56,12 @@ my-story.reast (ZIP — legacy)
   "rea": "2.0",
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "title": "Môj príbeh",
-  "authors": [{"name": "Meno autora"}],
+  "authors": [{ "name": "Meno autora" }],
   "language": "sk",
   "genre": ["fantasy", "adventure"],
   "parts": [
-    {"file": "story/part-00001.rea", "name": "Úvod"},
-    {"file": "story/part-00002.rea", "name": "Druhá kapitola"}
+    { "file": "story/part-00001.rea", "name": "Úvod" },
+    { "file": "story/part-00002.rea", "name": "Druhá kapitola" }
   ],
   "sensors": [],
   "allowed_urls": []
@@ -70,33 +70,33 @@ my-story.reast (ZIP — legacy)
 
 ### Povinné polia manifestu
 
-| Pole       | Typ      | Popis                                     |
-| ---------- | -------- | ----------------------------------------- |
-| `rea`      | string   | Verzia špecifikácie (napr. "2.0")         |
-| `id`       | string   | UUID identifikátor diela                  |
-| `title`    | string   | Názov príbehu                             |
-| `authors`  | array    | Zoznam autorov `{name, id?}`              |
-| `language` | string   | BCP 47 kód jazyka                         |
-| `parts`    | array    | Zoznam častí `{file, name}` v poradí      |
+| Pole       | Typ    | Popis                                |
+| ---------- | ------ | ------------------------------------ |
+| `rea`      | string | Verzia špecifikácie (napr. "2.0")    |
+| `id`       | string | UUID identifikátor diela             |
+| `title`    | string | Názov príbehu                        |
+| `authors`  | array  | Zoznam autorov `{name, id?}`         |
+| `language` | string | BCP 47 kód jazyka                    |
+| `parts`    | array  | Zoznam častí `{file, name}` v poradí |
 
 ### Voliteľné polia manifestu
 
-| Pole           | Typ      | Popis                                     |
-| -------------- | -------- | ----------------------------------------- |
-| `genre`        | string[] | Zoznam žánrov                             |
-| `description`  | string   | Krátky popis príbehu (max 500 znakov)     |
-| `cover`        | string   | Cesta k obrázku obálky v archíve          |
-| `visibility`   | string   | "private" / "unlisted" / "public"         |
+| Pole           | Typ      | Popis                                       |
+| -------------- | -------- | ------------------------------------------- |
+| `genre`        | string[] | Zoznam žánrov                               |
+| `description`  | string   | Krátky popis príbehu (max 500 znakov)       |
+| `cover`        | string   | Cesta k obrázku obálky v archíve            |
+| `visibility`   | string   | "private" / "unlisted" / "public"           |
 | `tier`         | string   | "basic" / "premium" / "paid" / "commercial" |
-| `version`      | string   | Semver verzia obsahu                      |
-| `audience`     | object   | `{min, max}` vekový rozsah               |
-| `sensors`      | string[] | Vyžadované hardvérové senzory             |
-| `duration`     | number   | Odhadovaný čas čítania v minútach         |
-| `allowed_urls` | array    | `{alias, url}` povolené externé URL       |
-| `cooperative`  | boolean  | Podpora pre kooperatívne čítanie          |
-| `season`       | string   | Sezóna v rámci série                      |
-| `series`       | string   | Názov série                               |
-| `tags`         | string[] | Vyhľadávacie tagy                         |
+| `version`      | string   | Semver verzia obsahu                        |
+| `audience`     | object   | `{min, max}` vekový rozsah                  |
+| `sensors`      | string[] | Vyžadované hardvérové senzory               |
+| `duration`     | number   | Odhadovaný čas čítania v minútach           |
+| `allowed_urls` | array    | `{alias, url}` povolené externé URL         |
+| `cooperative`  | boolean  | Podpora pre kooperatívne čítanie            |
+| `season`       | string   | Sezóna v rámci série                        |
+| `series`       | string   | Názov série                                 |
+| `tags`         | string[] | Vyhľadávacie tagy                           |
 
 ---
 
