@@ -17,61 +17,85 @@
 ZIP archív s nasledujúcou štruktúrou:
 
 ```text
-my-story.reast (ZIP)
-├── reast.json          (manifest — povinný)
-├── story.rea           (hlavný príbeh — povinný)
-├── part2.rea           (voliteľné ďalšie časti)
-├── media/              (voliteľné médiá)
+my-story.reast (ZIP — formát v2, rea: "2.0")
+├── manifest.json       (manifest — povinný)
+├── reast.json          (voliteľný — nastavenia session / premenné)
+├── README.md           (voliteľný — pre GitHub verzionovanie)
+├── META-REA/
+│   ├── checksum.sha256
+│   ├── signature.sig   (voliteľný, Ed25519)
+│   └── author.pub      (voliteľný)
+├── story/
+│   ├── part-00001.rea  (prvá časť)
+│   ├── part-00002.rea  (druhá časť)
+│   └── ...
+├── media/
 │   ├── cover.jpg
 │   ├── forest.jpg
 │   └── theme.ogg
-└── moderator/          (voliteľné inštrukcie pre DM)
-    └── notes.md
+└── moderator/
+    ├── instructions.rea (hlavné inštrukcie pre moderátora)
+    └── media/
+        └── session-map.png
 ```
 
-### Manifest `reast.json`
+**Legacy formát** (rea: "1.0" / "1.1") je stále podporovaný:
+
+```text
+my-story.reast (ZIP — legacy)
+├── reast.json          (manifest — legacy umiestnenie)
+├── part-00001.rea
+└── assets/
+    └── cover.jpg
+```
+
+### Manifest `manifest.json`
 
 ```json
 {
-  "version": "1.0",
+  "rea": "2.0",
+  "id": "550e8400-e29b-41d4-a716-446655440000",
   "title": "Môj príbeh",
-  "author": "Meno autora",
+  "authors": [{"name": "Meno autora"}],
   "language": "sk",
   "genre": ["fantasy", "adventure"],
-  "parts": ["story.rea", "part2.rea"],
-  "media": {
-    "1": "media/cover.jpg",
-    "2": "media/forest.jpg"
-  },
+  "parts": [
+    {"file": "story/part-00001.rea", "name": "Úvod"},
+    {"file": "story/part-00002.rea", "name": "Druhá kapitola"}
+  ],
   "sensors": [],
-  "permissions": [],
-  "allowed_urls": {}
+  "allowed_urls": []
 }
 ```
 
 ### Povinné polia manifestu
 
-| Pole      | Typ      | Popis                           |
-| --------- | -------- | ------------------------------- |
-| `version` | string   | Verzia formátu (aktuálne „1.0") |
-| `title`   | string   | Názov príbehu                   |
-| `parts`   | string[] | Zoznam `.rea` súborov v poradí  |
+| Pole       | Typ      | Popis                                     |
+| ---------- | -------- | ----------------------------------------- |
+| `rea`      | string   | Verzia špecifikácie (napr. "2.0")         |
+| `id`       | string   | UUID identifikátor diela                  |
+| `title`    | string   | Názov príbehu                             |
+| `authors`  | array    | Zoznam autorov `{name, id?}`              |
+| `language` | string   | BCP 47 kód jazyka                         |
+| `parts`    | array    | Zoznam častí `{file, name}` v poradí      |
 
 ### Voliteľné polia manifestu
 
 | Pole           | Typ      | Popis                                     |
 | -------------- | -------- | ----------------------------------------- |
-| `author`       | string   | Meno autora                               |
-| `language`     | string   | ISO 639-1 kód jazyka                      |
 | `genre`        | string[] | Zoznam žánrov                             |
-| `media`        | object   | Mapovanie číselných ID na cesty médií     |
+| `description`  | string   | Krátky popis príbehu (max 500 znakov)     |
+| `cover`        | string   | Cesta k obrázku obálky v archíve          |
+| `visibility`   | string   | "private" / "unlisted" / "public"         |
+| `tier`         | string   | "basic" / "premium" / "paid" / "commercial" |
+| `version`      | string   | Semver verzia obsahu                      |
+| `audience`     | object   | `{min, max}` vekový rozsah               |
 | `sensors`      | string[] | Vyžadované hardvérové senzory             |
-| `permissions`  | string[] | Vyžadované povolenia zariadenia           |
-| `allowed_urls` | object   | Mapovanie aliasov na povolené externé URL |
+| `duration`     | number   | Odhadovaný čas čítania v minútach         |
+| `allowed_urls` | array    | `{alias, url}` povolené externé URL       |
+| `cooperative`  | boolean  | Podpora pre kooperatívne čítanie          |
 | `season`       | string   | Sezóna v rámci série                      |
 | `series`       | string   | Názov série                               |
-| `description`  | string   | Krátky popis príbehu                      |
-| `cover`        | string   | Cesta k obrázku obálky                    |
 | `tags`         | string[] | Vyhľadávacie tagy                         |
 
 ---

@@ -2,7 +2,7 @@
 
 > [Back to main specification](/)
 >
-> **Implementation status:** `.reast` package format (28) with ZIP extraction and `reast.json` manifest is implemented. The editor has a working CodeMirror 6-based implementation with syntax highlighting. Platform features like keyboard navigation, dark theme, PWA support, and accessibility basics (32) are implemented in the web app. File System Access API import/export is implemented in the editor. See [REA-CHEATSHEET.md](REA-CHEATSHEET.md) for detailed status.
+> **Implementation status:** `.reast` package format (28) with ZIP extraction and `manifest.json` manifest is implemented. The editor has a working CodeMirror 6-based implementation with syntax highlighting. Platform features like keyboard navigation, dark theme, PWA support, and accessibility basics (32) are implemented in the web app. File System Access API import/export is implemented in the editor. See [REA-CHEATSHEET.md](REA-CHEATSHEET.md) for detailed status.
 
 ---
 
@@ -212,7 +212,7 @@ The minifier produces a `names.json` mapping inside `META-REA/` for debugging:
 3. **Build tool** packages everything into `.reast` ZIP archive
 4. **Platform** decompresses and loads at runtime
 
-Minification is optional — unminified `.reast` packages are valid. The `reast.json` manifest indicates whether minification was applied:
+Minification is optional — unminified `.reast` packages are valid. The manifest indicates whether minification was applied:
 
 ```json
 {
@@ -637,7 +637,7 @@ Rea follows a **MAJOR.MINOR** version scheme (inspired by [YAML](https://yaml.or
 
 Version 0.x is pre-release: any feature may change without notice. Version 1.0 marks the first stable release.
 
-A Rea story declares which spec version it targets using the `rea` field in the `reast.json` manifest:
+A Rea story declares which spec version it targets using the `rea` field in `manifest.json`:
 
 ```json
 {

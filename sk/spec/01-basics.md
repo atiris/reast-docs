@@ -14,7 +14,7 @@ Rea príbehy existujú v hierarchii:
 Séria → Reast → Časť → Kapitola → Sekcia → Scéna → Odsek
 ```
 
-Každý príbeh sa distribuuje ako balík `.reast` — ZIP archív obsahujúci jeden alebo viac `.rea` súborov s obsahom, manifest (`reast.json`) a voliteľné assety (pozri [Formát súboru a balenie](05-reference.md#28-file-format--packaging)). Samostatný `.rea` súbor je možné použiť počas písania, ale platforma vždy pracuje s `.reast` balíkmi.
+Každý príbeh sa distribuuje ako balík `.reast` — ZIP archív obsahujúci `.rea` súbory v `story/`, `manifest.json` a voliteľné médiá (pozri [Formát súboru a balenie](05-reference.md#28-file-format--packaging)). Samostatný `.rea` súbor je možné použiť počas písania, ale platforma vždy pracuje s `.reast` balíkmi.
 
 Séria zoskupuje viaceré reasty pod spoločný názov (napr. „Priatelia"). V rámci série voliteľné pole metadát **season** zoskupuje reasty do logických blokov (číslovaných alebo pomenovaných). Samostatný príbeh nepotrebuje ani jedno — je jednoducho reast.
 
@@ -26,13 +26,13 @@ Raz dávno, v ďalekej krajine, mladý cestovateľ sa vydal na cestu.
 Cesta sa pred ním tiahla donekonečna.
 ```
 
-Žiadne hlavičky, žiadna špeciálna syntax — obyčajná próza je platný obsah. Na publikovanie autor zabalí tento `.rea` súbor do archívu `.reast` s minimálnym manifestom `reast.json`. Autorské nástroje to robia automaticky.
+Žiadne hlavičky, žiadna špeciálna syntax — obyčajná próza je platný obsah. Na publikovanie autor zabalí tento `.rea` súbor do archívu `.reast` s minimálnym `manifest.json`. Autorské nástroje to robia automaticky.
 
 ### Metadáta
 
-Súbor `.rea` je **čistý text** — neobsahuje žiadne metadáta. Všetky metadáta (názov, autor, žáner, senzory, oprávnenia atď.) sú uložené v manifeste `reast.json` balíka `.reast` (pozri [Sekcia 28](05-reference.md#28-file-format--packaging)).
+Súbor `.rea` je **čistý text** — neobsahuje žiadne metadáta. Všetky metadáta (názov, autor, žáner, senzory, oprávnenia atď.) sú uložené v `manifest.json` balíka `.reast` (pozri [Sekcia 28](05-reference.md#28-file-format--packaging)).
 
-Toto oddelenie udržiava `.rea` súbory čisté a prenosné: `.rea` súbor je vždy len obsah príbehu, čitateľný akýmkoľvek textovým editorom. Manifest v `reast.json` deklaruje všetko, čo platforma potrebuje vedieť pred spustením príbehu: info o príbehu, oprávnenia a požiadavky.
+Toto oddelenie udržiava `.rea` súbory čisté a prenosné: `.rea` súbor je vždy len obsah príbehu, čitateľný akýmkoľvek textovým editorom. Manifest v `manifest.json` deklaruje všetko, čo platforma potrebuje vedieť pred spustením príbehu: info o príbehu, oprávnenia a požiadavky.
 
 ---
 
@@ -247,7 +247,7 @@ Odkazy používajú jednotnú zátvorkovú syntax so šípkou `>` smerujúcou k 
 [pokračovať v dobrodružstve > reast://ABC123]
 ```
 
-> **Poznámka:** Externé URL (http/https) nie sú povolené v `.rea` texte. Všetok externý prístup sa deklaruje cez `allowed_urls` v manifeste `reast.json` a odkazuje sa aliasmi (pozri [Externý prístup k API](04-utilities.md#external-api-access)).
+> **Poznámka:** Externé URL (http/https) nie sú povolené v `.rea` texte. Všetok externý prístup sa deklaruje cez `allowed_urls` v `manifest.json` a odkazuje sa aliasmi (pozri [Externý prístup k API](04-utilities.md#external-api-access)).
 
 ---
 

@@ -337,7 +337,7 @@ If the primary resource fails, the fallback is used. If the fallback also fails,
 
 ### External API access
 
-External API calls (network requests from within a story) must be declared in the `reast.json` manifest via `allowed_urls`. URLs must not appear anywhere in `.rea` text — authors reference APIs by alias only. This ensures all external access is declared, auditable, and permission-controlled.
+External API calls (network requests from within a story) must be declared in `manifest.json` via `allowed_urls`. URLs must not appear anywhere in `.rea` text — authors reference APIs by alias only. This ensures all external access is declared, auditable, and permission-controlled.
 
 ```json
 {

@@ -14,7 +14,7 @@ Rea stories exist in a hierarchy:
 Series → Reast → Part → Chapter → Section → Scene → Paragraph
 ```
 
-Every story is distributed as a `.reast` package — a ZIP archive containing one or more `.rea` content files, a manifest (`reast.json`), and optional assets (see [File Format & Packaging](05-reference.md#28-file-format--packaging)). A standalone `.rea` file can be used during authoring, but the platform always works with `.reast` packages.
+Every story is distributed as a `.reast` package — a ZIP archive containing `.rea` story files in `story/`, a `manifest.json`, and optional media (see [File Format & Packaging](05-reference.md#28-file-format--packaging)). A standalone `.rea` file can be used during authoring, but the platform always works with `.reast` packages.
 
 A series groups multiple reasts under a common title (e.g., "Friends"). Within a series, an optional **season** metadata field groups reasts into logical blocks (numbered or named). A standalone story needs neither — it is simply a reast.
 
@@ -26,13 +26,13 @@ Once upon a time, in a land far away, a young traveler set out on a journey.
 The road stretched endlessly before them.
 ```
 
-No headers, no special syntax — plain prose is valid content. To publish, the author packages this `.rea` file into a `.reast` archive with a minimal `reast.json` manifest. Authoring tools handle this automatically.
+No headers, no special syntax — plain prose is valid content. To publish, the author packages this `.rea` file into a `.reast` archive with a minimal `manifest.json`. Authoring tools handle this automatically.
 
 ### Metadata
 
-A `.rea` file is **pure text** — it contains no metadata. All metadata (title, author, genre, sensors, permissions, etc.) is stored in the `.reast` package's `reast.json` manifest file (see [Section 28](05-reference.md#28-file-format--packaging)).
+A `.rea` file is **pure text** — it contains no metadata. All metadata (title, author, genre, sensors, permissions, etc.) is stored in the `.reast` package's `manifest.json` file (see [Section 28](05-reference.md#28-file-format--packaging)).
 
-This separation keeps `.rea` files clean and portable: a `.rea` file is always just the story content, readable by any text editor. The manifest in `reast.json` declares everything the platform needs to know before executing the story: story info, permissions, and requirements.
+This separation keeps `.rea` files clean and portable: a `.rea` file is always just the story content, readable by any text editor. The manifest in `manifest.json` declares everything the platform needs to know before executing the story: story info, permissions, and requirements.
 
 ---
 
@@ -249,7 +249,7 @@ Links use a unified bracket syntax with the `>` arrow pointing toward the destin
 [continue the adventure > reast://ABC123]
 ```
 
-> **Note:** External URLs (http/https) are not allowed in `.rea` text. All external access is declared via `allowed_urls` in the `reast.json` manifest and referenced by alias (see [External API access](04-utilities.md#external-api-access)).
+> **Note:** External URLs (http/https) are not allowed in `.rea` text. All external access is declared via `allowed_urls` in `manifest.json` and referenced by alias (see [External API access](04-utilities.md#external-api-access)).
 
 ---
 

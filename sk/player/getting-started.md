@@ -64,7 +64,7 @@ Potom ho vložte:
 
 ## Načítanie `.reast` archívov
 
-Pre viacdielne príbehy s metadátami použite formát `.reast` (ZIP archív obsahujúci manifest `reast.json` a jeden alebo viac `.rea` súborov):
+Pre viacdielne príbehy s metadátami použite formát `.reast` (ZIP archív obsahujúci `manifest.json` a `.rea` súbory v adresári `story/`):
 
 ```html
 <reast-player src="./my-story.reast"></reast-player>

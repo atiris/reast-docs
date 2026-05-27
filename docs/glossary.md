@@ -7,7 +7,7 @@ Key terms used across the Reast platform.
 | Term              | Description                                                                                     |
 | ----------------- | ----------------------------------------------------------------------------------------------- |
 | **Reast**         | A packaged interactive story — the file format (`.rea` / `.reast`) and the content it contains. |
-| **Rea**           | The markup language used to write interactive stories (not an acronym).                         |
+| **Rea**           | The markup language used to write interactive stories.                                          |
 | **Story**         | A complete interactive narrative written in Rea, published on the platform.                     |
 | **Chapter**       | A top-level section of a story, defined by a `#` heading in Rea.                                |
 | **Scene**         | A subsection within a chapter, defined by `##` or deeper headings.                              |

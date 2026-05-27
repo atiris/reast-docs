@@ -7,7 +7,7 @@ Kľúčové pojmy používané naprieč platformou Reast.
 | Pojem                  | Popis                                                                                       |
 | ---------------------- | ------------------------------------------------------------------------------------------- |
 | **Reast**              | Zabalený interaktívny príbeh — súborový formát (`.rea` / `.reast`) a obsah, ktorý obsahuje. |
-| **Rea**                | Značkovací jazyk na písanie interaktívnych príbehov (nie je to skratka).                    |
+| **Rea**                | Značkovací jazyk na písanie interaktívnych príbehov.                                        |
 | **Príbeh**             | Kompletný interaktívny naratív napísaný v Rea, publikovaný na platforme.                    |
 | **Kapitola**           | Sekcia najvyššej úrovne príbehu, definovaná nadpisom `#` v Rea.                             |
 | **Scéna**              | Podsekcia v rámci kapitoly, definovaná nadpismi `##` alebo hlbšími.                         |

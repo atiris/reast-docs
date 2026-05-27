@@ -64,7 +64,7 @@ Then embed it:
 
 ## Loading `.reast` Archives
 
-For multi-part stories with metadata, use the `.reast` format (a ZIP archive containing a `reast.json` manifest and one or more `.rea` part files):
+For multi-part stories with metadata, use the `.reast` format (a ZIP archive containing a `manifest.json` and `.rea` story files in `story/`):
 
 ```html
 <reast-player src="./my-story.reast"></reast-player>
