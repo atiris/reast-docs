@@ -31,31 +31,51 @@ html {
 }
 
 /* ---------------------------------------------------------------------------
- * Homepage layout alignment (task: fqx92s)
+ * Homepage layout alignment (tasks: fqx92s, tunaqb)
  *
- * Align the home hero / features / doc blocks with the edges of the nav bar
- * instead of overriding `.VPHome .container` with `!important`. We pin the
- * layout max width through the standard VitePress variable and let the theme
- * center every block consistently.
+ * Every home block (hero, features, markdown content) and the site footer must
+ * line up with the nav bar. The nav bar centers its content in a container of
+ * `max-width: calc(var(--vp-layout-max-width) - 64px)` (= 1376px) with no
+ * horizontal padding. The default theme instead gives the hero / features a
+ * 1152px container and the trailing markdown a full 1440px container, so their
+ * left and right edges never matched the header. We pin all of them to the
+ * exact same box as the nav bar so the rea logo, the "Rea Language" hero title,
+ * the "Why Rea?" heading and the footer logo share one left edge.
+ *
+ * NOTE: the previous override used the compound selector `.VPHero.container`
+ * (same element) which never matched — VitePress nests `.VPHero > .container`.
  * ------------------------------------------------------------------------- */
 .VPHome {
   --vp-layout-max-width: 1440px;
 }
 
-.VPHome .VPHero.container,
-.VPHome .VPFeatures.container,
-.VPHome .vp-doc.container {
-  max-width: var(--vp-layout-max-width);
-  margin: 0 auto;
+/* The default theme wraps the hero and features in elements that carry their
+ * own 64px horizontal padding, which pushes the hero title inward and breaks
+ * alignment with the nav bar at viewports narrower than the content box. We
+ * zero that wrapper padding so the single container gutter below is the only
+ * horizontal spacing, keeping every block edge identical at every width. */
+.VPHome .VPHero.VPHomeHero,
+.VPHome .VPFeatures {
+  padding-inline: 0;
 }
 
-.VPHome .vp-doc.container {
-  padding: 0;
+.VPHome .VPHero .container,
+.VPHome .VPFeatures .container,
+.VPHome .vp-doc.container,
+.reast-footer__inner {
+  max-width: var(--vp-layout-max-width, 1440px);
+  margin-inline: auto;
+  padding-inline: 32px;
 }
 
-@media (max-width: 1440px) {
-  .VPHome .vp-doc.container {
-    padding: 0 24px;
+/* The nav bar narrows its gutter to 24px on mobile; mirror that so the edges
+ * keep matching the header and nothing ever overflows horizontally. */
+@media (max-width: 767px) {
+  .VPHome .VPHero .container,
+  .VPHome .VPFeatures .container,
+  .VPHome .vp-doc.container,
+  .reast-footer__inner {
+    padding-inline: 24px;
   }
 }
 
@@ -108,3 +128,116 @@ html {
     display: block;
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * Site footer (tasks: ej6mfc, tunaqb)
+ *
+ * A thin footer rendered through the theme `layout-bottom` slot. Its inner
+ * content box must line up with the navbar: same max width and the same
+ * horizontal padding the navbar content uses, so the reast logo on the left
+ * and the version selector on the right sit exactly under the header icons.
+ * ------------------------------------------------------------------------- */
+.reast-footer {
+  border-top: 1px solid var(--vp-c-divider);
+  background-color: var(--vp-c-bg);
+}
+
+.reast-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-block: 14px;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.reast-footer__invite {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--vp-c-text-2);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.reast-footer__invite:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.reast-footer__logo {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.reast-footer__version {
+  position: relative;
+}
+
+.reast-footer__version-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--vp-c-text-2);
+  background: transparent;
+  border: 0;
+  padding: 4px 0;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.reast-footer__version-btn:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.reast-footer__caret {
+  font-size: 10px;
+  transition: transform 0.2s;
+}
+
+.reast-footer__caret.is-open {
+  transform: rotate(180deg);
+}
+
+.reast-footer__versions {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  min-width: 180px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background-color: var(--vp-c-bg-elv);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  box-shadow: var(--vp-shadow-3);
+}
+
+.reast-footer__versions li {
+  padding: 0;
+}
+
+.reast-footer__versions a,
+.reast-footer__versions-current {
+  display: block;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: var(--vp-c-text-1);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.reast-footer__versions a:hover {
+  background-color: var(--vp-c-default-soft);
+  color: var(--vp-c-brand-1);
+}
+
+.reast-footer__versions-current {
+  color: var(--vp-c-text-2);
+  font-weight: 600;
+}
+

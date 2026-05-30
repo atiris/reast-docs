@@ -2,6 +2,7 @@
 import DefaultTheme from 'vitepress/theme';
 import { useData, useRoute, inBrowser } from 'vitepress';
 import { watchEffect } from 'vue';
+import Footer from './Footer.vue';
 
 const { lang } = useData();
 const route = useRoute();
@@ -26,5 +27,9 @@ watchEffect(() => {
 </script>
 
 <template>
-  <DefaultTheme.Layout />
+  <DefaultTheme.Layout>
+    <template #layout-bottom>
+      <Footer />
+    </template>
+  </DefaultTheme.Layout>
 </template>

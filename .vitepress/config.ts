@@ -7,19 +7,13 @@ const currentVersion = pkg.version;
 const enNav = [
   { text: 'Specification', link: '/spec/01-basics' },
   { text: 'Player', link: '/player/getting-started' },
-  { text: 'API', link: '/player/api' },
-  { text: 'Playground', link: '/docs/playground' },
   { text: 'Platform', link: '/platform/' },
-  { text: 'Glossary', link: '/docs/glossary' },
 ];
 
 const skNav = [
   { text: 'Špecifikácia', link: '/sk/spec/01-basics' },
   { text: 'Prehrávač', link: '/sk/player/getting-started' },
-  { text: 'API', link: '/sk/player/api' },
-  { text: 'Ihrisko', link: '/sk/docs/playground' },
   { text: 'Platforma', link: '/sk/platform/' },
-  { text: 'Slovník', link: '/sk/docs/glossary' },
 ];
 
 const specSidebar = [
@@ -45,7 +39,9 @@ const playerSidebar = [
       { text: 'Theming', link: '/player/theming' },
       { text: 'Extending', link: '/player/extending' },
       { text: 'Package Format', link: '/player/package-format' },
+      { text: 'Playground', link: '/docs/playground' },
       { text: 'API Reference', link: '/player/api' },
+      { text: 'Changelog', link: '/changelog' },
     ],
   },
 ];
@@ -73,6 +69,7 @@ const platformSidebar = [
       { text: 'Design System', link: '/platform/design/' },
       { text: 'Security & Privacy', link: '/platform/security/' },
       { text: 'Help & Guide', link: '/platform/help' },
+      { text: 'Glossary', link: '/docs/glossary' },
     ],
   },
 ];
@@ -111,7 +108,9 @@ const skPlayerSidebar = [
       { text: 'Témy', link: '/sk/player/theming' },
       { text: 'Rozširovanie', link: '/sk/player/extending' },
       { text: 'Formát balíčka', link: '/sk/player/package-format' },
+      { text: 'Ihrisko', link: '/sk/docs/playground' },
       { text: 'API referencia', link: '/sk/player/api' },
+      { text: 'Changelog', link: '/sk/changelog' },
     ],
   },
 ];
@@ -139,6 +138,7 @@ const skPlatformSidebar = [
       { text: 'Dizajn systém', link: '/sk/platform/design/' },
       { text: 'Bezpečnosť a súkromie', link: '/sk/platform/security/' },
       { text: 'Pomoc a sprievodca', link: '/sk/platform/help' },
+      { text: 'Slovník', link: '/sk/docs/glossary' },
     ],
   },
 ];
@@ -183,7 +183,8 @@ export default defineConfig({
       title: 'Jazyk Rea',
       description: 'Špecifikácia a dokumentácia interaktívneho naratívneho jazyka',
       themeConfig: {
-        nav: [...skNav, { text: `v${currentVersion}`, link: '/changelog' }],
+        docVersion: currentVersion,
+        nav: skNav,
         sidebar: {
           '/sk/spec/': skSpecSidebar,
           '/sk/player/': skPlayerSidebar,
@@ -201,6 +202,7 @@ export default defineConfig({
     },
   },
   themeConfig: {
+    docVersion: currentVersion,
     search: {
       provider: 'local',
       options: {
@@ -218,7 +220,7 @@ export default defineConfig({
         },
       },
     },
-    nav: [...enNav, { text: `v${currentVersion}`, link: '/changelog' }],
+    nav: enNav,
     sidebar: {
       '/spec/': specSidebar,
       '/player/': playerSidebar,
