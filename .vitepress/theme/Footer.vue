@@ -2,9 +2,20 @@
 import { ref } from 'vue';
 import { useData } from 'vitepress';
 
+interface DocVersion {
+  /** Display label, e.g. "v0.2.0" or "v0.1.0 (archived)". */
+  label: string;
+  /** Absolute link to that version's docs root, e.g. "/" or "/v0.1.0/". */
+  link: string;
+  /** Marks the version the live site is currently serving. */
+  current?: boolean;
+}
+
 const { theme, lang } = useData();
 
-const version = (theme.value as Record<string, unknown>).docVersion as string | undefined;
+const themeRecord = theme.value as Record<string, unknown>;
+const version = themeRecord.docVersion as string | undefined;
+const configuredVersions = (themeRecord.docVersions as DocVersion[] | undefined) ?? [];
 
 const isSk = lang.value?.startsWith('sk');
 
@@ -16,6 +27,14 @@ const versionLabel = isSk ? 'Verzia dokumentácie' : 'Documentation version';
 const versionsHeading = isSk ? 'Dostupné verzie' : 'Available versions';
 const changelogLabel = isSk ? 'Zoznam zmien' : 'Changelog';
 const changelogLink = isSk ? '/sk/changelog' : '/changelog';
+
+// Always offer at least the live version so the menu is never empty even
+// before any archived snapshot has been published.
+const versions: DocVersion[] = configuredVersions.length
+  ? configuredVersions
+  : version
+    ? [{ label: `v${version}`, link: '/', current: true }]
+    : [];
 
 const open = ref(false);
 </script>
@@ -40,8 +59,9 @@ const open = ref(false);
           <span class="reast-footer__caret" :class="{ 'is-open': open }" aria-hidden="true">▾</span>
         </button>
         <ul v-if="open" class="reast-footer__versions" role="listbox" :aria-label="versionsHeading">
-          <li role="option" aria-selected="true">
-            <span class="reast-footer__versions-current">v{{ version }}</span>
+          <li v-for="v in versions" :key="v.link" role="option" :aria-selected="!!v.current">
+            <span v-if="v.current" class="reast-footer__versions-current">{{ v.label }}</span>
+            <a v-else :href="v.link">{{ v.label }}</a>
           </li>
           <li role="option" aria-selected="false">
             <a :href="changelogLink">{{ changelogLabel }}</a>

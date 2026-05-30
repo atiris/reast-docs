@@ -4,6 +4,20 @@ import pkg from '../package.json';
 
 const currentVersion = pkg.version;
 
+// Published documentation versions, newest first.
+//
+// The live source tree always *is* the latest version (`current: true`, served
+// from `/`). Each older release is a static snapshot published under
+// `public/v<version>/` and is therefore reachable at `/v<version>/`. The footer
+// version switcher renders this list so readers can jump between versions.
+//
+// To archive a version before continuing edits, see
+// `scripts/snapshot-version.mjs` and the "Versioning" section of the README.
+const docVersions = [
+  { label: `v${currentVersion} (latest)`, link: '/', current: true },
+  { label: 'v0.1.0 (archived)', link: '/v0.1.0/' },
+];
+
 const enNav = [
   { text: 'Specification', link: '/spec/01-basics' },
   { text: 'Player', link: '/player/getting-started' },
@@ -184,6 +198,7 @@ export default defineConfig({
       description: 'Špecifikácia a dokumentácia interaktívneho naratívneho jazyka',
       themeConfig: {
         docVersion: currentVersion,
+        docVersions,
         nav: skNav,
         sidebar: {
           '/sk/spec/': skSpecSidebar,
@@ -203,6 +218,7 @@ export default defineConfig({
   },
   themeConfig: {
     docVersion: currentVersion,
+    docVersions,
     search: {
       provider: 'local',
       options: {

@@ -140,6 +140,11 @@ html {
 .reast-footer {
   border-top: 1px solid var(--vp-c-divider);
   background-color: var(--vp-c-bg);
+  /* Always visible: the footer sticks to the bottom of the viewport so the
+   * version switcher is reachable from any scroll position (task 27rv4e). */
+  position: sticky;
+  bottom: 0;
+  z-index: var(--vp-z-index-footer, 10);
 }
 
 .reast-footer__inner {
@@ -147,8 +152,10 @@ html {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px 24px;
-  padding-block: 14px;
+  gap: 8px 24px;
+  /* Compact bar — roughly 1.5× a text line tall (task 27rv4e). */
+  padding-block: 6px;
+  min-height: calc(1.5em * 1.4);
   font-size: 13px;
   line-height: 1.4;
 }
@@ -240,4 +247,3 @@ html {
   color: var(--vp-c-text-2);
   font-weight: 600;
 }
-

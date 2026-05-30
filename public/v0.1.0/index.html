@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Rea Documentation — v0.1.0 (archived)</title>
+    <link rel="icon" type="image/svg+xml" href="/logo-rea.svg" />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #fff;
+        --bg-elv: #f6f6f7;
+        --text: #213547;
+        --text-2: #5c6b77;
+        --brand: #5b4fc7;
+        --border: #e2e2e3;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #1b1b1f;
+          --bg-elv: #202127;
+          --text: #dfdfd6;
+          --text-2: #98989f;
+          --brand: #a99bff;
+          --border: #2e2e32;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        display: grid;
+        place-items: center;
+        padding: 1.5rem;
+        font-family:
+          Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+      main {
+        max-width: 42rem;
+        width: 100%;
+        background: var(--bg-elv);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: clamp(1.5rem, 4vw, 2.75rem);
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.25rem 0.7rem;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--brand) 16%, transparent);
+        color: var(--brand);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+      }
+      h1 {
+        font-size: clamp(1.6rem, 4vw, 2.2rem);
+        margin: 1rem 0 0.5rem;
+      }
+      p {
+        color: var(--text-2);
+        margin: 0.75rem 0;
+      }
+      .logo {
+        width: 40px;
+        height: 40px;
+      }
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+      }
+      a.btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        padding: 0.6rem 1.1rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        border: 1px solid var(--border);
+        color: var(--text);
+      }
+      a.btn--primary {
+        background: var(--brand);
+        border-color: var(--brand);
+        color: #fff;
+      }
+      hr {
+        border: 0;
+        border-top: 1px solid var(--border);
+        margin: 1.5rem 0;
+      }
+      [lang='sk'] {
+        font-size: 0.92rem;
+        color: var(--text-2);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <img class="logo" src="/logo-rea.svg" alt="Rea" width="40" height="40" />
+      <p class="badge">Archived snapshot</p>
+      <h1>Rea Documentation — version 0.1.0</h1>
+      <p>
+        This is a frozen, read-only snapshot of the Rea language and reast platform
+        documentation as it was at release <strong>v0.1.0</strong>. It is preserved for
+        reference and is no longer updated.
+      </p>
+      <p lang="sk">
+        Toto je zmrazená, len na čítanie určená kópia dokumentácie vo verzii
+        <strong>0.1.0</strong>. Je zachovaná pre referenciu a už sa neaktualizuje.
+      </p>
+      <div class="actions">
+        <a class="btn btn--primary" href="/">Go to the latest documentation →</a>
+        <a class="btn" href="/changelog">Changelog</a>
+      </div>
+      <hr />
+      <p>
+        Looking for the current version? The latest docs always live at the site root and
+        the footer version switcher lets you move between published versions.
+      </p>
+    </main>
+  </body>
+</html>

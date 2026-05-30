@@ -48,6 +48,58 @@ public/       — Static assets (CNAME, images)
 .github/      — CI workflows (deploy, sync)
 ```
 
+## Versioning (documentation snapshots)
+
+The documentation is versioned. The **live source tree is always the latest
+version** and is served from the site root (`/`). Older releases are kept as
+**frozen, read-only static snapshots** under `public/v<version>/`, reachable at
+`/v<version>/`. The footer "Documentation version" switcher lists every
+published version (configured in `docVersions` in `.vitepress/config.ts`) so
+readers can jump between them.
+
+### Why snapshots instead of git branches?
+
+A full copy of the *built* site into a versioned folder is the correct,
+low-maintenance approach here:
+
+- The reader gets the exact site as it was at that release — no risk of broken
+  links or drift from later refactors.
+- It needs no extra hosting, build matrix, or branch juggling: everything under
+  `public/` is copied verbatim into the next build, so the snapshot ships with
+  every deploy.
+- You never edit old versions; you only ever edit the live tree. That keeps the
+  authoring workflow simple (one source of truth) while history stays available.
+
+Copying the raw *source* (Markdown) per version would mean maintaining several
+parallel trees and re-building each on every change — more work and more ways to
+break. Snapshotting the built output avoids all of that.
+
+### How to release a new version
+
+When you are ready to freeze the current version and start a new one:
+
+```bash
+# 1. From modules/docs, freeze the CURRENT version (reads version from package.json,
+#    builds, and writes public/v<version>/):
+node scripts/snapshot-version.mjs
+
+# 2. Bump the version in package.json (e.g. 0.2.0 → 0.3.0).
+
+# 3. Add the just-frozen version to the docVersions array in
+#    .vitepress/config.ts, e.g.:
+#       const docVersions = [
+#         { label: `v${currentVersion} (latest)`, link: '/', current: true },
+#         { label: 'v0.2.0 (archived)', link: '/v0.2.0/' },
+#         { label: 'v0.1.0 (archived)', link: '/v0.1.0/' },
+#       ];
+
+# 4. Commit. The new (current) version is served from /, older versions
+#    from /v<version>/, and the footer switcher links them all.
+```
+
+The current archived example is **v0.1.0** at `public/v0.1.0/`; the live docs
+are **v0.2.0**.
+
 ## Internationalization (i18n)
 
 The documentation supports multiple languages using VitePress built-in i18n.
