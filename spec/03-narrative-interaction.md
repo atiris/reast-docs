@@ -466,6 +466,77 @@ Action cards represent story branching points with visual emphasis:
 
 > **Note:** Action cards use `&` (ampersand) to distinguish from custom anchors, which use `[#name]`.
 
+### Card sets & categories
+
+`character`, `item` and `action` are the three **built-in card sets**. Authors can declare additional sets to group cards that share the same acquisition, loss and usage rules — for example an `ability` set, an `attribute` set, or a themed `relic` set. A set is declared with a `{define cardset <id> begin}` block:
+
+```rea
+{define cardset ability begin}
+  name: Ability Cards
+  description: Stat-granting cards a hero can equip.
+  acquire: Earned by completing quests.
+  lose: Lost when the character is defeated.
+  use: Play to apply the listed attribute bonus.
+{end define}
+```
+
+A set may carry the human-readable rule fields `acquire`, `lose` and `use`, plus any additional `key: value` properties. The set `id` becomes the **kind** of every card that belongs to it.
+
+A card joins a set by using the set id where `character`/`item`/`action` would otherwise appear:
+
+```rea
+{define ability spinach begin}
+  name: Spinach
+  strength: +2
+{end define}
+```
+
+#### Rule hooks
+
+A set may attach executable hooks that run for **every** card of that set. The hooks are `{on_acquire}`, `{on_lose}` and `{on_use}`:
+
+```rea
+{define cardset ability begin}
+  name: Ability Cards
+  {on_acquire begin}
+    {set ability_count = ability_count + 1}
+  {end on_acquire}
+  {on_use begin}
+    {set last_ability_used = event.card_id}
+  {end on_use}
+{end define}
+```
+
+An individual card may **override** any hook while still inheriting the set's other rules. Here `ginko` redefines `on_use` but keeps the set's `on_acquire`:
+
+```rea
+{define ability ginko begin}
+  name: Ginko
+  intelligence: +2
+  {on_use begin}
+    {set intelligence = intelligence + 2}
+  {end on_use}
+{end define}
+```
+
+> **Resolution order:** for each hook, a card-level definition takes precedence over the set-level definition; hooks the card does not redefine fall through to the set. Card `{on_give}`/`{on_take}` (item lifecycle) and `{on_use}` are merged with the owning set's `{on_acquire}`/`{on_lose}`/`{on_use}` accordingly.
+
+#### Redefining built-in sets
+
+The three built-in sets may be redefined to attach shared rules without changing how their cards are written. Redefining `action` to add a usage cost applies to every `[&]` action card:
+
+```rea
+{define cardset action begin}
+  name: Combat Actions
+  use: Spend an action point to play.
+  {on_use begin}
+    {set actions_played = actions_played + 1}
+  {end on_use}
+{end define}
+```
+
+When an author redefinition and the implicit built-in collide, the author's declaration wins.
+
 ### Dialogue attribution
 
 Use `@character_id:` at the start of a line to attribute dialogue. This links speech to a character card and enables automatic voice assignment:

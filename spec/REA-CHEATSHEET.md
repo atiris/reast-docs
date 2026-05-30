@@ -213,6 +213,21 @@ Hello, {player.name}! You have {player.gold} gold.
 {take golden_key}           Remove item from reader
 ```
 
+```rea
+{define cardset ability begin}   Declare a custom card set/category
+  name: Ability Cards
+  use: Play to apply the bonus.
+  {on_use begin}                 Hook runs for every card of the set
+    {set ability_count = ability_count + 1}
+  {end on_use}
+{end define}
+
+{define ability spinach begin}   A card belonging to the set
+  name: Spinach
+  strength: +2
+{end define}
+```
+
 ---
 
 ## Input & Interaction
