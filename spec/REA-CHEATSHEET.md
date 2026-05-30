@@ -214,6 +214,14 @@ Hello, {player.name}! You have {player.gold} gold.
 ```
 
 ```rea
+{coins gold="Dukát" silver="Groš" bronze="Halier"}  Rename coin tiers
+{coins silver_per_gold=5 bronze_per_silver=4}        Redefine ratios
+{earn gold 2}               Add 2 gold (1 gold = 10 silver = 100 bronze)
+{spend bronze 3}            Spend 3 bronze (breaks higher coins as needed)
+{if reader.coins.total >= 100 begin} ... {end if}    Check wallet value
+```
+
+```rea
 {define cardset ability begin}   Declare a custom card set/category
   name: Ability Cards
   use: Play to apply the bonus.

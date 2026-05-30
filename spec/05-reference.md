@@ -120,9 +120,57 @@ The manifest is the single source of all story metadata, permissions, and platfo
 | `allowed_urls`     | object[] | Permitted external APIs (see [External API access](04-utilities.md#external-api-access))                                      |
 | `offline`          | boolean  | `true` (default) or `false` — whether the story works without network                                                         |
 | `storage`          | string   | Storage hint: `"none"`, `"local"` (default), `"cloud"`                                                                        |
+| `reader`           | object   | Reader presentation settings — see [Reader tab bar](#reader-tab-bar)                                                          |
 | `signed`           | boolean  | Whether the package is cryptographically signed                                                                               |
 
 Custom keys are allowed and stored but ignored by the platform. For single-file stories, the platform auto-wraps the `.rea` file into a minimal `.reast` package with a generated `manifest.json`.
+
+### Reader tab bar
+
+Mobile readers can show a thumb-reachable bottom tab bar with up to five
+sections. The bar is **off by default**; authors opt in and enable individual
+sections under `reader.tabBar` in the manifest:
+
+```json
+{
+  "reader": {
+    "tabBar": {
+      "enabled": true,
+      "priorityHand": "reader",
+      "help": { "enabled": true },
+      "map": { "enabled": true, "image": "media/map.png" },
+      "pocket": { "enabled": true },
+      "character": { "enabled": true },
+      "actions": { "enabled": true, "qrScan": true, "photo": true, "audio": true }
+    }
+  }
+}
+```
+
+**Sections** (semantic thumb-distance order — `actions` is closest to the
+priority thumb, `help` furthest):
+
+| Section     | Purpose                                                                                 |
+| ----------- | --------------------------------------------------------------------------------------- |
+| `actions`   | Dynamic interaction hub — play an action card, scan a QR code, capture a photo or audio |
+| `character` | Reader vitals (HP/energy), RPG stats, and trait cards                                   |
+| `pocket`    | Inventory — coins, items, and ability cards                                             |
+| `map`       | Map (image or live map) with the reader's location, navigation, and running time        |
+| `help`      | In-story help and hints                                                                 |
+
+**Tab-bar keys:**
+
+| Key            | Type    | Description                                                                              |
+| -------------- | ------- | ---------------------------------------------------------------------------------------- |
+| `enabled`      | boolean | Master switch for the whole bar. Defaults to `false`                                     |
+| `priorityHand` | string  | `"reader"` (default — follow the reader's handedness setting), `"left"`, or `"right"`    |
+| `<section>`    | object  | Per-section config: `enabled`, optional `label`/`icon`, plus section-specific attributes |
+
+Each section object accepts `enabled`, an optional `label` and `icon` override,
+and free-form section-specific attributes (e.g. `map.image`, or the `qrScan` /
+`photo` / `audio` affordances on `actions`). `priorityHand` only decides which
+screen edge counts as "closest"; the section order is always fixed by thumb
+distance.
 
 ### The `reast.json` settings file
 

@@ -455,6 +455,38 @@ Items can be added to a reader's inventory:
 {end if}
 ```
 
+### Coins & wallet
+
+Stories that need money use the built-in coin wallet. It has three tiers —
+`gold`, `silver`, `bronze` — with the fixed base ratio **1 gold = 10 silver =
+100 bronze**. The internal tier names never change (so save files stay
+portable), but authors can rename the labels shown to the reader and adjust the
+conversion ratios:
+
+```rea
+{coins gold="Dukát" silver="Groš" bronze="Halier"}
+{coins silver_per_gold=5 bronze_per_silver=4}
+
+{earn gold 2}
+{earn silver 5}
+{spend bronze 3}
+
+{if reader.coins.total >= 100 begin}
+  You can afford the enchanted blade.
+{end if}
+```
+
+`{spend}` automatically breaks higher denominations when the reader lacks the
+exact tier, and refuses (changing nothing) when the wallet cannot cover the
+cost. The balance is mirrored into reader-facing variables and persisted across
+saves:
+
+| Variable             | Contents                                           |
+| -------------------- | -------------------------------------------------- |
+| `reader.coins`       | Normalized `{gold, silver, bronze, total}` balance |
+| `reader.coins.total` | Total value in bronze base units                   |
+| `reader.coinNames`   | Author display labels `{gold, silver, bronze}`     |
+
 ### Action cards `[&]`
 
 Action cards represent story branching points with visual emphasis:
