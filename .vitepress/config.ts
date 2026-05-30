@@ -44,6 +44,7 @@ const playerSidebar = [
       { text: 'Embedding', link: '/player/embedding' },
       { text: 'Theming', link: '/player/theming' },
       { text: 'Extending', link: '/player/extending' },
+      { text: 'Package Format', link: '/player/package-format' },
       { text: 'API Reference', link: '/player/api' },
     ],
   },
@@ -76,6 +77,17 @@ const platformSidebar = [
   },
 ];
 
+// Virtual sidebar so the changelog page renders with the same
+// (#VPSidebarNav) layout as every other doc page. Without it the changelog
+// uses the no-sidebar layout, which has a different content width and search
+// placement (task 8pwphf).
+const changelogSidebar = [
+  {
+    text: 'Changelog',
+    items: [{ text: 'Changelog', link: '/changelog' }],
+  },
+];
+
 const skSpecSidebar = [
   {
     text: 'Špecifikácia jazyka Rea',
@@ -98,6 +110,7 @@ const skPlayerSidebar = [
       { text: 'Vkladanie', link: '/sk/player/embedding' },
       { text: 'Témy', link: '/sk/player/theming' },
       { text: 'Rozširovanie', link: '/sk/player/extending' },
+      { text: 'Formát balíčka', link: '/sk/player/package-format' },
       { text: 'API referencia', link: '/sk/player/api' },
     ],
   },
@@ -127,6 +140,13 @@ const skPlatformSidebar = [
       { text: 'Bezpečnosť a súkromie', link: '/sk/platform/security/' },
       { text: 'Pomoc a sprievodca', link: '/sk/platform/help' },
     ],
+  },
+];
+
+const skChangelogSidebar = [
+  {
+    text: 'Changelog',
+    items: [{ text: 'Changelog', link: '/sk/changelog' }],
   },
 ];
 
@@ -169,6 +189,7 @@ export default defineConfig({
           '/sk/player/': skPlayerSidebar,
           '/sk/docs/': skDocsSidebar,
           '/sk/platform/': skPlatformSidebar,
+          '/sk/changelog': skChangelogSidebar,
         },
         outline: { label: 'Na tejto stránke' },
         docFooter: { prev: 'Predchádzajúca', next: 'Nasledujúca' },
@@ -203,6 +224,7 @@ export default defineConfig({
       '/player/': playerSidebar,
       '/docs/': docsSidebar,
       '/platform/': platformSidebar,
+      '/changelog': changelogSidebar,
     },
     socialLinks: [{ icon: 'github', link: 'https://github.com/atiris/reast-docs' }],
     logo: '/logo-rea.svg',

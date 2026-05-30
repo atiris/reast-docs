@@ -1,3 +1,24 @@
+/* ---------------------------------------------------------------------------
+ * Reast docs theme overrides
+ *
+ * VitePress is built on CSS variables. We prefer redefining those variables
+ * (and using the theme's own responsive mechanisms) over `!important` hacks.
+ * ------------------------------------------------------------------------- */
+
+/* ---------------------------------------------------------------------------
+ * Scrollbar stability (tasks: fqx92s, yrfmy8)
+ *
+ * Reserve space for the vertical scrollbar at all times. This prevents the
+ * whole page (and header) from shifting horizontally when:
+ *   - navigating between pages that need a scrollbar and pages that do not,
+ *   - opening the search modal (which locks body scroll and would otherwise
+ *     remove the scrollbar, causing a jump to the right).
+ * ------------------------------------------------------------------------- */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* Logo glow on the light theme. */
 :root:not(.dark) .VPNavBarTitle .logo,
 :root:not(.dark) .VPNavBarMenuLink .logo {
   border-radius: 4px;
@@ -9,17 +30,81 @@
   box-shadow: 0 0 8px 2px rgba(128, 128, 128, 0.35);
 }
 
-/* Homepage: full-width layout matching articles (1440px) */
+/* ---------------------------------------------------------------------------
+ * Homepage layout alignment (task: fqx92s)
+ *
+ * Align the home hero / features / doc blocks with the edges of the nav bar
+ * instead of overriding `.VPHome .container` with `!important`. We pin the
+ * layout max width through the standard VitePress variable and let the theme
+ * center every block consistently.
+ * ------------------------------------------------------------------------- */
 .VPHome {
   --vp-layout-max-width: 1440px;
 }
 
-.VPHome .VPHero .name,
-.VPHome .VPHero .text,
-.VPHome .VPHero .tagline {
-  white-space: nowrap;
+.VPHome .VPHero.container,
+.VPHome .VPFeatures.container,
+.VPHome .vp-doc.container {
+  max-width: var(--vp-layout-max-width);
+  margin: 0 auto;
 }
 
-.VPHome .container {
-  max-width: var(--vp-layout-max-width) !important;
+.VPHome .vp-doc.container {
+  padding: 0;
+}
+
+@media (max-width: 1440px) {
+  .VPHome .vp-doc.container {
+    padding: 0 24px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Responsive hero text (task: a2je9d)
+ *
+ * The hero name / tagline must wrap like any other responsive text. Forcing
+ * `white-space: nowrap` caused a fixed-width title that overflowed on mobile
+ * and triggered horizontal scrolling. Allow normal wrapping and balance it.
+ * ------------------------------------------------------------------------- */
+.VPHome .VPHero .name,
+.VPHome .VPHero .text {
+  white-space: normal;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+}
+
+.VPHome .VPHero .tagline {
+  white-space: normal;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+
+/* ---------------------------------------------------------------------------
+ * Nav bar overflow on narrow viewports (task: v7frpj)
+ *
+ * With many top-level menu items the inline nav menu can become wider than
+ * the viewport on small desktops (e.g. ~768-960px), producing a horizontal
+ * scrollbar. VitePress only collapses to the hamburger menu below 768px.
+ * We raise that threshold: below 960px we fall back to the hamburger nav
+ * screen (which already contains every menu item, language, appearance and
+ * social links), avoiding the overflow entirely.
+ * ------------------------------------------------------------------------- */
+@media (min-width: 768px) and (max-width: 959px) {
+  .VPNavBar .content .VPNavBarMenu,
+  .VPNavBar .content .VPNavBarTranslations,
+  .VPNavBar .content .VPNavBarAppearance,
+  .VPNavBar .content .VPNavBarSocialLinks,
+  .VPNavBar .content .VPNavBarExtra {
+    display: none;
+  }
+
+  .VPNavBar .content .VPNavBarHamburger {
+    display: flex;
+  }
+
+  /* The nav screen is hidden above 768px by the theme; re-enable it so the
+     hamburger can open the full menu in the 768-959px range. */
+  .VPNavScreen {
+    display: block;
+  }
 }

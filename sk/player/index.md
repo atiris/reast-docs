@@ -39,4 +39,5 @@ registerPlayer(); // zaregistruje <reast-player> custom element
 - [Začíname](getting-started) — Inštalácia a prvý príbeh
 - [Vkladanie](embedding) — Integrácia do frameworkov (React, Vue, Angular, vanilla)
 - [Témy](theming) — CSS custom properties pre vizuálne prispôsobenie
+- [Formát balíčka](package-format) — Rozloženie archívu `.reast` a schéma manifestu
 - [API referencia](api) — Atribúty, udalosti, JavaScript API

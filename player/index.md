@@ -39,4 +39,5 @@ registerPlayer(); // registers <reast-player> custom element
 - [Getting Started](getting-started) — Setup and first story
 - [Embedding](embedding) — Framework integration (React, Vue, Angular, vanilla)
 - [Theming](theming) — CSS custom properties for visual customisation
+- [Package Format](package-format) — The `.reast` archive layout and manifest schema
 - [API Reference](api) — Attributes, events, JavaScript API
