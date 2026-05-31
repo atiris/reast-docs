@@ -211,6 +211,7 @@ Hello, {player.name}! You have {player.gold} gold.
 [$golden_key]               Item reference
 {give golden_key}           Give item to reader
 {take golden_key}           Remove item from reader
+{play ability_card}         Play a card → runs its on_use hook
 ```
 
 ```rea

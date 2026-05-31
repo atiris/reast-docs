@@ -63,6 +63,17 @@ story.reast/                    (legacy format)
 
 Each language translation is a **separate** `.reast` archive — not bundled together. Device capabilities (GPS, camera, gyroscope) are declared in the manifest `sensors` array; the reader loads only the capabilities the device supports. There is no separate `lib/` or `plugins/` directory — shared logic goes in parts, and sensor-dependent features are conditionally loaded by the reader based on the `sensors` declaration.
 
+### Importing from a public GitHub repository
+
+A v2 package can live unzipped in a public GitHub repository: the repository root acts as the package root (`manifest.json`, `story/`, `moderator/`, optional `README.md`). The platform accepts a repository URL and loads it as if it were a `.reast` file:
+
+```txt
+https://github.com/<owner>/<repo>            → default branch
+https://github.com/<owner>/<repo>/tree/<ref> → a specific branch, tag or commit
+```
+
+The loader downloads the repository's ZIP archive from `https://api.github.com/repos/<owner>/<repo>/zipball[/<ref>]`, removes the single wrapper directory GitHub adds to every entry, and feeds the resulting files through the normal package pipeline. Only `github.com` URLs over HTTPS are accepted — the host allow-list prevents the loader from being redirected to arbitrary internal endpoints (SSRF), and the archive is still subject to the extractor's size, entry-count and path-traversal limits. This makes ordinary Git tags and branches a natural versioning mechanism for GitHub-hosted stories, with `README.md` rendered on the repository page.
+
 ### The `manifest.json` manifest
 
 The manifest is the single source of all story metadata, permissions, and platform configuration. A `.rea` file contains only story content — all metadata lives here. In v2 format the manifest is `manifest.json`; legacy packages use `reast.json` as the manifest.

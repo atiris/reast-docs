@@ -553,6 +553,17 @@ An individual card may **override** any hook while still inheriting the set's ot
 
 > **Resolution order:** for each hook, a card-level definition takes precedence over the set-level definition; hooks the card does not redefine fall through to the set. Card `{on_give}`/`{on_take}` (item lifecycle) and `{on_use}` are merged with the owning set's `{on_acquire}`/`{on_lose}`/`{on_use}` accordingly.
 
+#### Playing a card
+
+`{play <card_id>}` triggers a card's usage. It runs the card's `{on_use}` hook (falling back to the owning set's `{on_use}` when the card does not redefine it), so an attribute card applies its attribute and an action card runs its effect through the same command:
+
+```rea
+{play ginko}        Runs ginko's on_use → intelligence + 2
+{play spinach}      Runs the ability set's on_use for spinach
+```
+
+Card ids may contain letters, digits, hyphens and underscores. Playing an unknown card is a no-op. Each successful play emits a `card-played` runtime event carrying the card id and its set kind, which hosts can observe to update the UI.
+
 #### Redefining built-in sets
 
 The three built-in sets may be redefined to attach shared rules without changing how their cards are written. Redefining `action` to add a usage cost applies to every `[&]` action card:
