@@ -59,7 +59,7 @@ readers can jump between them.
 
 ### Why snapshots instead of git branches?
 
-A full copy of the *built* site into a versioned folder is the correct,
+A full copy of the _built_ site into a versioned folder is the correct,
 low-maintenance approach here:
 
 - The reader gets the exact site as it was at that release — no risk of broken
@@ -70,7 +70,7 @@ low-maintenance approach here:
 - You never edit old versions; you only ever edit the live tree. That keeps the
   authoring workflow simple (one source of truth) while history stays available.
 
-Copying the raw *source* (Markdown) per version would mean maintaining several
+Copying the raw _source_ (Markdown) per version would mean maintaining several
 parallel trees and re-building each on every change — more work and more ways to
 break. Snapshotting the built output avoids all of that.
 
@@ -96,9 +96,6 @@ node scripts/snapshot-version.mjs
 # 4. Commit. The new (current) version is served from /, older versions
 #    from /v<version>/, and the footer switcher links them all.
 ```
-
-The current archived example is **v0.1.0** at `public/v0.1.0/`; the live docs
-are **v0.2.0**.
 
 ## Internationalization (i18n)
 

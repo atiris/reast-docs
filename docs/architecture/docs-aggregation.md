@@ -126,7 +126,7 @@ Updated `config.ts` with unified navigation:
 
 ```typescript
 export default defineConfig({
-  title: 'Reast Documentation',
+  title: 'Internal Docs',
   description: 'Rea language, player, and platform documentation',
 
   themeConfig: {

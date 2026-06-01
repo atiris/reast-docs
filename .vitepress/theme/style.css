@@ -5,6 +5,15 @@
  * (and using the theme's own responsive mechanisms) over `!important` hacks.
  * ------------------------------------------------------------------------- */
 
+/* Color customization */
+:root {
+  /* Brand colors changes */
+}
+
+footer.reast-footer {
+  background-color: #f6f6f7;
+}
+
 /* ---------------------------------------------------------------------------
  * Scrollbar stability (tasks: fqx92s, yrfmy8)
  *
@@ -20,18 +29,14 @@ html {
 
 /* Logo glow on the light theme. */
 :root:not(.dark) .VPNavBarTitle .logo,
-:root:not(.dark) .VPNavBarMenuLink .logo {
+:root:not(.dark) .VPNavBarMenuLink .logo,
+:root:not(.dark) footer .logo {
   border-radius: 4px;
   box-shadow: 0 0 6px 1px rgba(128, 128, 128, 0.4);
 }
 
-:root:not(.dark) .VPImage.image-src[src*='logo-rea'] {
-  border-radius: 6px;
-  box-shadow: 0 0 8px 2px rgba(128, 128, 128, 0.35);
-}
-
 /* ---------------------------------------------------------------------------
- * Homepage layout alignment (tasks: fqx92s, tunaqb)
+ * Homepage layout alignment
  *
  * Every home block (hero, features, markdown content) and the site footer must
  * line up with the nav bar. The nav bar centers its content in a container of
@@ -80,7 +85,7 @@ html {
 }
 
 /* ---------------------------------------------------------------------------
- * Responsive hero text (task: a2je9d)
+ * Responsive hero text
  *
  * The hero name / tagline must wrap like any other responsive text. Forcing
  * `white-space: nowrap` caused a fixed-width title that overflowed on mobile
@@ -91,16 +96,46 @@ html {
   white-space: normal;
   overflow-wrap: break-word;
   text-wrap: balance;
+  width: initial;
+  max-width: initial;
 }
 
 .VPHome .VPHero .tagline {
   white-space: normal;
   overflow-wrap: break-word;
   text-wrap: pretty;
+  width: initial;
+  max-width: initial;
 }
 
 /* ---------------------------------------------------------------------------
- * Nav bar overflow on narrow viewports (task: v7frpj)
+ * Responsive text variants
+ *
+ * Some text elements (e.g. the invite link and the version label in the
+ * footer) have a long and a short variant, which we show/hide based on the
+ * viewport width. The breakpoint is 960px: above that we have enough room to
+ * show the full text, below that we switch to the compact version.
+ * ------------------------------------------------------------------------- */
+
+@media (min-width: 960px) {
+  footer.reast-footer .text-full {
+    display: block;
+  }
+  footer.reast-footer .text-short {
+    display: none;
+  }
+}
+@media (max-width: 959px) {
+  footer.reast-footer .text-full {
+    display: none;
+  }
+  footer.reast-footer .text-short {
+    display: block;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Nav bar overflow on narrow viewports
  *
  * With many top-level menu items the inline nav menu can become wider than
  * the viewport on small desktops (e.g. ~768-960px), producing a horizontal
@@ -130,7 +165,7 @@ html {
 }
 
 /* ---------------------------------------------------------------------------
- * Site footer (tasks: ej6mfc, tunaqb)
+ * Site footer
  *
  * A thin footer rendered through the theme `layout-bottom` slot. Its inner
  * content box must line up with the navbar: same max width and the same
@@ -144,7 +179,7 @@ html {
    * version switcher is reachable from any scroll position (task 27rv4e). */
   position: sticky;
   bottom: 0;
-  z-index: var(--vp-z-index-footer, 10);
+  z-index: var(--vp-z-index-footer, 70);
 }
 
 .reast-footer__inner {

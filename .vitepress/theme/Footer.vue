@@ -23,6 +23,8 @@ const inviteText = isSk
   ? 'Navštívte rea.st a vyskúšajte interaktívne príbehy priamo vo vašom prehliadači!'
   : 'Visit rea.st to try interactive stories right in your browser!';
 
+const shortInviteText = isSk ? 'Viac na rea.st' : 'Try it on rea.st';
+
 const versionLabel = isSk ? 'Verzia dokumentácie' : 'Documentation version';
 const versionsHeading = isSk ? 'Dostupné verzie' : 'Available versions';
 const changelogLabel = isSk ? 'Zoznam zmien' : 'Changelog';
@@ -43,8 +45,15 @@ const open = ref(false);
   <footer v-if="version" class="reast-footer">
     <div class="reast-footer__inner">
       <a class="reast-footer__invite" href="https://rea.st" target="_blank" rel="noopener">
-        <img class="reast-footer__logo" src="/logo-reast.svg" alt="rea.st" width="24" height="24" />
-        <span>{{ inviteText }}</span>
+        <img
+          class="reast-footer__logo logo"
+          src="/logo-reast.svg"
+          alt="rea.st"
+          width="24"
+          height="24"
+        />
+        <span class="reast-footer__invite text-full">{{ inviteText }}</span>
+        <span class="reast-footer__invite text-short">{{ shortInviteText }}</span>
       </a>
 
       <div class="reast-footer__version">
@@ -55,7 +64,8 @@ const open = ref(false);
           aria-haspopup="listbox"
           @click="open = !open"
         >
-          {{ versionLabel }}: {{ version }}
+          <span class="reast-footer__version text-full">{{ versionLabel }}: {{ version }}</span>
+          <span class="reast-footer__version text-short">Ver.: {{ version }}</span>
           <span class="reast-footer__caret" :class="{ 'is-open': open }" aria-hidden="true">▾</span>
         </button>
         <ul v-if="open" class="reast-footer__versions" role="listbox" :aria-label="versionsHeading">

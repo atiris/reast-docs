@@ -8,7 +8,7 @@
  * 1. Reads the current version from package.json (e.g. 0.1.0).
  * 2. Builds the site (`vitepress build` → ./dist).
  * 3. Copies the freshly built site into `public/v<version>/`, excluding any
- *    previously archived `public/v*/` snapshots so versions never nest.
+ *    previously archived `public/<ver>/` snapshots so versions never nest.
  *
  * Because everything under `public/` is copied verbatim into the next build's
  * output, the archived snapshot is then served as a static, read-only site at
