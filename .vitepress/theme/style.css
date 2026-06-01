@@ -5,9 +5,11 @@
  * (and using the theme's own responsive mechanisms) over `!important` hacks.
  * ------------------------------------------------------------------------- */
 
-/* Color customization */
+/* Variables customization */
 :root {
   /* Brand colors changes */
+  /* Orders */
+  --vp-z-index-footer: 70;
 }
 
 footer.reast-footer {
