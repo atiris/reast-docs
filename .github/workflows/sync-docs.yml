@@ -1,0 +1,58 @@
+name: Sync platform documentation
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1' # Weekly Monday 6:00 UTC
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Checkout platform docs
+        uses: actions/checkout@v4
+        with:
+          repository: atiris/reast-platform
+          path: _platform
+          sparse-checkout: docs
+
+      - name: Sync public platform docs
+        run: |
+          mkdir -p platform
+
+          # Only sync user-facing documentation (not developer internals)
+          # Public: design (visual identity for authors), security (trust/privacy for users)
+          # Internal (dev-only, served locally): architecture, api, auth, cli,
+          #   conventions, deployment, infrastructure, setup, testing, web
+          for dir in design security; do
+            if [ -d "_platform/docs/$dir" ]; then
+              rm -rf "platform/$dir"
+              cp -r "_platform/docs/$dir" "platform/$dir"
+            fi
+          done
+
+          # Adjust relative links
+          find platform -name '*.md' -exec sed -i \
+            -e 's|\.\./\.\./|\.\./|g' \
+            -e 's|\.\./apps/|../|g' \
+            {} +
+
+          rm -rf _platform
+
+      - name: Commit if changed
+        run: |
+          git add -A
+          if ! git diff --cached --quiet; then
+            git config user.name "docs-sync[bot]"
+            git config user.email "docs-sync@rea.st"
+            git commit -m "docs: sync public platform documentation"
+            git push
+          fi

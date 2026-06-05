@@ -1,0 +1,286 @@
+/* ---------------------------------------------------------------------------
+ * Reast docs theme overrides
+ *
+ * VitePress is built on CSS variables. We prefer redefining those variables
+ * (and using the theme's own responsive mechanisms) over `!important` hacks.
+ * ------------------------------------------------------------------------- */
+
+/* Variables customization */
+:root {
+  /* Brand colors changes */
+  /* Orders */
+  --vp-z-index-footer: 70;
+}
+
+footer.reast-footer {
+  background-color: var(--vp-c-bg-soft);
+}
+
+/* ---------------------------------------------------------------------------
+ * Scrollbar stability (tasks: fqx92s, yrfmy8)
+ *
+ * Reserve space for the vertical scrollbar at all times. This prevents the
+ * whole page (and header) from shifting horizontally when:
+ *   - navigating between pages that need a scrollbar and pages that do not,
+ *   - opening the search modal (which locks body scroll and would otherwise
+ *     remove the scrollbar, causing a jump to the right).
+ * ------------------------------------------------------------------------- */
+html {
+  scrollbar-gutter: stable;
+}
+
+/* Logo glow on the light theme. */
+:root:not(.dark) .VPNavBarTitle .logo,
+:root:not(.dark) .VPNavBarMenuLink .logo,
+:root:not(.dark) footer .logo {
+  border-radius: 4px;
+  box-shadow: 0 0 6px 1px rgba(128, 128, 128, 0.4);
+}
+
+/* ---------------------------------------------------------------------------
+ * Homepage layout alignment
+ *
+ * Every home block (hero, features, markdown content) and the site footer must
+ * line up with the nav bar. The nav bar centers its content in a container of
+ * `max-width: calc(var(--vp-layout-max-width) - 64px)` (= 1376px) with no
+ * horizontal padding. The default theme instead gives the hero / features a
+ * 1152px container and the trailing markdown a full 1440px container, so their
+ * left and right edges never matched the header. We pin all of them to the
+ * exact same box as the nav bar so the rea logo, the "Rea Language" hero title,
+ * the "Why Rea?" heading and the footer logo share one left edge.
+ *
+ * NOTE: the previous override used the compound selector `.VPHero.container`
+ * (same element) which never matched — VitePress nests `.VPHero > .container`.
+ * ------------------------------------------------------------------------- */
+.VPHome {
+  --vp-layout-max-width: 1440px;
+}
+
+/* The default theme wraps the hero and features in elements that carry their
+ * own 64px horizontal padding, which pushes the hero title inward and breaks
+ * alignment with the nav bar at viewports narrower than the content box. We
+ * zero that wrapper padding so the single container gutter below is the only
+ * horizontal spacing, keeping every block edge identical at every width. */
+.VPHome .VPHero.VPHomeHero,
+.VPHome .VPFeatures {
+  padding-inline: 0;
+}
+
+.VPHome .VPHero .container,
+.VPHome .VPFeatures .container,
+.VPHome .vp-doc.container,
+.reast-footer__inner {
+  max-width: var(--vp-layout-max-width, 1440px);
+  margin-inline: auto;
+  padding-inline: 32px;
+}
+
+/* The nav bar narrows its gutter to 24px on mobile; mirror that so the edges
+ * keep matching the header and nothing ever overflows horizontally. */
+@media (max-width: 767px) {
+  .VPHome .VPHero .container,
+  .VPHome .VPFeatures .container,
+  .VPHome .vp-doc.container,
+  .reast-footer__inner {
+    padding-inline: 24px;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Responsive hero text
+ *
+ * The hero name / tagline must wrap like any other responsive text. Forcing
+ * `white-space: nowrap` caused a fixed-width title that overflowed on mobile
+ * and triggered horizontal scrolling. Allow normal wrapping and balance it.
+ * ------------------------------------------------------------------------- */
+.VPHome .VPHero .name,
+.VPHome .VPHero .text {
+  white-space: normal;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+  width: initial;
+  max-width: initial;
+}
+
+.VPHome .VPHero .tagline {
+  white-space: normal;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+  width: initial;
+  max-width: initial;
+}
+
+/* ---------------------------------------------------------------------------
+ * Responsive text variants
+ *
+ * Some text elements (e.g. the invite link and the version label in the
+ * footer) have a long and a short variant, which we show/hide based on the
+ * viewport width. The breakpoint is 960px: above that we have enough room to
+ * show the full text, below that we switch to the compact version.
+ * ------------------------------------------------------------------------- */
+
+@media (min-width: 960px) {
+  footer.reast-footer .text-full {
+    display: block;
+  }
+  footer.reast-footer .text-short {
+    display: none;
+  }
+}
+@media (max-width: 959px) {
+  footer.reast-footer .text-full {
+    display: none;
+  }
+  footer.reast-footer .text-short {
+    display: block;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Nav bar overflow on narrow viewports
+ *
+ * With many top-level menu items the inline nav menu can become wider than
+ * the viewport on small desktops (e.g. ~768-960px), producing a horizontal
+ * scrollbar. VitePress only collapses to the hamburger menu below 768px.
+ * We raise that threshold: below 960px we fall back to the hamburger nav
+ * screen (which already contains every menu item, language, appearance and
+ * social links), avoiding the overflow entirely.
+ * ------------------------------------------------------------------------- */
+@media (min-width: 768px) and (max-width: 959px) {
+  .VPNavBar .content .VPNavBarMenu,
+  .VPNavBar .content .VPNavBarTranslations,
+  .VPNavBar .content .VPNavBarAppearance,
+  .VPNavBar .content .VPNavBarSocialLinks,
+  .VPNavBar .content .VPNavBarExtra {
+    display: none;
+  }
+
+  .VPNavBar .content .VPNavBarHamburger {
+    display: flex;
+  }
+
+  /* The nav screen is hidden above 768px by the theme; re-enable it so the
+     hamburger can open the full menu in the 768-959px range. */
+  .VPNavScreen {
+    display: block;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Site footer
+ *
+ * A thin footer rendered through the theme `layout-bottom` slot. Its inner
+ * content box must line up with the navbar: same max width and the same
+ * horizontal padding the navbar content uses, so the reast logo on the left
+ * and the version selector on the right sit exactly under the header icons.
+ * ------------------------------------------------------------------------- */
+.reast-footer {
+  border-top: 1px solid var(--vp-c-divider);
+  background-color: var(--vp-c-bg);
+  /* Always visible: the footer sticks to the bottom of the viewport so the
+   * version switcher is reachable from any scroll position (task 27rv4e). */
+  position: sticky;
+  bottom: 0;
+  z-index: var(--vp-z-index-footer, 70);
+}
+
+.reast-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 24px;
+  /* Compact bar — roughly 1.5× a text line tall (task 27rv4e). */
+  padding-block: 6px;
+  min-height: calc(1.5em * 1.4);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.reast-footer__invite {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--vp-c-text-2);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.reast-footer__invite:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.reast-footer__logo {
+  display: block;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.reast-footer__version {
+  position: relative;
+}
+
+.reast-footer__version-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--vp-c-text-2);
+  background: transparent;
+  border: 0;
+  padding: 4px 0;
+  font-size: 13px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.reast-footer__version-btn:hover {
+  color: var(--vp-c-brand-1);
+}
+
+.reast-footer__caret {
+  font-size: 10px;
+  transition: transform 0.2s;
+}
+
+.reast-footer__caret.is-open {
+  transform: rotate(180deg);
+}
+
+.reast-footer__versions {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 8px);
+  min-width: 180px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background-color: var(--vp-c-bg-elv);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  box-shadow: var(--vp-shadow-3);
+}
+
+.reast-footer__versions li {
+  padding: 0;
+}
+
+.reast-footer__versions a,
+.reast-footer__versions-current {
+  display: block;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: var(--vp-c-text-1);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.reast-footer__versions a:hover {
+  background-color: var(--vp-c-default-soft);
+  color: var(--vp-c-brand-1);
+}
+
+.reast-footer__versions-current {
+  color: var(--vp-c-text-2);
+  font-weight: 600;
+}

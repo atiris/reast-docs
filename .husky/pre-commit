@@ -1,0 +1,12 @@
+#!/bin/sh
+# ROOT_DIR=$(git rev-parse --show-toplevel)
+
+npm run build || (
+  echo "" >&2
+  echo "❌ ERROR (husky pre-commit hook): VitePress build failed (dead links or syntax errors found)." >&2
+  echo "   Fix the issues before committing, or bypass with --no-verify." >&2
+  echo "" >&2
+  exit 1
+)
+
+echo "VitePress build passed (husky pre-commit hook)."

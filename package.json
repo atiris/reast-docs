@@ -1,0 +1,25 @@
+{
+  "name": "@reast/docs",
+  "version": "0.1.0",
+  "private": true,
+  "description": "REA language specification, tutorials, and design documentation for rea.st",
+  "type": "module",
+  "scripts": {
+    "dev": "vitepress dev",
+    "build": "vitepress build",
+    "build:full": "npm run build:api && vitepress build",
+    "build:api": "cd ../player && npx typedoc && cp -r docs-api ../docs/api-reference || true",
+    "preview": "vitepress preview",
+    "snapshot": "node scripts/snapshot-version.mjs",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "vitepress": "^1.6.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/atiris/reast-docs.git"
+  },
+  "license": "CC-BY-SA-4.0"
+}
