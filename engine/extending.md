@@ -206,23 +206,23 @@ bus.on('story-complete', (data) => {
 
 ```text
 src/
-├── parser/          # Rea source → AST
-│   ├── lexer.ts         # Tokenizer (line-level)
-│   ├── block-parser.ts  # Token stream → node tree
-│   ├── inline-parser.ts # Inline formatting
-│   └── analyser.ts      # Top-level parse orchestrator
-├── runtime/         # AST → evaluated output
-│   ├── interpreter.ts       # StoryEngine (conditionals, loops, etc.)
+├── parser/                 # Rea source → AST
+│   ├── lexer.ts            # Tokenizer (line-level)
+│   ├── block-parser.ts     # Token stream → node tree
+│   ├── inline-parser.ts    # Inline formatting
+│   └── analyser.ts         # Top-level parse orchestrator
+├── runtime/                # AST → evaluated output
+│   ├── interpreter.ts      # StoryEngine (conditionals, loops, etc.)
 │   ├── expression-evaluator.ts
-│   ├── state-manager.ts     # Save/load progress
+│   ├── state-manager.ts    # Save/load progress
 │   ├── event-bus.ts
-│   └── builtins/            # Built-in function implementations
-├── player/          # Web Component UI
+│   └── builtins/           # Built-in function implementations
+├── player/                 # Web Component UI
 │   ├── reast-player.ts     # <reast-player> Custom Element
 │   ├── renderer.ts         # AST → DOM rendering
 │   ├── styles.ts           # Shadow DOM CSS
 │   ├── plugins.ts          # Plugin architecture
 │   ├── accessibility.ts    # A11y utilities
 │   └── progress-bar.ts     # Reading progress
-└── types.ts         # Shared TypeScript interfaces
+└── types.ts                # Shared TypeScript interfaces
 ```

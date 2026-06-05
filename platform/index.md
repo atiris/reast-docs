@@ -31,5 +31,5 @@ Reast is a web platform for reading and creating interactive stories written in 
 ## Getting Help
 
 - [Rea Language Specification](/spec/01-basics) — Learn to write interactive stories
-- [Player Documentation](/player/getting-started) — Embed stories on your own website
-- [Contributing](/player/contributing) — Help improve the Reast player
+- [Engine Documentation](/engine/getting-started) — Embed stories on your own website
+- [Contributing](/engine/contributing) — Help improve the Reast engine

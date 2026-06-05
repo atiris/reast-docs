@@ -39,7 +39,7 @@ After DNS propagates (usually 1-30 minutes), the site will be live at
 
 ```txt
 spec/         — Rea language specification (canonical, English)
-player/       — Player documentation and guides (English)
+engine/       — Engine documentation and guides (English)
 platform/     — Public platform docs (synced from reast-platform, English)
 docs/         — General docs (glossary, playground, architecture, English)
 sk/           — Slovak translations (mirrors the above structure)
@@ -129,7 +129,7 @@ browsing sessions until the user switches language manually.
    ├── spec/
    │   ├── 01-basics.md
    │   └── ...
-   ├── player/
+   ├── engine/
    │   ├── index.md
    │   └── ...
    ├── platform/
@@ -161,7 +161,7 @@ browsing sessions until the user switches language manually.
 5. **Translate content** — start with high-traffic pages:
    - `index.md` (home)
    - `spec/01-basics.md` (language basics)
-   - `player/getting-started.md`
+   - `engine/getting-started.md`
    - `platform/index.md`
 6. **Build and verify** — `npm run build` must pass without dead links
 
@@ -180,7 +180,7 @@ browsing sessions until the user switches language manually.
 
 ```bash
 # See what changed in English since the last translation update:
-git log --oneline --since="2026-05-01" -- spec/ player/ platform/ docs/
+git log --oneline --since="2026-05-01" -- spec/ engine/ platform/ docs/
 
 # For each changed file, update the corresponding sk/ file:
 # Compare the English diff and apply equivalent changes to the Slovak version.

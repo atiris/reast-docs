@@ -31,5 +31,5 @@ Reast je webová platforma na čítanie a tvorbu interaktívnych príbehov napí
 ## Získanie pomoci
 
 - [Špecifikácia jazyka Rea](/sk/spec/01-basics) — Naučte sa písať interaktívne príbehy
-- [Dokumentácia playera](/sk/player/getting-started) — Vložte príbehy na vlastnú stránku
-- [Prispievanie](/sk/player/contributing) — Pomôžte zlepšiť funkcie playera
+- [Dokumentácia engine](/sk/engine/getting-started) — Vložte príbehy na vlastnú stránku
+- [Prispievanie](/sk/engine/contributing) — Pomôžte zlepšiť funkcie reast engine
