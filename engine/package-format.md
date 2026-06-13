@@ -8,22 +8,41 @@ This page documents the on-disk layout and the `manifest.json` schema so that
 third parties can author packagers, validators, or alternative players without
 reading the engine source.
 
-## Archive layout
+## Archive layouts
 
-A modern (v2) package uses the following structure:
+A reader accepts exactly two layouts:
+
+### Packaged
+
+A `manifest.json` at the archive root carries all metadata and an ordered list
+of story parts. Story files live under `story/`; media is referenced by its
+archive-relative path (conventionally under `media/`).
 
 ```text
 my-story.reast              (ZIP container)
-├── manifest.json           metadata + capabilities (required for v2)
+├── manifest.json           metadata + ordered parts + capabilities
 ├── reast.json              optional session settings / preset variables
 ├── story/
-│   ├── main.rea            the entry Rea story file
-│   └── chapter-2.rea       additional parts (optional)
-├── media/
-│   ├── cover.jpg
-│   ├── scene.png
-│   └── theme.mp3
-└── moderator/              optional moderator-only content (never auto-loaded)
+│   ├── part-00001.rea      the entry part (first in manifest.parts)
+│   └── part-00002.rea      additional parts (in manifest order)
+└── media/
+    ├── cover.jpg
+    ├── scene.png
+    └── theme.mp3
+```
+
+### Flat
+
+No `manifest.json`. All `.rea` and media files sit at the archive root. The
+entry story is the **alphabetically-first** `*.rea` file. A flat package carries
+no metadata (no title, author, tags, genre, cover, links, …) — use the packaged
+layout when any of that is needed.
+
+```text
+quick.reast                 (ZIP container)
+├── story.rea               the entry story (alphabetically first .rea)
+├── cover.jpg
+└── theme.mp3
 ```
 
 Rules a compliant reader enforces:
@@ -31,31 +50,25 @@ Rules a compliant reader enforces:
 - The container is a ZIP file. Decompression is bounded for safety: **max 50 MB
   uncompressed, max 500 entries**, and any entry whose path escapes the archive
   root (path traversal) is rejected.
-- The **entry story** is resolved in this order: the first entry in
-  `manifest.parts`, then the first `*.rea` under `story/`, then `parts/`
-  (legacy), then any root-level `*.rea`. Files under `moderator/` are never
-  selected as the entry.
+- The **entry story** is the first entry in `manifest.parts` (packaged), or the
+  alphabetically-first `*.rea` file (flat). In a packaged archive the parts load
+  in the order listed in `manifest.parts`.
 - Media files are referenced from the story by their archive-relative path and
   mapped to in-memory blob URLs at load time — no media is fetched from the
   network.
-
-### Legacy (v1) layout
-
-Older packages place the manifest in `reast.json` and the story parts under
-`parts/`. Readers accept both: when `manifest.json` is absent, `reast.json` is
-treated as the manifest; when `manifest.json` is present, `reast.json` is
-treated as optional session settings instead.
+- `reast.json`, when present, is optional session settings (preset variables) —
+  never the manifest.
 
 ## `manifest.json`
 
 The manifest is a single JSON object. Every field is optional except where a
-capability depends on it; an unknown field is preserved and ignored. The
-`rea` field declares the schema version — supported values are `"1"`, `"1.0"`,
-`"1.1"` and `"2.0"`.
+capability depends on it; an unknown field is preserved and ignored.
 
 ```json
 {
-  "rea": "2.0",
+  "rea": "1.0",
+  "manifest": "1.0",
+  "type": "story",
   "id": "the-lighthouse",
   "title": "The Lighthouse",
   "author": [{ "name": "Jane Doe", "id": "jane", "initials": "JD" }],
@@ -68,7 +81,8 @@ capability depends on it; an unknown field is preserved and ignored. The
   "genre": "mystery",
   "tags": ["branching", "mystery"],
   "license": "CC-BY-4.0",
-  "parts": [{ "file": "story/main.rea", "name": "Part One" }],
+  "parts": [{ "file": "story/part-00001.rea", "name": "Part One" }],
+  "instruction": "the-lighthouse-guide",
   "readers": [1],
   "age": { "min": 13 },
   "content_warnings": ["mild peril"],
@@ -81,17 +95,19 @@ capability depends on it; an unknown field is preserved and ignored. The
   "allowed_urls": [{ "alias": "map", "url": "https://example.com/map" }],
   "offline": true,
   "preview": false,
-  "integrity": { "story/main.rea": "sha256-…" }
+  "integrity": { "story/part-00001.rea": "sha256-…" }
 }
 ```
 
 ### Field reference
 
-- `rea` — string — Manifest schema version (`"1"`–`"2.0"`).
+- `rea` — string — Rea language version the story is authored in (currently `"1.0"`).
+- `manifest` — string — Manifest schema version (currently `"1.0"`).
+- `type` — string — `"story"` (read by readers, the default) or `"instruction"` (see [Reast types](#reast-types) below).
 - `id` — string — Stable story identifier.
 - `title` — string — Display title.
 - `author` — `{ name, id?, initials? }[]` — One or more authors.
-- `version` — string — Author-defined story version.
+- `version` — string — Author-defined version of this reast.
 - `language` — string — BCP-47 primary language.
 - `direction` — string — Text direction (`ltr` / `rtl`).
 - `date` — string — Publication date.
@@ -99,7 +115,9 @@ capability depends on it; an unknown field is preserved and ignored. The
 - `cover` — string — Archive-relative path to the cover image.
 - `genre`, `tags` — string / string[] — Classification.
 - `license` — string — Distribution licence (e.g. SPDX id).
-- `parts` — `string[]` or `{ file, name }[]` — Ordered story parts; first is the entry.
+- `parts` — `string[]` or `{ file, name? }[]` — Ordered story parts; the first is the entry and the array order is the play order.
+- `instruction` — string — For a `story`: the linked `instruction` reast (id/slug).
+- `stories` — string[] — For an `instruction`: the `story` reasts it covers.
 - `readers` — number[] — Supported reader counts; a value > 1 marks a cooperative story.
 - `age` — `{ min?, max? }` — Recommended reader age range.
 - `content_warnings` — string[] — Sensitive-content notices.
@@ -111,6 +129,21 @@ capability depends on it; an unknown field is preserved and ignored. The
 - `offline` — boolean — Whether the story is fully playable offline.
 - `preview` — boolean — Marks a preview/sample build.
 - `integrity` — `Record<path, hash>` — Per-file SHA-256 hashes for tamper detection.
+
+## Reast types
+
+Every packaged reast declares a `type`:
+
+- **`story`** — the default; a reast read by readers.
+- **`instruction`** — a companion reast that explains how to prepare and run one
+  or more stories (for a moderator / game master). An instruction is never shown
+  in catalog lists; it is reached only from the story it accompanies.
+
+A `story` links to its single instruction reast with `instruction` (the
+instruction's id/slug). An `instruction` lists the stories it covers with
+`stories` — so several stories of a series may share one instruction, while each
+story has at most one instruction. The two ends reference each other: the story
+points at its instruction and the instruction points back at its stories.
 
 ## Capabilities
 

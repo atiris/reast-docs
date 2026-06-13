@@ -14,11 +14,14 @@ A `.rea` file is a UTF-8 plain text file. It contains a single story (reast) wit
 
 ### Packages: `.reast`
 
-A `.reast` file is a ZIP archive (like EPUB) containing:
+A `.reast` file is a ZIP archive (like EPUB). A reader accepts two layouts.
+
+**Packaged** — a `manifest.json` at the root carries all metadata and the
+ordered `parts` list; story files live under `story/`, media under `media/`:
 
 ```txt
-story.reast/                    (v2 format — rea: "2.0")
-├── manifest.json               (package manifest — metadata, parts list)
+story.reast/
+├── manifest.json               (package manifest — metadata, ordered parts)
 ├── reast.json                  (optional — session settings / variables)
 ├── README.md                   (optional — for GitHub versioning)
 ├── META-REA/
@@ -26,46 +29,36 @@ story.reast/                    (v2 format — rea: "2.0")
 │   ├── signature.sig           (optional, Ed25519)
 │   └── author.pub             (optional, author public key)
 ├── story/
-│   ├── part-00001.rea          (first part / intro)
+│   ├── part-00001.rea          (entry part — first in manifest.parts)
 │   ├── part-00002.rea          (second part)
 │   └── part-00003.rea          (...)
-├── media/
-│   ├── cover.jpg
-│   ├── forest.jpg
-│   └── theme.ogg
-└── moderator/
-    ├── instructions.rea        (main moderator file — declared in manifest)
-    ├── setup-guide.rea         (additional moderator content)
-    └── media/
-        ├── npc-portraits.pdf
-        └── session-map.png
+└── media/
+    ├── cover.jpg
+    ├── forest.jpg
+    └── theme.ogg
 ```
 
-**Legacy format** (rea: "1.0" / "1.1") remains supported for backward compatibility:
+**Flat** — no `manifest.json`. All `.rea` and media files sit at the archive
+root; the entry is the alphabetically-first `*.rea`. A flat package carries no
+metadata, so use the packaged layout when title, author, tags, cover, links, or
+ordered parts are needed:
 
 ```txt
-story.reast/                    (legacy format)
-├── reast.json                  (manifest — legacy location)
-├── part-00001.rea              (parts in root or parts/ directory)
-├── part-00002.rea
-└── assets/
-    └── cover.jpg
+quick.reast/
+├── story.rea                   (entry — alphabetically first .rea)
+└── cover.jpg
 ```
 
-**Key differences v1 → v2:**
-
-- Manifest moved from `reast.json` to `manifest.json`
-- `reast.json` repurposed as session settings / preparation variables
-- Story `.rea` files live in `story/` directory (not root or `parts/`)
-- Moderator media lives in `moderator/media/` (not `moderator/assets/`)
-- `README.md` allowed at root for GitHub-hosted reast packages
-- Platform can import directly from a public GitHub repository URL
+The entry part is the first entry in `manifest.parts` (packaged) or the
+alphabetically-first `*.rea` (flat); packaged parts load in `manifest.parts`
+order. `reast.json`, when present, is optional session settings — never the
+manifest.
 
 Each language translation is a **separate** `.reast` archive — not bundled together. Device capabilities (GPS, camera, gyroscope) are declared in the manifest `sensors` array; the reader loads only the capabilities the device supports. There is no separate `lib/` or `plugins/` directory — shared logic goes in parts, and sensor-dependent features are conditionally loaded by the reader based on the `sensors` declaration.
 
 ### Importing from a public GitHub repository
 
-A v2 package can live unzipped in a public GitHub repository: the repository root acts as the package root (`manifest.json`, `story/`, `moderator/`, optional `README.md`). The platform accepts a repository URL and loads it as if it were a `.reast` file:
+A package can live unzipped in a public GitHub repository: the repository root acts as the package root (`manifest.json`, `story/`, optional `README.md`). The platform accepts a repository URL and loads it as if it were a `.reast` file:
 
 ```txt
 https://github.com/<owner>/<repo>            → default branch
@@ -76,12 +69,14 @@ The loader downloads the repository's ZIP archive from `https://api.github.com/r
 
 ### The `manifest.json` manifest
 
-The manifest is the single source of all story metadata, permissions, and platform configuration. A `.rea` file contains only story content — all metadata lives here. In v2 format the manifest is `manifest.json`; legacy packages use `reast.json` as the manifest.
+The manifest is the single source of all story metadata, permissions, and platform configuration. A `.rea` file contains only story content — all metadata lives here. The manifest is `manifest.json`.
 
 ```json
 {
   "id": "019e03f6-f9ec-7000-801c-fd76eb1968dd",
-  "rea": "2.0",
+  "rea": "1.0",
+  "manifest": "1.0",
+  "type": "story",
   "title": "The Last Lantern",
   "author": [{ "name": "Elena Voss", "id": "019d8a2b-1234-7000-8000-abcdef012345" }],
   "version": "1.0.0",
@@ -103,7 +98,9 @@ The manifest is the single source of all story metadata, permissions, and platfo
 | Key                | Type     | Description                                                                                                                   |
 | ------------------ | -------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | `id`               | string   | UUID v7 unique identifier                                                                                                     |
-| `rea`              | string   | Spec version this story targets (e.g. `"1.0"`). Defaults to latest supported                                                  |
+| `rea`              | string   | Rea language version the story is authored in (currently `"1.0"`)                                                             |
+| `manifest`         | string   | Manifest schema version (currently `"1.0"`)                                                                                   |
+| `type`             | string   | `"story"` (read by readers, default) or `"instruction"` (moderator guide — see [Instruction reasts](#instruction-reasts))     |
 | `title`            | string   | Story title                                                                                                                   |
 | `author`           | object[] | Author entries: `[{ "name": "Elena Voss", "id": "..." }]`                                                                     |
 | `language`         | string   | BCP 47 language code (`en`, `sk`, `ja`, etc.)                                                                                 |
@@ -115,7 +112,9 @@ The manifest is the single source of all story metadata, permissions, and platfo
 | `genre`            | string   | Primary genre (`fantasy`, `mystery`, `horror`, `sci-fi`, `romance`, `educational`, etc.)                                      |
 | `tags`             | string[] | Tags for discovery: `["fantasy", "adventure"]`                                                                                |
 | `license`          | string   | License identifier                                                                                                            |
-| `parts`            | string[] | Ordered list of `.rea` files in the package                                                                                   |
+| `parts`            | string[] | Ordered list of `.rea` files in the package (array order is play order)                                                       |
+| `instruction`      | string   | For a `story`: the linked `instruction` reast (id/slug)                                                                       |
+| `stories`          | string[] | For an `instruction`: the `story` reasts it covers                                                                            |
 | `readers`          | number[] | Supported reader counts: `[1]` (solo), `[1, 2, 4]` (tested for 1, 2, or 4), `[]` (any count), `[0]` (no player config needed) |
 | `age`              | object   | Age restriction: `{ "min": 12 }` or `{ "min": 12, "max": 18 }`                                                                |
 | `content_warnings` | string[] | Warnings: `["violence", "language", "fear", "substances", "sexual_themes"]`                                                   |
@@ -185,7 +184,7 @@ distance.
 
 ### The `reast.json` settings file
 
-In v2 format, `reast.json` is a separate file containing **session preparation settings** — variables and configuration for running the story in a specific context (e.g., number of players, difficulty level, chosen scenario variant). This file is optional.
+`reast.json` is a separate, optional file containing **session preparation settings** — variables and configuration for running the story in a specific context (e.g., number of players, difficulty level, chosen scenario variant).
 
 ```json
 {
@@ -320,70 +319,59 @@ Rea's text-based, line-oriented format is designed for team workflows:
 - **One part per file** — the flat `part-NNNNN.rea` structure in `.reast` packages lets multiple authors work on separate parts simultaneously with minimal merge conflicts
 - **No binary state** — story logic lives in text, not in opaque project files (unlike Twine's JSON-based storage)
 
-### Moderator / DM instructions
+### Instruction reasts
 
-A `.reast` package may include a **moderator instructions bundle** — content intended for the person who runs, moderates, or facilitates the story experience (the "DM" or "reastmaster"). This content is **not shown to regular readers** by default; the reader must explicitly request it.
+A `story` reast can be accompanied by a separate **instruction reast** — a
+companion reast (`type: "instruction"`) that explains how to prepare and run the
+story for the person who moderates or facilitates it (the "DM" or "reastmaster").
+An instruction reast is a normal reast in its own right: it has its own
+`manifest.json`, parts, and media, and reads like any other reast. It is never
+shown in catalog lists; it is reached only from the story it accompanies.
 
-#### Package structure
+#### Linking
 
-```txt
-story.reast/                       (v2 format)
-├── manifest.json
-├── story/
-│   └── part-00001.rea
-├── moderator/
-│   ├── instructions.rea           (main DM instructions — declared in manifest)
-│   ├── setup-guide.rea            (additional moderator .rea files)
-│   └── media/
-│       ├── handout-map.pdf        (printable handout)
-│       ├── setup-video.mp4        (setup tutorial)
-│       └── npc-portraits.png      (supplementary material)
-└── media/
-    └── ...
-```
+The two reasts reference each other through the manifest:
 
-The `moderator/` directory sits alongside the story directory. Its `.rea` files use standard Rea syntax (headings, paragraphs, media embeds, choice branches for conditional setup paths). Supplementary files (PDFs to print, videos to watch, images, archives) live in `moderator/media/`. The entire `moderator/` directory can be cleanly removed if the package should be distributed without DM content.
+- The `story` declares its single instruction reast with `instruction` (the
+  instruction's id/slug).
+- The `instruction` declares the `story` reasts it covers with `stories`.
 
-#### Manifest declaration
-
-The manifest declares the moderator bundle via a `moderator` key:
+A story has at most one instruction reast, while one instruction may cover
+several stories of a series (so multiple stories can share the same instruction).
 
 ```json
-{
-  "moderator": {
-    "instructions": "moderator/instructions.rea",
-    "assets": [
-      { "file": "moderator/assets/handout-map.pdf", "label": "Printable map" },
-      { "file": "moderator/assets/setup-video.mp4", "label": "Setup tutorial" }
-    ]
-  }
-}
-```
+// story manifest.json
+{ "type": "story", "id": "the-keepers-trial", "instruction": "the-keepers-trial-guide" }
 
-- `instructions` — path to the main DM instructions file (parsed and rendered like any `.rea` file)
-- `assets` — list of supplementary files with human-readable labels, offered for download/print
+// instruction manifest.json
+{ "type": "instruction", "id": "the-keepers-trial-guide", "stories": ["the-keepers-trial"] }
+```
 
 #### Reader behaviour
 
-- **Default:** the moderator bundle is hidden. The reader app does not load, parse, or display it.
-- **Explicit access:** the reader settings or story menu offers a "Moderator instructions" toggle. When enabled, a separate panel or view shows the DM instructions (rendered from `instructions.rea`) and lists the downloadable assets.
-- **No spoilers:** the DM instructions may reference story content (character names, branch outcomes, puzzle solutions) that readers should not see. The separation into a distinct directory and explicit opt-in prevents accidental exposure.
-- **Offline support:** when a reader downloads a `.reast` for offline use and has moderator mode enabled, the moderator bundle is included in the download. Otherwise it is excluded to save space.
+- **Hidden from lists:** instruction reasts never appear in the catalog or any
+  story list. The platform records the link on the story, not as a separate
+  catalog entry.
+- **Reached from the story:** when a story has an instruction reast, the reader
+  marks it and offers an "Open instruction reast" action that opens the
+  instruction reast as its own story.
+- **No spoilers:** the instruction may reference story content (character names,
+  branch outcomes, puzzle solutions) that readers should not see. Keeping it a
+  separate, unlisted reast opened on demand prevents accidental exposure.
 
-#### Content guidelines for moderator instructions
+#### Content guidelines for an instruction reast
 
-The `instructions.rea` file follows standard Rea syntax. Recommended structure:
+An instruction reast's parts follow standard Rea syntax. Recommended structure:
 
 ```rea
-# Setup
+# Before the session
 
-Overview of what the moderator needs to prepare before the session.
+Overview of what the moderator needs to prepare.
 
 # Materials
 
 List of materials to print or prepare:
-- [!Printable map < handout-map.pdf]
-- [>Setup video < setup-video.mp4]
+- [!Printable map < media/handout-map.jpg]
 
 # Session flow
 

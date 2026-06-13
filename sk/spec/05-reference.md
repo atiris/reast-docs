@@ -14,11 +14,14 @@
 
 ### Balík `.reast`
 
-ZIP archív s nasledujúcou štruktúrou:
+ZIP archív. Čitateľ akceptuje dve rozloženia.
+
+**S manifestom** — `manifest.json` v koreni nesie všetky metadáta a usporiadaný
+zoznam `parts`; súbory príbehu sú v `story/`, médiá v `media/`:
 
 ```text
-my-story.reast (ZIP — formát v2, rea: "2.0")
-├── manifest.json       (manifest — povinný)
+my-story.reast (ZIP)
+├── manifest.json       (manifest — metadáta, usporiadané časti)
 ├── reast.json          (voliteľný — nastavenia session / premenné)
 ├── README.md           (voliteľný — pre GitHub verzionovanie)
 ├── META-REA/
@@ -26,34 +29,36 @@ my-story.reast (ZIP — formát v2, rea: "2.0")
 │   ├── signature.sig   (voliteľný, Ed25519)
 │   └── author.pub      (voliteľný)
 ├── story/
-│   ├── part-00001.rea  (prvá časť)
+│   ├── part-00001.rea  (vstupná časť — prvá v manifest.parts)
 │   ├── part-00002.rea  (druhá časť)
 │   └── ...
-├── media/
-│   ├── cover.jpg
-│   ├── forest.jpg
-│   └── theme.ogg
-└── moderator/
-    ├── instructions.rea (hlavné inštrukcie pre moderátora)
-    └── media/
-        └── session-map.png
+└── media/
+    ├── cover.jpg
+    ├── forest.jpg
+    └── theme.ogg
 ```
 
-**Legacy formát** (rea: "1.0" / "1.1") je stále podporovaný:
+**Plochý** — bez `manifest.json`. Všetky `.rea` aj mediálne súbory sú v koreni;
+vstup je abecedne prvý `*.rea`. Plochý balíček nenesie žiadne metadáta — keď je
+potrebný názov, autor, štítky, obálka, odkazy či poradie častí, použite
+rozloženie s manifestom:
 
 ```text
-my-story.reast (ZIP — legacy)
-├── reast.json          (manifest — legacy umiestnenie)
-├── part-00001.rea
-└── assets/
-    └── cover.jpg
+quick.reast (ZIP)
+├── story.rea           (vstup — abecedne prvý .rea)
+└── cover.jpg
 ```
+
+`reast.json`, ak je prítomný, sú voliteľné nastavenia session — nikdy nie
+manifest.
 
 ### Manifest `manifest.json`
 
 ```json
 {
-  "rea": "2.0",
+  "rea": "1.0",
+  "manifest": "1.0",
+  "type": "story",
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "title": "Môj príbeh",
   "authors": [{ "name": "Meno autora" }],
@@ -70,14 +75,16 @@ my-story.reast (ZIP — legacy)
 
 ### Povinné polia manifestu
 
-| Pole       | Typ    | Popis                                |
-| ---------- | ------ | ------------------------------------ |
-| `rea`      | string | Verzia špecifikácie (napr. "2.0")    |
-| `id`       | string | UUID identifikátor diela             |
-| `title`    | string | Názov príbehu                        |
-| `authors`  | array  | Zoznam autorov `{name, id?}`         |
-| `language` | string | BCP 47 kód jazyka                    |
-| `parts`    | array  | Zoznam častí `{file, name}` v poradí |
+| Pole       | Typ    | Popis                                       |
+| ---------- | ------ | ------------------------------------------- |
+| `rea`      | string | Verzia jazyka Rea (aktuálne "1.0")          |
+| `manifest` | string | Verzia schémy manifestu (aktuálne "1.0")    |
+| `type`     | string | "story" (predvolené) alebo "instruction"    |
+| `id`       | string | UUID identifikátor diela                    |
+| `title`    | string | Názov príbehu                               |
+| `authors`  | array  | Zoznam autorov `{name, id?}`                |
+| `language` | string | BCP 47 kód jazyka                           |
+| `parts`    | array  | Zoznam častí `{file, name?}` v poradí       |
 
 ### Voliteľné polia manifestu
 
@@ -97,6 +104,22 @@ my-story.reast (ZIP — legacy)
 | `season`       | string   | Sezóna v rámci série                        |
 | `series`       | string   | Názov série                                 |
 | `tags`         | string[] | Vyhľadávacie tagy                           |
+| `instruction`  | string   | Pre `story`: prepojený `instruction` reast  |
+| `stories`      | string[] | Pre `instruction`: pokryté `story` reasty   |
+
+### Inštrukčné reasty
+
+`story` reast môže mať sprievodný **inštrukčný reast** (`type: "instruction"`) —
+samostatný reast, ktorý vysvetľuje, ako pripraviť a viesť príbeh pre moderátora.
+Inštrukčný reast má vlastný `manifest.json`, časti aj médiá a číta sa ako každý
+iný reast, no nikdy sa nezobrazuje v zoznamoch katalógu — dá sa otvoriť len z
+príbehu, ku ktorému patrí.
+
+Oba reasty sa odkazujú navzájom: `story` deklaruje svoj jediný inštrukčný reast
+cez `instruction`, `instruction` uvádza pokryté príbehy cez `stories`. Príbeh má
+najviac jednu inštrukciu, no jedna inštrukcia môže pokrývať viac príbehov série.
+Keď má príbeh inštrukčný reast, čítačka ho označí a ponúkne akciu „Otvoriť
+inštrukčný reast".
 
 ---
 
