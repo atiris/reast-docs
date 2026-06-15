@@ -17,7 +17,8 @@ A `.rea` file is a UTF-8 plain text file. It contains a single story (reast) wit
 A `.reast` file is a ZIP archive (like EPUB). A reader accepts two layouts.
 
 **Packaged** — a `manifest.json` at the root carries all metadata and the
-ordered `parts` list; story files live under `story/`, media under `media/`:
+ordered `parts` list; story files live under `story/`, media (covers, images,
+audio, video) under `assets/`:
 
 ```txt
 story.reast/
@@ -32,9 +33,9 @@ story.reast/
 │   ├── part-00001.rea          (entry part — first in manifest.parts)
 │   ├── part-00002.rea          (second part)
 │   └── part-00003.rea          (...)
-└── media/
-    ├── cover.jpg
-    ├── forest.jpg
+└── assets/
+    ├── cover.webp
+    ├── forest.webp
     └── theme.ogg
 ```
 
@@ -69,7 +70,7 @@ The loader downloads the repository's ZIP archive from `https://api.github.com/r
 
 ### The `manifest.json` manifest
 
-The manifest is the single source of all story metadata, permissions, and platform configuration. A `.rea` file contains only story content — all metadata lives here. The manifest is `manifest.json`.
+The manifest is the single source of all story metadata, permissions, and platform configuration. A `.rea` file contains only story content — all metadata lives here. The manifest is `manifest.json`. It has **one canonical shape** — no field has a "short form": `id` is always present (generated when the project is created), `author` is always an array of objects, and `parts` is always an array of `{ file, name }` objects. The reference loader normalizes looser hand-written input (e.g. a bare-string part) into this shape on load, but every tool that emits a manifest writes the canonical form.
 
 ```json
 {
@@ -82,10 +83,14 @@ The manifest is the single source of all story metadata, permissions, and platfo
   "version": "1.0.0",
   "language": "en",
   "genre": "fantasy",
+  "intro": "Morning came in silence — no birds, no wind, no distant voices.",
   "description": "A story about finding light in darkness.",
-  "cover": "media/cover.jpg",
+  "cover": "assets/cover.webp",
   "tags": ["fantasy", "adventure"],
-  "parts": ["story/part-00001.rea", "story/part-00002.rea"],
+  "parts": [
+    { "file": "story/part-00001.rea", "name": "The Silence" },
+    { "file": "story/part-00002.rea", "name": "The Lantern" }
+  ],
   "readers": [1, 2, 3, 4, 5],
   "age": { "min": 12 },
   "sensors": ["gps", "camera"],
@@ -97,7 +102,7 @@ The manifest is the single source of all story metadata, permissions, and platfo
 
 | Key                | Type     | Description                                                                                                                   |
 | ------------------ | -------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `id`               | string   | UUID v7 unique identifier                                                                                                     |
+| `id`               | string   | UUID. Always present — generated when the project is created                                                                  |
 | `rea`              | string   | Rea language version the story is authored in (currently `"1.0"`)                                                             |
 | `manifest`         | string   | Manifest schema version (currently `"1.0"`)                                                                                   |
 | `type`             | string   | `"story"` (read by readers, default) or `"instruction"` (moderator guide — see [Instruction reasts](#instruction-reasts))     |
@@ -108,11 +113,12 @@ The manifest is the single source of all story metadata, permissions, and platfo
 | `version`          | string   | Semantic version of the story                                                                                                 |
 | `date`             | string   | Publication date in ISO 8601 format (`"2025-06-15"`)                                                                          |
 | `description`      | string   | Short synopsis                                                                                                                |
-| `cover`            | string   | Path to cover image within the package                                                                                        |
+| `intro`            | string   | Short intro text shown on the story's envelope / cover                                                                        |
+| `cover`            | string   | Path to the cover (envelope) image, e.g. `assets/cover.webp`                                                                  |
 | `genre`            | string   | Primary genre (`fantasy`, `mystery`, `horror`, `sci-fi`, `romance`, `educational`, etc.)                                      |
 | `tags`             | string[] | Tags for discovery: `["fantasy", "adventure"]`                                                                                |
 | `license`          | string   | License identifier                                                                                                            |
-| `parts`            | string[] | Ordered list of `.rea` files in the package (array order is play order)                                                       |
+| `parts`            | object[] | Ordered `{ file, name }` parts; first is the entry, array order is play order                                                 |
 | `instruction`      | string   | For a `story`: the linked `instruction` reast (id/slug)                                                                       |
 | `stories`          | string[] | For an `instruction`: the `story` reasts it covers                                                                            |
 | `readers`          | number[] | Supported reader counts: `[1]` (solo), `[1, 2, 4]` (tested for 1, 2, or 4), `[]` (any count), `[0]` (no player config needed) |
@@ -148,7 +154,7 @@ sections under `reader.tabBar` in the manifest:
       "enabled": true,
       "priorityHand": "reader",
       "help": { "enabled": true },
-      "map": { "enabled": true, "image": "media/map.png" },
+      "map": { "enabled": true, "image": "assets/map.webp" },
       "pocket": { "enabled": true },
       "character": { "enabled": true },
       "actions": { "enabled": true, "qrScan": true, "photo": true, "audio": true }
@@ -371,7 +377,7 @@ Overview of what the moderator needs to prepare.
 # Materials
 
 List of materials to print or prepare:
-- [!Printable map < media/handout-map.jpg]
+- [!Printable map < assets/handout-map.webp]
 
 # Session flow
 
@@ -629,7 +635,7 @@ Plugins can define new card types beyond the built-in `@`, `$`, `&`:
 {define location tavern begin}
   name: The Rusty Anchor
   description: A dimly lit tavern near the docks.
-  image: media/tavern.jpg
+  image: assets/tavern.webp
   coordinates: @48.1486;17.1077
 {end define}
 

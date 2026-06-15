@@ -15,8 +15,8 @@ A reader accepts exactly two layouts:
 ### Packaged
 
 A `manifest.json` at the archive root carries all metadata and an ordered list
-of story parts. Story files live under `story/`; media is referenced by its
-archive-relative path (conventionally under `media/`).
+of story parts. Story files live under `story/`; media (covers, images, audio,
+video) lives under `assets/`, referenced by its archive-relative path.
 
 ```text
 my-story.reast              (ZIP container)
@@ -25,9 +25,9 @@ my-story.reast              (ZIP container)
 ├── story/
 │   ├── part-00001.rea      the entry part (first in manifest.parts)
 │   └── part-00002.rea      additional parts (in manifest order)
-└── media/
-    ├── cover.jpg
-    ├── scene.png
+└── assets/
+    ├── cover.webp
+    ├── scene.webp
     └── theme.mp3
 ```
 
@@ -41,7 +41,7 @@ layout when any of that is needed.
 ```text
 quick.reast                 (ZIP container)
 ├── story.rea               the entry story (alphabetically first .rea)
-├── cover.jpg
+├── cover.webp
 └── theme.mp3
 ```
 
@@ -61,23 +61,30 @@ Rules a compliant reader enforces:
 
 ## `manifest.json`
 
-The manifest is a single JSON object. Every field is optional except where a
-capability depends on it; an unknown field is preserved and ignored.
+The manifest is a single JSON object with **one canonical shape** — there is no
+"short form" of any field. `id` is always present (generated when the project is
+created), `author` is always an array of objects, and `parts` is always an array
+of `{ file, name }` objects. The reference loader will normalize looser hand-
+written input (e.g. a bare-string part) into this shape at load time, but every
+tool that emits a manifest writes the canonical form. Beyond identity, every
+field is optional except where a capability depends on it; an unknown field is
+preserved and ignored.
 
 ```json
 {
+  "id": "019e03f6-f9ec-7000-801c-fd76eb1968dd",
   "rea": "1.0",
   "manifest": "1.0",
   "type": "story",
-  "id": "the-lighthouse",
   "title": "The Lighthouse",
+  "intro": "A storm has cut the island off. The lamp is dark, and the keeper is gone.",
+  "cover": "assets/cover.webp",
   "author": [{ "name": "Jane Doe", "id": "jane", "initials": "JD" }],
   "version": "1.2.0",
   "language": "en",
   "direction": "ltr",
   "date": "2026-05-30",
   "description": "A branching mystery on a storm-bound island.",
-  "cover": "media/cover.jpg",
   "genre": "mystery",
   "tags": ["branching", "mystery"],
   "license": "CC-BY-4.0",
@@ -104,18 +111,19 @@ capability depends on it; an unknown field is preserved and ignored.
 - `rea` — string — Rea language version the story is authored in (currently `"1.0"`).
 - `manifest` — string — Manifest schema version (currently `"1.0"`).
 - `type` — string — `"story"` (read by readers, the default) or `"instruction"` (see [Reast types](#reast-types) below).
-- `id` — string — Stable story identifier.
+- `id` — string — Stable story identifier (UUID). Always present — generated when the project is created, independent of any later platform upload.
 - `title` — string — Display title.
-- `author` — `{ name, id?, initials? }[]` — One or more authors.
+- `intro` — string — Short intro text shown on the story's envelope / cover.
+- `cover` — string — Archive-relative path to the cover (envelope) image, conventionally `assets/cover.webp`.
+- `author` — `{ name, id?, initials? }[]` — One or more authors. Always the object form; `name` is required, `id` (a platform user id) is present only when the author is a registered account.
 - `version` — string — Author-defined version of this reast.
 - `language` — string — BCP-47 primary language.
 - `direction` — string — Text direction (`ltr` / `rtl`).
 - `date` — string — Publication date.
 - `description` — string — Short synopsis.
-- `cover` — string — Archive-relative path to the cover image.
 - `genre`, `tags` — string / string[] — Classification.
 - `license` — string — Distribution licence (e.g. SPDX id).
-- `parts` — `string[]` or `{ file, name? }[]` — Ordered story parts; the first is the entry and the array order is the play order.
+- `parts` — `{ file, name }[]` — Ordered story parts; the first is the entry and the array order is the play order. `file` is an archive-relative path (under `story/`); `name` is the part's display name.
 - `instruction` — string — For a `story`: the linked `instruction` reast (id/slug).
 - `stories` — string[] — For an `instruction`: the `story` reasts it covers.
 - `readers` — number[] — Supported reader counts; a value > 1 marks a cooperative story.

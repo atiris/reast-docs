@@ -16,8 +16,8 @@ nutnosti čítať zdrojový kód enginu.
 ### S manifestom
 
 `manifest.json` v koreni archívu nesie všetky metadáta a usporiadaný zoznam
-častí príbehu. Súbory príbehu sú v `story/`; médiá sa odkazujú cestou relatívnou
-k archívu (zvyčajne v `media/`).
+častí príbehu. Súbory príbehu sú v `story/`; médiá (obálky, obrázky, zvuk, video)
+sú v `assets/`, odkazované cestou relatívnou k archívu.
 
 ```text
 my-story.reast              (ZIP kontajner)
@@ -26,9 +26,9 @@ my-story.reast              (ZIP kontajner)
 ├── story/
 │   ├── part-00001.rea      vstupná časť (prvá v manifest.parts)
 │   └── part-00002.rea      ďalšie časti (v poradí podľa manifestu)
-└── media/
-    ├── cover.jpg
-    ├── scene.png
+└── assets/
+    ├── cover.webp
+    ├── scene.webp
     └── theme.mp3
 ```
 
@@ -61,23 +61,28 @@ Pravidlá, ktoré kompatibilný čitateľ vynucuje:
 
 ## `manifest.json`
 
-Manifest je jeden JSON objekt. Každé pole je voliteľné okrem prípadov, keď od
-neho závisí nejaká schopnosť; neznáme pole sa zachová a ignoruje.
+Manifest má **jednu kanonickú podobu** — žiadne pole nemá „skrátený" tvar. `id`
+je vždy prítomné (generuje sa pri vytvorení projektu), `author` je vždy pole
+objektov a `parts` je vždy pole objektov `{ file, name }`. Referenčný loader
+voľnejší ručne písaný vstup (napr. časť ako holý reťazec) pri načítaní
+normalizuje do tejto podoby. Okrem identity je každé pole voliteľné okrem
+prípadov, keď od neho závisí nejaká schopnosť; neznáme pole sa zachová a ignoruje.
 
 ```json
 {
+  "id": "019e03f6-f9ec-7000-801c-fd76eb1968dd",
   "rea": "1.0",
   "manifest": "1.0",
   "type": "story",
-  "id": "the-lighthouse",
   "title": "Maják",
+  "intro": "Búrka odrezala ostrov. Lampa zhasla a strážca je preč.",
+  "cover": "assets/cover.webp",
   "author": [{ "name": "Jana Nováková", "id": "jana", "initials": "JN" }],
   "version": "1.2.0",
   "language": "sk",
   "direction": "ltr",
   "date": "2026-05-30",
   "description": "Vetviaca sa záhada na ostrove zovretom búrkou.",
-  "cover": "media/cover.jpg",
   "genre": "mystery",
   "tags": ["branching", "mystery"],
   "license": "CC-BY-4.0",
@@ -104,18 +109,19 @@ neho závisí nejaká schopnosť; neznáme pole sa zachová a ignoruje.
 - `rea` — string — Verzia jazyka Rea, v ktorej je príbeh napísaný (aktuálne `"1.0"`).
 - `manifest` — string — Verzia schémy manifestu (aktuálne `"1.0"`).
 - `type` — string — `"story"` (čítajú čitatelia, predvolené) alebo `"instruction"` (pozri [Typy reastov](#typy-reastov)).
-- `id` — string — Stabilný identifikátor príbehu.
+- `id` — string — Stabilný identifikátor príbehu (UUID). Vždy prítomný — generuje sa pri vytvorení projektu, nezávisle od neskoršieho nahratia na platformu.
 - `title` — string — Zobrazovaný názov.
-- `author` — `{ name, id?, initials? }[]` — Jeden alebo viac autorov.
+- `intro` — string — Krátky úvodný text zobrazený na obálke príbehu.
+- `cover` — string — Cesta k obálke relatívna k archívu, zvyčajne `assets/cover.webp`.
+- `author` — `{ name, id?, initials? }[]` — Jeden alebo viac autorov. Vždy tvar objektu; `name` je povinné, `id` (platformové id používateľa) je prítomné len pri registrovanom účte.
 - `version` — string — Verzia tohto reastu definovaná autorom.
 - `language` — string — Primárny jazyk podľa BCP-47.
 - `direction` — string — Smer textu (`ltr` / `rtl`).
 - `date` — string — Dátum publikovania.
 - `description` — string — Krátka anotácia.
-- `cover` — string — Cesta k obálke relatívna k archívu.
 - `genre`, `tags` — string / string[] — Klasifikácia.
 - `license` — string — Licencia distribúcie (napr. SPDX id).
-- `parts` — `string[]` alebo `{ file, name? }[]` — Usporiadané časti; prvá je vstupná a poradie poľa je poradie prehrávania.
+- `parts` — `{ file, name }[]` — Usporiadané časti; prvá je vstupná a poradie poľa je poradie prehrávania. `file` je cesta v archíve (v `story/`), `name` je zobrazovaný názov časti.
 - `instruction` — string — Pre `story`: prepojený `instruction` reast (id/slug).
 - `stories` — string[] — Pre `instruction`: `story` reasty, ktoré pokrýva.
 - `readers` — number[] — Podporované počty čitateľov; hodnota > 1 značí kooperatívny príbeh.

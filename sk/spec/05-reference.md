@@ -17,7 +17,7 @@
 ZIP archív. Čitateľ akceptuje dve rozloženia.
 
 **S manifestom** — `manifest.json` v koreni nesie všetky metadáta a usporiadaný
-zoznam `parts`; súbory príbehu sú v `story/`, médiá v `media/`:
+zoznam `parts`; súbory príbehu sú v `story/`, médiá v `assets/`:
 
 ```text
 my-story.reast (ZIP)
@@ -32,9 +32,9 @@ my-story.reast (ZIP)
 │   ├── part-00001.rea  (vstupná časť — prvá v manifest.parts)
 │   ├── part-00002.rea  (druhá časť)
 │   └── ...
-└── media/
-    ├── cover.jpg
-    ├── forest.jpg
+└── assets/
+    ├── cover.webp
+    ├── forest.webp
     └── theme.ogg
 ```
 
@@ -61,6 +61,8 @@ manifest.
   "type": "story",
   "id": "550e8400-e29b-41d4-a716-446655440000",
   "title": "Môj príbeh",
+  "intro": "Ráno prišlo v tichu — žiadne vtáky, žiadny vietor.",
+  "cover": "assets/cover.webp",
   "authors": [{ "name": "Meno autora" }],
   "language": "sk",
   "genre": ["fantasy", "adventure"],
@@ -84,7 +86,7 @@ manifest.
 | `title`    | string | Názov príbehu                               |
 | `authors`  | array  | Zoznam autorov `{name, id?}`                |
 | `language` | string | BCP 47 kód jazyka                           |
-| `parts`    | array  | Zoznam častí `{file, name?}` v poradí       |
+| `parts`    | array  | Zoznam častí `{file, name}` v poradí        |
 
 ### Voliteľné polia manifestu
 
@@ -92,7 +94,8 @@ manifest.
 | -------------- | -------- | ------------------------------------------- |
 | `genre`        | string[] | Zoznam žánrov                               |
 | `description`  | string   | Krátky popis príbehu (max 500 znakov)       |
-| `cover`        | string   | Cesta k obrázku obálky v archíve            |
+| `intro`        | string   | Úvodný text na obálke príbehu               |
+| `cover`        | string   | Cesta k obálke, napr. `assets/cover.webp`   |
 | `visibility`   | string   | "private" / "unlisted" / "public"           |
 | `tier`         | string   | "basic" / "premium" / "paid" / "commercial" |
 | `version`      | string   | Semver verzia obsahu                        |
