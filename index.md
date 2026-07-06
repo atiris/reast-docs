@@ -20,7 +20,7 @@ features:
   - title: Rich Logic
     details: Variables, conditions, expressions, random values, and computed text.
   - title: Player Component
-    details: Embed stories anywhere with the <reast-player> web component.
+    details: Embed stories anywhere with the <reast-engine> web component.
 ---
 
 ## Why Rea?

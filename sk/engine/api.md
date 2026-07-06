@@ -81,7 +81,7 @@ Balík `@reast/engine` sprístupňuje viaceré subpath importy:
 | `@reast/engine/parser`  | Rea lexer + parser                                                         |
 | `@reast/engine/loader`  | Loader `.reast` archívov (extrakcia, dešifrovanie, manifest)               |
 | `@reast/engine/runtime` | StoryEngine, evaluátor výrazov, správca stavu                              |
-| `@reast/engine/player`  | `<reast-player>` webový komponent (iba prehliadač)                         |
+| `@reast/engine/player`  | `<reast-engine>` webový komponent (iba prehliadač)                         |
 | `@reast/engine/geo`     | Geo-pozičné utility                                                        |
 | `@reast/engine/errors`  | Triedy chýb a kódy                                                         |
 | `@reast/engine/types`   | TypeScript definície typov                                                 |

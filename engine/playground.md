@@ -1,6 +1,6 @@
 # Playground
 
-Try the Rea language live in your browser. Type Rea markup in the editor below and see it rendered instantly by the `<reast-player>` web component.
+Try the Rea language live in your browser. Type Rea markup in the editor below and see it rendered instantly by the `<reast-engine>` web component.
 
 <script setup>
 import { ref, onMounted, watch, nextTick } from 'vue';
@@ -47,7 +47,7 @@ function renderStory() {
   if (!playerContainer.value) return;
   const container = playerContainer.value;
   container.innerHTML = '';
-  const player = document.createElement('reast-player');
+  const player = document.createElement('reast-engine');
   const blob = new Blob([source.value], { type: 'text/plain' });
   player.setAttribute('src', URL.createObjectURL(blob));
   container.appendChild(player);
@@ -55,10 +55,10 @@ function renderStory() {
 
 onMounted(async () => {
   // Load the player script
-  if (!customElements.get('reast-player')) {
+  if (!customElements.get('reast-engine')) {
     try {
       const mod = await import('@reast/engine/player');
-      if (mod.registerPlayer) mod.registerPlayer();
+      if (mod.registerEngine) mod.registerEngine();
     } catch {
       // Player not available in docs build — show fallback
     }
@@ -88,7 +88,7 @@ watch(source, () => {
     <div ref="playerContainer" class="playground-player">
       <p style="color: var(--vp-c-text-2); font-style: italic;">
         The player component loads at runtime. If you see this message,
-        the <code>&lt;reast-player&gt;</code> script is not available in this
+        the <code>&lt;reast-engine&gt;</code> script is not available in this
         environment. Build and serve the docs with the player package linked
         to see a live preview.
       </p>
@@ -155,7 +155,7 @@ watch(source, () => {
 
 ## How it works
 
-The playground creates a `<reast-player>` web component and feeds it your Rea source as a blob URL. The player parses the markup using `@reast/engine` and renders the interactive story directly in the browser.
+The playground creates a `<reast-engine>` web component and feeds it your Rea source as a blob URL. The player parses the markup using `@reast/engine` and renders the interactive story directly in the browser.
 
 ### Supported syntax
 

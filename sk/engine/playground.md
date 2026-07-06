@@ -1,6 +1,6 @@
 # Ihrisko
 
-Vyskúšajte jazyk Rea naživo vo vašom prehliadači. Napíšte Rea markup do editora a sledujte okamžité vykreslenie webovým komponentom `<reast-player>`.
+Vyskúšajte jazyk Rea naživo vo vašom prehliadači. Napíšte Rea markup do editora a sledujte okamžité vykreslenie webovým komponentom `<reast-engine>`.
 
 <script setup>
 import { ref, onMounted, watch, nextTick } from 'vue';
@@ -47,17 +47,17 @@ function renderStory() {
   if (!playerContainer.value) return;
   const container = playerContainer.value;
   container.innerHTML = '';
-  const player = document.createElement('reast-player');
+  const player = document.createElement('reast-engine');
   const blob = new Blob([source.value], { type: 'text/plain' });
   player.setAttribute('src', URL.createObjectURL(blob));
   container.appendChild(player);
 }
 
 onMounted(async () => {
-  if (!customElements.get('reast-player')) {
+  if (!customElements.get('reast-engine')) {
     try {
       const mod = await import('@reast/engine/player');
-      if (mod.registerPlayer) mod.registerPlayer();
+      if (mod.registerEngine) mod.registerEngine();
     } catch {
       // Player nie je dostupný v docs builde — zobrazí sa fallback
     }
@@ -87,7 +87,7 @@ watch(source, () => {
     <div ref="playerContainer" class="playground-player">
       <p style="color: var(--vp-c-text-2); font-style: italic;">
         Komponent playera sa načíta za behu. Ak vidíte túto správu,
-        skript <code>&lt;reast-player&gt;</code> nie je v tomto prostredí
+        skript <code>&lt;reast-engine&gt;</code> nie je v tomto prostredí
         dostupný. Zostavte a servujte dokumentáciu s nalinkovaným balíkom
         playera pre zobrazenie živého náhľadu.
       </p>

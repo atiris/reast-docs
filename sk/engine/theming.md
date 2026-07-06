@@ -1,6 +1,6 @@
 # Témy
 
-Reast Player používa CSS custom properties pre vizuálne prispôsobenie. Prepíšte ich na elemente `<reast-player>` alebo na ľubovoľnom predkovi.
+Reast Engine používa CSS custom properties pre vizuálne prispôsobenie. Prepíšte ich na elemente `<reast-engine>` alebo na ľubovoľnom predkovi.
 
 ## Dostupné vlastnosti
 
@@ -43,7 +43,7 @@ Reast Player používa CSS custom properties pre vizuálne prispôsobenie. Prep�
 ## Príklad: Tmavá téma
 
 ```css
-reast-player {
+reast-engine {
   --reast-color-text: #e0e0e0;
   --reast-color-bg: #1a1a2e;
   --reast-color-accent: #a78bfa;
@@ -56,7 +56,7 @@ reast-player {
 ## Príklad: Minimálny čitateľ
 
 ```css
-reast-player {
+reast-engine {
   --reast-font-body: 'Literata', serif;
   --reast-font-size: 1.25rem;
   --reast-line-height: 1.8;

@@ -17,14 +17,14 @@ Add a single script tag to your HTML:
 <script src="https://cdn.rea.st/engine/latest/reast-engine.iife.js"></script>
 ```
 
-The script registers the `<reast-player>` custom element automatically.
+The script registers the `<reast-engine>` custom element automatically.
 
 ### ES Module (tree-shakeable)
 
 ```html
 <script type="module">
-  import { registerPlayer } from 'https://cdn.rea.st/engine/latest/reast-engine.es.js';
-  registerPlayer();
+  import { registerEngine } from 'https://cdn.rea.st/engine/latest/reast-engine.es.js';
+  registerEngine();
 </script>
 ```
 
@@ -35,8 +35,8 @@ npm install @reast/engine
 ```
 
 ```typescript
-import { registerPlayer } from '@reast/engine/player';
-registerPlayer();
+import { registerEngine } from '@reast/engine/player';
+registerEngine();
 ```
 
 ## First Story
@@ -59,7 +59,7 @@ What do you want to do?
 Then embed it:
 
 ```html
-<reast-player src="./hello.rea"></reast-player>
+<reast-engine src="./hello.rea"></reast-engine>
 ```
 
 ## Loading `.reast` Archives
@@ -67,7 +67,7 @@ Then embed it:
 For multi-part stories with metadata, use the `.reast` format (a ZIP archive containing a `manifest.json` and `.rea` story files in `story/`):
 
 ```html
-<reast-player src="./my-story.reast"></reast-player>
+<reast-engine src="./my-story.reast"></reast-engine>
 ```
 
 The player handles extraction, manifest parsing, and part navigation automatically.
@@ -81,7 +81,7 @@ The player uses Shadow DOM for complete style isolation. Your page's CSS will no
 The player emits custom events you can listen to:
 
 ```javascript
-const player = document.querySelector('reast-player');
+const player = document.querySelector('reast-engine');
 
 player.addEventListener('rea-loaded', (e) => {
   console.log('Story loaded:', e.detail.title);

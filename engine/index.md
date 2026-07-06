@@ -1,6 +1,6 @@
-# Reast Player
+# Reast Engine
 
-The Reast Player (`<reast-player>`) is a web component that renders interactive Rea stories in any browser. It can be embedded on any website with a single script tag — no framework required.
+The Reast Engine (`<reast-engine>`) is a web component that renders interactive Rea stories in any browser. It can be embedded on any website with a single script tag — no framework required.
 
 ## Quick Start
 
@@ -8,17 +8,17 @@ The Reast Player (`<reast-player>`) is a web component that renders interactive 
 
 ```html
 <script src="https://cdn.rea.st/engine/latest/reast-engine.iife.js"></script>
-<reast-player src="https://example.com/my-story.reast"></reast-player>
+<reast-engine src="https://example.com/my-story.reast"></reast-engine>
 ```
 
 ### ES Module
 
 ```html
 <script type="module">
-  import { registerPlayer } from 'https://cdn.rea.st/engine/latest/reast-engine.es.js';
-  registerPlayer();
+  import { registerEngine } from 'https://cdn.rea.st/engine/latest/reast-engine.es.js';
+  registerEngine();
 </script>
-<reast-player src="./my-story.reast"></reast-player>
+<reast-engine src="./my-story.reast"></reast-engine>
 ```
 
 ### npm
@@ -28,8 +28,8 @@ npm install @reast/engine
 ```
 
 ```typescript
-import { registerPlayer } from '@reast/engine/player';
-registerPlayer(); // registers <reast-player> custom element
+import { registerEngine } from '@reast/engine/player';
+registerEngine(); // registers <reast-engine> custom element
 ```
 
 > **Note:** The `@reast/engine/player` subpath uses browser APIs (`CSSStyleSheet`, `HTMLElement`). Import it only in browser environments — not from Node.js or SSR contexts.

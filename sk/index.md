@@ -20,7 +20,7 @@ features:
   - title: Bohatá logika
     details: Premenné, podmienky, výrazy, náhodné hodnoty a vypočítaný text.
   - title: Player komponent
-    details: Vložte príbehy kamkoľvek pomocou webového komponentu <reast-player>.
+    details: Vložte príbehy kamkoľvek pomocou webového komponentu <reast-engine>.
 ---
 
 ## Prečo vznikol jazyk Rea?

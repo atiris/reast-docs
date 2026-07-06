@@ -1,6 +1,6 @@
 # Vkladanie
 
-Webový komponent `<reast-player>` funguje v ľubovoľnej HTML stránke alebo JavaScript frameworku.
+Webový komponent `<reast-engine>` funguje v ľubovoľnej HTML stránke alebo JavaScript frameworku.
 
 ## Vanilla HTML
 
@@ -13,7 +13,7 @@ Webový komponent `<reast-player>` funguje v ľubovoľnej HTML stránke alebo Ja
   </head>
   <body>
     <script src="https://cdn.rea.st/engine/latest/reast-engine.iife.js"></script>
-    <reast-player src="./story.reast"></reast-player>
+    <reast-engine src="./story.reast"></reast-engine>
   </body>
 </html>
 ```
@@ -24,8 +24,8 @@ Webový komponent `<reast-player>` funguje v ľubovoľnej HTML stránke alebo Ja
 import { useEffect, useRef } from 'react';
 
 // Zaregistrovať custom element raz
-import { registerPlayer } from '@reast/engine/player';
-registerPlayer();
+import { registerEngine } from '@reast/engine/player';
+registerEngine();
 
 function StoryViewer({ src }: { src: string }) {
   const ref = useRef<HTMLElement>(null);
@@ -40,7 +40,7 @@ function StoryViewer({ src }: { src: string }) {
     return () => el.removeEventListener('rea-choice', onChoice);
   }, []);
 
-  return <reast-player ref={ref} src={src} />;
+  return <reast-engine ref={ref} src={src} />;
 }
 ```
 
@@ -48,12 +48,12 @@ function StoryViewer({ src }: { src: string }) {
 
 ```vue
 <template>
-  <reast-player :src="storySrc" @rea-choice="onChoice" />
+  <reast-engine :src="storySrc" @rea-choice="onChoice" />
 </template>
 
 <script setup lang="ts">
-import { registerPlayer } from '@reast/engine/player';
-registerPlayer();
+import { registerEngine } from '@reast/engine/player';
+registerEngine();
 
 const storySrc = './story.reast';
 const onChoice = (e: CustomEvent) => console.log(e.detail);
@@ -64,8 +64,8 @@ const onChoice = (e: CustomEvent) => console.log(e.detail);
 
 ```typescript
 // V komponente alebo app initializeri:
-import { registerPlayer } from '@reast/engine/player';
-registerPlayer();
+import { registerEngine } from '@reast/engine/player';
+registerEngine();
 ```
 
 ```typescript
@@ -74,7 +74,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
 
 @Component({
   selector: 'app-story',
-  template: `<reast-player [attr.src]="src"></reast-player>`,
+  template: `<reast-engine [attr.src]="src"></reast-engine>`,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class StoryComponent {
@@ -87,7 +87,7 @@ export class StoryComponent {
 Player štandardne vypĺňa svoj kontajner. Veľkosť ovládate cez CSS:
 
 ```css
-reast-player {
+reast-engine {
   width: 100%;
   max-width: 800px;
   height: 600px;
@@ -97,7 +97,7 @@ reast-player {
 Pre celoobrazovkový čitateľský zážitok:
 
 ```css
-reast-player {
+reast-engine {
   position: fixed;
   inset: 0;
   width: 100dvw;
@@ -110,6 +110,6 @@ reast-player {
 Na jednej stránke môžete vložiť viacero playerov. Každá inštancia je nezávislá:
 
 ```html
-<reast-player src="./story-a.reast"></reast-player>
-<reast-player src="./story-b.reast"></reast-player>
+<reast-engine src="./story-a.reast"></reast-engine>
+<reast-engine src="./story-b.reast"></reast-engine>
 ```

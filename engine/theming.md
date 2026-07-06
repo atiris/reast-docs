@@ -1,6 +1,6 @@
 # Theming
 
-The Reast Player uses CSS custom properties for visual customisation. Override them on the `<reast-player>` element or any ancestor.
+The Reast Engine uses CSS custom properties for visual customisation. Override them on the `<reast-engine>` element or any ancestor.
 
 ## Available Properties
 
@@ -43,7 +43,7 @@ The Reast Player uses CSS custom properties for visual customisation. Override t
 ## Example: Dark Theme
 
 ```css
-reast-player {
+reast-engine {
   --reast-color-text: #e0e0e0;
   --reast-color-bg: #1a1a2e;
   --reast-color-accent: #a78bfa;
@@ -56,7 +56,7 @@ reast-player {
 ## Example: Minimal Reader
 
 ```css
-reast-player {
+reast-engine {
   --reast-font-body: 'Literata', serif;
   --reast-font-size: 1.25rem;
   --reast-line-height: 1.8;

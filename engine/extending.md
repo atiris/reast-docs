@@ -97,11 +97,11 @@ All visual aspects of the player are themeable via CSS custom properties. See th
 Quick example:
 
 ```css
-reast-player {
-  --rp-font-body: 'Merriweather', serif;
-  --rp-color-bg: #1a1a2e;
-  --rp-color-text: #e0e0e0;
-  --rp-color-accent: #e94560;
+reast-engine {
+  --re-font-body: 'Merriweather', serif;
+  --re-color-bg: #1a1a2e;
+  --re-color-text: #e0e0e0;
+  --re-color-accent: #e94560;
 }
 ```
 
@@ -218,7 +218,7 @@ src/
 │   ├── event-bus.ts
 │   └── builtins/           # Built-in function implementations
 ├── player/                 # Web Component UI
-│   ├── reast-player.ts     # <reast-player> Custom Element
+│   ├── reast-engine.ts     # <reast-engine> Custom Element
 │   ├── renderer.ts         # AST → DOM rendering
 │   ├── styles.ts           # Shadow DOM CSS
 │   ├── plugins.ts          # Plugin architecture

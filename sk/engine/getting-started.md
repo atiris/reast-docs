@@ -17,14 +17,14 @@ Pridajte jediný script tag do HTML:
 <script src="https://cdn.rea.st/engine/latest/reast-engine.iife.js"></script>
 ```
 
-Skript automaticky zaregistruje custom element `<reast-player>`.
+Skript automaticky zaregistruje custom element `<reast-engine>`.
 
 ### ES Module (tree-shakeable)
 
 ```html
 <script type="module">
-  import { registerPlayer } from 'https://cdn.rea.st/engine/latest/reast-engine.es.js';
-  registerPlayer();
+  import { registerEngine } from 'https://cdn.rea.st/engine/latest/reast-engine.es.js';
+  registerEngine();
 </script>
 ```
 
@@ -35,8 +35,8 @@ npm install @reast/engine
 ```
 
 ```typescript
-import { registerPlayer } from '@reast/engine/player';
-registerPlayer();
+import { registerEngine } from '@reast/engine/player';
+registerEngine();
 ```
 
 ## Prvý príbeh
@@ -59,7 +59,7 @@ Ahoj, čitateľ! Toto je tvoj prvý interaktívny príbeh.
 Potom ho vložte:
 
 ```html
-<reast-player src="./hello.rea"></reast-player>
+<reast-engine src="./hello.rea"></reast-engine>
 ```
 
 ## Načítanie `.reast` archívov
@@ -67,7 +67,7 @@ Potom ho vložte:
 Pre viacdielne príbehy s metadátami použite formát `.reast` (ZIP archív obsahujúci `manifest.json` a `.rea` súbory v adresári `story/`):
 
 ```html
-<reast-player src="./my-story.reast"></reast-player>
+<reast-engine src="./my-story.reast"></reast-engine>
 ```
 
 Player sa automaticky postará o extrakciu, parsovanie manifestu a navigáciu medzi časťami.
@@ -81,7 +81,7 @@ Player používa Shadow DOM pre úplnú izoláciu štýlov. CSS vašej stránky 
 Player emituje custom udalosti, na ktoré môžete počúvať:
 
 ```javascript
-const player = document.querySelector('reast-player');
+const player = document.querySelector('reast-engine');
 
 player.addEventListener('rea-loaded', (e) => {
   console.log('Príbeh načítaný:', e.detail.title);

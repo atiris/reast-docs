@@ -1,6 +1,6 @@
 # Embedding
 
-The `<reast-player>` web component works in any HTML page or JavaScript framework.
+The `<reast-engine>` web component works in any HTML page or JavaScript framework.
 
 ## Vanilla HTML
 
@@ -13,7 +13,7 @@ The `<reast-player>` web component works in any HTML page or JavaScript framewor
   </head>
   <body>
     <script src="https://cdn.rea.st/engine/latest/reast-engine.iife.js"></script>
-    <reast-player src="./story.reast"></reast-player>
+    <reast-engine src="./story.reast"></reast-engine>
   </body>
 </html>
 ```
@@ -24,8 +24,8 @@ The `<reast-player>` web component works in any HTML page or JavaScript framewor
 import { useEffect, useRef } from 'react';
 
 // Register the custom element once
-import { registerPlayer } from '@reast/engine/player';
-registerPlayer();
+import { registerEngine } from '@reast/engine/player';
+registerEngine();
 
 function StoryViewer({ src }: { src: string }) {
   const ref = useRef<HTMLElement>(null);
@@ -40,7 +40,7 @@ function StoryViewer({ src }: { src: string }) {
     return () => el.removeEventListener('rea-choice', onChoice);
   }, []);
 
-  return <reast-player ref={ref} src={src} />;
+  return <reast-engine ref={ref} src={src} />;
 }
 ```
 
@@ -48,12 +48,12 @@ function StoryViewer({ src }: { src: string }) {
 
 ```vue
 <template>
-  <reast-player :src="storySrc" @rea-choice="onChoice" />
+  <reast-engine :src="storySrc" @rea-choice="onChoice" />
 </template>
 
 <script setup lang="ts">
-import { registerPlayer } from '@reast/engine/player';
-registerPlayer();
+import { registerEngine } from '@reast/engine/player';
+registerEngine();
 
 const storySrc = './story.reast';
 const onChoice = (e: CustomEvent) => console.log(e.detail);
@@ -64,8 +64,8 @@ const onChoice = (e: CustomEvent) => console.log(e.detail);
 
 ```typescript
 // In your component or app initializer:
-import { registerPlayer } from '@reast/engine/player';
-registerPlayer();
+import { registerEngine } from '@reast/engine/player';
+registerEngine();
 ```
 
 ```typescript
@@ -74,7 +74,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
 
 @Component({
   selector: 'app-story',
-  template: `<reast-player [attr.src]="src"></reast-player>`,
+  template: `<reast-engine [attr.src]="src"></reast-engine>`,
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class StoryComponent {
@@ -87,7 +87,7 @@ export class StoryComponent {
 By default, the player fills its container. Control its size with CSS:
 
 ```css
-reast-player {
+reast-engine {
   width: 100%;
   max-width: 800px;
   height: 600px;
@@ -97,7 +97,7 @@ reast-player {
 For a full-page reader experience:
 
 ```css
-reast-player {
+reast-engine {
   position: fixed;
   inset: 0;
   width: 100dvw;
@@ -110,6 +110,6 @@ reast-player {
 You can embed multiple players on the same page. Each instance is independent:
 
 ```html
-<reast-player src="./story-a.reast"></reast-player>
-<reast-player src="./story-b.reast"></reast-player>
+<reast-engine src="./story-a.reast"></reast-engine>
+<reast-engine src="./story-b.reast"></reast-engine>
 ```

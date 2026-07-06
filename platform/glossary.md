@@ -38,7 +38,7 @@ Key terms used across the Reast platform.
 | **Parser**        | The component that reads Rea source text and produces a structured document tree.      |
 | **Runtime**       | The execution engine that processes commands, manages state, and drives the narrative. |
 | **Renderer**      | The component that converts parsed Rea content into visible HTML/UI elements.          |
-| **Web Component** | The `<reast-player>` custom element that can embed stories on any website.             |
+| **Web Component** | The `<reast-engine>` custom element that can embed stories on any website.             |
 | **Offline mode**  | The ability to read downloaded stories without an internet connection.                 |
 | **Snapshot**      | A serialized capture of the reader's complete state at a point in time.                |
 | **Slug**          | A URL-friendly identifier for a story (e.g., `the-lantern-of-arath`).                  |

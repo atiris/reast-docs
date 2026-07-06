@@ -10,7 +10,7 @@ Initial release of the Rea language specification and `@reast/engine`.
 - Parser: lexer, block parser, inline parser, post-processor, analyser
 - Runtime: interpreter, expression evaluator, state manager, flow navigator
 - Loader: ZIP extraction, AES decryption, manifest parsing, media mapping
-- Player: `<reast-player>` Custom Element with Shadow DOM
+- Player: `<reast-engine>` Custom Element with Shadow DOM
 - Validator: story structure validation with warnings
 - Built-in functions: string, math, array, type, locale categories
 - Security: URI scheme allowlist, path traversal protection, variable name sanitization

@@ -81,7 +81,7 @@ The `@reast/engine` package exposes multiple subpath imports:
 | `@reast/engine/parser`  | Rea language lexer + parser                                      |
 | `@reast/engine/loader`  | `.reast` archive loader (extraction, decryption, manifest)       |
 | `@reast/engine/runtime` | StoryEngine, expression evaluator, state manager                 |
-| `@reast/engine/player`  | `<reast-player>` web component (browser-only)                    |
+| `@reast/engine/player`  | `<reast-engine>` web component (browser-only)                    |
 | `@reast/engine/geo`     | Geo-position utilities                                           |
 | `@reast/engine/errors`  | Error classes and codes                                          |
 | `@reast/engine/types`   | TypeScript type definitions                                      |
