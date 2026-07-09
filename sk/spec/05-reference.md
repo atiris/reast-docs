@@ -191,6 +191,14 @@ Parser validuje:
 | `random()`        | Náhodné číslo 0–1            |
 | `random(min,max)` | Náhodné celé číslo v rozsahu |
 
+**Náhodnosť je zaseedovaná a čítanie sa dá prehrať znova.** `random()`,
+`shuffle()` a všetko, čo na nich stojí (vrátane `std/dice`), čerpá z generátora,
+ktorý vlastní runtime, nie z globálneho zdroja hostiteľa. Príbeh si pri štarte
+vylosuje seed; stav čítania nesie tento seed aj aktuálnu pozíciu generátora,
+takže obnovenie záznamu pokračuje v tej istej postupnosti a vrátenie voľby
+zopakuje hody, ktoré po nej nasledovali. Reštart príbehu si vylosuje nový seed —
+opakované čítanie je naozaj nové hranie.
+
 ### Reťazcové
 
 | Funkcia           | Popis                   |

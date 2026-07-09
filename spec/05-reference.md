@@ -550,6 +550,18 @@ Arrays support method-like calls:
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | `dice(notation)` | Roll dice using standard notation (e.g. `"2d6+3"`). See [Section 21](03-narrative-interaction.md#dice-and-randomization) |
 
+**Randomness is seeded, and a reading is replayable.** `random()`, `shuffle()`
+and everything built on them (including `std/dice`) draw from a generator the
+runtime owns, not from the host's global random source. A story draws one seed
+when it starts; the reading state carries that seed and the generator's current
+position, so restoring a save continues the identical sequence and undoing a
+choice reproduces the rolls that followed it. Restarting a story draws a new
+seed — a re-read is a genuinely new playthrough.
+
+> **Implementation status:** `dice(notation)` and `seed(n)` (see Testing
+> functions) are specified but not implemented. Use `{use "std/dice"}` for dice,
+> and the host's engine option to pin a seed.
+
 ### Device & world functions
 
 | Function             | Description                                                 |
