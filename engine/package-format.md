@@ -88,7 +88,7 @@ preserved and ignored.
   "title": "The Lighthouse",
   "intro": "A storm has cut the island off. The lamp is dark, and the keeper is gone.",
   "cover": "assets/cover.webp",
-  "author": [{ "name": "Jane Doe", "id": "jane", "initials": "JD" }],
+  "author": [{ "name": "Jane Doe", "id": "jane" }],
   "version": "1.2.0",
   "language": "en",
   "direction": "ltr",
@@ -98,6 +98,7 @@ preserved and ignored.
   "tags": ["branching", "mystery"],
   "license": "CC-BY-4.0",
   "parts": [{ "file": "story/part-00001.rea", "name": "Part One" }],
+  "assets": ["assets/cover.webp", { "file": "assets/theme.mp3", "name": "Main theme" }],
   "instruction": "the-lighthouse-guide",
   "readers": [1],
   "age": { "min": 13 },
@@ -124,7 +125,7 @@ preserved and ignored.
 - `title` — string — Display title.
 - `intro` — string — Short intro text shown on the story's envelope / cover.
 - `cover` — string — Archive-relative path to the cover (envelope) image, conventionally `assets/cover.webp`.
-- `author` — `{ name, id?, initials? }[]` — One or more authors. Always the object form; `name` is required, `id` (a platform user id) is present only when the author is a registered account.
+- `author` — `{ name, id? }[]` — One or more authors. Always the object form; `name` (free text) is required, `id` is the author's rea.st slug — it links the manifest author to a profile page on the platform and is present only when the author is a registered account.
 - `version` — string — Author-defined version of this reast.
 - `language` — string — BCP-47 primary language.
 - `direction` — string — Text direction (`ltr` / `rtl`).
@@ -133,6 +134,7 @@ preserved and ignored.
 - `genre`, `tags` — string / string[] — Classification.
 - `license` — string — Distribution licence (e.g. SPDX id).
 - `parts` — `{ file, name }[]` — Ordered story parts; the first is the entry and the array order is the play order. `file` is an archive-relative path (under `story/`); `name` is the part's display name.
+- `assets` — `(string | { file, name? })[]` — Media carried under `assets/`. Each entry is an archive-relative path, either bare (`"assets/gate.webp"`) or as an object with an optional display `name` for authoring tools (`{ "file": "assets/theme.mp3", "name": "Main theme" }`). The loader normalizes a bare string to `{ file }`; a missing `name` means the asset has no display name.
 - `instruction` — string — For a `story`: the linked `instruction` reast (id/slug).
 - `stories` — string[] — For an `instruction`: the `story` reasts it covers.
 - `readers` — number[] — Supported reader counts; a value > 1 marks a cooperative story.

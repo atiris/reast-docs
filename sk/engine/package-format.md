@@ -86,7 +86,7 @@ prípadov, keď od neho závisí nejaká schopnosť; neznáme pole sa zachová a
   "title": "Maják",
   "intro": "Búrka odrezala ostrov. Lampa zhasla a strážca je preč.",
   "cover": "assets/cover.webp",
-  "author": [{ "name": "Jana Nováková", "id": "jana", "initials": "JN" }],
+  "author": [{ "name": "Jana Nováková", "id": "jana" }],
   "version": "1.2.0",
   "language": "sk",
   "direction": "ltr",
@@ -96,6 +96,7 @@ prípadov, keď od neho závisí nejaká schopnosť; neznáme pole sa zachová a
   "tags": ["branching", "mystery"],
   "license": "CC-BY-4.0",
   "parts": [{ "file": "story/part-00001.rea", "name": "Prvá časť" }],
+  "assets": ["assets/cover.webp", { "file": "assets/theme.mp3", "name": "Hlavná téma" }],
   "instruction": "the-lighthouse-guide",
   "readers": [1],
   "age": { "min": 13 },
@@ -122,7 +123,7 @@ prípadov, keď od neho závisí nejaká schopnosť; neznáme pole sa zachová a
 - `title` — string — Zobrazovaný názov.
 - `intro` — string — Krátky úvodný text zobrazený na obálke príbehu.
 - `cover` — string — Cesta k obálke relatívna k archívu, zvyčajne `assets/cover.webp`.
-- `author` — `{ name, id?, initials? }[]` — Jeden alebo viac autorov. Vždy tvar objektu; `name` je povinné, `id` (platformové id používateľa) je prítomné len pri registrovanom účte.
+- `author` — `{ name, id? }[]` — Jeden alebo viac autorov. Vždy tvar objektu; `name` (voľný text) je povinné, `id` je autorov slug na rea.st — prepája autora z manifestu s profilovou stránkou na platforme a je prítomné len pri registrovanom účte.
 - `version` — string — Verzia tohto reastu definovaná autorom.
 - `language` — string — Primárny jazyk podľa BCP-47.
 - `direction` — string — Smer textu (`ltr` / `rtl`).
@@ -131,6 +132,7 @@ prípadov, keď od neho závisí nejaká schopnosť; neznáme pole sa zachová a
 - `genre`, `tags` — string / string[] — Klasifikácia.
 - `license` — string — Licencia distribúcie (napr. SPDX id).
 - `parts` — `{ file, name }[]` — Usporiadané časti; prvá je vstupná a poradie poľa je poradie prehrávania. `file` je cesta v archíve (v `story/`), `name` je zobrazovaný názov časti.
+- `assets` — `(string | { file, name? })[]` — Médiá v `assets/`. Každá položka je cesta relatívna k archívu, buď holá (`"assets/gate.webp"`), alebo objekt s voliteľným zobrazovaným názvom `name` pre autorské nástroje (`{ "file": "assets/theme.mp3", "name": "Hlavná téma" }`). Loader normalizuje holý reťazec na `{ file }`; chýbajúce `name` znamená, že médium nemá zobrazovaný názov.
 - `instruction` — string — Pre `story`: prepojený `instruction` reast (id/slug).
 - `stories` — string[] — Pre `instruction`: `story` reasty, ktoré pokrýva.
 - `readers` — number[] — Podporované počty čitateľov; hodnota > 1 značí kooperatívny príbeh.

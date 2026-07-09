@@ -79,7 +79,7 @@ The manifest is the single source of all story metadata, permissions, and platfo
   "manifest": "1.0",
   "type": "story",
   "title": "The Last Lantern",
-  "author": [{ "name": "Elena Voss", "id": "019d8a2b-1234-7000-8000-abcdef012345" }],
+  "author": [{ "name": "Elena Voss", "id": "elena-voss" }],
   "version": "1.0.0",
   "language": "en",
   "genre": "fantasy",
@@ -91,6 +91,7 @@ The manifest is the single source of all story metadata, permissions, and platfo
     { "file": "story/part-00001.rea", "name": "The Silence" },
     { "file": "story/part-00002.rea", "name": "The Lantern" }
   ],
+  "assets": ["assets/cover.webp", { "file": "assets/theme.mp3", "name": "Main theme" }],
   "readers": [1, 2, 3, 4, 5],
   "age": { "min": 12 },
   "sensors": ["gps", "camera"],
@@ -107,7 +108,7 @@ The manifest is the single source of all story metadata, permissions, and platfo
 | `manifest`         | string   | Manifest schema version (currently `"1.0"`)                                                                                   |
 | `type`             | string   | `"story"` (read by readers, default) or `"instruction"` (moderator guide — see [Instruction reasts](#instruction-reasts))     |
 | `title`            | string   | Story title                                                                                                                   |
-| `author`           | object[] | Author entries: `[{ "name": "Elena Voss", "id": "..." }]`                                                                     |
+| `author`           | object[] | Author entries: `[{ "name": "Elena Voss", "id": "elena-voss" }]` — `name` is free text; optional `id` is the author's rea.st slug (links to their profile page) |
 | `language`         | string   | BCP 47 language code (`en`, `sk`, `ja`, etc.)                                                                                 |
 | `direction`        | string   | Text direction: `"ltr"` (default), `"rtl"`. Inferred from `language` if omitted                                               |
 | `version`          | string   | Semantic version of the story                                                                                                 |
@@ -119,6 +120,7 @@ The manifest is the single source of all story metadata, permissions, and platfo
 | `tags`             | string[] | Tags for discovery: `["fantasy", "adventure"]`                                                                                |
 | `license`          | string   | License identifier                                                                                                            |
 | `parts`            | object[] | Ordered `{ file, name }` parts; first is the entry, array order is play order                                                 |
+| `assets`           | array    | Media under `assets/`: each entry a bare path (`"assets/gate.webp"`) or `{ "file": "assets/theme.mp3", "name": "Main theme" }` — the loader normalizes a bare string to `{ file }`; a missing `name` means no display name |
 | `instruction`      | string   | For a `story`: the linked `instruction` reast (id/slug)                                                                       |
 | `stories`          | string[] | For an `instruction`: the `story` reasts it covers                                                                            |
 | `readers`          | number[] | Supported reader counts: `[1]` (solo), `[1, 2, 4]` (tested for 1, 2, or 4), `[]` (any count), `[0]` (no player config needed) |

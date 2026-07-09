@@ -70,6 +70,7 @@ manifest.
     { "file": "story/part-00001.rea", "name": "Úvod" },
     { "file": "story/part-00002.rea", "name": "Druhá kapitola" }
   ],
+  "assets": ["assets/cover.webp", { "file": "assets/theme.mp3", "name": "Hlavná téma" }],
   "sensors": [],
   "allowed_urls": []
 }
@@ -84,7 +85,7 @@ manifest.
 | `type`     | string | "story" (predvolené) alebo "instruction"    |
 | `id`       | string | UUID identifikátor diela                    |
 | `title`    | string | Názov príbehu                               |
-| `authors`  | array  | Zoznam autorov `{name, id?}`                |
+| `authors`  | array  | Zoznam autorov `{name, id?}` — `name` je voľný text, voliteľné `id` je autorov slug na rea.st (odkaz na profilovú stránku) |
 | `language` | string | BCP 47 kód jazyka                           |
 | `parts`    | array  | Zoznam častí `{file, name}` v poradí        |
 
@@ -100,6 +101,7 @@ manifest.
 | `tier`         | string   | "basic" / "premium" / "paid" / "commercial" |
 | `version`      | string   | Semver verzia obsahu                        |
 | `audience`     | object   | `{min, max}` vekový rozsah                  |
+| `assets`       | array    | Médiá v `assets/`: každá položka je holá cesta (`"assets/gate.webp"`) alebo `{ "file": "assets/theme.mp3", "name": "Hlavná téma" }` — loader normalizuje holý reťazec na `{ file }`; chýbajúce `name` znamená bez zobrazovaného názvu |
 | `sensors`      | string[] | Vyžadované hardvérové senzory               |
 | `duration`     | number   | Odhadovaný čas čítania v minútach           |
 | `allowed_urls` | array    | `{alias, url}` povolené externé URL         |
