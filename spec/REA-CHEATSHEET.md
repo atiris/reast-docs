@@ -126,6 +126,39 @@ Hello, {player.name}! You have {player.gold} gold.
 
 ---
 
+## Extensions (`.rext`)
+
+```rea
+{use "extensions/inventory" as inv}   Import a bundled extension (path omits .rext)
+{inv.total_weight()}                  Call an exported function
+{use "std/dice" as dice}              Standard library — always available, offline
+{dice.roll(2, 6)}                     std/dice: d(sides) roll(n,sides) advantage/disadvantage
+```
+
+A `.rext` is declaration-only (functions, top-level `{set}`, `{use}`, comments —
+no prose) and is never encrypted. Only `{use}` activates one; a `.rext` can never
+be the entry story. Story files may declare **private** `{function}`s; only
+extensions export. Host (JavaScript) extensions are provided by the embedder and
+declared via `manifest.requires`.
+
+---
+
+## Localization & Dates
+
+```rea
+{plural(count, one="{} coin", other="{} coins")}   CLDR plural, host locale
+{select(pronoun, he="his", she="her", other="their")}
+{ordinal(3)}                          "3rd" (en only); other locales get "3"
+{formatNumber(1234567, "sk")}         Locale number format (2nd arg = locale)
+{formatDate(world.date, "long")}      style: iso | short | medium | long | full
+{formatTime(now(), "short")}   {formatDateTime(now(), "iso")}
+```
+
+The host supplies locale and formatting policy. `calendar()` is specified but not
+yet implemented.
+
+---
+
 ## Dialogue
 
 ```rea

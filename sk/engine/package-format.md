@@ -26,11 +26,19 @@ my-story.reast              (ZIP kontajner)
 ├── story/
 │   ├── part-00001.rea      vstupná časť (prvá v manifest.parts)
 │   └── part-00002.rea      ďalšie časti (v poradí podľa manifestu)
+├── extensions/             voliteľné Rea rozširovacie moduly (.rext)
+│   ├── inventory.rext
+│   └── dice_tables.rext
 └── assets/
     ├── cover.webp
     ├── scene.webp
     └── theme.mp3
 ```
+
+Rozširovacie moduly (`.rext`) sú iba deklaratívny Rea kód, ktorý autor `{use}`
+z príbehu — pozri [Rozširovanie](extending). Podľa konvencie žijú v
+`extensions/`. Ich prítomnosť ich nikdy neaktivuje (viaže ich až `{use}`) a
+**`.rext` nikdy nemôže byť vstupným príbehom**.
 
 ### Plochý
 
@@ -52,8 +60,9 @@ Pravidlá, ktoré kompatibilný čitateľ vynucuje:
   **max. 50 MB rozbalených, max. 500 položiek**, a každá položka, ktorej cesta
   uniká mimo koreňa archívu (path traversal), je odmietnutá.
 - **Vstupný príbeh** je prvá položka v `manifest.parts` (s manifestom) alebo
-  abecedne prvý `*.rea` súbor (plochý). V balíčku s manifestom sa časti načítajú
-  v poradí uvedenom v `manifest.parts`.
+  abecedne prvý `*.rea` súbor (plochý). Rozširovací modul `.rext` nikdy nie je
+  spôsobilý ako vstupný. V balíčku s manifestom sa časti načítajú v poradí
+  uvedenom v `manifest.parts`.
 - Médiá sa z príbehu odkazujú cestou relatívnou k archívu a pri načítaní sa
   mapujú na blob URL v pamäti — žiadne médium sa nesťahuje zo siete.
 - `reast.json`, ak je prítomný, sú voliteľné nastavenia relácie (prednastavené
@@ -132,6 +141,8 @@ prípadov, keď od neho závisí nejaká schopnosť; neznáme pole sa zachová a
 - `sensors` — string[] — Schopnosti zariadenia, ktoré príbeh požaduje (napr. `geolocation`).
 - `accessibility` — string[] — Tipy prístupnosti, ktoré príbeh ctí.
 - `allowed_urls` — `{ alias, url, params? }[]` — Povolené externé endpointy, ktoré príbeh môže volať.
+- `extensions` — string[] — Voliteľné. **Iba poradie načítania** `.rext` — prítomnosť modul nikdy neaktivuje; viaže ho až `{use}` v príbehu. Uvedená položka chýbajúca v archíve zlyhá načítanie. Pri absencii sa rozšírenia načítajú v lexikografickom poradí ciest. Pozri [Rozširovanie](extending).
+- `requires` — string[] — Menné priestory hostiteľských rozšírení, na ktorých príbeh závisí (napr. `["host"]`). Embedder, ktorý nezaregistroval žiadne rozšírenie pre vyžadovaný menný priestor, odmietne načítanie, namiesto toho aby odpovedal zle uprostred príbehu. Pozri [Rozširovanie](extending).
 - `offline` — boolean — Či je príbeh plne hrateľný offline.
 - `preview` — boolean — Označuje náhľadové/ukážkové zostavenie.
 - `integrity` — `Record<path, hash>` — SHA-256 hashe jednotlivých súborov pre detekciu manipulácie.
@@ -173,3 +184,7 @@ uvedeného súboru a pri nezhode odmietne balíček načítať. Balíčky môžu
 niesť polia `signed` / `signature` pre overenie pôvodu na úrovni autora.
 Šifrované balíčky sa pred rozbalením dešifrujú (AES); dešifrovací kľúč sa
 dodáva mimo archívu, nikdy nie v ňom.
+
+**Kód rozšírenia (`.rext`) sa nikdy nešifruje** — musí zostať auditovateľný bez
+kľúča (validácia, linting, moderovanie) a nesmie sa objaviť uprostred príbehu za
+odomykacím kódom (pozri [špecifikáciu jazyka](../spec/05-reference#extension-modules-rext)).

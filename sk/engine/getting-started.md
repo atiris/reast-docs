@@ -1,5 +1,26 @@
 # Začíname
 
+## Čo engine je
+
+`@reast/engine` je frameworkovo nezávislá knižnica plus custom element `<reast-engine>`, ktorý v prehliadači načíta, parsuje, vyhodnotí a vykreslí interaktívny Rea príbeh. Standalone build má približne 57 KB v gzipe a bez runtime závislostí — jediná, `fflate`, slúži len na rozbalenie ZIP archívu `.reast`.
+
+### Čo robí
+
+Engine beží štvorstupňovú pipeline:
+
+- **Loader** — rozbalí archív `.reast`: extrahuje súbory, prečíta manifest, namapuje vložené médiá na blob URL v pamäti, skompiluje `.rext` rozšírenia.
+- **Parser** — premení zdroj `.rea` na AST (`ReaDocument`).
+- **Runtime** — vyhodnotí premenné, podmienky, voľby a tok.
+- **Player** — vykreslí prístupný, sémantický DOM s typewriter efektom.
+
+### Čo zámerne nerobí
+
+Toto je časť, ktorú embedderi potrebujú vedieť najskôr. Engine nikdy nesiaha na žiadne API zariadenia, úložiska ani siete mimo standalone buildu. Schopnosť si *vyžiada* emitovaním eventu a odpoveď *dostane* ako premennú — vypýtať povolenie je vždy úloha hostiteľa. Emituje sémantiku, nie vzhľad: rozhodne, že niečo *je* nadpis úrovne 2; ako to vyzerá, rozhodne hostiteľ. Nedodáva lightbox, ovládanie prehrávača médií, perzistenciu ani autentifikáciu. Tie dodáva hostiteľ — pozri [Vkladanie](embedding) a [Rozširovanie](extending).
+
+### Pre koho to je
+
+Ak chcete len publikovať príbeh, stačí vám [CDN snippet](#cdn-bez-nastavovania) nižšie. Ak ste platforma integrujúca engine do väčšej aplikácie, prečítajte si [Vkladanie](embedding) a [Rozširovanie](extending).
+
 ## Požiadavky
 
 - Ľubovoľný moderný prehliadač (Chrome, Firefox, Safari, Edge)
@@ -83,12 +104,16 @@ Player emituje custom udalosti, na ktoré môžete počúvať:
 ```javascript
 const player = document.querySelector('reast-engine');
 
-player.addEventListener('rea-loaded', (e) => {
-  console.log('Príbeh načítaný:', e.detail.title);
+player.addEventListener('rea-loaded', () => {
+  console.log('Príbeh načítaný a vykreslený');
+});
+
+player.addEventListener('rea-metadata', (e) => {
+  console.log('Názov:', e.detail.title);
 });
 
 player.addEventListener('rea-choice', (e) => {
-  console.log('Čitateľ si vybral:', e.detail.label);
+  console.log('Čitateľ si vybral možnosť', e.detail.index, 'zo skupiny', e.detail.nodeId);
 });
 
 player.addEventListener('rea-complete', () => {

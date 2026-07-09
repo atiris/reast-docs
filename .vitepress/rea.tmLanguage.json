@@ -1,7 +1,7 @@
 {
   "name": "rea",
   "scopeName": "source.rea",
-  "fileTypes": ["rea"],
+  "fileTypes": ["rea", "rext"],
   "patterns": [
     { "include": "#comment-block" },
     { "include": "#comment-inline" },

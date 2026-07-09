@@ -126,6 +126,39 @@ Ahoj, {player.name}! Máš {player.gold} zlatých.
 
 ---
 
+## Rozšírenia (`.rext`)
+
+```rea
+{use "extensions/inventory" as inv}   Import zabaleného rozšírenia (cesta bez .rext)
+{inv.total_weight()}                  Volanie exportovanej funkcie
+{use "std/dice" as dice}              Štandardná knižnica — vždy dostupná, offline
+{dice.roll(2, 6)}                     std/dice: d(sides) roll(n,sides) advantage/disadvantage
+```
+
+`.rext` obsahuje iba deklarácie (funkcie, `{set}` na najvyššej úrovni, `{use}`,
+komentáre — žiadna próza) a nikdy sa nešifruje. Aktivuje ho iba `{use}`; `.rext`
+sa nikdy nestane vstupným príbehom. Súbory príbehu môžu deklarovať **súkromné**
+`{function}`; exportujú iba rozšírenia. Hostiteľské (JavaScript) rozšírenia dodáva
+embedder a deklarujú sa cez `manifest.requires`.
+
+---
+
+## Lokalizácia a dátumy
+
+```rea
+{plural(count, one="{} minca", other="{} mincí")}   CLDR množné číslo, locale hostiteľa
+{select(pronoun, he="jeho", she="jej", other="ich")}
+{ordinal(3)}                          "3rd" (iba en); ostatné locale dostanú "3"
+{formatNumber(1234567, "sk")}         Formát čísla podľa locale (2. arg = locale)
+{formatDate(world.date, "long")}      style: iso | short | medium | long | full
+{formatTime(now(), "short")}   {formatDateTime(now(), "iso")}
+```
+
+Hostiteľ dodáva locale a politiku formátovania. `calendar()` je špecifikovaný, ale
+zatiaľ neimplementovaný.
+
+---
+
 ## Dialóg
 
 ```rea

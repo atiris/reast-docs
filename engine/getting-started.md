@@ -1,5 +1,40 @@
 # Getting Started
 
+## What the engine is
+
+`@reast/engine` is a framework-agnostic library plus a `<reast-engine>` custom
+element that loads, parses, evaluates and renders a Rea interactive story in a
+browser. The standalone build is roughly 57 KB gzipped and has zero runtime
+dependencies — one, `fflate`, is used only to unpack the `.reast` ZIP.
+
+### What it does
+
+The engine runs a four-stage pipeline:
+
+- **Loader** — unpacks the `.reast` archive: extracts files, reads the
+  manifest, maps embedded media to in-memory blob URLs, compiles `.rext`
+  extensions.
+- **Parser** — turns `.rea` source into an AST (`ReaDocument`).
+- **Runtime** — evaluates variables, conditions, choices and flow.
+- **Player** — renders accessible, semantic DOM with a typewriter reveal.
+
+### What it deliberately does not do
+
+This is the part embedders most need to know up front. The engine never touches
+a device, storage or network API outside the standalone build. It *requests* a
+capability by emitting an event and *receives* the answer as a variable —
+asking for the permission is always the host's job. It emits semantics, not
+looks: it decides that something *is* a level-2 heading; the host decides what
+that looks like. It ships no lightbox, no media-player chrome, no persistence,
+no auth. Those are the host's to supply — see [Embedding](embedding) and
+[Extending](extending).
+
+### Who this is for
+
+If you just want to publish a story, the [CDN snippet](#cdn-zero-setup) below is
+all you need. If you are a platform integrating the engine into a larger app,
+read [Embedding](embedding) and [Extending](extending).
+
 ## Requirements
 
 - Any modern browser (Chrome, Firefox, Safari, Edge)
@@ -83,12 +118,16 @@ The player emits custom events you can listen to:
 ```javascript
 const player = document.querySelector('reast-engine');
 
-player.addEventListener('rea-loaded', (e) => {
-  console.log('Story loaded:', e.detail.title);
+player.addEventListener('rea-loaded', () => {
+  console.log('Story loaded and rendered');
+});
+
+player.addEventListener('rea-metadata', (e) => {
+  console.log('Title:', e.detail.title);
 });
 
 player.addEventListener('rea-choice', (e) => {
-  console.log('Reader chose:', e.detail.label);
+  console.log('Reader chose option', e.detail.index, 'of group', e.detail.nodeId);
 });
 
 player.addEventListener('rea-complete', () => {

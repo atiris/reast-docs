@@ -25,11 +25,19 @@ my-story.reast              (ZIP container)
 ├── story/
 │   ├── part-00001.rea      the entry part (first in manifest.parts)
 │   └── part-00002.rea      additional parts (in manifest order)
+├── extensions/             optional Rea extension modules (.rext)
+│   ├── inventory.rext
+│   └── dice_tables.rext
 └── assets/
     ├── cover.webp
     ├── scene.webp
     └── theme.mp3
 ```
+
+Extension modules (`.rext`) are declaration-only Rea code an author `{use}`s
+from a story — see [Extending](extending). By convention they live under
+`extensions/`. Their presence never activates them (only `{use}` binds one), and
+**a `.rext` can never be the entry story**.
 
 ### Flat
 
@@ -51,8 +59,9 @@ Rules a compliant reader enforces:
   uncompressed, max 500 entries**, and any entry whose path escapes the archive
   root (path traversal) is rejected.
 - The **entry story** is the first entry in `manifest.parts` (packaged), or the
-  alphabetically-first `*.rea` file (flat). In a packaged archive the parts load
-  in the order listed in `manifest.parts`.
+  alphabetically-first `*.rea` file (flat). A `.rext` extension module is never
+  eligible as the entry. In a packaged archive the parts load in the order
+  listed in `manifest.parts`.
 - Media files are referenced from the story by their archive-relative path and
   mapped to in-memory blob URLs at load time — no media is fetched from the
   network.
@@ -134,6 +143,13 @@ preserved and ignored.
 - `sensors` — string[] — Device capabilities the story requests (e.g. `geolocation`).
 - `accessibility` — string[] — Accessibility hints the story honours.
 - `allowed_urls` — `{ alias, url, params? }[]` — Whitelisted external endpoints the story may call.
+- `extensions` — string[] — Optional. `.rext` load **order only** — presence
+  never activates a module; only a `{use}` in the story binds one. A listed
+  entry missing from the archive fails the load. Absent, extensions load in
+  lexicographic path order. See [Extending](extending).
+- `requires` — string[] — Host-extension namespaces the story depends on (e.g.
+  `["host"]`). An embedder that registered no extension for a required namespace
+  refuses the load rather than answering wrong mid-story. See [Extending](extending).
 - `offline` — boolean — Whether the story is fully playable offline.
 - `preview` — boolean — Marks a preview/sample build.
 - `integrity` — `Record<path, hash>` — Per-file SHA-256 hashes for tamper detection.
@@ -174,3 +190,7 @@ file and refuses to load the package on mismatch. Packages may additionally
 carry `signed` / `signature` fields for author-level provenance. Encrypted
 packages are decrypted (AES) before extraction; the decryption key is supplied
 out of band, never inside the archive.
+
+**Extension code (`.rext`) is never encrypted** — it must stay auditable
+without a key (validation, linting, moderation) and must never materialise
+mid-story behind an unlock code (see the [language spec](../spec/05-reference#extension-modules-rext)).

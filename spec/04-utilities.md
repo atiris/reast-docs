@@ -10,6 +10,12 @@
 
 Rea provides built-in functions for grammatically correct text across all languages. These replace any need for custom condition syntax by leveraging CLDR plural rules and standard internationalization APIs.
 
+> **Requirement:** the **host supplies the locale and formatting policy**. Plural
+> and ordinal categories, number grouping and date/time styles are all resolved
+> from CLDR via `Intl` for the host-supplied locale — the engine bakes in no
+> per-language table. A story renders identically wherever a host declares the
+> same locale.
+
 ### Pluralization with `plural()`
 
 The `plural()` function maps a count to the correct grammatical form using CLDR plural categories. Categories vary by language — English has 2 (`one`, `other`), Slovak has 4 (`one`, `few`, `many`, `other`), Arabic has 6.
@@ -39,7 +45,7 @@ For 1: "1 pero", for 3: "3 perá", for 5: "5 pier".
 | `many`   | 5+ items        | Polish, Russian, Arabic           |
 | `other`  | default         | All languages (required fallback) |
 
-The runtime resolves categories based on the story's `language` metadata. Authors only provide the categories their language requires — `other` is the mandatory fallback.
+The runtime resolves categories through `Intl.PluralRules` for the host-supplied locale. Authors only provide the categories their language requires — `other` is the mandatory fallback, and an explicit `zero` template always wins for a count of 0 (an author affordance CLDR does not model for most locales).
 
 ### Text selection with `select()`
 
@@ -57,29 +63,38 @@ The `select()` function maps a string value to text variants. Use it for gender,
 {select(reader.class, warrior="You swing your blade", mage="You cast a spell", other="You act")}
 ```
 
-### Number formatting with `format()`
+### Number formatting with `formatNumber()`
 
-The `format()` function delegates to locale-aware number formatting (equivalent to `Intl.NumberFormat`):
+The `formatNumber()` function delegates to locale-aware number formatting
+(`Intl.NumberFormat`). It defaults to the **host-supplied engine locale**; an
+optional second positional argument overrides it with a specific BCP 47 tag:
 
 ```rea
-Score: {format(player.score, style="decimal", grouping=true)}
+Score: {formatNumber(player.score)}
+Localised: {formatNumber(1234567, "sk")}
 ```
 
-| Parameter      | Values                            | Default      |
-| -------------- | --------------------------------- | ------------ |
-| `style`        | `decimal`, `percent`, `currency`  | `decimal`    |
-| `grouping`     | `true`, `false`                   | `false`      |
-| `min_fraction` | integer (minimum decimal digits)  | `0`          |
-| `max_fraction` | integer (maximum decimal digits)  | `3`          |
-| `currency`     | ISO 4217 code (e.g. `EUR`, `USD`) | story locale |
+| Parameter                | Values                            | Default        |
+| ------------------------ | --------------------------------- | -------------- |
+| _(2nd positional)_       | BCP 47 locale tag                 | engine locale  |
+| `style`                  | `decimal`, `percent`, `currency`  | `decimal`      |
+| `currency`               | ISO 4217 code (e.g. `EUR`, `USD`) | —              |
+| `minimumFractionDigits`  | integer (minimum decimal digits)  | `Intl` default |
+| `maximumFractionDigits`  | integer (maximum decimal digits)  | `Intl` default |
+
+Grouping (thousands separators), decimal count and symbols follow the locale's
+CLDR data. On any `Intl` error (malformed tag, invalid option combination) the
+value falls back to its plain string form.
 
 ```rea
-Price: {format(item.price, style="currency", currency="EUR")}
-Chance: {format(hit_rate, style="percent")}
-Distance: {format(meters, min_fraction=1, max_fraction=1)} m
+Price: {formatNumber(item.price, style="currency", currency="EUR")}
+Chance: {formatNumber(hit_rate, style="percent")}
+Distance: {formatNumber(meters, maximumFractionDigits=1)} m
 ```
 
 ### Fantasy calendars with `calendar()`
+
+> **Implementation status:** `calendar()` is specified but not yet implemented.
 
 The `calendar()` function maps real date components to custom names — perfect for fantasy world-building:
 
@@ -107,7 +122,13 @@ Day of {calendar(world.date, weekday="Moonday,Fireday,Waterday,Earthday,Windday,
 You finished in {ordinal(position)} place.
 ```
 
-Returns locale-appropriate ordinals: `1st`, `2nd`, `3rd` in English; `1.`, `2.`, `3.` in Slovak/German.
+The ordinal category (one/two/few/other) comes from `Intl.PluralRules(locale, { type: "ordinal" })` for the host-supplied locale. Without named args, `ordinal()` appends the English suffixes `st`/`nd`/`rd`/`th` **only for `en*` locales**; every other locale receives the locale-formatted number with no suffix, because `Intl` carries no ordinal spell-out data and inventing suffixes per language would be wrong. Authors who want suffixes in another language pass per-category templates, where `{}` is replaced by the formatted number:
+
+```rea
+{ordinal(position, one="{}.", other="{}.")}
+```
+
+So `ordinal(1)` is `1st` in English and `1` in German; the templated form yields `1.` in either.
 
 ---
 
@@ -184,6 +205,42 @@ The encryption model ensures:
 - **Forward secrecy** — each lock block uses a unique IV; compromising one doesn't expose others
 - **Browser compatibility** — all algorithms work in Chrome, Firefox, Safari, and Edge via `SubtleCrypto`
 - **Offline-capable** — soft locks decrypt locally without server contact
+
+### Extension code is never encrypted
+
+Content protection covers **prose only**. The loader rejects an encrypted `.rext`
+extension outright. Encryption is content protection, not a security boundary —
+the sandbox constrains an extension identically whether or not its source is
+encrypted — so forbidding it costs nothing defensively and buys three things:
+code is validated **before** prose runs (an unlock code can arrive mid-story, and
+code that materialises after the reader is committed fails at the worst moment);
+code is **auditable without a key** (`reast validate`, the editor, platform
+moderation); and a third-party embedder without the key can still run the story's
+logic. See [Extensibility](05-reference.md#31-extensibility) for the full rule.
+
+To keep a secret out of an extension while still checking it, keep the function
+generic and plaintext and put the secret in an **encrypted `.rea` chapter** via
+`{set}`, then verify *against* that variable rather than embedding it:
+
+```rea
+{// extensions/gate.rext — plaintext, generic, holds no secret}
+{function unlocked(given, expected) begin}
+  {return given = expected}
+{end function}
+```
+
+```rea
+{// an encrypted .rea chapter carries the secret}
+{set crypt.passphrase = "moonlit-antler"}
+```
+
+The caveat, stated plainly: an encrypted `.rea` is **not** a secret from a
+determined reader. The key reaches their device in order to render the chapter,
+so `crypt.passphrase` is extractable. It protects against spoilers, casual
+peeking and grepping the archive — not against a motivated attacker. Anything
+that must be genuinely unforgeable (a competition answer, a paid unlock) has to
+be verified **server-side** (see [Hard lock](#hard-lock)), which is the
+platform's job, not the engine's.
 
 ---
 
@@ -271,7 +328,7 @@ Rea distinguishes three categories of errors:
 | --------------------- | ---------------- | ---------------------------------------------------------------------------- |
 | **Parse error**       | Before execution | Syntax errors, unclosed blocks, malformed metadata, invalid nesting          |
 | **Runtime error**     | During execution | Undefined variable, division by zero, missing divert target, recursion limit |
-| **Environment error** | During execution | Missing media file, failed `{include}`, sensor unavailable, network failure  |
+| **Environment error** | During execution | Missing media file, sensor unavailable, network failure                      |
 
 Parse errors are always reported before the story runs (in strict mode) or silently patched (in graceful mode). Runtime and environment errors occur during story execution and are subject to graceful degradation.
 
@@ -291,8 +348,7 @@ By default, Rea fails gracefully — the reader's experience is never broken:
 | Missing voice/TTS                  | Silently skipped                                                                                                |
 | Unclosed block `{if begin}` at EOF | Auto-closed at end of file                                                                                      |
 | Unknown command `{magic}`          | Treated as print expression                                                                                     |
-| Failed `{include "file.rea"}`      | Include silently ignored (as if file was empty)                                                                 |
-| Failed plugin command              | Plugin output treated as empty                                                                                  |
+| Unknown host command `{ns.cmd a}`  | Treated as print expression (namespace not registered)                                                          |
 | Sensor unavailable                 | `world.has("sensor")` returns `false`; see [Section 21](03-narrative-interaction.md#21-real-world-interactions) |
 
 ### Strict mode
@@ -312,8 +368,8 @@ Example strict mode warnings:
 ⚠ Line 87: Unclosed block command {if begin} opened at line 83
 ⚠ Line 15: Missing media "media/castle.jpg" — file not found in package
 ⚠ Line 63: Expression error in {1 / 0} — division by zero
-⚠ Line 10: Include "lib/missing.rea" — file not found in package
-⚠ Line 25: Plugin "compass" failed — function "bearing" is not defined
+⚠ Line 10: {use "extensions/missing"} — no such extension in the package
+⚠ Line 25: Unknown function "bearing" — did you forget a {use}?
 ```
 
 **Strict mode features:**
@@ -322,7 +378,7 @@ Example strict mode warnings:
 - Line numbers in all warnings
 - Highlights unclosed blocks with the opening line reference
 - Validates media references against the package manifest
-- Validates `{include}` paths against the package structure
+- Validates `{use}` targets against the package's extensions
 
 ### Fallback values
 

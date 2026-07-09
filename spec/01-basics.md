@@ -6,6 +6,35 @@
 
 ---
 
+## What Rea Is
+
+Rea is a plain-text markup language for interactive stories. Its defining property is that **plain text is already a valid Rea document** — an ordinary paragraph of prose is a complete, renderable story. Formatting, choices, variables, logic, multimedia, cooperative reading and real-world interaction are all opt-in additions layered on top of prose. Nothing is required; you reach for syntax only when you need it.
+
+Rea exists for branching narrative that a person can write in a text editor and diff in git, and that a machine can validate, render and sandbox. The same file is readable by a human and executable by the engine — there is no separate compiled form.
+
+The three stages below are all valid Rea. The first line is already a complete story; the second adds one variable, the third one choice:
+
+```rea
+The road forked at the old oak.
+
+{set player.torch = true}
+
+* [Take the left path]
+* [Take the right path]
+```
+
+### File types
+
+- **`.rea`** — a story file: prose plus any opt-in Rea syntax.
+- **`.rext`** — a Rea *extension* module: declaration-only (functions, top-level `{set}` constants, `{use}` and comments — no prose). See [Extensibility](05-reference.md#31-extensibility).
+- **`.reast`** — the distributable ZIP package: one or more `.rea` files, optional `.rext` extensions and media, plus a `manifest.json`. See [File Format & Packaging](05-reference.md#28-file-format--packaging).
+
+### What Rea is not
+
+Rea is not a general-purpose programming language, not HTML and not a game engine. Its functions are sandboxed and intentionally limited, its rendering is platform-controlled, and it has no raw markup passthrough. For the full list of deliberate exclusions, see [What Rea intentionally omits](05-reference.md#what-rea-intentionally-omits).
+
+---
+
 ## 1. Document Structure
 
 Rea stories exist in a hierarchy:

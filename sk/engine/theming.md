@@ -1,74 +1,136 @@
 # Témy
 
-Reast Engine používa CSS custom properties pre vizuálne prispôsobenie. Prepíšte ich na elemente `<reast-engine>` alebo na ľubovoľnom predkovi.
+Reast Engine sa témuje cez CSS custom properties, všetky s prefixom `--re-`.
+Prepíšte ich na elemente `<reast-engine>` alebo na ľubovoľnom predkovi — hodnoty
+sa dedia cez hranicu Shadow DOM.
 
-## Dostupné vlastnosti
+## Dva štýlové zošity
 
-### Typografia
+Engine dodáva dva adoptované stylesheety:
 
-| Vlastnosť              | Predvolená hodnota                  | Popis                  |
-| ---------------------- | ----------------------------------- | ---------------------- |
-| `--reast-font-body`    | `Georgia, 'Times New Roman', serif` | Font tela textu        |
-| `--reast-font-heading` | `inherit`                           | Font nadpisov          |
-| `--reast-font-mono`    | `'Courier New', monospace`          | Font kódu/raw blokov   |
-| `--reast-font-size`    | `1.125rem`                          | Základná veľkosť fontu |
-| `--reast-line-height`  | `1.7`                               | Základná výška riadku  |
+- **`playerStyles`** — štrukturálne štýly, adoptované **každým** elementom. Jeho
+  predvolené farby a typografia sa opierajú o `inherit`, `currentColor` a
+  `transparent`, takže nenaštýlovaný embed **prevezme vzhľad hostiteľskej
+  stránky** namiesto toho, aby vnucoval vlastný. Holý `<reast-engine>` vo vašej
+  aplikácii zdedí váš font, farbu aj pozadie.
+- **`standaloneStyles`** — vyhranená čitateľská paleta (farby, fonty, remapy pre
+  dark mode a vysoký kontrast a predvolený lightbox overlay). Adoptuje ju
+  **iba standalone CDN build**, navrch `playerStyles`.
+
+Takže CDN snippet vyzerá navrhnuto hneď po vybalení, kým embedovaný element
+vyzerá ako súčasť vášho webu, kým si ho nenaštýlujete.
+
+## Custom properties
+
+„Embedded" je to, čo nenaštýlovaný embed dostane z `playerStyles`; „Standalone"
+je to, čo `standaloneStyles` priradí v CDN builde.
+
+### Rozloženie
+
+| Vlastnosť | Predvolená | Popis |
+| --- | --- | --- |
+| `--re-max-width` | `42rem` | Maximálna šírka obsahu |
+| `--re-padding` | `1.5rem` | Vnútorné odsadenie |
 
 ### Farby
 
-| Vlastnosť                    | Predvolená (svetlá) | Popis                           |
-| ---------------------------- | ------------------- | ------------------------------- |
-| `--reast-color-text`         | `#1a1a2e`           | Primárna farba textu            |
-| `--reast-color-bg`           | `#ffffff`           | Farba pozadia                   |
-| `--reast-color-accent`       | `#6c5ce7`           | Akcentová farba (voľby, odkazy) |
-| `--reast-color-accent-hover` | `#5a4bd4`           | Stav pri hoveri akcentu         |
-| `--reast-color-muted`        | `#6b7280`           | Sekundárny/stlmený text         |
-| `--reast-color-border`       | `#e5e7eb`           | Farba okrajov                   |
+| Vlastnosť | Embedded | Standalone (svetlá) | Popis |
+| --- | --- | --- | --- |
+| `--re-color-bg` | `transparent` | `#faf9f6` | Pozadie |
+| `--re-color-text` | `inherit` | `#1f1f2e` | Text tela |
+| `--re-color-heading` | dedí text | dedí text | Farba nadpisov |
+| `--re-color-text-muted` | `inherit` | `#5c5c6e` | Stlmený/sekundárny text |
+| `--re-color-border` | `currentColor` | `#d4d4d8` | Okraje |
+| `--re-color-accent` | `currentColor` | `#5b4fc7` | Akcent / odkazy |
+| `--re-color-accent-hover` | `currentColor` | `#4a3fb0` | Akcent pri hoveri |
+| `--re-color-code-bg` | tint `currentColor` | `rgba(0,0,0,0.06)` | Pozadie kódu |
+| `--re-color-danger` | `#dc2626` | `#dc2626` | Farba chyby |
+| `--re-color-highlight` | priesvitná žltá | priesvitná žltá | Pozadie zvýrazňovacej značky |
+| `--re-color-choice-bg` | `transparent` | `rgba(91,79,199,0.06)` | Pozadie voľby |
+| `--re-color-choice-border` | tint `currentColor` | `rgba(91,79,199,0.2)` | Okraj voľby |
+| `--re-color-choice-bg-hover` | tint `currentColor` | `rgba(91,79,199,0.12)` | Pozadie voľby pri hoveri |
 
-### Medzery
+### Typografia
 
-| Vlastnosť                | Predvolená | Popis                           |
-| ------------------------ | ---------- | ------------------------------- |
-| `--reast-spacing-block`  | `1.5em`    | Vertikálna medzera medzi blokmi |
-| `--reast-spacing-inline` | `1em`      | Horizontálne odsadenie          |
-| `--reast-max-width`      | `65ch`     | Maximálna šírka obsahu          |
+| Vlastnosť | Embedded | Standalone | Popis |
+| --- | --- | --- | --- |
+| `--re-font-body` | `inherit` | `'Literata', Georgia, serif` | Font tela |
+| `--re-font-heading` | dedí telo | dedí telo | Font nadpisov |
+| `--re-font-mono` | `monospace` | `'Fira Code', monospace` | Monospace font |
+| `--re-font-size` | `inherit` | `clamp(1.0625rem, …, 1.25rem)` | Základná veľkosť fontu |
+| `--re-line-height` | `inherit` | `1.7` | Výška riadku tela |
+| `--re-h1-size` … `--re-h5-size` | `2em`–`1em` | rovnaké | Veľkosti nadpisov |
 
-### Voľby
+### Medzery a tvar
 
-| Vlastnosť                | Predvolená      | Popis                          |
-| ------------------------ | --------------- | ------------------------------ |
-| `--reast-choice-radius`  | `0.5rem`        | Border radius tlačidiel volieb |
-| `--reast-choice-padding` | `0.75em 1.25em` | Padding tlačidiel volieb       |
+| Vlastnosť | Predvolená | Popis |
+| --- | --- | --- |
+| `--re-paragraph-spacing` | `1em` | Medzera medzi odsekmi |
+| `--re-heading-margin` | `1.5em 0.5em` | Margin bloku nadpisu |
+| `--re-hr-margin` | `2em` | Margin horizontálnej čiary |
+| `--re-choice-gap` | `0.5em` | Medzera medzi voľbami |
+| `--re-choice-radius` | `6px` | Border radius volieb |
+| `--re-choice-padding` | `0.75em 1em` | Vnútorné odsadenie volieb |
+| `--re-media-radius` | `6px` | Border radius médií |
+| `--re-transition-speed` | `0.2s` | Globálna rýchlosť prechodov (`0s` pri reduced-motion) |
 
-## Príklad: Tmavá téma
+### Remapy len pre standalone
+
+`standaloneStyles` CDN buildu tiež definuje hodnoty `--re-dark-*` aplikované pod
+`@media (prefers-color-scheme: dark)` a hodnoty `--re-hc-*` aplikované pod
+`@media (prefers-contrast: more)`. Embedovaný element ich **nedodáva** —
+hostiteľ, ktorý chce dark mode, nastaví `--re-color-*` sám (zvyčajne dedením z
+vlastnej témy), čo je aj tak zvyčajne to, čo chcete, keďže embed už prevzal
+farby hostiteľa.
+
+## Príklad: tmavý embed
+
+Keďže embedované predvolené hodnoty dedia, najjednoduchšia tmavá téma je nechať
+element zdediť tmavého hostiteľa, alebo nastaviť pár vlastností:
 
 ```css
 reast-engine {
-  --reast-color-text: #e0e0e0;
-  --reast-color-bg: #1a1a2e;
-  --reast-color-accent: #a78bfa;
-  --reast-color-accent-hover: #8b6ff0;
-  --reast-color-muted: #9ca3af;
-  --reast-color-border: #374151;
+  --re-color-bg: #1a1a2e;
+  --re-color-text: #e0e0e0;
+  --re-color-accent: #a78bfa;
+  --re-color-accent-hover: #8b6ff0;
+  --re-color-border: #374151;
 }
 ```
 
-## Príklad: Minimálny čitateľ
+## Príklad: minimálny čitateľ
 
 ```css
 reast-engine {
-  --reast-font-body: 'Literata', serif;
-  --reast-font-size: 1.25rem;
-  --reast-line-height: 1.8;
-  --reast-max-width: 55ch;
-  --reast-spacing-block: 2em;
+  --re-font-body: 'Literata', serif;
+  --re-font-size: 1.25rem;
+  --re-line-height: 1.8;
+  --re-max-width: 55ch;
+  --re-paragraph-spacing: 2em;
 }
 ```
 
-## Automatický tmavý režim
+## Núdzový východ: `extraStyleSheets`
 
-Player štandardne rešpektuje `prefers-color-scheme`. Pre vynútenie konkrétnej témy nastavte vlastnosti explicitne na elemente.
+Pre pravidlá, ktoré CSS custom properties nevyjadria, vložte `CSSStyleSheet` do
+`ReastEngine.extraStyleSheets` **pred** vytvorením akéhokoľvek elementu — adoptuje
+sa do shadow rootu každého elementu za `playerStyles`. Už vytvorené inštancie sa
+dodatočne neupravia. (Presne takto standalone build pridáva `standaloneStyles`.)
 
-## Shadow DOM hranica
+```ts
+import { ReastEngine, registerEngine } from '@reast/engine/player';
 
-Player vykresľuje obsah vnútri Shadow DOM, takže štýly vašej stránky doň nepreniknú. Jediný spôsob prispôsobenia vzhľadu je cez tieto CSS custom properties. To zaručuje vizuálnu konzistenciu bez ohľadu na štýly hostiteľskej stránky.
+const sheet = new CSSStyleSheet();
+sheet.replaceSync(`.re-choice { text-transform: uppercase; }`);
+ReastEngine.extraStyleSheets.push(sheet);
+
+registerEngine();
+```
+
+## Hranica Shadow DOM
+
+Player vykresľuje obsah vnútri Shadow DOM, takže štýly hostiteľskej stránky doň
+nepreniknú a štýly príbehu von. Custom properties a `extraStyleSheets` sú
+podporované spôsoby cez hranicu; element navyše vystavuje atribúty `part`
+(`identity`, `identity-title`, `identity-authors`) pre štýlovanie cez
+`::part()`.

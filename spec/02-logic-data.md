@@ -75,7 +75,7 @@ Boolean attributes can be specified without a value (presence means `true`):
 
 ```rea
 {plural(player.gold, zero="no coins", one="{} coin", other="{} coins")}
-{format(player.score, style="decimal", grouping=true)}
+{formatNumber(player.score, style="decimal", maximumFractionDigits=0)}
 {max(a, b)}
 ```
 

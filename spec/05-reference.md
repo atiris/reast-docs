@@ -55,7 +55,7 @@ alphabetically-first `*.rea` (flat); packaged parts load in `manifest.parts`
 order. `reast.json`, when present, is optional session settings — never the
 manifest.
 
-Each language translation is a **separate** `.reast` archive — not bundled together. Device capabilities (GPS, camera, gyroscope) are declared in the manifest `sensors` array; the reader loads only the capabilities the device supports. There is no separate `lib/` or `plugins/` directory — shared logic goes in parts, and sensor-dependent features are conditionally loaded by the reader based on the `sensors` declaration.
+Each language translation is a **separate** `.reast` archive — not bundled together. Device capabilities (GPS, camera, gyroscope) are declared in the manifest `sensors` array; the reader loads only the capabilities the device supports. There is no `lib/` or `plugins/` directory — reusable logic goes in `.rext` extension modules under `extensions/` (see [Extension modules](#extension-modules-rext)), and sensor-dependent features are conditionally loaded by the reader based on the `sensors` declaration.
 
 ### Importing from a public GitHub repository
 
@@ -134,6 +134,8 @@ The manifest is the single source of all story metadata, permissions, and platfo
 | `accessibility`    | string[] | Features: `["screen_reader", "voice_mode", "high_contrast", "reduced_motion"]`                                                |
 | `solo_mode`        | string   | Solo-mode role handling: `"all_roles"` (default), `"single_role"`                                                             |
 | `allowed_urls`     | object[] | Permitted external APIs (see [External API access](04-utilities.md#external-api-access))                                      |
+| `extensions`       | string[] | Ordered `.rext` load order — metadata only; never activates a module (see [Extension modules](#extension-modules-rext))       |
+| `requires`         | string[] | Host-extension namespaces the story depends on; an embedder without them refuses the load (see [Extension modules](#extension-modules-rext)) |
 | `offline`          | boolean  | `true` (default) or `false` — whether the story works without network                                                         |
 | `storage`          | string   | Storage hint: `"none"`, `"local"` (default), `"cloud"`                                                                        |
 | `reader`           | object   | Reader presentation settings — see [Reader tab bar](#reader-tab-bar)                                                          |
@@ -310,12 +312,53 @@ This separation ensures:
 
 UUID v7 provides natural chronological sorting (timestamp in most-significant bits) which benefits database indexing and gives approximate creation time without a separate column.
 
-### Including files
+### Extension modules (`.rext`)
 
-```rea
-{include "part-00002.rea"}
-{include "shared-utils.rea"}
+A `.rext` file is a Rea **extension module** — declaration-only Rea code
+(functions, top-level `{set}` constants, `{use}` and comments; no prose). By
+convention extensions live under `extensions/` in the archive:
+
+```txt
+story.reast/
+├── manifest.json
+├── story/
+│   └── part-00001.rea
+└── extensions/
+    ├── inventory.rext
+    └── dice_tables.rext
 ```
+
+A `.rext` can **never** be chosen as the entry story: the entry resolver
+considers only `.rea` files — `manifest.parts[0].file` for a packaged archive,
+the alphabetically-first `*.rea` for a flat one. Every `.rext` in the archive is
+nevertheless compiled and validated at load, before any prose runs, so a broken
+extension fails at publish time rather than on the reader's device. Presence of a
+`.rext` in the archive never activates it; only a `{use}` binds it (see
+[Extensibility](#31-extensibility)).
+
+Two optional manifest keys concern extensions:
+
+- **`extensions`** — an ordered array of archive-relative `.rext` paths, e.g.
+  `"extensions": ["extensions/inventory.rext", "extensions/dice_tables.rext"]`.
+  It is **metadata only**: it fixes load (and hook-registration) order when hook
+  order matters. Absent, load order is lexicographic by path. A listed path that
+  is not in the archive fails the load. The key never activates a module — it
+  only orders the ones that are compiled anyway.
+- **`requires`** — namespaces of host-supplied (JavaScript) extensions the story
+  depends on, e.g. `"requires": ["host"]`. An embedder that has not registered
+  such a namespace refuses to load the story rather than answering wrong
+  mid-chapter (see [Tier 2 — Host extensions](#31-extensibility)).
+
+### Numbered story files
+
+Naming story parts `001-intro.rea`, `002-forest.rea`, … is **recommended, not
+required**. It buys a deterministic, human-readable entry for flat archives (the
+entry is the alphabetically-first `*.rea`) and future-proofs a project for flat
+multi-part ordering. It does **not** solve extension naming — that is what
+`.rext` is for — and it does not by itself order a packaged story's parts: in a
+packaged archive, part order comes from the manifest's `parts` array, not from
+filenames. Ordering multiple flat parts by filename does not exist today; a flat
+archive resolves only its single entry file.
 
 ### Collaborative authoring
 
@@ -522,17 +565,45 @@ Arrays support method-like calls:
 | `datetime("ISO-8601-string")`   | Create datetime from ISO 8601 string (supports `*` wildcards)           |
 | `duration("ISO-8601-duration")` | Create duration from ISO 8601 duration string                           |
 
-Coordinate types use `@` literal syntax instead of constructor functions (see [Section 11](02-logic-data.md#11-variables--data-types)): `@lat,lng` for points, `@@lat,lng/radius` for circles, `@@p1@p2@p3` for polygons/routes.
+Coordinate types use `@` literal syntax instead of constructor functions (see [Section 11](02-logic-data.md#11-variables--data-types)): `@lat;lng` for points, `@@lat;lng/radius` for circles, `@@p1@p2@p3` for polygons/routes. The separator is a semicolon, not a comma — a comma already separates the arguments a coordinate appears among.
 
 ### Text variation & localization functions
 
 | Function                                          | Description                                                                                       |
 | ------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | `select(value, he="x", she="y", other="z")`       | Return text matching value (fallback with `other`)                                                |
-| `plural(count, zero="x", one="y", other="z")`     | CLDR-aware pluralization by count                                                                 |
-| `ordinal(n)`                                      | Ordinal suffix (`1st`, `2nd`, etc.)                                                               |
-| `format(n, style=..., grouping=..., ...)`         | Locale-aware number formatting (see [Section 22](04-utilities.md#22-pluralization--localization)) |
+| `plural(count, one="y", other="z", ...)`          | CLDR pluralization; category from `Intl.PluralRules` for the host locale                          |
+| `ordinal(n)` / `ordinal(n, one=..., ...)`         | Ordinal; English suffix only for `en*` locales, else the locale-formatted number (see below)      |
+| `formatNumber(value, locale?, style=..., ...)`    | Locale-aware number formatting (see [Section 22](04-utilities.md#22-pluralization--localization)) |
 | `calendar(date, month=..., weekday=..., era=...)` | Fantasy calendar mapping (see [Section 22](04-utilities.md#22-pluralization--localization))       |
+
+> **Implementation status:** `select`, `plural`, `ordinal` and `formatNumber` are
+> implemented in `runtime/builtins/locale.ts`. `calendar()` is specified but not
+> yet implemented. Plural and ordinal categories are resolved from CLDR via
+> `Intl.PluralRules`, driven by the **host-supplied locale** — not a per-language
+> table baked into the engine.
+
+### Date & time functions
+
+Date/time built-ins operate on ISO 8601 strings and millisecond timestamps. The
+clock, locale and time zone are **host-supplied**; formatting delegates to
+`Intl.DateTimeFormat` (CLDR data). Invalid input returns `''` or `0`.
+
+| Function                        | Description                                                                     |
+| ------------------------------- | ------------------------------------------------------------------------------- |
+| `now()`                         | Current timestamp in milliseconds (host clock)                                  |
+| `today()`                       | Current calendar date as `YYYY-MM-DD` in the host time zone                     |
+| `formatDate(value, style?)`     | Format a date; `style ∈ iso \| short \| medium \| long \| full` (default `medium`) |
+| `formatTime(value, style?)`     | Format a time of day with the same styles                                       |
+| `formatDateTime(value, style?)` | Format date and time together with the same styles                             |
+| `parseDate(value)`              | Parse a date string to a millisecond timestamp (`0` if invalid)                 |
+| `dateDiff(a, b, unit?)`         | Difference `a − b`; `unit ∈ ms \| s \| m \| h \| d` (default `ms`)              |
+| `dayOfWeek(value)`              | Day of week in the host time zone (`0` = Sunday, `6` = Saturday)                |
+| `dateAdd(value, amount, unit?)` | Add a duration (`unit ∈ ms \| s \| m \| h \| d \| M \| y`); returns an ISO string |
+
+The `iso` style yields `YYYY-MM-DD` (date), `HH:mm:ss` (time) or a full ISO 8601
+string (date-time). There is no author-facing date-token (`YYYY-MM-DD`) format
+string — the `style` enum is the whole surface.
 
 **`select()`** enables pronoun and gendered text variation without branching:
 
@@ -541,7 +612,7 @@ Coordinate types use `@` literal syntax instead of constructor functions (see [S
 {select(char.pronoun, he="He draws his sword", she="She draws her sword", other="They draw their sword")}
 ```
 
-**`plural()`** follows CLDR plural rules for the story's language:
+**`plural()`** follows CLDR plural rules for the host-supplied locale:
 
 ```rea
 You found {plural(gem_count, one="a gem", other="{} gems")}.
@@ -577,54 +648,108 @@ Named commands expose state:
 
 ---
 
-## 31. Extensibility (Plugins & Custom Commands)
+## 31. Extensibility
 
-Rea supports extensibility through plugins — reusable `.rea` files that define custom commands, functions, and story elements. Plugins enable community-driven feature growth without bloating the core language.
+Rea is extended in two tiers. **Tier 1 — Rea extensions** are portable, sandboxed
+Rea code that travels inside the package (`.rext` files) plus a reserved
+`std/*` standard library shipped with the language itself. **Tier 2 — Host
+extensions** are JavaScript supplied by the embedder; they are outside the Rea
+language proper and reachable only when the embedder provides them.
 
-### Custom commands
+### Tier 1 — Rea extensions (author space, portable, sandboxed)
 
-Authors can define new commands in library files:
+A Rea extension is a `.rext` file (see [Extension modules](#extension-modules-rext))
+containing only **declarations**: `{function}`…`{end function}` blocks,
+top-level `{set}` constants, `{use}` and comments. Any prose node — a paragraph,
+heading, choice group, media, blockquote, dialogue or card definition — anywhere
+in a `.rext` is a **load error**. That restriction is what makes an extension
+reviewable by eye and mechanically checkable.
 
-```rea
-{// lib/compass.rea}
-{function compass() begin}
-  {if world.has("magnetometer") begin}
-    You check your compass: pointing {world.heading}°
-    {if world.heading >= 315 or world.heading < 45 begin}
-      (North)
-    {else if world.heading < 135}
-      (East)
-    {else if world.heading < 225}
-      (South)
-    {else}
-      (West)
-    {end if}
-  {else}
-    The compass spins uselessly.
-  {end if}
-{end function}
-```
+Top-level `{set}` values are the module's **private constants**. Its functions
+read them, but they are not story variables: they never appear in exported
+reading state, two modules may declare the same constant name without
+colliding, and a module can never overwrite a variable the author declared. A
+function parameter of the same name shadows the constant. A `{set}` *inside* a
+function body follows ordinary Rea function scoping and does write a story
+variable — so accumulate loop state by recursion, not by a counter.
 
-Use it in the story:
+Import an extension with `{use}`, giving it an alias; the written path omits the
+`.rext` suffix. Then call its exported functions through the alias:
 
 ```rea
-{include "compass.rea"}
-{compass()}
+{use "extensions/inventory" as inv}
+
+Your pack weighs {inv.total_weight()} kg.
 ```
 
-### Plugin registration
+Rules:
 
-Plugins declared in the manifest are loaded automatically:
+- **Package-local resolution only** — a `{use}` path resolves inside the package,
+  never the filesystem, never the network.
+- **The `{use}` graph must be acyclic** — a cycle fails the load, naming the cycle.
+- **Duplicate export names are an error**, not first-wins.
+- **A `{use}` of a missing path fails the load** (as does a `manifest.extensions`
+  entry that is not in the archive).
 
-```json
-{
-  "plugins": ["compass.rea", "inventory_ui.rea"]
-}
+Story (`.rea`) files may still declare `{function}`s, but those are **private and
+document-scoped** — only extension files export. To share a function across
+parts, put it in a `.rext` and `{use}` it.
+
+### `std/*` — the standard library
+
+`std/*` is a reserved namespace resolved from **inside the engine**, not from the
+archive and not from the host. `{use "std/dice" as dice}` therefore works on any
+host, offline, with no support from the embedder — it ships with the language,
+rather than being injected by the platform. (Were it injected, a story would
+render on rea.st and break in a third-party embed, forfeiting the portability the
+extension system exists for.) An archive `.rext` resolving under `std/` is a load
+error, and a host extension that declares the `std` namespace is rejected too.
+
+`std/dice` exports:
+
+| Function              | Description                                                   |
+| --------------------- | ------------------------------------------------------------- |
+| `d(sides)`            | Roll one die with the given number of sides                   |
+| `roll(count, sides)`  | Sum of `count` dice of `sides` sides (bounded by call depth)  |
+| `advantage(sides)`    | Roll two dice, keep the higher                                |
+| `disadvantage(sides)` | Roll two dice, keep the lower                                 |
+
+```rea
+{use "std/dice" as dice}
+
+You swing wildly for {dice.roll(2, 6)} damage.
 ```
+
+### Tier 2 — Host extensions (JavaScript, supplied by the embedder)
+
+Host extensions are JavaScript registered by the embedder **per player instance**
+(per engine element), never globally. Two players on one page can hold different
+host extensions. They contribute:
+
+- **Functions** callable from Rea expressions as `{ns.fn()}`.
+- **Command handlers** for namespaced commands `{ns.command args}`. A command
+  **requires arguments**: a bare `{ns.name}` with no arguments is a dotted
+  variable reference, not a command.
+- **Node renderers** that substitute the built-in rendering of a node type.
+
+Hard rule: a host extension that needs a device API **emits a bus event**,
+exactly as a built-in sensor command does; engine code never calls a device API
+on the extension's behalf.
+
+Host extensions are outside the Rea language proper and are reachable only when
+the embedder provides them. A story declares the host namespaces it needs with
+[`manifest.requires`](#extension-modules-rext); an embedder that has not
+registered a required namespace refuses to load the story rather than failing
+mid-chapter.
 
 ### Custom card types
 
-Plugins can define new card types beyond the built-in `@`, `$`, `&`:
+> **Implementation status:** Not implemented. Custom card **sets**
+> (`{define cardset ...}`) are implemented and specified in
+> [Section 17](03-narrative-interaction.md#17-cards-characters-items--actions);
+> the custom card **type** syntax below is specified but not yet built.
+
+Extensions may in future define new card types beyond the built-in `@`, `$`, `&`:
 
 ```rea
 {define card_type location, prefix="📍" begin}
@@ -642,30 +767,61 @@ Plugins can define new card types beyond the built-in `@`, `$`, `&`:
 You arrive at [📍tavern].
 ```
 
-### Event hooks
+### Encryption of extension code
 
-Plugins can register hooks that fire before or after built-in events:
+**Extension code is never encrypted.** The loader rejects an encrypted `.rext`.
+Encryption is content protection, not a security boundary — the sandbox
+constrains an extension identically whether or not its source is encrypted — so
+forbidding it costs nothing defensively and buys three things:
+
+1. **Validated before prose runs.** An unlock code can arrive mid-story; code
+   that only materialises after the reader is committed would fail at the worst
+   possible moment. Plaintext extensions are compiled and checked at load.
+2. **Auditable without a key** — by `reast validate`, the editor, and platform
+   moderation.
+3. **Runnable by a third-party embedder** that holds no key.
+
+To keep a secret out of an extension while still checking it, keep the function
+generic and plaintext and put the secret in an **encrypted `.rea` chapter** via
+`{set}`, then verify *against* that variable rather than embedding it:
 
 ```rea
-{hook before chapter_start begin}
-  {// Auto-save before every chapter}
-  {set reader.auto_save = snapshot()}
-{end hook}
-
-{hook after choice begin}
-  {// Track analytics}
-  {set story.choice_log = append(story.choice_log, event.choice_text)}
-{end hook}
+{// extensions/gate.rext — plaintext, generic, holds no secret}
+{function unlocked(given, expected) begin}
+  {return given = expected}
+{end function}
 ```
+
+```rea
+{// an encrypted .rea chapter carries the secret}
+{set crypt.passphrase = "moonlit-antler"}
+
+{input name=attempt, placeholder="Speak the word"}
+{if unlocked(attempt, crypt.passphrase) begin}
+  The gate swings open.
+{end if}
+```
+
+The caveat, stated plainly: an encrypted `.rea` is **not** a secret from a
+determined reader. The key reaches the reader's device in order to render the
+chapter, so `crypt.passphrase` is extractable. Encryption protects against
+spoilers, casual peeking and grepping the archive — not against a motivated
+attacker. Anything that must be genuinely unforgeable (a competition answer, a
+paid unlock) has to be verified **server-side**, which is the platform's job, not
+the engine's (see also [Content Protection](04-utilities.md#23-content-protection-lock)).
 
 ### Sandbox constraints
 
-Plugins run in the same sandboxed environment as regular Rea code:
+Rea extensions run in the same sandboxed environment as regular Rea code:
 
 - No file system access beyond the package
-- No network requests (only platform APIs)
-- No arbitrary code execution (no JavaScript/Python embedding)
-- Memory and computation limits enforced by the runtime
+- No network requests (only declared platform APIs)
+- No arbitrary code execution — a story cannot embed JavaScript, Python or any
+  other language; a Rea extension is sandboxed Rea, and a host extension is the
+  embedder's own code, never injected by the story
+- Memory and computation limits enforced by the runtime — for example, recursion
+  depth bounds `std/dice`'s `roll` to 64 dice
+- Extension code is never encrypted (see above), so it stays auditable
 
 ### Conformance levels
 
