@@ -45,7 +45,7 @@ The first character after `[` determines the type:
 | _(none)_ | Link            | `[Continue > #forest]`                      |
 | `!`      | Image           | `[!Forest map < media/map.jpg]`             |
 | `>`      | Video           | `[>Intro < media/intro.mp4]`                |
-| `?`      | Audio           | `[?Rain < media/rain.ogg volume=0.5, loop]` |
+| `?`      | Audio           | `[?Rain < media/rain.ogg, volume=0.5, loop]` |
 | `#`      | Anchor (define) | `[#forest]`                                 |
 | `^`      | Footnote        | `[^1]: Explanation`                         |
 

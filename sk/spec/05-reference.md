@@ -29,8 +29,8 @@ my-story.reast (ZIP)
 │   ├── signature.sig   (voliteľný, Ed25519)
 │   └── author.pub      (voliteľný)
 ├── story/
-│   ├── part-00001.rea  (vstupná časť — prvá v manifest.parts)
-│   ├── part-00002.rea  (druhá časť)
+│   ├── 0001-uvod.rea            (vstupná časť — prvá v manifest.parts)
+│   ├── 0002-druha-kapitola.rea  (druhá časť)
 │   └── ...
 └── assets/
     ├── cover.webp
@@ -67,8 +67,8 @@ manifest.
   "language": "sk",
   "genre": ["fantasy", "adventure"],
   "parts": [
-    { "file": "story/part-00001.rea", "name": "Úvod" },
-    { "file": "story/part-00002.rea", "name": "Druhá kapitola" }
+    { "file": "story/0001-uvod.rea", "name": "Úvod" },
+    { "file": "story/0002-druha-kapitola.rea", "name": "Druhá kapitola" }
   ],
   "assets": ["assets/cover.webp", { "file": "assets/theme.mp3", "name": "Hlavná téma" }],
   "sensors": [],

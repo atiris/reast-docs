@@ -260,7 +260,11 @@ Odkazy používajú jednotnú zátvorkovú syntax so šípkou `>` smerujúcou k 
 ```rea
 [čítať ďalej > #čistinka]
 [ďalšia kapitola > chapter2.rea]
+[vydali sa do kráľovstva skál > story/0004-kingdom.rea]
 ```
+
+Ploché rozloženie (všetky súbory `.rea` v koreni archívu) odkazuje na holý
+názov súboru; odporúčané rozloženie `story/####-nazov.rea` odkazuje cestou.
 
 **Štruktúra:** `[zobrazovaný text > cieľ]`
 
@@ -273,8 +277,11 @@ Odkazy používajú jednotnú zátvorkovú syntax so šípkou `>` smerujúcou k 
 **Odkazy medzi príbehmi:**
 
 ```rea
-[pokračovať v dobrodružstve > reast://ABC123]
+[pokračovať v dobrodružstve > reast://autor-slug/pribeh-slug]
 ```
+
+Odkaz `reast://` otvára iný reast na platforme, ktorá ho hostí, adresovaný
+slugom autora a slugom príbehu.
 
 > **Poznámka:** Externé URL (http/https) nie sú povolené v `.rea` texte. Všetok externý prístup sa deklaruje cez `allowed_urls` v `manifest.json` a odkazuje sa aliasmi (pozri [Externý prístup k API](04-utilities.md#external-api-access)).
 
@@ -292,30 +299,24 @@ Mediálne príkazy používajú zátvorkovú syntax s typovo špecifickými pref
 
 **Pamäťová pomôcka:**
 
-- `!` = obrázok (symbol pre štetec; ako pozornosť/vizuálny dopad)
-- `>` = video (symbol pre tlačidlo play)
-- `?` = audio (symbol pre ucho; počúvaj/otáznik — „počuješ?")
+- `!` = obrázok — výkričník pripomína štetec, ktorým sa maľujú obrázky.
+- `>` = video — znak väčšie-než pripomína tlačidlo play na prehrávanie videa.
+- `?` = audio — otáznik pripomína ucho, ktorým sa počúva zvuk.
 
 ### Atribúty médií
 
-Atribúty nasledujú za zdrojom, oddelené čiarkami:
+Parametre vnútri `[ ]` a `{ }` sa oddeľujú čiarkami (s voliteľnými medzerami
+okolo). Cesta k zdroju je prvý parameter mediálneho vloženia, takže čiarka
+oddeľuje aj ju od prvého atribútu:
 
 ```rea
-[!Hrad < media/castle.jpg width=800, height=600]
-[>Intro cinematik < media/intro.mp4 autoplay, loop, muted]
-[?Hudba pozadia < media/theme.ogg volume=0.5, loop]
+[!Hrad < media/castle.jpg, width=800, height=600]
+[>Intro cinematik < media/intro.mp4, autoplay, loop, muted]
+[?Hudba pozadia < media/theme.ogg, volume=0.5, loop]
 ```
 
-### Inline mediálne referencie
-
-Pre médiá zabalené v `.reast` balíku použite číselné referencie:
-
-```rea
-[!Tajná mapa < :1]
-[>Rituál < :2]
-```
-
-Číslo sa mapuje na záznam v [manifeste balíka](05-reference.md#28-file-format--packaging).
+Toto pravidlo čiarky platí pre všetky parametre v zátvorkách `[…]` aj `{…}` v
+celej Rea — cesta k zdroju je jednoducho prvý parameter.
 
 ---
 

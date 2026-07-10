@@ -24,8 +24,8 @@ my-story.reast              (ZIP kontajner)
 ├── manifest.json           metadáta + usporiadané časti + schopnosti
 ├── reast.json              voliteľné nastavenia relácie / prednastavené premenné
 ├── story/
-│   ├── part-00001.rea      vstupná časť (prvá v manifest.parts)
-│   └── part-00002.rea      ďalšie časti (v poradí podľa manifestu)
+│   ├── 0001-prva-cast.rea  vstupná časť (prvá v manifest.parts)
+│   └── 0002-druha-cast.rea ďalšie časti (v poradí podľa manifestu)
 ├── extensions/             voliteľné Rea rozširovacie moduly (.rext)
 │   ├── inventory.rext
 │   └── dice_tables.rext
@@ -95,7 +95,7 @@ prípadov, keď od neho závisí nejaká schopnosť; neznáme pole sa zachová a
   "genre": "mystery",
   "tags": ["branching", "mystery"],
   "license": "CC-BY-4.0",
-  "parts": [{ "file": "story/part-00001.rea", "name": "Prvá časť" }],
+  "parts": [{ "file": "story/0001-prva-cast.rea", "name": "Prvá časť" }],
   "assets": ["assets/cover.webp", { "file": "assets/theme.mp3", "name": "Hlavná téma" }],
   "instruction": "the-lighthouse-guide",
   "readers": [1],
@@ -110,7 +110,7 @@ prípadov, keď od neho závisí nejaká schopnosť; neznáme pole sa zachová a
   "allowed_urls": [{ "alias": "map", "url": "https://example.com/map" }],
   "offline": true,
   "preview": false,
-  "integrity": { "story/part-00001.rea": "sha256-…" }
+  "integrity": { "story/0001-prva-cast.rea": "sha256-…" }
 }
 ```
 

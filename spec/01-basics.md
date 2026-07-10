@@ -262,7 +262,11 @@ Links use a unified bracket syntax with the `>` arrow pointing toward the destin
 ```rea
 [read more > #the_clearing]
 [next chapter > chapter2.rea]
+[they set off to the kingdom of rocks > story/0004-kingdom.rea]
 ```
+
+A flat layout (all `.rea` files at the archive root) links by bare filename; the
+recommended `story/####-name.rea` layout links by path.
 
 **Structure:** `[display text > target]`
 
@@ -275,8 +279,11 @@ Links use a unified bracket syntax with the `>` arrow pointing toward the destin
 **Story-to-story links:**
 
 ```rea
-[continue the adventure > reast://ABC123]
+[continue the adventure > reast://author-slug/story-slug]
 ```
+
+A `reast://` link opens another reast on the platform that hosts it, addressed
+by the author slug and story slug.
 
 > **Note:** External URLs (http/https) are not allowed in `.rea` text. All external access is declared via `allowed_urls` in `manifest.json` and referenced by alias (see [External API access](04-utilities.md#external-api-access)).
 
@@ -294,30 +301,24 @@ Media commands use the bracket syntax with type-specific prefixes. The `<` arrow
 
 **Memory aid:**
 
-- `!` = image (symbol for brush; like attention/visual impact)
-- `>` = video (symbol for play button)
-- `?` = audio (symbol for ear; listen/question mark — "hear this?")
+- `!` = image — the exclamation mark resembles a paintbrush used to paint pictures.
+- `>` = video — the greater-than symbol resembles the play button used to play videos.
+- `?` = audio — the question mark resembles an ear used to listen to audio.
 
 ### Media attributes
 
-Attributes follow the source, comma-separated:
+Parameters inside `[ ]` and `{ }` are separated by commas (with optional
+surrounding spaces). The source path is the first parameter of a media embed,
+so a comma also separates it from the first attribute:
 
 ```rea
-[!The castle < media/castle.jpg width=800, height=600]
-[>Intro cinematic < media/intro.mp4 autoplay, loop, muted]
-[?Background music < media/theme.ogg volume=0.5, loop]
+[!The castle < media/castle.jpg, width=800, height=600]
+[>Intro cinematic < media/intro.mp4, autoplay, loop, muted]
+[?Background music < media/theme.ogg, volume=0.5, loop]
 ```
 
-### Inline media references
-
-For media bundled in a `.reast` package, use numeric references:
-
-```rea
-[!A secret map < :1]
-[>The ritual < :2]
-```
-
-The number maps to an entry in the [package manifest](05-reference.md#28-file-format--packaging).
+This comma rule applies to all bracketed `[…]` and braced `{…}` parameters
+throughout Rea — the source path is simply the first parameter.
 
 ---
 

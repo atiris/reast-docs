@@ -385,8 +385,8 @@ Example strict mode warnings:
 Where it makes sense, syntax supports optional inline fallback values:
 
 ```rea
-[!map < media/map.png fallback="media/map-lowres.png"]
-[?thunder < sounds/thunder.mp3 fallback="sounds/rain.mp3"]
+[!map < media/map.png, fallback="media/map-lowres.png"]
+[?thunder < sounds/thunder.mp3, fallback="sounds/rain.mp3"]
 ```
 
 If the primary resource fails, the fallback is used. If the fallback also fails, the platform applies its default graceful behavior (placeholder for images, silence for audio, etc.).

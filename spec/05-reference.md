@@ -30,9 +30,9 @@ story.reast/
 │   ├── signature.sig           (optional, Ed25519)
 │   └── author.pub             (optional, author public key)
 ├── story/
-│   ├── part-00001.rea          (entry part — first in manifest.parts)
-│   ├── part-00002.rea          (second part)
-│   └── part-00003.rea          (...)
+│   ├── 0001-the-silence.rea    (entry part — first in manifest.parts)
+│   ├── 0002-the-lantern.rea    (second part)
+│   └── 0003-epilogue.rea       (...)
 └── assets/
     ├── cover.webp
     ├── forest.webp
@@ -88,8 +88,8 @@ The manifest is the single source of all story metadata, permissions, and platfo
   "cover": "assets/cover.webp",
   "tags": ["fantasy", "adventure"],
   "parts": [
-    { "file": "story/part-00001.rea", "name": "The Silence" },
-    { "file": "story/part-00002.rea", "name": "The Lantern" }
+    { "file": "story/0001-the-silence.rea", "name": "The Silence" },
+    { "file": "story/0002-the-lantern.rea", "name": "The Lantern" }
   ],
   "assets": ["assets/cover.webp", { "file": "assets/theme.mp3", "name": "Main theme" }],
   "readers": [1, 2, 3, 4, 5],
@@ -214,9 +214,9 @@ Large stories load part-by-part rather than all at once. The manifest declares a
 ```json
 {
   "loading": "progressive",
-  "parts": ["part-00001.rea", "part-00002.rea", "part-00003.rea"],
-  "preload": ["part-00001.rea"],
-  "locked": ["part-00003.rea"]
+  "parts": ["0001-the-silence.rea", "0002-the-lantern.rea", "0003-epilogue.rea"],
+  "preload": ["0001-the-silence.rea"],
+  "locked": ["0003-epilogue.rea"]
 }
 ```
 
@@ -233,8 +233,8 @@ When a story is updated, readers download only the changed files rather than the
 ```json
 {
   "files": {
-    "part-00001.rea": { "hash": "sha256:abc123...", "size": 45012 },
-    "part-00002.rea": { "hash": "sha256:def456...", "size": 12300 }
+    "0001-the-silence.rea": { "hash": "sha256:abc123...", "size": 45012 },
+    "0002-the-lantern.rea": { "hash": "sha256:def456...", "size": 12300 }
   }
 }
 ```
@@ -324,7 +324,7 @@ convention extensions live under `extensions/` in the archive:
 story.reast/
 ├── manifest.json
 ├── story/
-│   └── part-00001.rea
+│   └── 0001-intro.rea
 └── extensions/
     ├── inventory.rext
     └── dice_tables.rext

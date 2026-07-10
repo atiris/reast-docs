@@ -23,8 +23,8 @@ my-story.reast              (ZIP container)
 ├── manifest.json           metadata + ordered parts + capabilities
 ├── reast.json              optional session settings / preset variables
 ├── story/
-│   ├── part-00001.rea      the entry part (first in manifest.parts)
-│   └── part-00002.rea      additional parts (in manifest order)
+│   ├── 0001-part-one.rea   the entry part (first in manifest.parts)
+│   └── 0002-part-two.rea   additional parts (in manifest order)
 ├── extensions/             optional Rea extension modules (.rext)
 │   ├── inventory.rext
 │   └── dice_tables.rext
@@ -97,7 +97,7 @@ preserved and ignored.
   "genre": "mystery",
   "tags": ["branching", "mystery"],
   "license": "CC-BY-4.0",
-  "parts": [{ "file": "story/part-00001.rea", "name": "Part One" }],
+  "parts": [{ "file": "story/0001-part-one.rea", "name": "Part One" }],
   "assets": ["assets/cover.webp", { "file": "assets/theme.mp3", "name": "Main theme" }],
   "instruction": "the-lighthouse-guide",
   "readers": [1],
@@ -112,7 +112,7 @@ preserved and ignored.
   "allowed_urls": [{ "alias": "map", "url": "https://example.com/map" }],
   "offline": true,
   "preview": false,
-  "integrity": { "story/part-00001.rea": "sha256-…" }
+  "integrity": { "story/0001-part-one.rea": "sha256-…" }
 }
 ```
 

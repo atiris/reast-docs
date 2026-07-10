@@ -45,7 +45,7 @@ Prvý znak za `[` určuje typ:
 | _(žiadny)_ | Odkaz               | `[Choď ďalej > #les]`                       |
 | `!`        | Obrázok             | `[!Mapa lesa < media/mapa.jpg]`             |
 | `>`        | Video               | `[>Intro < media/intro.mp4]`                |
-| `?`        | Audio               | `[?Dážď < media/rain.ogg volume=0.5, loop]` |
+| `?`        | Audio               | `[?Dážď < media/rain.ogg, volume=0.5, loop]` |
 | `#`        | Kotva (definícia)   | `[#les]`                                    |
 | `^`        | Poznámka pod čiarou | `[^1]: Vysvetlenie`                         |
 
