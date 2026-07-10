@@ -433,6 +433,35 @@ Step-by-step guide for running the story session.
 Notes on story branches and their consequences.
 ```
 
+### Multi-part traversal & reading state
+
+A packaged story's `parts` are traversed on demand rather than concatenated. The
+reader begins in the entry part and moves on through a **gate** `[[ target ]]`
+(automatic, terminal) or a **cross-part link** `[text > part.rea]` (reader taps);
+see Part 3, *Multi-part stories*. A `target` is a part file (`story/####-name.rea`
+or a flat `name.rea`), optionally suffixed `:scene` to resume at a `[#scene]`
+anchor in the target part. Only the parts actually entered are loaded; a part's
+top-level `{set}` commands run once as it is entered, so variables accumulate
+along the path taken.
+
+The **reading state** the platform persists between sessions captures everything
+needed to reproduce that path:
+
+| Field                  | Meaning                                                          |
+| ---------------------- | --------------------------------------------------------------- |
+| `variables`            | All story/heading-scoped variables at the save point            |
+| `choices`              | Selected option per resolved choice group                       |
+| `visitedChoiceGroups`  | Choice groups the reader has passed (for non-sticky filtering)   |
+| `rng`                  | PRNG seed + generator state, so rolls continue deterministically |
+| `currentPart`          | The part file the reader is currently in (absent for single-part) |
+| `visitedParts`         | Ordered files of the parts entered before the current one        |
+| `renderedParagraph`    | Last block seen, so resume renders up to it without re-animation |
+
+On resume the platform replays the visited parts in order (rebuilding the
+scroll-back), re-enters the current part, and restores variables and PRNG state —
+the reader continues exactly where they left off. Single-part stories leave
+`currentPart`/`visitedParts` empty and behave as before.
+
 ---
 
 ## 29. Identifiers & Naming

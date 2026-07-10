@@ -406,6 +406,52 @@ Named checkpoints allow the reader to select a specific save point when resuming
 - In cooperative mode, `{checkpoint}` saves the individual reader's state; shared state is managed by the server independently
 - The platform may implement additional auto-save beyond author checkpoints (e.g., on app background, before battery-critical shutdown)
 
+### Multi-part stories
+
+A longer story can be split into **parts** — separate `.rea` files listed in the
+bundle manifest as `parts` (see Part 5 for the manifest schema). The reader plays
+through a sequence of parts: only the **current part** is the live document, and
+scrolling up reveals the **previously-visited parts** — the actual path taken,
+never an un-taken branch. There are two ways to move between parts.
+
+**Gate `[[ target ]]`** — an automatic, text-free transition. It occupies its own
+line and is terminal: when the flow reaches it, nothing after it in the current
+part renders, and the gate marks where the story continues. Scrolling past the
+current part's end reveals the gated part inline, as a seamless continuation.
+
+```rea
+You step through the archway; there is no going back.
+
+[[ story/0005-forest.rea ]]
+```
+
+Because a gate ends the part, content placed after it is unreachable — the editor
+flags it as a warning. A gate may target a scene within the part with
+`[[ part.rea:scene ]]`, resuming at that `[#scene]` anchor. Gates inside an `{if}`
+express variable-driven branching without a manual choice:
+
+```rea
+{if has_key begin}
+[[ story/0006-castle.rea ]]
+{end if}
+{if not has_key begin}
+[[ story/0006-bush.rea ]]
+{end if}
+```
+
+**Cross-part link** — a normal navigation link whose target is a part file lets
+the reader choose to move on by tapping:
+
+```rea
+[enter the castle > story/0006-castle.rea] rises ahead of you.
+```
+
+Variables carry across parts: each part's top-level `{set}` commands run once as
+it is entered, on top of the state accumulated so far. Saved progress records the
+ordered path of visited parts plus the current part and in-part position, so a
+resume replays the visited parts for the scroll-back and continues the current
+part where the reader left off (see Part 5, *Reading state*).
+
 ---
 
 ## 17. Cards: Characters, Items & Actions

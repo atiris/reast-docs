@@ -47,6 +47,7 @@ The first character after `[` determines the type:
 | `>`      | Video           | `[>Intro < media/intro.mp4]`                |
 | `?`      | Audio           | `[?Rain < media/rain.ogg, volume=0.5, loop]` |
 | `#`      | Anchor (define) | `[#forest]`                                 |
+| `[[`     | Part gate       | `[[ story/0005-forest.rea ]]` (ends the part) |
 
 For a link (`[text > target]`), the first character of the **target** (after `>`)
 picks the destination:

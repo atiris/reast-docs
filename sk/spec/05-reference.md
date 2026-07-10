@@ -151,6 +151,24 @@ Rozšírení sa týkajú dva voliteľné kľúče manifestu:
   ktorých príbeh závisí. Embedder, ktorý taký menný priestor nezaregistroval,
   odmietne príbeh načítať, namiesto toho, aby uprostred kapitoly odpovedal zle.
 
+### Prechod medzi časťami a stav čítania
+
+Časti (`parts`) balíčka sa prechádzajú na požiadanie, nie zreťazené. Čitateľ
+začína vo vstupnej časti a posúva sa cez **bránu** `[[ cieľ ]]` (automatická,
+koncová) alebo **odkaz medzi časťami** `[text > cast.rea]` (čitateľ ťukne).
+Cieľom je súbor časti (`story/####-nazov.rea` alebo `nazov.rea`), voliteľne s
+príponou `:scena` pre pokračovanie pri kotve `[#scena]`. Načítajú sa len skutočne
+navštívené časti a príkazy `{set}` na najvyššej úrovni časti sa vykonajú raz pri
+vstupe, takže premenné sa hromadia pozdĺž prejdenej cesty.
+
+**Stav čítania**, ktorý platforma uchováva medzi reláciami, zachytáva: `variables`
+(všetky premenné), `choices` (vybraná možnosť na skupinu volieb),
+`visitedChoiceGroups`, `rng` (seed a stav generátora), `currentPart` (aktuálna
+časť; chýba pri jednodielnom príbehu), `visitedParts` (usporiadané súbory
+predtým navštívených častí) a `renderedParagraph` (posledný videný blok). Pri
+pokračovaní platforma prehrá navštívené časti (obnoví posun späť), znovu vstúpi
+do aktuálnej časti a obnoví premenné aj stav generátora.
+
 ---
 
 ## 29. Bezpečnostný model

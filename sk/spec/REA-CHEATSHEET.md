@@ -47,6 +47,7 @@ Prvý znak za `[` určuje typ:
 | `>`        | Video               | `[>Intro < media/intro.mp4]`                |
 | `?`        | Audio               | `[?Dážď < media/rain.ogg, volume=0.5, loop]` |
 | `#`        | Kotva (definícia)   | `[#les]`                                    |
+| `[[`       | Brána časti         | `[[ story/0005-forest.rea ]]` (ukončí časť) |
 
 V odkaze (`[text > cieľ]`) prvý znak **cieľa** (za `>`) určuje miesto určenia:
 

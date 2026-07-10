@@ -98,6 +98,40 @@ Tunely (`->->`) fungujú ako volania podprogramov — vrátia sa tam, odkiaľ bo
 ->-> popis_miestnosti
 ```
 
+### Príbehy z viacerých častí
+
+Dlhší príbeh možno rozdeliť na **časti** — samostatné `.rea` súbory uvedené v
+manifeste ako `parts`. Čitateľ prechádza časťami: živý je vždy len **aktuálna
+časť**, posun nahor odhalí **predtým navštívené časti** — skutočnú prejdenú cestu,
+nikdy nevybranú vetvu. Medzi časťami sa dá presunúť dvoma spôsobmi.
+
+**Brána `[[ cieľ ]]`** — automatický prechod bez textu. Zaberá vlastný riadok a je
+koncová: keď k nej tok dôjde, nič po nej v aktuálnej časti sa nevykreslí a brána
+označuje pokračovanie. Posun za koniec aktuálnej časti odhalí cieľovú časť ako
+plynulé pokračovanie. Obsah za bránou je nedosiahnuteľný — editor naň upozorní.
+
+```rea
+Vojdeš pod oblúk; niet cesty späť.
+
+[[ story/0005-forest.rea ]]
+```
+
+Brána môže cieliť na scénu v časti cez `[[ cast.rea:scena ]]` (pokračuje pri
+kotve `[#scena]`). Brány vnútri `{if}` vyjadrujú vetvenie riadené premennými bez
+manuálnej voľby.
+
+**Odkaz medzi časťami** — bežný navigačný odkaz, ktorého cieľom je súbor časti,
+umožní čitateľovi presunúť sa ťuknutím:
+
+```rea
+[vojdi do hradu > story/0006-castle.rea] sa týči pred tebou.
+```
+
+Premenné prechádzajú medzi časťami: príkazy `{set}` na najvyššej úrovni každej
+časti sa vykonajú raz pri jej vstupe. Uložený stav zaznamenáva usporiadanú cestu
+navštívených častí, aktuálnu časť aj pozíciu v nej, takže pokračovanie prehrá
+navštívené časti pre posun späť a plynule nadviaže tam, kde čitateľ skončil.
+
 ---
 
 ## 17. Karty
