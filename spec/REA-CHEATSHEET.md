@@ -47,7 +47,16 @@ The first character after `[` determines the type:
 | `>`      | Video           | `[>Intro < media/intro.mp4]`                |
 | `?`      | Audio           | `[?Rain < media/rain.ogg, volume=0.5, loop]` |
 | `#`      | Anchor (define) | `[#forest]`                                 |
-| `^`      | Footnote        | `[^1]: Explanation`                         |
+
+For a link (`[text > target]`), the first character of the **target** (after `>`)
+picks the destination:
+
+| Target prefix | Type     | Example                                    |
+| ------------- | -------- | ------------------------------------------ |
+| `#`           | Anchor   | `[back > #forest]`                         |
+| _(file/path)_ | Part     | `[on > story/0004-kingdom.rea]`            |
+| `^`           | Footnote | `[dialect > ^Old Elvish, nearly lost.]`    |
+| `*`           | Hint     | `[the tower > *A nudge.**A firmer hint.]`  |
 
 **Arrow direction:** `>` = where the link goes, `<` = where the source comes from.
 
@@ -307,5 +316,5 @@ yet implemented.
 4. **Domain prefixes** separate author variables (`player.*`) from platform (`reader.*`)
 5. **`*` = one-time choice**, **`+` = sticky choice**, **`-` = gather (reconverge)**
 6. **`->` = jump**, **`->->` = tunnel (jump + automatic return)**
-7. **First char in `[ ]`** decides: `!` image, `>` video, `?` audio, `#` anchor
+7. **First char in `[ ]`** decides media/anchor: `!` image, `>` video, `?` audio, `#` anchor; in a link, the **target** prefix `^` = footnote, `*` = hint
 8. **Plain text is a valid story** — you add syntax only when you need it

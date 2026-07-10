@@ -2,7 +2,7 @@
 
 > [Späť na hlavnú špecifikáciu](/sk/)
 >
-> **Stav implementácie:** Sekcie 1–9 sú implementované v klientskom parseri. Extrakcia metadát, formátovanie textu, nadpisy, blokové citáty, horizontálne čiary, odkazy, médiá, kotvy, rozšírené formátovacie príkazy (podčiarknutie, prečiarknutie, neproporcionálne písmo), poznámky pod čiarou (pomenované a automaticky číslované), vnorené inline formátovanie a podpora premenných fungujú podľa špecifikácie. Pozrite [REA-CHEATSHEET.md](REA-CHEATSHEET.md) pre podrobný stav.
+> **Stav implementácie:** Sekcie 1–9 sú implementované v klientskom parseri. Extrakcia metadát, formátovanie textu, nadpisy, blokové citáty, horizontálne čiary, odkazy, médiá, kotvy, rozšírené formátovacie príkazy (podčiarknutie, prečiarknutie, neproporcionálne písmo), inline poznámky pod čiarou a nápovedy úrovňové, vnorené inline formátovanie a podpora premenných fungujú podľa špecifikácie. Pozrite [REA-CHEATSHEET.md](REA-CHEATSHEET.md) pre podrobný stav.
 
 ---
 
@@ -285,6 +285,22 @@ slugom autora a slugom príbehu.
 
 > **Poznámka:** Externé URL (http/https) nie sú povolené v `.rea` texte. Všetok externý prístup sa deklaruje cez `allowed_urls` v `manifest.json` a odkazuje sa aliasmi (pozri [Externý prístup k API](04-utilities.md#external-api-access)).
 
+### Vlastné kotvy
+
+Umiestnite vlastnú kotvu kdekoľvek, aby sa na ňu odkaz mohol skočiť:
+
+```rea
+[#nazov_kotvy]
+```
+
+Skočte na ňu odkiaľkoľvek v príbehu:
+
+```rea
+[vrátiť sa do bezpečia > #nazov_kotvy]
+```
+
+Vlastné kotvy sú vedľa automaticky generovaných [kotiev nadpisov](#4-nadpisy): nadpis definuje svoju kotvu implicitne, kým `[#nazov_kotvy]` označuje akýkoľvek iný miesto.
+
 ---
 
 ## 8. Médiá
@@ -320,39 +336,34 @@ celej Rea — cesta k zdroju je jednoducho prvý parameter.
 
 ---
 
-## 9. Kotvy a poznámky pod čiarou
+## 9. Pomoc a poznámky pod čiarou
 
-### Vlastné kotvy
-
-Umiestnite vlastnú kotvu kdekoľvek pomocou:
-
-```rea
-[#nazov_kotvy]
-```
-
-Prejdite na ňu cez odkaz:
-
-```rea
-[vrátiť sa do bezpečia > #nazov_kotvy]
-```
+Poznámky pod čiarou a nápovedy obe zavesujú dodatočné informácie k úseku textu pomocou hranaté zátvorky odkazu. Šípka `>` smeruje od zobrazeného textu k anotácii; prvý znak za `>` rozhoduje o type — `^` pre poznámku pod čiarou, `*` pre nápovedu. (Vlastné kotvy, ktoré tiež žijú v `[ … ]`, sú popísané v časti [Odkazy](#7-odkazy).)
 
 ### Poznámky pod čiarou
 
-Poznámky pod čiarou používajú `[^identifikátor]` pre referenciu a zodpovedajúci obsah neskôr:
+Poznámka pod čiarou pripevňuje inline poznámku k úseku textu — poznámka cestuje s textom, neexistuje samostatný blok definícií:
 
 ```rea
-Starodávny dialekt[^dialekt] bol takmer zabudnutý.
-
-[^dialekt]: Forma starej elfčiny hovorená iba v severných územiach.
+Starodávny dialekt [starej elfčiny > ^Forma hovorená iba v severných územiach.] bol takmer zabudnutý.
 ```
 
-Automaticky číslované poznámky používajú `[^]` (priraďované sekvenčne):
+Čitateľ vidí text označený znakom `^`. Navedením kurzoru (na desktopu) alebo dotykom (na dotykovom zariadení) sa zobrazí poznámka ako tooltip. Text poznámky je prostý — bez vnoreného formátovania — a môže obsahovať `>` (iba prvý `>` oddeľuje text od poznámky); nemôže obsahovať `]`.
+
+### Nápovedy
+
+Nápoveda je poznámka pod čiarou, ktorá sa zobrazí iba po tom, čo si čitateľ zapne nápovedy. Môže niesť niekoľko progresívnych úrovní, takže si čitateľ zvolí, koľko pomoci si praje odhaliť. Úrovne sú čísľované radom hviezdičiek — jedna `*` je úroveň 1, `**` je úroveň 2, až do deviatich — a text každej úrovne trvá až do ďalšieho radu hviezdičiek alebo zatváracej `]`:
 
 ```rea
-Rituál[^] vyžadoval tri zložky[^].
-
-[^]: Podrobne opísané v Časti II.
-[^]: Oheň, voda a ochotné srdce.
+Tento kľúč treba [využiť v klenotnici > *Prvá úroveň nápovedy.**Druhá úroveň, priamejšia nápoveda.].
 ```
+
+Nápoveda môže tiež začať priamo na vyššej úrovni, keď je potrebná len silná nápoveda:
+
+```rea
+Tento kľúč treba [využiť vo vrchnej veži > ***Tretia úroveň nápovedy, ktorá veľa prezradí.].
+```
+
+Čitateľ si zapne nápovedy a vyberie si **povolenú úroveň** (1–9; vypnuté predvolene). Značka nápovedy sa zobrazí vedľa textu iba vtedy, keď nápoveda definuje úroveň na úrovni čitateľa alebo pod ňou; kliknutie na ňu odhalí úrovne nápovedy až do povolenej úrovne. Kedykoľvek stránka obsahuje akúkoľvek nápovedu — dokonca aj tie nad úrovňou čitateľa — čitateľ sa dozvie, že nápovedy sú na stránke dostupné, bez toho, aby sa ukázalo kde. Text nápovedy sa riadi rovnakými pravidlami čistého textu ako poznámky pod čiarou; pretože rad hviezdičiek vždy otvára novú úroveň, text nápovedy nemôže sám o sebe obsahovať nahú `*`.
 
 ---

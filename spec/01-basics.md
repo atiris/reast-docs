@@ -2,7 +2,7 @@
 
 > [Back to main specification](/)
 >
-> **Implementation status:** Sections 1–9 are implemented in the client-side parser. Metadata extraction, text formatting, headings, blockquotes, horizontal rules, links, media, anchors, extended formatting commands (underline, strikethrough, monospace), footnotes (named and auto-numbered), nested inline formatting, and variable support work as specified. See [REA-CHEATSHEET.md](REA-CHEATSHEET.md) for detailed status.
+> **Implementation status:** Sections 1–9 are implemented in the client-side parser. Metadata extraction, text formatting, headings, blockquotes, horizontal rules, links, media, anchors, extended formatting commands (underline, strikethrough, monospace), inline footnotes and level-based hints, nested inline formatting, and variable support work as specified. See [REA-CHEATSHEET.md](REA-CHEATSHEET.md) for detailed status.
 
 ---
 
@@ -287,6 +287,23 @@ by the author slug and story slug.
 
 > **Note:** External URLs (http/https) are not allowed in `.rea` text. All external access is declared via `allowed_urls` in `manifest.json` and referenced by alias (see [External API access](04-utilities.md#external-api-access)).
 
+### Custom Anchors
+
+Place a custom anchor anywhere so a link can jump to it:
+
+```rea
+[#anchor_name]
+```
+
+Jump to it from anywhere in the story:
+
+```rea
+[return to safety > #anchor_name]
+```
+
+Custom anchors sit alongside the auto-generated [heading anchors](#4-headings): a
+heading defines its anchor implicitly, while `[#anchor_name]` marks any other spot.
+
 ---
 
 ## 8. Media
@@ -322,39 +339,53 @@ throughout Rea — the source path is simply the first parameter.
 
 ---
 
-## 9. Anchors & Footnotes
+## 9. Help & Footnotes
 
-### Custom Anchors
-
-Place a custom anchor anywhere with:
-
-```rea
-[#anchor_name]
-```
-
-Jump to it via a link:
-
-```rea
-[return to safety > #anchor_name]
-```
+Footnotes and hints both hang extra information off a span of text using the
+link bracket. The `>` arrow points from the displayed text to the annotation;
+the first character after `>` decides which kind it is — `^` for a footnote,
+`*` for a hint. (Custom anchors, which also live in `[ … ]`, are covered under
+[Links](#7-links).)
 
 ### Footnotes
 
-Footnotes use `[^identifier]` for the reference and matching content later:
+A footnote attaches an inline note to a span of text — the note travels with the
+text, there is no separate definition block:
 
 ```rea
-The ancient dialect[^dialect] was nearly forgotten.
-
-[^dialect]: A form of Old Elvish spoken only in the northern territories.
+The [ancient dialect > ^A form of Old Elvish spoken only in the north.] was nearly forgotten.
 ```
 
-Auto-numbered footnotes use `[^]` (assigned sequentially):
+The reader sees `ancient dialect` marked with a `^`. Pointing at it (desktop) or
+tapping it (touch) reveals the note as a tooltip. Footnote text is plain — no
+nested formatting — and may contain `>` (only the first `>` splits the text from
+the note); it may not contain `]`.
+
+### Hints
+
+A hint is a footnote that only appears once the reader has switched on hints. It
+can carry several progressive levels, so the reader chooses how much help to
+reveal. Levels are numbered with a run of asterisks — one `*` is level 1, `**`
+is level 2, up to nine — and each level's text runs until the next asterisk run
+or the closing `]`:
 
 ```rea
-The ritual[^] required three components[^].
-
-[^]: Described in detail in Part II.
-[^]: Fire, water, and a willing heart.
+This key needs to [use in the treasure room > *A first-level nudge.**A second-level, more direct hint.].
 ```
+
+A hint may also start straight at a higher level when only a strong hint makes
+sense:
+
+```rea
+This key needs to [use in the top tower > ***A third-level hint that gives a lot away.].
+```
+
+The reader turns hints on and picks an **enabled level** (1–9; off by default). A
+hint marker appears next to the text only when the hint defines a level at or
+below the enabled level; clicking it reveals that hint's levels up to the enabled
+level. Whenever a page contains any hint — even ones above the reader's enabled
+level — the reader is told that hints are available on the page, without being
+shown where. Hint text follows the same plain-text rules as footnotes; because an
+asterisk run always opens a new level, hint text cannot itself contain a bare `*`.
 
 ---

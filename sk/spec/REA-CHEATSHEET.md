@@ -47,7 +47,15 @@ Prvý znak za `[` určuje typ:
 | `>`        | Video               | `[>Intro < media/intro.mp4]`                |
 | `?`        | Audio               | `[?Dážď < media/rain.ogg, volume=0.5, loop]` |
 | `#`        | Kotva (definícia)   | `[#les]`                                    |
-| `^`        | Poznámka pod čiarou | `[^1]: Vysvetlenie`                         |
+
+V odkaze (`[text > cieľ]`) prvý znak **cieľa** (za `>`) určuje miesto určenia:
+
+| Cieľový prefiks | Typ           | Príklad                                     |
+| --------------- | ------------- | ------------------------------------------- |
+| `#`             | Kotva         | `[návrat > #les]`                           |
+| _(súbor/cesta)_ | Časť          | `[pokračovať > story/0004-kingdom.rea]`     |
+| `^`             | Poznámka      | `[dialekt > ^Stará elfčina, takmer zabudnutá.]` |
+| `*`             | Nápoveda      | `[veža > *Prvá úroveň.**Druha úroveň.]`     |
 
 **Smer šípok:** `>` = kam smeruje odkaz, `<` = odkiaľ pochádza zdroj.
 
@@ -283,5 +291,5 @@ zatiaľ neimplementovaný.
 4. **Doménové prefixy** oddeľujú autor-premenné (`player.*`) od platformy (`reader.*`)
 5. **`*` = jednorazová voľba**, **`+` = lepivá voľba**, **`-` = zbiehanie vetiev**
 6. **`->` = skok**, **`->->` = tunel (skok + automatický návrat)**
-7. **Prvý znak v `[ ]`** rozhoduje: `!` obrázok, `>` video, `?` audio, `#` kotva
+7. **Prvý znak v `[ ]`** rozhoduje o médiách/kotve: `!` obrázok, `>` video, `?` audio, `#` kotva; v odkaze rozhoduje **cieľový** prefiks `^` = poznámka, `*` = nápoveda
 8. **Čistý text je platný príbeh** — syntaxu pridávate len keď ju potrebujete

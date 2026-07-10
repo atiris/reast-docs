@@ -1,6 +1,6 @@
 <script setup lang="ts">
 // Added onMounted and onUnmounted to manage global click event listeners
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useData } from 'vitepress';
 
 interface DocVersion {
@@ -18,18 +18,24 @@ const themeRecord = theme.value as Record<string, unknown>;
 const version = themeRecord.docVersion as string | undefined;
 const configuredVersions = (themeRecord.docVersions as DocVersion[] | undefined) ?? [];
 
-const isSk = lang.value?.startsWith('sk');
+// Derive locale-dependent strings reactively so they re-render when the reader
+// switches language: VitePress reuses this Footer instance across the SPA locale
+// change (setup() never re-runs), so plain consts captured at mount would stay
+// stale. `computed` tracks `lang` and updates the footer in place.
+const isSk = computed(() => lang.value?.startsWith('sk') ?? false);
 
-const inviteText = isSk
-  ? 'Navštívte rea.st a vyskúšajte interaktívne príbehy priamo vo vašom prehliadači!'
-  : 'Visit rea.st to try interactive stories right in your browser!';
+const inviteText = computed(() =>
+  isSk.value
+    ? 'Navštívte rea.st a vyskúšajte interaktívne príbehy priamo vo vašom prehliadači!'
+    : 'Visit rea.st to try interactive stories right in your browser!',
+);
 
-const shortInviteText = isSk ? 'Viac na rea.st' : 'Try it on rea.st';
+const shortInviteText = computed(() => (isSk.value ? 'Viac na rea.st' : 'Try it on rea.st'));
 
-const versionLabel = isSk ? 'Verzia dokumentácie' : 'Documentation version';
-const versionsHeading = isSk ? 'Dostupné verzie' : 'Available versions';
-const changelogLabel = isSk ? 'Zoznam zmien' : 'Changelog';
-const changelogLink = isSk ? '/sk/changelog' : '/changelog';
+const versionLabel = computed(() => (isSk.value ? 'Verzia dokumentácie' : 'Documentation version'));
+const versionsHeading = computed(() => (isSk.value ? 'Dostupné verzie' : 'Available versions'));
+const changelogLabel = computed(() => (isSk.value ? 'Zoznam zmien' : 'Changelog'));
+const changelogLink = computed(() => (isSk.value ? '/sk/changelog' : '/changelog'));
 
 // Always offer at least the live version so the menu is never empty even
 // before any archived snapshot has been published.
