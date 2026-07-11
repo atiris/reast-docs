@@ -408,7 +408,7 @@ Named checkpoints allow the reader to select a specific save point when resuming
 
 ### Multi-part stories
 
-A longer story can be split into **parts** — separate `.rea` files listed in the
+A longer story can be split into **story parts** — separate `.rea` files listed in the
 bundle manifest as `parts` (see Part 5 for the manifest schema). The reader plays
 through a sequence of parts: only the **current part** is the live document, and
 scrolling up reveals the **previously-visited parts** — the actual path taken,
@@ -450,7 +450,7 @@ Variables carry across parts: each part's top-level `{set}` commands run once as
 it is entered, on top of the state accumulated so far. Saved progress records the
 ordered path of visited parts plus the current part and in-part position, so a
 resume replays the visited parts for the scroll-back and continues the current
-part where the reader left off (see Part 5, *Reading state*).
+part where the reader left off (see Part 5, _Reading state_).
 
 ---
 

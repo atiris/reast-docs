@@ -100,7 +100,7 @@ Tunely (`->->`) fungujú ako volania podprogramov — vrátia sa tam, odkiaľ bo
 
 ### Príbehy z viacerých častí
 
-Dlhší príbeh možno rozdeliť na **časti** — samostatné `.rea` súbory uvedené v
+Dlhší príbeh možno rozdeliť na **časti príbehu** — samostatné `.rea` súbory uvedené v
 manifeste ako `parts`. Čitateľ prechádza časťami: živý je vždy len **aktuálna
 časť**, posun nahor odhalí **predtým navštívené časti** — skutočnú prejdenú cestu,
 nikdy nevybranú vetvu. Medzi časťami sa dá presunúť dvoma spôsobmi.
