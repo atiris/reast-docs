@@ -1,6 +1,6 @@
-# Špecifikácia jazyka Rea — Časť 5: Referencia (Sekcie 28–31)
+# Referencia: Gramatika, chyby a hraničné prípady
 
-> [Späť na hlavnú špecifikáciu](/sk/)
+> [Úvod](/sk/spec/) · [Späť na hlavnú špecifikáciu](/sk/)
 >
 > **Stav implementácie:** Formát súboru a balenie (28) sú plne implementované. Pozrite [REA-CHEATSHEET.md](REA-CHEATSHEET.md) pre podrobný stav.
 

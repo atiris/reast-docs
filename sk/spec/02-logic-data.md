@@ -1,6 +1,6 @@
-# Špecifikácia jazyka Rea — Časť 2: Logika a dáta (Sekcie 10–15)
+# Logika a dáta: Premenné, podmienky a výrazy
 
-> [Späť na hlavnú špecifikáciu](/sk/)
+> [Úvod](/sk/spec/) · [Späť na hlavnú špecifikáciu](/sk/)
 >
 > **Stav implementácie:** Príkazy (10), premenné (11) a základné riadenie toku (13: `if`/`else`/`for`) sú implementované. Tlač výrazov (12) je čiastočná — jednoduché referencie premenných fungujú, ale aritmetika, ternárne operátory a volania funkcií ešte nie sú vyhodnocované v čase parsovania. Funkcie (14), `while`, `switch/case` a udalosti (15) sú špecifikované, ale zatiaľ neimplementované. Pozrite [REA-CHEATSHEET.md](REA-CHEATSHEET.md) pre podrobný stav.
 

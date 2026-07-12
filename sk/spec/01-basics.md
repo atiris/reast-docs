@@ -1,37 +1,8 @@
-# Špecifikácia jazyka Rea — Časť 1: Základy (Sekcie 1–9)
+# Základy: Dokumenty, text a voľby
 
-> [Späť na hlavnú špecifikáciu](/sk/)
+> [Úvod](/sk/spec/) · [Späť na hlavnú špecifikáciu](/sk/)
 >
 > **Stav implementácie:** Sekcie 1–9 sú implementované v klientskom parseri. Extrakcia metadát, formátovanie textu, nadpisy, blokové citáty, horizontálne čiary, odkazy, médiá, kotvy, rozšírené formátovacie príkazy (podčiarknutie, prečiarknutie, neproporcionálne písmo), inline poznámky pod čiarou a nápovedy úrovňové, vnorené inline formátovanie a podpora premenných fungujú podľa špecifikácie. Pozrite [REA-CHEATSHEET.md](REA-CHEATSHEET.md) pre podrobný stav.
-
----
-
-## Čím Rea je
-
-Rea je jazyk s čistým textom pre interaktívne príbehy. Jeho určujúca vlastnosť je, že **obyčajný text je už platný Rea dokument** — bežný odsek prózy je úplný, vykresliteľný príbeh. Formátovanie, voľby, premenné, logika, multimédiá, kooperatívne čítanie a interakcia s reálnym svetom sú voliteľné nadstavby vrstvené na próze. Nič nie je povinné; po syntaxi siahnete, len keď ju potrebujete.
-
-Rea existuje pre vetviace sa rozprávanie, ktoré človek napíše v textovom editore a verzuje v gite, a ktoré stroj dokáže overiť, vykresliť a izolovať v sandboxe. Ten istý súbor je čitateľný pre človeka aj spustiteľný enginom — neexistuje samostatná skompilovaná podoba.
-
-Nasledujúce tri fázy sú všetky platné Rea. Prvý riadok je už úplný príbeh; druhý pridáva jednu premennú, tretí jednu voľbu:
-
-```rea
-Cesta sa vetvila pri starom dube.
-
-{set player.torch = true}
-
-* [Vydaj sa ľavou cestou]
-* [Vydaj sa pravou cestou]
-```
-
-### Súborové typy
-
-- **`.rea`** — súbor príbehu: próza plus ľubovoľná voliteľná Rea syntax.
-- **`.rext`** — Rea *rozšírenie*: iba deklarácie (funkcie, konštanty `{set}` na najvyššej úrovni, `{use}` a komentáre — žiadna próza). Pozri [Rozšíriteľnosť](05-reference.md#31-extensibility).
-- **`.reast`** — distribuovateľný ZIP balík: jeden alebo viac súborov `.rea`, voliteľné rozšírenia `.rext` a médiá, plus `manifest.json`. Pozri [Formát súboru a balenie](05-reference.md#28-file-format--packaging).
-
-### Čím Rea nie je
-
-Rea nie je programovací jazyk na všeobecné použitie, nie je HTML a nie je herný engine. Jej funkcie sú izolované v sandboxe a zámerne obmedzené, jej vykresľovanie riadi platforma a nemá žiadny prienik surového značkovania.
 
 ---
 

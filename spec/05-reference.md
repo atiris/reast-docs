@@ -1,6 +1,6 @@
-# Rea Language Specification — Part 5: Tooling & Reference (Sections 28–32)
+# Reference: Grammar, Errors & Edge Cases
 
-> [Back to main specification](/)
+> [Introduction](/spec/) · [Back to main specification](/)
 >
 > **Implementation status:** `.reast` package format (28) with ZIP extraction and `manifest.json` manifest is implemented. The editor has a working CodeMirror 6-based implementation with syntax highlighting. Platform features like keyboard navigation, dark theme, PWA support, and accessibility basics (32) are implemented in the web app. File System Access API import/export is implemented in the editor. See [REA-CHEATSHEET.md](REA-CHEATSHEET.md) for detailed status.
 

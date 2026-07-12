@@ -1,6 +1,6 @@
-# Špecifikácia jazyka Rea — Časť 4: Utility (Sekcie 22–27)
+# Utility: Médiá, formátovanie a pomôcky
 
-> [Späť na hlavnú špecifikáciu](/sk/)
+> [Úvod](/sk/spec/) · [Späť na hlavnú špecifikáciu](/sk/)
 >
 > **Stav implementácie:** Pozrite [REA-CHEATSHEET.md](REA-CHEATSHEET.md) pre podrobný stav jednotlivých funkcií.
 

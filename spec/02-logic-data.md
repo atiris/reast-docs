@@ -1,6 +1,6 @@
-# Rea Language Specification — Part 2: Logic & Data (Sections 10–15)
+# Logic & Data: Variables, Conditions & Expressions
 
-> [Back to main specification](/)
+> [Introduction](/spec/) · [Back to main specification](/)
 >
 > **Implementation status:** Commands (10), variables (11), and basic control flow (13: `if`/`else`/`for`) are implemented. Expression printing (12) is partial — simple variable references work but arithmetic, ternary, and function calls are not yet evaluated at parse time. Functions (14), `while`, `switch/case`, and events (15) are specified but not yet implemented. See [REA-CHEATSHEET.md](REA-CHEATSHEET.md) for detailed status.
 

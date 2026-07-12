@@ -19,13 +19,13 @@ const docVersions = [
 ];
 
 const enNav = [
-  { text: 'Specification', link: '/spec/01-basics' },
+  { text: 'Specification', link: '/spec/' },
   { text: 'Engine', link: '/engine/getting-started' },
   { text: 'Platform', link: '/platform/' },
 ];
 
 const skNav = [
-  { text: 'Špecifikácia', link: '/sk/spec/01-basics' },
+  { text: 'Špecifikácia', link: '/sk/spec/' },
   { text: 'Jadro', link: '/sk/engine/getting-started' },
   { text: 'Platforma', link: '/sk/platform/' },
 ];
@@ -34,6 +34,7 @@ const specSidebar = [
   {
     text: 'Rea Language Specification',
     items: [
+      { text: 'Introduction', link: '/spec/' },
       { text: 'Basics', link: '/spec/01-basics' },
       { text: 'Logic & Data', link: '/spec/02-logic-data' },
       { text: 'Narrative & Interaction', link: '/spec/03-narrative-interaction' },
@@ -94,6 +95,7 @@ const skSpecSidebar = [
   {
     text: 'Špecifikácia jazyka Rea',
     items: [
+      { text: 'Úvod', link: '/sk/spec/' },
       { text: 'Základy', link: '/sk/spec/01-basics' },
       { text: 'Logika a dáta', link: '/sk/spec/02-logic-data' },
       { text: 'Naratív a interakcia', link: '/sk/spec/03-narrative-interaction' },
