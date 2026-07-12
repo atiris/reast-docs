@@ -1,6 +1,6 @@
 # Glossary
 
-Key terms used across the Reast platform.
+Key terms used across the Reast platform. Looking for internal/codebase terminology instead? See the orchestrator's `docs/internal/glossary.md` (developer-only, not published here).
 
 ## Platform Terms
 

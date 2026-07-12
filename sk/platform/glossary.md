@@ -1,6 +1,6 @@
 # Slovník
 
-Kľúčové pojmy používané naprieč platformou Reast.
+Kľúčové pojmy používané naprieč platformou Reast. Hľadáte internú/vývojársku terminológiu? Pozrite `docs/internal/glossary.md` v orchestrátorovom repozitári (len pre vývojárov, tu sa nepublikuje).
 
 ## Pojmy platformy
 
