@@ -74,8 +74,9 @@ const platformSidebar = [
     text: 'Platform',
     items: [
       { text: 'Overview', link: '/platform/' },
+      { text: 'For Readers', link: '/platform/for-readers' },
+      { text: 'For Authors', link: '/platform/for-authors' },
       { text: 'Story Design', link: '/platform/design/' },
-      { text: 'Help & Guide', link: '/platform/help' },
       { text: 'Glossary', link: '/platform/glossary' },
     ],
   },
@@ -136,9 +137,10 @@ const skPlatformSidebar = [
     text: 'Platforma',
     items: [
       { text: 'Prehľad', link: '/sk/platform/' },
+      { text: 'Pre čitateľov', link: '/sk/platform/for-readers' },
+      { text: 'Pre autorov', link: '/sk/platform/for-authors' },
       { text: 'Návrh príbehov', link: '/sk/platform/design/' },
       { text: 'Bezpečnosť a súkromie', link: '/sk/platform/security/' },
-      { text: 'Pomoc a sprievodca', link: '/sk/platform/help' },
       { text: 'Slovník', link: '/sk/platform/glossary' },
     ],
   },

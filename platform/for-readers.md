@@ -1,6 +1,6 @@
-# How Reast Works
+# For Readers
 
-Everything you need to know about reading and writing interactive stories.
+Everything you need to know about reading interactive stories on Reast.
 
 ## Getting Started
 
@@ -60,153 +60,6 @@ When you return to a story, you'll see a prompt to continue from your last posit
 
 Adjust font size, font family, and line height to match your reading preference. Your settings are stored locally on your device and apply to all stories.
 
-## How to Write
-
-Stories are written in Rea — a simple markup language designed for interactive narratives. If you can write a text message, you can write a Rea story. There are no programming concepts to learn upfront — just start typing.
-
-::: tip Try it live
-Open the Editor and write alongside this guide. The live preview updates as you type, so you see exactly what readers experience.
-:::
-
-A valid story is just text. No special syntax required:
-
-```rea
-Once upon a time, in a land far away,
-a young traveler set out on a journey.
-
-The road stretched endlessly before them.
-```
-
-Add structure with headings (#) and choices (\*) to make it interactive:
-
-```rea
-# Chapter One
-
-You stand at a crossroads.
-
-* [Go left]
-  The path winds into a dark forest.
-* [Go right]
-  A bright meadow stretches ahead.
-
-- The wind whispers behind you.
-```
-
-## Rea Quick Reference
-
-Below are the building blocks of the Rea language. Each section shows the syntax and explains when to use it.
-
-### Headings and structure
-
-Use `#` marks to organize your story into chapters, sections, and scenes.
-
-```rea
-# Chapter Title
-## Section Title
-### Scene Title
-```
-
-### Text formatting
-
-```rea
-*bold text*
-_italic text_
-`inline code`
-| blockquote
-```
-
-### Choices and branching
-
-Choices are the heart of interactive fiction. Start a line with `*` for a one-time choice or `+` for a sticky choice.
-
-```rea
-* [Open the door]
-  You step into a dimly lit room.
-* [Walk away]
-  You turn back down the corridor.
-+ [Look around]
-  You survey your surroundings.
-```
-
-After choices branch, use a gather line (starting with `-`) to bring all paths back together:
-
-```rea
-* [Go left]
-  The forest is dark.
-* [Go right]
-  The meadow is bright.
-
-- Either way, night falls soon.
-```
-
-### Variables
-
-Variables let your story remember things. Use `{set}` to store a value and `{variableName}` to print it.
-
-```rea
-{set player.name = "Elara"}
-Hello, {player.name}! Welcome back.
-
-{set player.courage + 1}
-Your courage is now {player.courage}.
-```
-
-### Conditionals
-
-Show or hide text based on what the reader has done:
-
-```rea
-{if player.courage > 5 begin}
-You feel brave enough to enter the cave.
-{else begin}
-The cave entrance fills you with dread.
-{end if}
-```
-
-### Dialogue
-
-Character dialogue uses the `@` symbol followed by the character name:
-
-```rea
-@ Elena
-  "We need to leave before dawn."
-@ Traveler
-  "Where will we go?"
-```
-
-### Labels and navigation
-
-Labels mark spots you can jump back to. Define with `[#name]`, jump with `-> name`:
-
-```rea
-[#crossroads]
-You are at the crossroads.
-
-* [Go to the forest]
-  The trees close in around you.
-  -> crossroads
-* [Head to town]
-  The gates are ahead.
-```
-
-### Media embeds
-
-```rea
-{image src="forest.jpg", alt="A dark forest"}
-{audio src="rain.mp3"}
-{video src="intro.mp4"}
-```
-
-### Varying text
-
-Make text change each time the reader sees it:
-
-```rea
-{first|second|third}       Sequence (stops at last)
-{&calm|nervous|terrified}  Cycle (loops forever)
-{~yes|no|maybe}            Random each time
-```
-
 ## Display & Accessibility
 
 ### Dark mode
@@ -227,8 +80,6 @@ A high-contrast theme is available for improved readability. Cycle through theme
 
 ## Keyboard Shortcuts
 
-### While reading a story
-
 | Key            | Action                                     |
 | -------------- | ------------------------------------------ |
 | `1`–`9`        | Select a choice (when choices are visible) |
@@ -240,36 +91,19 @@ A high-contrast theme is available for improved readability. Cycle through theme
 | `Esc`          | Close overlay or panel                     |
 | `?`            | Open this help page                        |
 
-### In the editor
-
-| Key      | Action                |
-| -------- | --------------------- |
-| `Ctrl+B` | Bold text             |
-| `Ctrl+I` | Italic text           |
-| `Ctrl+S` | Save story            |
-| `Ctrl+M` | Toggle metadata panel |
-
 ## FAQ
 
 ### Is Reast free to use?
 
-Yes. Reading and writing stories on Reast is free.
+Yes. Reading stories on Reast is free. Some stories may be premium or paid — see [For Authors](for-authors) for how authors set pricing.
 
 ### Do I need an account to read stories?
 
-No. You can browse and read stories without creating an account. An account is needed for writing, saving progress across devices, and cooperative features.
+No. You can browse and read public stories without creating an account. An account is needed for saving progress across devices and cooperative features.
 
 ### What devices does Reast support?
 
 Reast works on any modern browser — desktop, tablet, or phone. It can also be installed as an app (PWA) for a native-like experience.
-
-### Can I write stories in my own language?
-
-Absolutely. The Rea language is text-based and works with any script or language.
-
-### How do GPS and sensor features work?
-
-Writers can embed location triggers and sensor conditions in their stories. When a reader's device meets those conditions (e.g., arriving at a specific GPS coordinate), the story reacts.
 
 ### Is my progress saved if I clear my browser data?
 
@@ -282,7 +116,3 @@ Yes! Cooperative stories support multiple readers in real time. Each reader take
 ### What makes Reast different from Twine or other IF tools?
 
 Reast stories can interact with the physical world — GPS locations, QR codes, device sensors — and support real-time cooperative reading with multiple people. The Rea language is purpose-built for rich narrative with progressive complexity.
-
-### What file format do stories use?
-
-Stories are written in `.rea` files — plain text with the Rea markup language. Multi-file stories use the `.reast` package format (ZIP archive).

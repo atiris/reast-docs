@@ -1,6 +1,10 @@
 # Platforma Reast
 
-Reast je webová platforma na čítanie a tvorbu interaktívnych príbehov napísaných v jazyku Rea.
+Reast (rea.st) je webová platforma na čítanie a tvorbu interaktívnych príbehov napísaných v [jazyku Rea](/sk/spec/). Je to hostovaná služba postavená nad [Reast Engine](/sk/engine/) — platforma pridáva účty, publikovanie, katalóg, infraštruktúru pre kooperatívne čítanie a vstavaný editor okolo toho, čo samotný engine iba vykresľuje.
+
+V skratke: čitateľ prehliada verejný katalóg a číta príbehy priamo v prehliadači, s účtom aj bez neho, a autor píše príbeh (vo vstavanom editore alebo v ľubovoľnom textovom editore), pripája médiá a metadáta a publikuje ho na jednej z troch úrovní viditeľnosti — `public` (uvedený v katalógu), `unlisted` (dostupný len cez priamy odkaz) alebo `private` (viditeľný iba autorovi) — do osobných políc a čitateľských skupín, ktoré čitatelia aj autori používajú na organizovanie a zdieľanie príbehov.
+
+Každý príbeh, ktorý autor publikuje cez platformu — či už napísaný vo vstavanom editore, alebo nahraný z textového editora — sa ukladá a servíruje ako balík `.reast`; pozrite referenciu enginu [formát balíčka](/engine/package-format) pre to, čo sa v ňom nachádza.
 
 ## Pre čitateľov
 
@@ -30,6 +34,9 @@ Reast je webová platforma na čítanie a tvorbu interaktívnych príbehov napí
 
 ## Získanie pomoci
 
-- [Špecifikácia jazyka Rea](/sk/spec/01-basics) — Naučte sa písať interaktívne príbehy
-- [Dokumentácia engine](/sk/engine/getting-started) — Vložte príbehy na vlastnú stránku
+- [Pre čitateľov](for-readers) — Prehliadanie, čítanie, postup a FAQ pre čitateľov
+- [Pre autorov](for-authors) — Publikačný proces, úrovne viditeľnosti a editor
+- [Návrh príbehov](design/) — Ako štruktúrovať a zabaliť príbeh
+- [Špecifikácia jazyka Rea](/sk/spec/) — Naučte sa samotný jazyk Rea
+- [Dokumentácia engine](/sk/engine/) — Vložte príbehy na vlastnú stránku
 - [Prispievanie](/sk/engine/contributing) — Pomôžte zlepšiť funkcie reast engine
