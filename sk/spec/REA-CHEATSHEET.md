@@ -144,11 +144,10 @@ Ahoj, {player.name}! Máš {player.gold} zlatých.
 {dice.roll(2, 6)}                     std/dice: d(sides) roll(n,sides) advantage/disadvantage
 ```
 
-`.rext` obsahuje iba deklarácie (funkcie, `{set}` na najvyššej úrovni, `{use}`,
-komentáre — žiadna próza) a nikdy sa nešifruje. Aktivuje ho iba `{use}`; `.rext`
-sa nikdy nestane vstupným príbehom. Súbory príbehu môžu deklarovať **súkromné**
-`{function}`; exportujú iba rozšírenia. Hostiteľské (JavaScript) rozšírenia dodáva
-embedder a deklarujú sa cez `manifest.requires`.
+Pozri [Kde sa pravidlá líšia v `.rext` súboroch](rext-differences) pre jazykové
+pravidlá vnútri `.rext`, a referenciu enginu
+[formát balíčka `.reast`](/engine/package-format#packaged) pre
+mechaniku archívu.
 
 ---
 

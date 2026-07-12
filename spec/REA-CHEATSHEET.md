@@ -145,11 +145,10 @@ Hello, {player.name}! You have {player.gold} gold.
 {dice.roll(2, 6)}                     std/dice: d(sides) roll(n,sides) advantage/disadvantage
 ```
 
-A `.rext` is declaration-only (functions, top-level `{set}`, `{use}`, comments —
-no prose) and is never encrypted. Only `{use}` activates one; a `.rext` can never
-be the entry story. Story files may declare **private** `{function}`s; only
-extensions export. Host (JavaScript) extensions are provided by the embedder and
-declared via `manifest.requires`.
+See [When rules differ in `.rext` files](rext-differences) for the language
+rules inside a `.rext`, and the engine's
+[`.reast` package format reference](/engine/package-format#packaged)
+for archive mechanics.
 
 ---
 

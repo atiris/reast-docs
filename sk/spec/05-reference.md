@@ -14,160 +14,18 @@
 
 ### Balík `.reast`
 
-ZIP archív. Čitateľ akceptuje dve rozloženia.
+Súbor `.reast` je ZIP archív (podobne ako EPUB), ktorý spája jednu alebo viac
+častí spolu s ich médiami a metadátami, v rozložení s manifestom alebo v
+plochom rozložení. Rozloženie archívu na disku, celá schéma `manifest.json`,
+import z GitHub repozitára, lišta záložiek čitateľa, nastavenia relácie
+(`reast.json`), progresívne načítavanie, delta aktualizácie, podpisovanie
+balíčkov, minifikácia a viacdielny stav čítania sú plne zdokumentované v
+[referencii formátu balíčka `.reast`](/engine/package-format) enginu — táto
+sekcia pokrýva iba jazykové pravidlá, ktoré z tohto formátu vyplývajú.
 
-**S manifestom** — `manifest.json` v koreni nesie všetky metadáta a usporiadaný
-zoznam `parts`; súbory príbehu sú v `story/`, médiá v `assets/`:
-
-```text
-my-story.reast (ZIP)
-├── manifest.json       (manifest — metadáta, usporiadané časti)
-├── reast.json          (voliteľný — nastavenia session / premenné)
-├── README.md           (voliteľný — pre GitHub verzionovanie)
-├── META-REA/
-│   ├── checksum.sha256
-│   ├── signature.sig   (voliteľný, Ed25519)
-│   └── author.pub      (voliteľný)
-├── story/
-│   ├── 0001-uvod.rea            (vstupná časť — prvá v manifest.parts)
-│   ├── 0002-druha-kapitola.rea  (druhá časť)
-│   └── ...
-└── assets/
-    ├── cover.webp
-    ├── forest.webp
-    └── theme.ogg
-```
-
-**Plochý** — bez `manifest.json`. Všetky `.rea` aj mediálne súbory sú v koreni;
-vstup je abecedne prvý `*.rea`. Plochý balíček nenesie žiadne metadáta — keď je
-potrebný názov, autor, štítky, obálka, odkazy či poradie častí, použite
-rozloženie s manifestom:
-
-```text
-quick.reast (ZIP)
-├── story.rea           (vstup — abecedne prvý .rea)
-└── cover.jpg
-```
-
-`reast.json`, ak je prítomný, sú voliteľné nastavenia session — nikdy nie
-manifest.
-
-### Manifest `manifest.json`
-
-```json
-{
-  "rea": "1.0",
-  "manifest": "1.0",
-  "type": "story",
-  "id": "550e8400-e29b-41d4-a716-446655440000",
-  "title": "Môj príbeh",
-  "intro": "Ráno prišlo v tichu — žiadne vtáky, žiadny vietor.",
-  "cover": "assets/cover.webp",
-  "authors": [{ "name": "Meno autora" }],
-  "language": "sk",
-  "genre": ["fantasy", "adventure"],
-  "parts": [
-    { "file": "story/0001-uvod.rea", "name": "Úvod" },
-    { "file": "story/0002-druha-kapitola.rea", "name": "Druhá kapitola" }
-  ],
-  "assets": ["assets/cover.webp", { "file": "assets/theme.mp3", "name": "Hlavná téma" }],
-  "sensors": [],
-  "allowed_urls": []
-}
-```
-
-### Povinné polia manifestu
-
-| Pole       | Typ    | Popis                                       |
-| ---------- | ------ | ------------------------------------------- |
-| `rea`      | string | Verzia jazyka Rea (aktuálne "1.0")          |
-| `manifest` | string | Verzia schémy manifestu (aktuálne "1.0")    |
-| `type`     | string | "story" (predvolené) alebo "instruction"    |
-| `id`       | string | UUID identifikátor diela                    |
-| `title`    | string | Názov príbehu                               |
-| `authors`  | array  | Zoznam autorov `{name, id?}` — `name` je voľný text, voliteľné `id` je autorov slug na rea.st (odkaz na profilovú stránku) |
-| `language` | string | BCP 47 kód jazyka                           |
-| `parts`    | array  | Zoznam častí `{file, name}` v poradí        |
-
-### Voliteľné polia manifestu
-
-| Pole           | Typ      | Popis                                       |
-| -------------- | -------- | ------------------------------------------- |
-| `genre`        | string[] | Zoznam žánrov                               |
-| `description`  | string   | Krátky popis príbehu (max 500 znakov)       |
-| `intro`        | string   | Úvodný text na obálke príbehu               |
-| `cover`        | string   | Cesta k obálke, napr. `assets/cover.webp`   |
-| `visibility`   | string   | "private" / "unlisted" / "public"           |
-| `tier`         | string   | "basic" / "premium" / "paid" / "commercial" |
-| `version`      | string   | Semver verzia obsahu                        |
-| `audience`     | object   | `{min, max}` vekový rozsah                  |
-| `assets`       | array    | Médiá v `assets/`: každá položka je holá cesta (`"assets/gate.webp"`) alebo `{ "file": "assets/theme.mp3", "name": "Hlavná téma" }` — loader normalizuje holý reťazec na `{ file }`; chýbajúce `name` znamená bez zobrazovaného názvu |
-| `sensors`      | string[] | Vyžadované hardvérové senzory               |
-| `duration`     | number   | Odhadovaný čas čítania v minútach           |
-| `allowed_urls` | array    | `{alias, url}` povolené externé URL         |
-| `extensions`   | string[] | Poradie načítania `.rext` — iba metadáta; prítomnosť súboru modul neaktivuje |
-| `requires`     | string[] | Menné priestory hostiteľských rozšírení, ktoré príbeh vyžaduje |
-| `cooperative`  | boolean  | Podpora pre kooperatívne čítanie            |
-| `season`       | string   | Sezóna v rámci série                        |
-| `series`       | string   | Názov série                                 |
-| `tags`         | string[] | Vyhľadávacie tagy                           |
-| `instruction`  | string   | Pre `story`: prepojený `instruction` reast  |
-| `stories`      | string[] | Pre `instruction`: pokryté `story` reasty   |
-
-### Inštrukčné reasty
-
-`story` reast môže mať sprievodný **inštrukčný reast** (`type: "instruction"`) —
-samostatný reast, ktorý vysvetľuje, ako pripraviť a viesť príbeh pre moderátora.
-Inštrukčný reast má vlastný `manifest.json`, časti aj médiá a číta sa ako každý
-iný reast, no nikdy sa nezobrazuje v zoznamoch katalógu — dá sa otvoriť len z
-príbehu, ku ktorému patrí.
-
-Oba reasty sa odkazujú navzájom: `story` deklaruje svoj jediný inštrukčný reast
-cez `instruction`, `instruction` uvádza pokryté príbehy cez `stories`. Príbeh má
-najviac jednu inštrukciu, no jedna inštrukcia môže pokrývať viac príbehov série.
-Keď má príbeh inštrukčný reast, čítačka ho označí a ponúkne akciu „Otvoriť
-inštrukčný reast".
-
-### Rozšírenia (`.rext`)
-
-Súbor `.rext` je Rea **rozširujúci modul** — Rea kód obsahujúci iba deklarácie
-(funkcie, konštanty `{set}` na najvyššej úrovni, `{use}` a komentáre; žiadna
-próza). Podľa konvencie rozšírenia sídlia v priečinku `extensions/` v archíve.
-
-`.rext` sa **nikdy** nestane vstupným príbehom: rozlišovač vstupu berie do úvahy
-iba súbory `.rea`. Každý `.rext` v archíve sa napriek tomu pri načítaní
-skompiluje a overí — ešte pred spustením akejkoľvek prózy —, takže pokazené
-rozšírenie zlyhá pri publikovaní, nie na zariadení čitateľa. Samotná prítomnosť
-`.rext` v archíve ho neaktivuje; viaže ho až `{use}` (pozri
-[Rozšíriteľnosť](#31-extensibility)).
-
-Rozšírení sa týkajú dva voliteľné kľúče manifestu:
-
-- **`extensions`** — usporiadané pole ciest k `.rext` relatívnych voči archívu.
-  Sú to **iba metadáta**: určujú poradie načítania, keď na ňom záleží. Kľúč
-  nikdy modul neaktivuje — iba usporiada tie, ktoré sa aj tak skompilujú. Cesta
-  uvedená v zozname, ktorá nie je v archíve, spôsobí zlyhanie načítania.
-- **`requires`** — menné priestory hostiteľských (JavaScript) rozšírení, od
-  ktorých príbeh závisí. Embedder, ktorý taký menný priestor nezaregistroval,
-  odmietne príbeh načítať, namiesto toho, aby uprostred kapitoly odpovedal zle.
-
-### Prechod medzi časťami a stav čítania
-
-Časti (`parts`) balíčka sa prechádzajú na požiadanie, nie zreťazené. Čitateľ
-začína vo vstupnej časti a posúva sa cez **bránu** `[[ cieľ ]]` (automatická,
-koncová) alebo **odkaz medzi časťami** `[text > cast.rea]` (čitateľ ťukne).
-Cieľom je súbor časti (`story/####-nazov.rea` alebo `nazov.rea`), voliteľne s
-príponou `:scena` pre pokračovanie pri kotve `[#scena]`. Načítajú sa len skutočne
-navštívené časti a príkazy `{set}` na najvyššej úrovni časti sa vykonajú raz pri
-vstupe, takže premenné sa hromadia pozdĺž prejdenej cesty.
-
-**Stav čítania**, ktorý platforma uchováva medzi reláciami, zachytáva: `variables`
-(všetky premenné), `choices` (vybraná možnosť na skupinu volieb),
-`visitedChoiceGroups`, `rng` (seed a stav generátora), `currentPart` (aktuálna
-časť; chýba pri jednodielnom príbehu), `visitedParts` (usporiadané súbory
-predtým navštívených častí) a `renderedParagraph` (posledný videný blok). Pri
-pokračovaní platforma prehrá navštívené časti (obnoví posun späť), znovu vstúpi
-do aktuálnej časti a obnoví premenné aj stav generátora.
+Jazykové pravidlá špecifické pre rozširovacie moduly `.rext` (ktoré
+konštrukcie sú vnútri platné, a prečo je na ich naviazanie potrebný `{use}`)
+nájdete v [Kde sa pravidlá líšia v `.rext` súboroch](rext-differences).
 
 ---
 
@@ -280,7 +138,7 @@ dostupné len vtedy, keď ich embedder poskytne.
 
 ### Úroveň 1 — Rea rozšírenia (autorský priestor, prenosné, v sandboxe)
 
-Rea rozšírenie je súbor `.rext` (pozri [Rozšírenia](#extension-modules-rext))
+Rea rozšírenie je súbor `.rext` (pozri [Kde sa pravidlá líšia v `.rext` súboroch](rext-differences))
 obsahujúci iba **deklarácie**: bloky `{function}`…`{end function}`, konštanty
 `{set}` na najvyššej úrovni, `{use}` a komentáre. Akýkoľvek prozaický uzol
 kdekoľvek v `.rext` je **chyba načítania**. Práve toto obmedzenie robí
@@ -344,7 +202,7 @@ Tvrdé pravidlo: hostiteľské rozšírenie, ktoré potrebuje zariadenie, **emit
 event** — engine nikdy nevolá zariadenie zaň.
 
 Príbeh deklaruje potrebné hostiteľské menné priestory cez
-[`manifest.requires`](#extension-modules-rext); embedder, ktorý požadovaný menný
+[`manifest.requires`](/engine/package-format#field-reference); embedder, ktorý požadovaný menný
 priestor nezaregistroval, odmietne príbeh načítať, namiesto toho, aby zlyhal
 uprostred kapitoly.
 
