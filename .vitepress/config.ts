@@ -20,13 +20,13 @@ const docVersions = [
 
 const enNav = [
   { text: 'Specification', link: '/spec/' },
-  { text: 'Engine', link: '/engine/getting-started' },
+  { text: 'Engine', link: '/engine/' },
   { text: 'Platform', link: '/platform/' },
 ];
 
 const skNav = [
   { text: 'Špecifikácia', link: '/sk/spec/' },
-  { text: 'Jadro', link: '/sk/engine/getting-started' },
+  { text: 'Jadro', link: '/sk/engine/' },
   { text: 'Platforma', link: '/sk/platform/' },
 ];
 
@@ -50,6 +50,7 @@ const engineSidebar = [
   {
     text: 'Engine',
     items: [
+      { text: 'Introduction', link: '/engine/' },
       { text: 'Getting Started', link: '/engine/getting-started' },
       { text: 'Embedding', link: '/engine/embedding' },
       { text: 'Theming', link: '/engine/theming' },
@@ -111,6 +112,7 @@ const skEngineSidebar = [
   {
     text: 'Engine',
     items: [
+      { text: 'Úvod', link: '/sk/engine/' },
       { text: 'Začíname', link: '/sk/engine/getting-started' },
       { text: 'Vkladanie', link: '/sk/engine/embedding' },
       { text: 'Témy', link: '/sk/engine/theming' },
