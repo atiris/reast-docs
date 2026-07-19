@@ -117,6 +117,10 @@ Hello, {player.name}! You have {player.gold} gold.
 -> anchor_name                       Divert (jump)
 ->-> section_name                    Tunnel (jump + auto-return)
 * ->                                 Fallback (auto-selected when nothing remains)
+
+{menu select=2 begin}                Exploration menu — waits for 2 picks
+* hidden [&qr_door] ...              Hidden option — no button, wakes only by activation
+{end menu}
 ```
 
 ---
@@ -276,6 +280,14 @@ yet implemented.
 {define ability spinach begin}   A card belonging to the set
   name: Spinach
   strength: +2
+{end define}
+```
+
+```rea
+{define action door begin}       Real-world activation fields
+  scan: ^REAST-DOOR-.*             QR/barcode payload (regex)
+  mark: emb1:Zk3q…                 Drawn mark signature (opaque — never hand-edit)
+  listen: open the door            Speech transcript (regex)
 {end define}
 ```
 

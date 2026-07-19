@@ -348,6 +348,39 @@ This presents up to 3 eligible storylets tagged `tavern_stories`, shuffled.
 
 Storylets enable organic, non-linear narratives where the story adapts to the reader's state, encouraging exploration and replay.
 
+### Exploration menus
+
+A choice group can also be a **hidden exploration menu** — a set of options with no buttons that wake only when the reader produces a matching real-world input: scanning a QR code, photographing a hand-drawn mark, saying a phrase, or typing a description. Mark an option `hidden` to hide its button; it stays in the pool but only fires through activation, never a tap:
+
+```rea
+{menu select=2 begin}
+* hidden [&qr_door] The service door clicks open…
+* hidden [&painted_tree] The painted tree shimmers…
+* hidden [&couch_secret] Under the couch you find an envelope…
+* [Give up and move on]
+{end menu}
+```
+
+Wrapping a choice group in `{menu select=N begin} … {end menu}` changes how many discoveries the group waits for before the story moves on:
+
+| `select=` value | Behavior                                                                                             |
+| ---------------- | ----------------------------------------------------------------------------------------------------- |
+| _(omitted)_       | Normal single-pick choice group — unchanged from today                                               |
+| `N`               | Re-presents the group after each activation until `N` options were chosen, or none remain eligible   |
+| `all`             | Stays open while any option is still eligible                                                        |
+
+Each activation plays that option's narration and effects exactly like a tapped choice — `{set}`, `{give}`, diverts, all run through the same path. A one-time (`*`) option leaves the pool once chosen; a repeatable (`+`) option stays available. A visible option can end the menu early by diverting elsewhere, or simply counts toward `N` like any other pick.
+
+Activation channels — `scan:`, `mark:`, `listen:` — are declared on the referenced card (see [Real-world activation](#real-world-activation) in Cards), not on the choice line itself. The same `[&card_id]` reference and `hidden` flag work whether the card wakes from a tap, a scan, a mark, or a voice line.
+
+#### Undo and saves inside a menu
+
+Each discovery is a separate recorded choice, so undo steps back one discovery at a time — undoing inside a `select=2` menu returns to just before the last activation, with the earlier discovery still in place. Saves taken mid-menu resume with the same set of remaining eligible options.
+
+#### Priority with storylet triggers
+
+A single scan, spoken phrase, or drawn-mark photo can only mean one thing. If the reader has a pending exploration menu open when they produce that input, the menu is checked first; only if nothing in the menu matches does the input fall through to wake a storylet (see [Real-World Interactions](#21-real-world-interactions)).
+
 ### Undo & back navigation
 
 The platform provides built-in back navigation, allowing readers to revisit previous passages. Authors can control this behavior:
@@ -543,6 +576,51 @@ Action cards represent story branching points with visual emphasis:
 ```
 
 > **Note:** Action cards use `&` (ampersand) to distinguish from custom anchors, which use `[#name]`.
+
+Like character and item cards, an action can carry a `{define action}` block with a name and description:
+
+```rea
+{define action open_the_gate begin}
+  name: The Ancient Gate
+  description: Push open the rusted gate; force the old gate; shove past the entrance
+{end define}
+```
+
+`description:` is shown on the card and doubles as the free-text target a reader can type to name the action.
+
+#### Real-world activation
+
+An action card can also wake from a real-world input instead of — or alongside — a tap. Three optional fields sit next to `description:`:
+
+```rea
+{define action qr_door begin}
+  name: The service door
+  scan: ^REAST-DOOR-.*
+{end define}
+
+{define action painted_tree begin}
+  name: The painted tree
+  mark: emb1:Zk3q…                      // signature computed by the editor from the drawing
+{end define}
+
+{define action couch_secret begin}
+  name: Under the couch
+  description: look under the couch; lift the sofa; search beneath the seat
+  listen: under the couch
+{end define}
+```
+
+| Field     | Matches against                | Comparison                          |
+| --------- | ------------------------------- | ------------------------------------ |
+| `scan:`   | A scanned QR/barcode payload    | Case-insensitive regular expression |
+| `listen:` | A speech transcript             | Case-insensitive regular expression |
+| `mark:`   | A photographed hand-drawn mark  | Exact signature match                |
+
+A card can combine any number of these fields — `couch_secret` above answers to both a typed description and a spoken phrase.
+
+> **`mark:` is opaque.** Its value is a signature the editor's "Draw a mark" tool computes from a drawing or photo — never write or edit it by hand. To create or change a mark, redraw it in the editor; see [Real-world exploration menus](/platform/design/real-world-exploration-menus) for the authoring workflow.
+
+These fields shine when the option playing the card is `hidden` — see [Exploration menus](#exploration-menus) in Choices & Branching. A visible option with activation fields answers to both: the reader can tap its button or produce the matching real-world input.
 
 ### Card sets & categories
 
@@ -1332,6 +1410,10 @@ Pattern: array of alternating vibrate/pause durations in milliseconds.
   The door slowly creaks open.
 {end if}
 ```
+
+### Priority: exploration menus vs. storylet triggers
+
+A scan, spoken phrase, or photographed mark is a single physical event — it cannot mean two things at once. If the reader has a pending [exploration menu](#exploration-menus) open when they produce that input, the engine checks the menu's `scan:`/`mark:`/`listen:` options first. Only when nothing in the menu matches does the same input fall through to wake a storylet trigger.
 
 ### Dice and randomization
 

@@ -76,7 +76,13 @@ const platformSidebar = [
       { text: 'Overview', link: '/platform/' },
       { text: 'For Readers', link: '/platform/for-readers' },
       { text: 'For Authors', link: '/platform/for-authors' },
-      { text: 'Story Design', link: '/platform/design/' },
+      {
+        text: 'Story Design',
+        link: '/platform/design/',
+        items: [
+          { text: 'Real-World Exploration Menus', link: '/platform/design/real-world-exploration-menus' },
+        ],
+      },
       { text: 'Glossary', link: '/platform/glossary' },
     ],
   },

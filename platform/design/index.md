@@ -9,6 +9,8 @@ How to structure and package a story for the Reast platform — whether you writ
 
 Both paths produce the same kind of package; which one you use is a workflow preference, not a platform requirement.
 
+A story can also turn a physical space into part of the puzzle — see [Real-World Exploration Menus](real-world-exploration-menus) for building a scene the reader searches with a QR sticker, a drawn mark, and their own words.
+
 ## Principles
 
 A story that leans on Reast's platform-specific capabilities — real-world interactions, cooperative reading, multi-part structure — benefits from planning those elements before writing prose:
