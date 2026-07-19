@@ -118,9 +118,17 @@ Hello, {player.name}! You have {player.gold} gold.
 ->-> section_name                    Tunnel (jump + auto-return)
 * ->                                 Fallback (auto-selected when nothing remains)
 
+* hidden [&card_id] ...              Hidden choice — no button; fires via free-text or scan/mark/listen
+
 {menu select=2 begin}                Exploration menu — waits for 2 picks
 * hidden [&qr_door] ...              Hidden option — no button, wakes only by activation
 {end menu}
+
+{storylet bench_secret begin}        Triggered storylet — the world deals the card
+  trigger: scan                        Input kind: scan, listen, text, nfc, ... (open set)
+  match: "^REAST-BENCH-.*"             Optional regex on the input value
+  ...                                  Plays as a side path, returns to the main story
+{end storylet}
 ```
 
 ---
@@ -298,6 +306,7 @@ yet implemented.
 ```rea
 {input name=player_name, placeholder="Your name"}
 {input name=guess, type="number", min=1, max=100}
+{input type="action", placeholder="What do you do?"}   Free text matched to the pending choices
 {button label="Continue", target=next_chapter}
 ```
 

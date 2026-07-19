@@ -67,6 +67,23 @@ Choices can have conditions:
   You turn and leave quietly.
 ```
 
+### Hidden choices
+
+A choice marked `hidden` renders no button. It stays in the group's pool — conditions, one-time consumption and narration all work as usual — but it can only fire through something other than a tap: the reader describing it in [free-text input](#free-text-action-input), or a real-world input matching its card's [activation fields](#real-world-activation) (a scanned code, a photographed mark, a spoken phrase):
+
+```rea
+* hidden [&look_under_sofa] Jozef bent down and looked under the old sofa, where he found a mysterious envelope marked _Secret!_
+  {give secret_envelope}
+```
+
+The `hidden` keyword comes first on the choice line; a condition can follow it:
+
+```rea
+* hidden {player.curious} [&look_under_sofa] …
+```
+
+Hidden choices are usually bound to an action card with `[&card_id]` — the card's `description:` is what free-text matching compares against, and its `scan:`/`mark:`/`listen:` fields are what real-world inputs match. Because the label only appears after the choice fires, hint at hidden content in the surrounding prose; the label and narration are the reward, not the invitation. Groups built mostly from hidden choices are covered in [Exploration menus](#exploration-menus).
+
 ### Diverts
 
 Use `->` to jump to a named section (anchor):
@@ -335,6 +352,8 @@ Storylets are modular content blocks with prerequisites and effects — the buil
 | `cooldown`   | Minimum visits/time before reappearing                    |
 | `weight`     | Relative probability when multiple storylets are eligible |
 | `tags`       | Categorization for filtering (`tags: tavern, social`)     |
+| `trigger`    | Real-world input kind that can wake this storylet (see [Triggered storylets](#triggered-storylets)) |
+| `match`      | Optional case-insensitive regex the input value must match |
 
 **Storylet deck** — present available storylets as a hand of cards the reader can choose from:
 
@@ -348,9 +367,46 @@ This presents up to 3 eligible storylets tagged `tavern_stories`, shuffled.
 
 Storylets enable organic, non-linear narratives where the story adapts to the reader's state, encouraging exploration and replay.
 
+### Triggered storylets
+
+A storylet with a `trigger:` line is woken by the world instead of a deck: at almost any moment while reading, a real-world input — scanning a QR sticker on a bench, saying a phrase aloud, tapping an NFC tag — can interrupt the main story, play the storylet as a side path, and return exactly where the reader left off:
+
+```rea
+{storylet bench_secret begin}
+  trigger: scan
+  match: "^REAST-BENCH-.*"
+  require: story.act >= 2
+  weight: 2
+  repeatable: false
+
+  The code on the bench flickers to life. A voice whispers: "You found me."
+  * [Follow the whisper]
+    -> bench_alley
+  * [Ignore it]
+{end storylet}
+
+{storylet magic_word begin}
+  trigger: listen
+  match: "abracadabra"
+
+  The word hangs in the air — and the wall answers.
+{end storylet}
+```
+
+- **`trigger:`** names the input kind. The set is open — the reader app decides which kinds it can physically capture. Common kinds: `scan` (QR/barcode payload), `listen` (recognized speech transcript), `text`, `vision`, `nfc`, `shake`, `location`. A storylet without `trigger:` behaves exactly as before (deck-only); a storylet may carry both `trigger:` and `tags:` and appear in decks too
+- **`match:`** is a case-insensitive regular expression tested against the input's value (the QR payload, the transcript). Omit it to accept any input of that kind
+- **Selection** follows normal storylet rules: among storylets whose kind and `match:` fit, `require:` conditions, drawn-state, `cooldown:` and `priority:` are respected, then one is picked by weighted random. One input wakes exactly one storylet
+- **Inside the body**, `event.kind` and `event.value` expose the triggering input to conditions and text (they are also visible to `require:` during selection), so the scanned payload or the spoken words can be quoted back to the reader: `Its tag reads {event.value}.`
+
+#### Interruption and return
+
+A triggered storylet plays like an author-written tunnel (`->->`): the engine remembers the main-story position — including a pending, not-yet-answered choice group — plays the storylet, and resumes the main story exactly where it was when the storylet ends (its last line, or an explicit divert out). State changes made inside (`{set}`, `{give}`, coins) persist into the main story. Saves taken mid-storylet restore into the storylet with the return position intact. A new trigger is ignored while a triggered storylet is already running — side paths never nest.
+
+When an input matches nothing — no eligible storylet, no pending [exploration menu](#exploration-menus) option — the reader app gives gentle feedback ("that did nothing… yet") rather than an error, so scanning stray codes is always safe. When both a pending exploration menu and a triggered storylet could answer the same input, the menu wins — see [Priority with storylet triggers](#priority-with-storylet-triggers).
+
 ### Exploration menus
 
-A choice group can also be a **hidden exploration menu** — a set of options with no buttons that wake only when the reader produces a matching real-world input: scanning a QR code, photographing a hand-drawn mark, saying a phrase, or typing a description. Mark an option `hidden` to hide its button; it stays in the pool but only fires through activation, never a tap:
+A choice group can also be a **hidden exploration menu** — a set of [hidden choices](#hidden-choices) that wake only when the reader produces a matching real-world input: scanning a QR code, photographing a hand-drawn mark, saying a phrase, or typing a description:
 
 ```rea
 {menu select=2 begin}
@@ -586,7 +642,7 @@ Like character and item cards, an action can carry a `{define action}` block wit
 {end define}
 ```
 
-`description:` is shown on the card and doubles as the free-text target a reader can type to name the action.
+`description:` is shown on the card and doubles as the semantic target for [free-text action input](#free-text-action-input) — what a reader can type to name the action.
 
 #### Real-world activation
 
@@ -791,6 +847,33 @@ Hello, {player_name}!
 ```
 
 Numeric input validates against `min`/`max` constraints. Out-of-range values are clamped to the nearest bound. Non-numeric input defaults to `0`.
+
+### Free-text action input
+
+`{input type="action"}` turns a scene from a menu into a place: the reader types what they want to do in their own words, and the story activates the choice that best describes it — even when the wording differs from anything on screen:
+
+```rea
+The room is small and dusty. An old couch sags in the corner.
+
+{input type="action", placeholder="What do you do?"}
+
+* [Open the window]
+  Fresh air streams in.
+* hidden [&look_under_sofa] Jozef bent down and looked under the old sofa, where he found a mysterious envelope marked _Secret!_
+
+{define action look_under_sofa begin}
+  name: Look under the sofa
+  description: lift or look under the old couch in the corner; check beneath the sofa; search under the seat
+{end define}
+```
+
+Unlike a plain text input, the submission is not stored in a variable — it is matched against the eligible options of the pending choice group, visible and [hidden](#hidden-choices) alike, with conditions already applied and consumed one-time options excluded. For options bound to an action card, the card's `description:` is the semantic target — write it as a compact list of intents, synonyms welcome, in the language of the story; the card's `name:` and the option label are considered as well.
+
+A match activates the option through the exact same path as a tap — narration, effects, undo, saves and analytics behave identically. A submission that matches nothing shows a gentle non-match message in the field and the group stays open, so guessing is always safe.
+
+Matching runs entirely on the reader's device: the reader app provides a small multilingual embedding model, and a built-in word-overlap matcher answers when no model is available (or while it is still loading), so free-text input always works — offline, private, no per-interaction cost. Because the model is multilingual, the reader's wording can even drift from the author's description language within reason.
+
+The typed sentence itself never leaves the device and is not stored in story state; only the resulting choice is recorded.
 
 ### Buttons
 
@@ -1317,6 +1400,8 @@ The `target` attribute matches the scanned value. Use `pattern` for regex matchi
 {end scan}
 ```
 
+A `{scan}` block is *blocking* — the story stops at that point and waits for the code. For codes the reader may encounter anywhere along the way, use [triggered storylets](#triggered-storylets) (`trigger: scan`) or an [exploration menu](#exploration-menus) option with a `scan:` card field instead: those are opt-in interruptions that fire whenever the input arrives.
+
 ### NFC tags
 
 ```rea
@@ -1410,6 +1495,8 @@ Pattern: array of alternating vibrate/pause durations in milliseconds.
   The door slowly creaks open.
 {end if}
 ```
+
+Like `{scan}`, a `{listen}` block stops and waits at one point. For phrases the reader can say at any moment, use [triggered storylets](#triggered-storylets) (`trigger: listen`) or an exploration-menu option with a `listen:` card field.
 
 ### Priority: exploration menus vs. storylet triggers
 
