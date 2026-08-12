@@ -2,7 +2,7 @@
 
 > [Introduction](/spec/) · [Feature index](features) · [Cheatsheet](REA-CHEATSHEET)
 >
-> Most of this page is **experimental**: released and in daily use, but the syntax may still be refined within 1.x. Two features here are not available to authors yet — [coordinate literals](#data-types) (`draft`) and [state machines](#state-machines) (`development`). Each carries its own badge.
+> Most of this page is **experimental**: released and in daily use, but the syntax may still be refined within 1.x. Two features here are not available to authors yet — [coordinate literals](#coordinate-literals) (`draft`) and [state machines](#state-machines) (`development`). Each carries its own badge.
 
 ---
 

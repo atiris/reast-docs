@@ -15,17 +15,29 @@ Cesta sa vetvila pri starom dube.
 * [Vydaj sa pravou cestou]
 ```
 
-## Súborové typy
+## Súborové typy {#file-types}
 
 - **`.rea`** — súbor príbehu: próza plus ľubovoľná voliteľná Rea syntax.
 - **`.rext`** — Rea *rozšírenie*: iba deklarácie (funkcie, konštanty `{set}` na najvyššej úrovni, `{use}` a komentáre — žiadna próza). Pozri [Kde sa pravidlá líšia v `.rext` súboroch](rext-differences).
-- **`.reast`** — distribuovateľný ZIP balík: jeden alebo viac súborov `.rea`, voliteľné rozšírenia `.rext` a médiá, plus `manifest.json`. Pozri referenciu enginu [formát balíčka `.reast`](/engine/package-format).
+- **`.reast`** — distribuovateľný ZIP balík: jeden alebo viac súborov `.rea`, voliteľné rozšírenia `.rext` a médiá, plus `manifest.json` v zabalenej štruktúre. Pozri [referenciu formátu balíka `.reast`](/sk/engine/package-format) v dokumentácii jadra.
 
-## Čím Rea nie je
+## Čím Rea nie je {#what-rea-is-not}
 
-Rea nie je programovací jazyk na všeobecné použitie, nie je HTML a nie je herný engine. Jej funkcie sú izolované v sandboxe a zámerne obmedzené, jej vykresľovanie riadi platforma a nemá žiadny prienik surového značkovania.
+Rea nie je programovací jazyk na všeobecné použitie, nie je HTML a nie je herný engine. Jej funkcie sú izolované v sandboxe a zámerne obmedzené, jej vykresľovanie riadi platforma a nemá žiadny priepust surového značkovania. Úplný zoznam zámerných vylúčení nájdete v časti [Čo Rea zámerne neobsahuje](05-reference.md#what-rea-intentionally-omits).
 
-## Poradie čítania
+## Ako ďaleko je ktorá funkcia? {#how-far-along-is-each-feature}
+
+Rea 1.0 je prvým vydaním jazyka a nie každá funkcia v tejto špecifikácii je rovnako ďaleko. Každá nesie pod vlastným nadpisom značku stavu:
+
+- **`stable`** — vydané a zmrazené; zmeniť to môže len nová verzia MAJOR. Toto je prozaické jadro: odseky, formátovanie, nadpisy, odkazy, médiá, poznámky.
+- **`experimental`** — vydané a použiteľné, ale syntax sa v rámci 1.x ešte môže upraviť. Dnes je tu väčšina jazyka.
+- **`development`** — navrhnuté a práve sa stavia; zatiaľ nepoužiteľné.
+- **`draft`** — špecifikované a prediskutované; implementácia sa nezačala.
+- **`cancelled`** — zvážené a zámerne vylúčené.
+
+[**Index funkcií**](features) uvádza každú funkciu zoskupenú podľa toho, na čo slúži, s filtrom podľa stavu. Prečítajte si ho skôr, než začnete plánovať príbeh okolo čohokoľvek nad rámec prozaického jadra.
+
+## Poradie čítania {#reading-order}
 
 Špecifikácia je rozdelená na päť častí, ktoré sa pri prvom čítaní odporúča prejsť v poradí:
 

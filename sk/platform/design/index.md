@@ -5,9 +5,11 @@ Ako štruktúrovať a zabaliť príbeh pre platformu Reast — či už ho píše
 ## Dva spôsoby tvorby príbehu
 
 - **Editor platformy** (odporúčaný pre väčšinu autorov) — píšte Rea so živým náhľadom, spravujte metadáta a médiá cez formuláre a publikujte na jedno kliknutie. Editor za vás zostaví balík `.reast`; pozrite [Pre autorov](../for-authors) pre samotný proces písania.
-- **Ľubovoľný textový editor** — píšte `.rea` súbory priamo a potom ich sami zabaľte do balíka `.reast`: ZIP archív so súbormi príbehu v `story/`, médiami v `assets/` a súborom `manifest.json` popisujúcim názov, autora, časti a ďalšie metadáta v koreni archívu. Hotový súbor `.reast` nahrajte na publikovanie. Celé rozloženie archívu a všetky polia manifestu sú zdokumentované v referencii enginu [formát balíčka `.reast`](/engine/package-format) — táto stránka je kanonický zdroj pre to, čo musí platný balík obsahovať.
+- **Ľubovoľný textový editor** — píšte `.rea` súbory priamo a potom ich sami zabaľte do balíka `.reast`: ZIP archív so súbormi príbehu v `story/`, médiami v `assets/` a súborom `manifest.json` popisujúcim názov, autora, časti a ďalšie metadáta v koreni archívu. Hotový súbor `.reast` nahrajte na publikovanie. Celé rozloženie archívu a všetky polia manifestu sú zdokumentované v referencii enginu [formát balíčka `.reast`](/sk/engine/package-format) — táto stránka je kanonický zdroj pre to, čo musí platný balík obsahovať.
 
 Obe cesty vytvárajú rovnaký typ balíka; ktorú použijete, je otázka pracovného postupu, nie požiadavka platformy.
+
+Príbeh môže urobiť súčasťou hádanky aj fyzický priestor — pozri [Menu objavovania v reálnom svete](real-world-exploration-menus), kde nájdete stavbu scény, ktorú čitateľ prehľadáva QR nálepkou, kreslenou značkou a vlastnými slovami.
 
 ## Základné princípy
 
@@ -19,8 +21,8 @@ Príbeh, ktorý využíva platformovo-špecifické schopnosti — interakcie s r
 
 ## Externý prístup, vlastné funkcie a bezpečnosť
 
-Príbeh môže v manifeste deklarovať `allowed_urls` na volanie malej, explicitne uvedenej sady externých endpointov, a môže rozšíriť vlastnú logiku pomocou rozširovacích modulov `.rext` (pozri [Rozširovanie enginu](/engine/extending) a [Kde sa pravidlá líšia v `.rext` súboroch](/sk/spec/rext-differences)). Oba mechanizmy sú zámerne úzke:
+Príbeh môže v manifeste deklarovať `allowed_urls` na volanie malej, explicitne uvedenej sady externých endpointov, a môže rozšíriť vlastnú logiku pomocou rozširovacích modulov `.rext` (pozri [Rozširovanie enginu](/sk/engine/extending) a [Kde sa pravidlá líšia v `.rext` súboroch](/sk/spec/rext-differences)). Oba mechanizmy sú zámerne úzke:
 
 - **`allowed_urls` je whitelist, nie univerzálna sieťová brána.** Dosiahnuteľné sú iba endpointy, ktoré autor uvedie; všetko ostatné je blokované. Ku každému uvedenému URL pristupujte tak, akoby ho zariadenie čitateľa skutočne kontaktovalo, a vyhýbajte sa endpointom, ktoré vracajú čokoľvek, čo by ste nechceli vidieť vykreslené ako text príbehu.
-- **Rozšírenia `.rext` sú Rea v sandboxe, nie ľubovoľný kód.** Nemajú prístup k súborovému systému, k sieti nad rámec vstavaných funkcií enginu, ani k žiadnemu API mimo jazyka Rea — pozri [Obmedzenia sandboxu](/sk/spec/05-reference#31-extensibility). Príbeh nemôže vložiť JavaScript ani žiadny iný jazyk.
-- **Čokoľvek, čo má byť skutočne nesfalšovateľné — odpoveď v súťaži, platené odomknutie — musí byť overené na strane servera.** Šifrovanie kapitoly `.rea` odradí náhodné nazeranie, no dešifrovací kľúč sa nutne dostane na zariadenie čitateľa, aby sa dala kapitola vykresliť — takže to nie je bezpečnostná hranica; pozri [Ochrana obsahu](/sk/spec/04-utilities#23-content-protection-lock).
+- **Rozšírenia `.rext` sú Rea v sandboxe, nie ľubovoľný kód.** Nemajú prístup k súborovému systému, k sieti nad rámec vstavaných funkcií enginu, ani k žiadnemu API mimo jazyka Rea — pozri [Obmedzenia sandboxu](/sk/spec/05-reference#_31-extensibility). Príbeh nemôže vložiť JavaScript ani žiadny iný jazyk.
+- **Čokoľvek, čo má byť skutočne nesfalšovateľné — odpoveď v súťaži, platené odomknutie — musí byť overené na strane servera.** Šifrovanie kapitoly `.rea` odradí náhodné nazeranie, no dešifrovací kľúč sa nutne dostane na zariadenie čitateľa, aby sa dala kapitola vykresliť — takže to nie je bezpečnostná hranica; pozri [Ochrana obsahu](/sk/spec/04-utilities#_23-content-protection-lock).

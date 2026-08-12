@@ -10,6 +10,7 @@
     "build:full": "npm run build:api && vitepress build",
     "build:api": "cd ../engine && npx typedoc && cp -r docs-api ../docs/api-reference || true",
     "preview": "vitepress preview",
+    "check:anchors": "node scripts/check-anchors.mjs",
     "snapshot": "node scripts/snapshot-version.mjs",
     "prepare": "husky"
   },

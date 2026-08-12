@@ -124,3 +124,5 @@ player.addEventListener('rea-error', (e) => {
   console.error('Chyba:', e.detail.message);
 });
 ```
+
+Úplný zoznam udalostí a tvary ich detailov nájdete v [API referencii](api).

@@ -102,7 +102,7 @@ const skSpecSidebar = [
     text: 'Špecifikácia jazyka Rea',
     items: [
       { text: 'Úvod', link: '/sk/spec/' },
-      { text: 'Zoznam funkcií', link: '/spec/features' },
+      { text: 'Index funkcií', link: '/sk/spec/features' },
       { text: 'Základy', link: '/sk/spec/01-basics' },
       { text: 'Logika a dáta', link: '/sk/spec/02-logic-data' },
       { text: 'Naratív a interakcia', link: '/sk/spec/03-narrative-interaction' },
@@ -144,7 +144,16 @@ const skPlatformSidebar = [
       { text: 'Prehľad', link: '/sk/platform/' },
       { text: 'Pre čitateľov', link: '/sk/platform/for-readers' },
       { text: 'Pre autorov', link: '/sk/platform/for-authors' },
-      { text: 'Návrh príbehov', link: '/sk/platform/design/' },
+      {
+        text: 'Návrh príbehov',
+        link: '/sk/platform/design/',
+        items: [
+          {
+            text: 'Menu objavovania v reálnom svete',
+            link: '/sk/platform/design/real-world-exploration-menus',
+          },
+        ],
+      },
       { text: 'Slovník', link: '/sk/platform/glossary' },
     ],
   },

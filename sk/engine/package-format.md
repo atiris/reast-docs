@@ -9,11 +9,11 @@ Táto stránka popisuje rozloženie na disku a schému `manifest.json`, aby tret
 strany mohli vytvárať vlastné baličky, validátory či alternatívne prehrávače bez
 nutnosti čítať zdrojový kód enginu.
 
-## Rozloženia archívu
+## Rozloženia archívu {#archive-layouts}
 
 Čitateľ akceptuje presne dve rozloženia:
 
-### S manifestom
+### S manifestom {#packaged}
 
 `manifest.json` v koreni archívu nesie všetky metadáta a usporiadaný zoznam
 častí príbehu. Súbory príbehu sú v `story/`; médiá (obálky, obrázky, zvuk, video)
@@ -40,7 +40,7 @@ z príbehu — pozri [Rozširovanie](extending). Podľa konvencie žijú v
 `extensions/`. Ich prítomnosť ich nikdy neaktivuje (viaže ich až `{use}`) a
 **`.rext` nikdy nemôže byť vstupným príbehom**.
 
-### Plochý
+### Plochý {#flat}
 
 Bez `manifest.json`. Všetky `.rea` aj mediálne súbory sú v koreni archívu.
 Vstupný príbeh je **abecedne prvý** `*.rea` súbor. Plochý balíček nenesie žiadne
@@ -60,7 +60,7 @@ použiteľná logika ide do rozširovacích modulov `.rext` pod `extensions/` (p
 [Rozširovanie](extending)) a funkcie závislé od senzora sa načítavajú podmienene
 podľa poľa manifestu `sensors`.
 
-### Importovanie z verejného GitHub repozitára
+### Importovanie z verejného GitHub repozitára {#importing-from-a-public-github-repository}
 
 Balíček môže tiež žiť nezabalený vo verejnom GitHub repozitári: koreň
 repozitára funguje ako koreň balíčka (`manifest.json`, `story/`, voliteľný
@@ -96,7 +96,7 @@ Pravidlá, ktoré kompatibilný čitateľ vynucuje:
 - `reast.json`, ak je prítomný, sú voliteľné nastavenia relácie (prednastavené
   premenné) — nikdy nie manifest.
 
-## `manifest.json`
+## `manifest.json` {#manifest-json}
 
 Manifest má **jednu kanonickú podobu** — žiadne pole nemá „skrátený" tvar. `id`
 je vždy prítomné (generuje sa pri vytvorení projektu), `author` je vždy pole
@@ -143,11 +143,11 @@ prípadov, keď od neho závisí nejaká schopnosť; neznáme pole sa zachová a
 }
 ```
 
-### Referencia polí
+### Referencia polí {#field-reference}
 
 - `rea` — string — Verzia jazyka Rea, v ktorej je príbeh napísaný (aktuálne `"1.0"`).
 - `manifest` — string — Verzia schémy manifestu (aktuálne `"1.0"`).
-- `type` — string — `"story"` (čítajú čitatelia, predvolené) alebo `"instruction"` (pozri [Typy reastov](#typy-reastov) nižšie).
+- `type` — string — `"story"` (čítajú čitatelia, predvolené) alebo `"instruction"` (pozri [Typy reastov](#reast-types) nižšie).
 - `id` — string — Stabilný identifikátor príbehu (UUID). Vždy prítomný — generuje sa pri vytvorení projektu, nezávisle od neskoršieho nahratia na platformu.
 - `title` — string — Zobrazovaný názov.
 - `intro` — string — Krátky úvodný text zobrazený na obálke príbehu.
@@ -186,11 +186,11 @@ prípadov, keď od neho závisí nejaká schopnosť; neznáme pole sa zachová a
 - `series_name`, `season_name` — string — Voliteľné zobrazované názvy pre zoskupenie `series` / `season`.
 - `solo_mode` — string — Spracovanie rolí v sólo režime: `"all_roles"` (predvolené) alebo `"single_role"`.
 - `storage` — string — Nápoveda pre úložisko: `"none"`, `"local"` (predvolené), alebo `"cloud"`.
-- `reader` — object — Nastavenia prezentácie čitateľa, napr. lišta záložiek — pozri [Lišta záložiek čitateľa](#lišta-záložiek-čitateľa).
-- `build` — object — Metadáta zostavenia pri minifikácii — pozri [Minifikácia a kompresia](#minifikácia-a-kompresia).
-- `signed`, `signature` — boolean / string — Či je balíček kryptograficky podpísaný, a náklad podpisu — pozri [Integrita a podpisovanie](#integrita-a-podpisovanie).
+- `reader` — object — Nastavenia prezentácie čitateľa, napr. lišta záložiek — pozri [Lišta záložiek čitateľa](#reader-tab-bar).
+- `build` — object — Metadáta zostavenia pri minifikácii — pozri [Minifikácia a kompresia](#minification-compression).
+- `signed`, `signature` — boolean / string — Či je balíček kryptograficky podpísaný, a náklad podpisu — pozri [Integrita a podpisovanie](#integrity-and-signing).
 
-## Typy reastov
+## Typy reastov {#reast-types}
 
 Každý reast s manifestom deklaruje `type`:
 
@@ -222,7 +222,7 @@ otvárateľný na požiadanie, sa predchádza prezradeniu spoilerov (mená post�
 výsledky vetiev, riešenia hádaniek), na ktoré sa inštrukcia môže potrebovať
 odvolávať pre moderátora.
 
-## Lišta záložiek čitateľa
+## Lišta záložiek čitateľa {#reader-tab-bar}
 
 Mobilní čitatelia môžu zobraziť palcom dosiahnuteľnú spodnú lištu záložiek s
 najviac piatimi sekciami. Lišta je **predvolene vypnutá**; autori sa prihlasujú
@@ -263,7 +263,7 @@ objekt sekcie akceptuje `enabled`, voliteľné prepísanie `label`/`icon` a voľ
 atribúty špecifické pre danú sekciu (napr. `map.image`, alebo možnosti
 `qrScan`/`photo`/`audio` pri `actions`).
 
-## Nastavenia relácie: `reast.json`
+## Nastavenia relácie: `reast.json` {#session-settings-reast-json}
 
 `reast.json`, ak je prítomný, nesie **nastavenia prípravy relácie** — premenné a
 konfiguráciu na spustenie príbehu v konkrétnom kontexte (napr. počet hráčov,
@@ -282,7 +282,7 @@ Platforma číta `reast.json` na začiatku relácie a vloží jeho hodnoty do
 priestoru premenných príbehu. Autori definujú, aké nastavenia sa očakávajú,
 cez direktívy `@config` v príbehu.
 
-## Progresívne načítavanie
+## Progresívne načítavanie {#progressive-loading}
 
 Veľké príbehy sa môžu načítavať po častiach namiesto naraz. Manifest deklaruje
 stratégiu:
@@ -300,7 +300,7 @@ stratégiu:
 čitateľ na 80 % aktuálnej časti; časti uvedené v `locked` sa stiahnu až po
 splnení podmienky uzamknutia.
 
-## Delta aktualizácie
+## Delta aktualizácie {#delta-updates}
 
 Keď sa príbeh aktualizuje, čitatelia môžu stiahnuť iba zmenené súbory namiesto
 celého balíčka. Manifest na to nesie hashe obsahu jednotlivých súborov:
@@ -314,7 +314,7 @@ celého balíčka. Manifest na to nesie hashe obsahu jednotlivých súborov:
 }
 ```
 
-## Schopnosti
+## Schopnosti {#capabilities}
 
 Čitateľ skúma manifest, aby rozhodol, čo musí hostiteľská platforma poskytnúť
 pred vykreslením:
@@ -328,7 +328,7 @@ pred vykreslením:
 - **Externé URL** — kontaktovať možno len endpointy uvedené v `allowed_urls`;
   všetko ostatné je blokované.
 
-## Integrita a podpisovanie
+## Integrita a podpisovanie {#integrity-and-signing}
 
 Keď je prítomné pole `integrity`, čitateľ prepočíta SHA-256 hash každého
 uvedeného súboru a pri nezhode odmietne balíček načítať. Balíčky môžu navyše
@@ -346,7 +346,7 @@ platformou). Čitateľ overí podpis pred načítaním a pri nezhode upozorní.
 kľúča (validácia, linting, moderovanie) a nesmie sa objaviť uprostred príbehu za
 odomykacím kódom (pozri [Kde sa pravidlá líšia v `.rext` súboroch](../spec/rext-differences)).
 
-## Minifikácia a kompresia
+## Minifikácia a kompresia {#minification-compression}
 
 Pred zabalením do `.reast` možno súbory príbehu pred distribúciou minifikovať a
 skomprimovať. **Minifikácia** (bezstratová transformácia zdroja `.rea`)
@@ -381,7 +381,7 @@ bola použitá:
 }
 ```
 
-## Číslované súbory príbehu
+## Číslované súbory príbehu {#numbered-story-files}
 
 Pomenovávanie častí príbehu ako `0001-intro.rea`, `0002-forest.rea`, … je
 **odporúčané, nie povinné**. Zaručí to deterministický, ľudsky čitateľný vstup
@@ -392,7 +392,7 @@ v balíčku s manifestom pochádza poradie častí z poľa manifestu `parts`, ni
 názvov súborov. Usporiadanie viacerých plochých častí podľa názvu súboru dnes
 neexistuje; plochý archív rozlišuje iba svoj jediný vstupný súbor.
 
-## Kolaboratívne autorstvo
+## Kolaboratívne autorstvo {#collaborative-authoring}
 
 Textový, riadkovo orientovaný formát Rea je navrhnutý pre tímové workflow:
 
@@ -404,7 +404,7 @@ Textový, riadkovo orientovaný formát Rea je navrhnutý pre tímové workflow:
 - **Žiadny binárny stav** — logika príbehu žije v texte, nie v nepriehľadných
   projektových súboroch (na rozdiel od JSON-ového úložiska Twine).
 
-## Prechod medzi časťami a stav čítania
+## Prechod medzi časťami a stav čítania {#multi-part-traversal-reading-state}
 
 Časti (`parts`) balíčka s manifestom sa prechádzajú na požiadanie, nie
 zreťazené. Čitateľ začína vo vstupnej časti a posúva sa cez **bránu**

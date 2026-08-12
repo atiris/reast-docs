@@ -2,7 +2,7 @@
 
 Kľúčové pojmy používané naprieč platformou Reast.
 
-## Pojmy platformy
+## Pojmy platformy {#platform-terms}
 
 | Pojem                  | Popis                                                                                       |
 | ---------------------- | ------------------------------------------------------------------------------------------- |
@@ -23,7 +23,7 @@ Kľúčové pojmy používané naprieč platformou Reast.
 | **Postup**             | Aktuálna pozícia a stav čitateľa v príbehu (automaticky ukladaný).                          |
 | **Záložka**            | Pomenovaný bod uloženia v príbehu, ku ktorému sa čitateľ môže vrátiť.                       |
 
-## Úrovne príbehov
+## Úrovne príbehov {#story-tiers}
 
 | Pojem              | Popis                                               |
 | ------------------ | --------------------------------------------------- |
@@ -31,10 +31,15 @@ Kľúčové pojmy používané naprieč platformou Reast.
 | **Premium príbeh** | Príbeh vyžadujúci predplatné platformy pre prístup. |
 | **Platený príbeh** | Príbeh s jednorazovou cenou nastavenou autorom.     |
 
-## Technické pojmy
+## Technické pojmy {#technical-terms}
 
-| Pojem        | Popis                                                                              |
-| ------------ | ---------------------------------------------------------------------------------- |
-| **Parser**   | Komponent, ktorý číta zdrojový text Rea a produkuje štruktúrovaný strom dokumentu. |
-| **Runtime**  | Vykonávací engine spracúvajúci príkazy, spravujúci stav a riadiaci naratív.        |
-| **Renderer** | Komponent konvertujúci sparsovaný Rea obsah na viditeľné HTML/UI elementy.         |
+| Pojem              | Popis                                                                              |
+| ------------------ | ---------------------------------------------------------------------------------- |
+| **Parser**         | Komponent, ktorý číta zdrojový text Rea a produkuje štruktúrovaný strom dokumentu. |
+| **Runtime**        | Vykonávací engine spracúvajúci príkazy, spravujúci stav a riadiaci naratív.        |
+| **Renderer**       | Komponent konvertujúci sparsovaný Rea obsah na viditeľné HTML/UI elementy.         |
+| **Web komponent**  | Vlastný prvok `<reast-engine>`, ktorý dokáže vložiť príbehy na ľubovoľnú stránku.  |
+| **Offline režim**  | Schopnosť čítať stiahnuté príbehy bez pripojenia na internet.                      |
+| **Snímka**         | Serializovaný záznam kompletného stavu čitateľa v danom okamihu.                   |
+| **Slug**           | Identifikátor príbehu vhodný do URL (napr. `the-lantern-of-arath`).                |
+| **TUI**            | Text-based Unique Identifier — krátky, ľudsky čitateľný identifikátor z bezpečnej znakovej sady. |

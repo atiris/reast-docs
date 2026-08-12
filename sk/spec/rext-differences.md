@@ -4,8 +4,8 @@ Súbor `.rext` obsahuje Rea kód napísaný v tej istej gramatike ako súbor `.r
 ale platí preň prísnejšia podmnožina. Táto stránka pokrýva iba to, čo sa mení,
 keď sa Rea parsuje ako rozširujúci modul; pre rozloženie archívu, kľúče
 manifestu a mechaniku načítavania okolo `.rext` súborov pozri referenciu
-enginu [formát balíčka `.reast`](/engine/package-format#packaged)
-a [Rozširovanie enginu](/engine/extending).
+enginu [formát balíčka `.reast`](/sk/engine/package-format#packaged)
+a [Rozširovanie enginu](/sk/engine/extending).
 
 ## Iba deklarácie
 

@@ -49,6 +49,12 @@ toku (`{if}`, `{return}`, …) sú povolené len vnútri tiel funkcií.
 `{set}` hodnoty na najvyššej úrovni sa stanú modulovými konštantami, ktoré jeho
 funkcie vedia čítať; funkcie v tom istom module sa môžu navzájom volať.
 
+Konštanty sú **súkromné pre modul**. Nikdy sa nestanú premennými príbehu, takže sa nikdy neobjavia v exportovanom stave čítania, dva moduly môžu použiť rovnaký názov konštanty bez kolízie a modul nikdy nemôže prepísať premennú deklarovanú autorom. Parameter funkcie s rovnakým názvom konštantu zatieni.
+
+::: warning
+`{set}` **vnútri tela funkcie** pre názov, ktorý funkcia ešte nedrží, zapisuje **premennú príbehu** — to je bežný rozsah funkcií v Rea a platí aj pre rozšírenia. Použite to zámerne (na zaznamenanie niečoho v príbehu) a nikdy nie ako počítadlo cyklu, inak sa to objaví v uloženom stave čitateľa. Hromaďte rekurziou, tak ako to robí `roll` v `std/dice`.
+:::
+
 ### Ako ho použiť
 
 Importujte cez `{use}` — cesta vynecháva príponu `.rext` — priraďte alias a

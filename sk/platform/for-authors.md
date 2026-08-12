@@ -48,7 +48,7 @@ Príbeh, na ktorom pracujete, je viditeľný iba vám, kým sa nerozhodnete inak
 - **`unlisted`** — dostupný komukoľvek s priamym odkazom, ale nezobrazuje sa v katalógu ani vo vyhľadávaní. Užitočné na zdieľanie konceptu s beta čitateľmi.
 - **`public`** — uvedený v katalógu a objaviteľný ostatnými čitateľmi.
 
-Cena je nezávislá od viditeľnosti: publikovaný príbeh môže byť bezplatný, prémiový (v rámci predplatného platformy) alebo jednorazovo platený — presné pojmy nájdete v [Slovníku](glossary).
+Cena je nezávislá od viditeľnosti: publikovaný príbeh môže byť bezplatný, prémiový (v rámci predplatného platformy) alebo jednorazovo platený — presné pojmy nájdete v [Slovníku](glossary#story-tiers).
 
 ## Vaša autorská stránka
 
@@ -75,4 +75,4 @@ Do príbehu môžete vložiť polohové spúšťače a senzorové podmienky. Ke�
 
 ### Aký formát súborov príbehy používajú?
 
-Príbehy sa píšu v súboroch `.rea` — obyčajný text so značkovacím jazykom Rea. Platforma pri publikovaní zabalí príbeh (spolu s médiami a metadátami) do archívu `.reast`; presne, čo sa v ňom nachádza, nájdete v referencii enginu [formát balíčka](/engine/package-format).
+Príbehy sa píšu v súboroch `.rea` — obyčajný text so značkovacím jazykom Rea. Platforma pri publikovaní zabalí príbeh (spolu s médiami a metadátami) do archívu `.reast`; presne, čo sa v ňom nachádza, nájdete v referencii enginu [formát balíčka](/sk/engine/package-format).

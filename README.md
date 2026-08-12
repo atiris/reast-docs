@@ -66,6 +66,12 @@ became available in. All of it lives in one place:
 To change a status, edit the registry — never the page. To add a feature, add
 the entry and drop a `<Feature>` under its heading.
 
+Every entry carries both languages: `title`/`note` and `titleSk`/`noteSk`, all
+four required by the `Feature` type, so a feature cannot be added in English
+only. `link` is stored once in its English form and the components prefix it per
+locale — which is why the translated headings need the explicit anchors
+described under [Internationalization](#internationalization-i18n).
+
 Two rules keep this honest:
 
 - **A status describes what an author can rely on, not how much code exists.**
@@ -143,6 +149,24 @@ The documentation supports multiple languages using VitePress built-in i18n.
 The language switcher appears automatically in the navigation bar. VitePress
 falls back to English when a translated page doesn't exist.
 
+### Anchors are English in every language
+
+A translated heading slugifies to a translated anchor, which would silently
+break every link written against the English one — including the links the
+feature registry builds by prefixing `/sk` to a stored English link. So a
+translated heading that anything links to carries an explicit English anchor:
+
+```md
+## Skloňovanie podľa počtu a lokalizácia {#_22-pluralization-localization}
+```
+
+The payoff beyond working links is that a reader who switches language keeps
+their position on the page. `npm run check:anchors` enforces this — it reads the
+ids out of `dist/` and checks every markdown link and every registry link, in
+each locale, against them. VitePress' own dead-link check only validates the
+page half of a link, so this is the half that would otherwise rot unnoticed. The
+pre-commit hook runs the build and then this check.
+
 ### Language persistence
 
 A cookie (`reast_docs_lang`) stores the user's language preference. The
@@ -196,7 +220,16 @@ browsing sessions until the user switches language manually.
    - `spec/01-basics.md` (language basics)
    - `engine/getting-started.md`
    - `platform/index.md`
-6. **Build and verify** — `npm run build` must pass without dead links
+6. **Translate the feature registry** — `.vitepress/data/features.ts` currently
+   holds English and Slovak in parallel fields (`titleSk`, `noteSk`). A third
+   language is the point at which those fields should become a per-locale map
+   rather than another suffixed pair
+7. **Add the locale prefix** to `LOCALE_PREFIXES` in
+   `scripts/check-anchors.mjs`, so the registry links are checked for it too
+8. **Give every translated heading an explicit English anchor** — see
+   [Anchors are English in every language](#anchors-are-english-in-every-language)
+9. **Build and verify** — `npm run build` must pass without dead links, and
+   `npm run check:anchors` without broken anchors
 
 ### Translation guidelines
 

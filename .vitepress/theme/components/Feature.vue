@@ -10,13 +10,29 @@
  * and the row on `/spec/features` can never disagree. An unknown id renders a
  * visible warning rather than nothing, so a typo is caught while reading the
  * page instead of silently dropping the status.
+ *
+ * The same tag is written verbatim on the Slovak pages: the wording is resolved
+ * from the page's locale, so a translation never repeats a status.
  */
 import { computed } from 'vue';
-import { getFeature, renderNote, STATUS_DESCRIPTIONS, STATUS_LABELS } from '../../data/features';
+import { useData } from 'vitepress';
+import { getFeature, langOf, renderNote, statusDescriptions, statusLabels } from '../../data/features';
 
 const props = defineProps<{ id: string }>();
 
-const feature = computed(() => getFeature(props.id));
+const { lang } = useData();
+const locale = computed(() => langOf(lang.value));
+
+const feature = computed(() => getFeature(props.id, locale.value));
+const STATUS_LABELS = computed(() => statusLabels(locale.value));
+const STATUS_DESCRIPTIONS = computed(() => statusDescriptions(locale.value));
+
+/** The one string this component owns rather than reads from the registry. */
+const versionTitle = computed(() =>
+  locale.value === 'sk'
+    ? 'Verzia špecifikácie Rea, v ktorej sa táto funkcia stala dostupnou'
+    : 'Rea spec version this feature became available in',
+);
 </script>
 
 <template>
@@ -26,7 +42,8 @@ const feature = computed(() => getFeature(props.id));
         <span class="rea-feature__dot" aria-hidden="true" />
         {{ STATUS_LABELS[feature.status] }}
       </span>
-      <span v-if="feature.since" class="rea-feature__version" title="Rea spec version this feature became available in">
+      <span v-if="feature.since" class="rea-feature__version" :title="versionTitle">
+        <span class="rea-feature__version-prefix">{{ locale === 'sk' ? 'od' : 'since' }}</span>
         {{ feature.since }}
       </span>
       <code v-if="feature.syntax" class="rea-feature__syntax">{{ feature.syntax }}</code>
@@ -36,9 +53,13 @@ const feature = computed(() => getFeature(props.id));
   </div>
   <div v-else class="rea-feature is-unknown">
     <div class="rea-feature__badges">
-      <span class="rea-feature__status">unknown feature</span>
+      <span class="rea-feature__status">{{ locale === 'sk' ? 'neznáma funkcia' : 'unknown feature' }}</span>
     </div>
-    <p class="rea-feature__note">
+    <p v-if="locale === 'sk'" class="rea-feature__note">
+      Pod identifikátorom <code>{{ id }}</code> nie je v súbore
+      <code>.vitepress/data/features.ts</code> zaregistrovaná žiadna funkcia.
+    </p>
+    <p v-else class="rea-feature__note">
       No feature is registered under the id <code>{{ id }}</code> in
       <code>.vitepress/data/features.ts</code>.
     </p>
@@ -123,8 +144,8 @@ const feature = computed(() => getFeature(props.id));
   white-space: nowrap;
 }
 
-.rea-feature__version::before {
-  content: 'since ';
+/* Written as an element rather than CSS `content`, so the label translates. */
+.rea-feature__version-prefix {
   margin-right: 4px;
   color: var(--vp-c-text-3);
   font-weight: 400;

@@ -4,7 +4,7 @@ Reast (rea.st) je webová platforma na čítanie a tvorbu interaktívnych príbe
 
 V skratke: čitateľ prehliada verejný katalóg a číta príbehy priamo v prehliadači, s účtom aj bez neho, a autor píše príbeh (vo vstavanom editore alebo v ľubovoľnom textovom editore), pripája médiá a metadáta a publikuje ho na jednej z troch úrovní viditeľnosti — `public` (uvedený v katalógu), `unlisted` (dostupný len cez priamy odkaz) alebo `private` (viditeľný iba autorovi) — do osobných políc a čitateľských skupín, ktoré čitatelia aj autori používajú na organizovanie a zdieľanie príbehov.
 
-Každý príbeh, ktorý autor publikuje cez platformu — či už napísaný vo vstavanom editore, alebo nahraný z textového editora — sa ukladá a servíruje ako balík `.reast`; pozrite referenciu enginu [formát balíčka](/engine/package-format) pre to, čo sa v ňom nachádza.
+Každý príbeh, ktorý autor publikuje cez platformu — či už napísaný vo vstavanom editore, alebo nahraný z textového editora — sa ukladá a servíruje ako balík `.reast`; pozrite referenciu enginu [formát balíčka](/sk/engine/package-format) pre to, čo sa v ňom nachádza.
 
 ## Pre čitateľov
 

@@ -5,16 +5,27 @@
  * `<Feature>` badges read.
  */
 import { computed, ref } from 'vue';
+import { useData } from 'vitepress';
 import {
   FEATURES,
-  GROUPS,
-  STATUS_DESCRIPTIONS,
-  STATUS_LABELS,
   STATUS_ORDER,
   countByStatus,
+  langOf,
+  localizedFeatures,
+  localizedGroups,
   renderNote,
+  statusDescriptions,
+  statusLabels,
   type FeatureStatus,
 } from '../../data/features';
+
+const { lang } = useData();
+const locale = computed(() => langOf(lang.value));
+
+const features = computed(() => localizedFeatures(locale.value));
+const GROUPS = computed(() => localizedGroups(locale.value));
+const STATUS_LABELS = computed(() => statusLabels(locale.value));
+const STATUS_DESCRIPTIONS = computed(() => statusDescriptions(locale.value));
 
 const counts = countByStatus();
 const total = FEATURES.length;
@@ -34,12 +45,14 @@ function isShown(status: FeatureStatus): boolean {
 }
 
 const groups = computed(() =>
-  GROUPS.map((group) => ({
-    ...group,
-    features: FEATURES.filter((f) => f.group === group.id && isShown(f.status)),
-    /** Total in the group, so a filtered-away group can say how much it hides. */
-    totalCount: FEATURES.filter((f) => f.group === group.id).length,
-  })).filter((group) => group.features.length > 0),
+  GROUPS.value
+    .map((group) => ({
+      ...group,
+      features: features.value.filter((f) => f.group === group.id && isShown(f.status)),
+      /** Total in the group, so a filtered-away group can say how much it hides. */
+      totalCount: features.value.filter((f) => f.group === group.id).length,
+    }))
+    .filter((group) => group.features.length > 0),
 );
 
 const shownCount = computed(() => groups.value.reduce((n, g) => n + g.features.length, 0));
@@ -49,8 +62,17 @@ const shownCount = computed(() => groups.value.reduce((n, g) => n + g.features.l
   <div class="rea-index">
     <p class="rea-index__summary">
       <template v-if="active.size === 0">
-        {{ total }} features across {{ GROUPS.length }} areas of the language. Select a status below
-        to narrow the list.
+        <template v-if="locale === 'sk'">
+          {{ total }} funkcií v {{ GROUPS.length }} oblastiach jazyka. Zoznam zúžite výberom stavu
+          nižšie.
+        </template>
+        <template v-else>
+          {{ total }} features across {{ GROUPS.length }} areas of the language. Select a status
+          below to narrow the list.
+        </template>
+      </template>
+      <template v-else-if="locale === 'sk'">
+        Zobrazených {{ shownCount }} z {{ total }} funkcií.
       </template>
       <template v-else> Showing {{ shownCount }} of {{ total }} features. </template>
     </p>
@@ -58,7 +80,11 @@ const shownCount = computed(() => groups.value.reduce((n, g) => n + g.features.l
     <!-- Legend: also the filter. Clicking a status narrows the tables below.
          It sticks to the top of the viewport, so it stays reachable while
          scrolling a list this long. -->
-    <div class="rea-index__legend" role="group" aria-label="Filter features by status">
+    <div
+      class="rea-index__legend"
+      role="group"
+      :aria-label="locale === 'sk' ? 'Filtrovať funkcie podľa stavu' : 'Filter features by status'"
+    >
       <button
         v-for="status in STATUS_ORDER"
         :key="status"
@@ -79,7 +105,7 @@ const shownCount = computed(() => groups.value.reduce((n, g) => n + g.features.l
         class="rea-index__chip rea-index__reset"
         @click="active = new Set()"
       >
-        show all
+        {{ locale === 'sk' ? 'zobraziť všetko' : 'show all' }}
       </button>
     </div>
 

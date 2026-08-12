@@ -10,3 +10,13 @@ npm run build || (
 )
 
 echo "VitePress build passed (husky pre-commit hook)."
+
+# The build only checks the page half of a link; this checks the anchor half,
+# which is the half that drifts on the translated pages.
+npm run check:anchors || (
+  echo "" >&2
+  echo "❌ ERROR (husky pre-commit hook): a link points at a heading that does not exist." >&2
+  echo "   Slovak headings need an explicit {#english-anchor} wherever another page links to them." >&2
+  echo "" >&2
+  exit 1
+)

@@ -9,8 +9,8 @@ hero:
       text: Špecifikácia
       link: /sk/spec/01-basics
     - theme: alt
-      text: Zoznam funkcií
-      link: /spec/features
+      text: Index funkcií
+      link: /sk/spec/features
     - theme: alt
       text: Ťahák
       link: /sk/spec/REA-CHEATSHEET
