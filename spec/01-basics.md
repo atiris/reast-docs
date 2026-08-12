@@ -1,8 +1,8 @@
 # Basics: Documents, Text & Choices
 
-> [Introduction](/spec/) · [Back to main specification](/)
+> [Introduction](/spec/) · [Feature index](features) · [Cheatsheet](REA-CHEATSHEET)
 >
-> **Implementation status:** Sections 1–9 are implemented in the client-side parser. Metadata extraction, text formatting, headings, blockquotes, horizontal rules, links, media, anchors, extended formatting commands (underline, strikethrough, monospace), inline footnotes and level-based hints, nested inline formatting, and variable support work as specified. See [REA-CHEATSHEET.md](REA-CHEATSHEET.md) for detailed status.
+> Almost everything on this page is **stable** — the prose core of Rea, frozen with the 1.0 release. Each feature carries its own badge; see the [feature index](features) for what the levels mean.
 
 ---
 
@@ -14,11 +14,13 @@ Rea stories exist in a hierarchy:
 Series → Reast → Part → Chapter → Section → Scene → Paragraph
 ```
 
-Every story is distributed as a `.reast` package — a ZIP archive containing `.rea` story files in `story/`, a `manifest.json`, and optional media (see [File Format & Packaging](05-reference.md#28-file-format--packaging)). A standalone `.rea` file can be used during authoring, but the platform always works with `.reast` packages.
+A story is distributed as a `.reast` package — a ZIP archive holding the story's `.rea` files, optional media, and (in the packaged layout) a `manifest.json` (see [File Format & Packaging](05-reference.md#_28-file-format-packaging)). A standalone `.rea` file is enough while authoring, but a published story is always a `.reast` package.
 
 A series groups multiple reasts under a common title (e.g., "Friends"). Within a series, an optional **season** metadata field groups reasts into logical blocks (numbered or named). A standalone story needs neither — it is simply a reast.
 
 A minimal `.rea` content file is just text:
+
+<Feature id="plain-text" />
 
 ```rea
 Once upon a time, in a land far away, a young traveler set out on a journey.
@@ -30,13 +32,17 @@ No headers, no special syntax — plain prose is valid content. To publish, the 
 
 ### Metadata
 
-A `.rea` file is **pure text** — it contains no metadata. All metadata (title, author, genre, sensors, permissions, etc.) is stored in the `.reast` package's `manifest.json` file (see [Section 28](05-reference.md#28-file-format--packaging)).
+<Feature id="rea-file" />
+
+A `.rea` file is **pure text** — it contains no metadata. All metadata (title, author, genre, sensors, permissions, etc.) is stored in the `.reast` package's `manifest.json` file (see [Section 28](05-reference.md#_28-file-format-packaging)).
 
 This separation keeps `.rea` files clean and portable: a `.rea` file is always just the story content, readable by any text editor. The manifest in `manifest.json` declares everything the platform needs to know before executing the story: story info, permissions, and requirements.
 
 ---
 
 ## 2. Text & Paragraphs
+
+<Feature id="paragraphs" />
 
 **Paragraphs** are separated by one or more blank lines:
 
@@ -67,6 +73,8 @@ This renders as a single continuous line.
 
 ## 3. Text Formatting
 
+<Feature id="inline-formatting" />
+
 | Syntax     | Renders as        | Example              |
 | ---------- | ----------------- | -------------------- |
 | `_text_`   | _Italic_          | `_whispered softly_` |
@@ -85,6 +93,8 @@ _The *ancient* tome's *forbidden* chapter_
 
 ### Extended Formatting
 
+<Feature id="extended-formatting" />
+
 Underline, strikethrough, and monospace are available as commands (rarely needed in narrative fiction):
 
 ```rea
@@ -92,6 +102,25 @@ Underline, strikethrough, and monospace are available as commands (rarely needed
 {strike begin}the old plan{end strike}
 {mono begin}code:X7F2{end mono}
 ```
+
+### Rich formatting
+
+<Feature id="format-command" />
+
+`{format}` is the general formatting block — colour, size and weight in one command, for the rare moment a scene needs a visual effect the three markers above cannot give it:
+
+```rea
+{format color="#00f" begin}the cold blue light{end format}
+{format color="#00f", content="the cold blue light"}
+```
+
+Both forms are identical: the parser sets `content` to the inner text of every paired block, so an author picks inline or block style freely (see [Commands](02-logic-data.md#_10-commands)).
+
+Colour is the only attribute settled so far. Rea has no CSS and never will — `{format}` exists so that a *semantic* emphasis the theme can honour stays available, not so a story can dictate its own appearance. A platform theme may render any `{format}` differently, or ignore an attribute it chooses not to support.
+
+### Code & plaintext blocks
+
+<Feature id="code-blocks" />
 
 **Code/plaintext blocks** use a single backtick on its own line:
 
@@ -116,6 +145,8 @@ This block can contain a single ` on its own line.
 
 ## 4. Headings
 
+<Feature id="headings" />
+
 Headings use one or more `#` characters. They serve as structural markers for **chapters**, **sections**, and **scenes**.
 
 ```rea
@@ -132,6 +163,10 @@ Headings use one or more `#` characters. They serve as structural markers for **
 
 The platform renders each level with a distinct visual style. Beyond the platform's supported depth, additional levels render identically to the deepest supported level.
 
+### Heading anchors
+
+<Feature id="heading-anchors" />
+
 **Heading anchors** are auto-generated from the heading text:
 
 1. Convert to lowercase
@@ -145,6 +180,8 @@ Example: `## The Forest's Edge!` → anchor: `the_forests_edge`
 ---
 
 ## 5. Alignment & Indentation
+
+<Feature id="alignment" />
 
 Lines can be aligned by starting them with a special character:
 
@@ -187,6 +224,8 @@ A space after the alignment prefix is mandatory. The platform renders each level
 
 ### Blockquotes
 
+<Feature id="blockquotes" />
+
 Blockquotes use `|` at the start of a line. Multiple `|` characters nest blockquotes:
 
 ```rea
@@ -199,6 +238,8 @@ Blockquotes use `|` at the start of a line. Multiple `|` characters nest blockqu
 The platform renders each nesting level with a distinct visual style up to its supported depth.
 
 ### Horizontal Rules
+
+<Feature id="horizontal-rules" />
 
 Horizontal rules are lines consisting solely of dashes. Different counts produce different visual weights:
 
@@ -222,24 +263,24 @@ Horizontal rules are lines consisting solely of dashes. Different counts produce
 
 The visual appearance of each level is fully controlled by the platform theme. Authors choose the semantic weight; the theme determines the visual style (solid, dotted, ornamental, gradient, etc.).
 
-> **Parser note:** Horizontal rules are lines consisting only of dashes. A `-` followed by text in a choice context is a gather point (see [Choices & Branching](03-narrative-interaction.md#16-choices--branching)), not a horizontal rule.
+> **Parser note:** Horizontal rules are lines consisting only of dashes. A `-` followed by text in a choice context is a gather point (see [Choices & Branching](03-narrative-interaction.md#_16-choices-branching)), not a horizontal rule.
 
 ---
 
 ## 7. Links
 
+<Feature id="links" />
+
 Links use a unified bracket syntax with the `>` arrow pointing toward the destination:
 
 ```rea
 [read more > #the_clearing]
-[next chapter > chapter2.rea]
 [they set off to the kingdom of rocks > story/0004-kingdom.rea]
 ```
 
-A flat layout (all `.rea` files at the archive root) links by bare filename; the
-recommended `story/####-name.rea` layout links by path.
-
 **Structure:** `[display text > target]`
+
+A link whose target is another part file is a [cross-part link](03-narrative-interaction.md#multi-part-stories), and the target is the part's archive-relative path. Multi-part stories use the packaged layout, where parts live under `story/` and are listed in the manifest; a flat archive resolves only its single entry file, so it has nothing to link across.
 
 **Internal links** to anchors use `#`:
 
@@ -248,6 +289,8 @@ recommended `story/####-name.rea` layout links by path.
 ```
 
 **Story-to-story links:**
+
+<Feature id="story-links" />
 
 ```rea
 [continue the adventure > reast://author-slug/story-slug]
@@ -259,6 +302,8 @@ by the author slug and story slug.
 > **Note:** External URLs (http/https) are not allowed in `.rea` text. All external access is declared via `allowed_urls` in `manifest.json` and referenced by alias (see [External API access](04-utilities.md#external-api-access)).
 
 ### Custom Anchors
+
+<Feature id="custom-anchors" />
 
 Place a custom anchor anywhere so a link can jump to it:
 
@@ -272,12 +317,14 @@ Jump to it from anywhere in the story:
 [return to safety > #anchor_name]
 ```
 
-Custom anchors sit alongside the auto-generated [heading anchors](#4-headings): a
+Custom anchors sit alongside the auto-generated [heading anchors](#_4-headings): a
 heading defines its anchor implicitly, while `[#anchor_name]` marks any other spot.
 
 ---
 
 ## 8. Media
+
+<Feature id="media-embeds" />
 
 Media commands use the bracket syntax with type-specific prefixes. The `<` arrow indicates the source flows **into** the display element:
 
@@ -294,6 +341,8 @@ Media commands use the bracket syntax with type-specific prefixes. The `<` arrow
 - `?` = audio — the question mark resembles an ear used to listen to audio.
 
 ### Media attributes
+
+<Feature id="media-attributes" />
 
 Parameters inside `[ ]` and `{ }` are separated by commas (with optional
 surrounding spaces). The source path is the first parameter of a media embed,
@@ -316,9 +365,11 @@ Footnotes and hints both hang extra information off a span of text using the
 link bracket. The `>` arrow points from the displayed text to the annotation;
 the first character after `>` decides which kind it is — `^` for a footnote,
 `*` for a hint. (Custom anchors, which also live in `[ … ]`, are covered under
-[Links](#7-links).)
+[Links](#_7-links).)
 
 ### Footnotes
+
+<Feature id="footnotes" />
 
 A footnote attaches an inline note to a span of text — the note travels with the
 text, there is no separate definition block:
@@ -333,6 +384,8 @@ nested formatting — and may contain `>` (only the first `>` splits the text fr
 the note); it may not contain `]`.
 
 ### Hints
+
+<Feature id="hints" />
 
 A hint is a footnote that only appears once the reader has switched on hints. It
 can carry several progressive levels, so the reader chooses how much help to

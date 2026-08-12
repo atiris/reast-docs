@@ -147,22 +147,25 @@ formát `YYYY-MM-DD` zanikol — celý povrch tvorí enum `style`.
 
 ## 26. Externý prístup k API
 
-Všetky externé URL sa deklarujú v manifeste a odkazujú sa aliasmi:
-
-```rea
-{fetch alias="pocasie" into=world.weather}
-Vonku je {world.weather.description}.
-```
-
-Povolené URL sú definované v `reast.json`:
+Všetky externé URL sa deklarujú v `manifest.json` a v texte príbehu sa odkazujú
+len aliasom — samotná URL sa v `.rea` súbore nikdy neobjaví. Vďaka tomu je každý
+externý prístup deklarovaný, auditovateľný a viazaný na povolenie:
 
 ```json
 {
-  "allowed_urls": {
-    "pocasie": "https://api.weather.example/current"
-  }
+  "allowed_urls": [
+    {
+      "alias": "pocasie",
+      "url": "https://api.weather.example.com",
+      "params": ["lat", "lng"]
+    }
+  ]
 }
 ```
+
+Každá položka `allowed_urls` je objekt s `alias` (krátky názov použitý v príbehu),
+`url` (povolený prefix) a voliteľným `params` (zoznam povolených parametrov
+dopytu). Ak požiadavka zlyhá, runtime vráti `undefined` a príbeh pokračuje.
 
 ---
 

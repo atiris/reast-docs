@@ -38,15 +38,49 @@ After DNS propagates (usually 1-30 minutes), the site will be live at
 ## Structure
 
 ```txt
-spec/         — Rea language specification (canonical, English)
-engine/       — Engine documentation and guides (English)
-platform/     — Public platform docs (synced from reast-platform, English)
-docs/         — General docs (glossary, playground, architecture, English)
-sk/           — Slovak translations (mirrors the above structure)
-public/       — Static assets (CNAME, images)
-.vitepress/   — VitePress configuration (i18n, theme, grammar)
-.github/      — CI workflows (deploy, sync)
+spec/            — Rea language specification (canonical, English)
+engine/          — Engine documentation and guides (English)
+platform/        — Public platform docs (synced from reast-platform, English)
+sk/              — Slovak translations (mirrors the above structure)
+public/          — Static assets (CNAME, images)
+.vitepress/      — VitePress configuration (i18n, theme, grammar)
+.vitepress/data/ — Feature status registry (see below)
+.github/         — CI workflows (deploy, sync)
 ```
+
+## Feature status badges
+
+Every feature in the specification carries a maturity badge — `stable`,
+`experimental`, `development`, `draft` or `cancelled` — plus the spec version it
+became available in. All of it lives in one place:
+
+- **`.vitepress/data/features.ts`** is the single source of truth. Each entry
+  has an `id`, a group, the syntax, a status, an optional `since` version, a
+  one-sentence note explaining *why* it has that status, and a link to the
+  section documenting it.
+- **`<Feature id="…" />`** in a markdown page renders that entry's badge under
+  the heading. The component is registered globally, so no per-page script is
+  needed. An unknown id renders a visible warning rather than nothing.
+- **`spec/features.md`** renders the whole registry, grouped and filterable.
+
+To change a status, edit the registry — never the page. To add a feature, add
+the entry and drop a `<Feature>` under its heading.
+
+Two rules keep this honest:
+
+- **A status describes what an author can rely on, not how much code exists.**
+  A feature the engine parses but no reader surfaces is `development`, not
+  released.
+- **A version badge is only for `stable` and `experimental`** — the statuses
+  that are actually published. Anything else has no version to name.
+
+## Public documentation only
+
+Everything in this repository is published at docs.rea.st and is world-readable.
+Internal material — moderation and support runbooks, unreleased platform
+internals, anything only an admin, moderator or support agent should see — does
+not belong here in any form, including as a link to a private repository. That
+documentation lives behind login on rea.st.
 
 ## Versioning (documentation snapshots)
 
@@ -83,14 +117,13 @@ When you are ready to freeze the current version and start a new one:
 #    builds, and writes public/v<version>/):
 node scripts/snapshot-version.mjs
 
-# 2. Bump the version in package.json (e.g. 0.2.0 → 0.3.0).
+# 2. Bump the version in package.json (e.g. 1.0.0 → 1.1.0).
 
 # 3. Add the just-frozen version to the docVersions array in
 #    .vitepress/config.ts, e.g.:
 #       const docVersions = [
 #         { label: `v${currentVersion} (latest)`, link: '/', current: true },
-#         { label: 'v0.2.0 (archived)', link: '/v0.2.0/' },
-#         { label: 'v0.1.0 (archived)', link: '/v0.1.0/' },
+#         { label: 'v1.0.0 (archived)', link: '/v1.0.0/' },
 #       ];
 
 # 4. Commit. The new (current) version is served from /, older versions

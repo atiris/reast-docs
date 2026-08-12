@@ -3,17 +3,20 @@ layout: home
 hero:
   name: Jazyk Rea
   text: Interaktívny naratívny markup
-  tagline: Píšte rozvetvené príbehy s jednoduchou, výraznou syntaxou — v0.1.0
+  tagline: Píšte rozvetvené príbehy s jednoduchou, výraznou syntaxou — v1.0
   actions:
     - theme: brand
       text: Špecifikácia
       link: /sk/spec/01-basics
     - theme: alt
+      text: Zoznam funkcií
+      link: /spec/features
+    - theme: alt
       text: Ťahák
       link: /sk/spec/REA-CHEATSHEET
     - theme: alt
       text: Vyskúšajte
-      link: /sk/docs/playground
+      link: /sk/engine/playground
 features:
   - title: Jednoduchá syntax
     details: Rea používa príkazy v zložených zátvorkách vložené do prirodzenej prózy — programovanie nie je potrebné.

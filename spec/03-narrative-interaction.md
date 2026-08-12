@@ -1,8 +1,8 @@
 # Narrative & Interaction: Dialogue, Flow & Input
 
-> [Introduction](/spec/) · [Back to main specification](/)
+> [Introduction](/spec/) · [Feature index](features) · [Cheatsheet](REA-CHEATSHEET)
 >
-> **Implementation status:** Choices and branching (16) including nested, conditional, sticky, and fallback choices are fully implemented. Dialogue attribution (via `@speaker:`) works. First-visit content (`{once}`/`{then}`/`{end once}`) is implemented. Narrative utilities within Section 16 (`{cycle}`/`{replace}`), Cards (17), Voice & Audio (18), Input & Interaction (19), Cooperative Reading (20), and Real-World Interactions (21) are specified but not yet implemented. See [REA-CHEATSHEET.md](REA-CHEATSHEET.md) for detailed status.
+> This page has the widest spread of maturity in the whole specification. Choices, storylets, cards and free-text input are **experimental** — released and usable today. Cooperative reading and most sensor features are **development** or **draft**: fully specified so you can design around them, but not available to write a story against yet. Check the badge under each heading before you rely on anything here.
 
 ---
 
@@ -11,6 +11,8 @@
 Choices are the heart of interactive stories. Rea supports both simple and complex branching.
 
 ### Simple choices
+
+<Feature id="choices" />
 
 Use `*` for one-time choices and `+` for repeatable (sticky) choices:
 
@@ -54,6 +56,8 @@ As a choice, displays: `"I need to think about this."`
 
 ### Conditional choices
 
+<Feature id="conditional-choices" />
+
 Choices can have conditions:
 
 ```rea
@@ -68,6 +72,8 @@ Choices can have conditions:
 ```
 
 ### Hidden choices
+
+<Feature id="hidden-choices" />
 
 A choice marked `hidden` renders no button. It stays in the group's pool — conditions, one-time consumption and narration all work as usual — but it can only fire through something other than a tap: the reader describing it in [free-text input](#free-text-action-input), or a real-world input matching its card's [activation fields](#real-world-activation) (a scanned code, a photographed mark, a spoken phrase):
 
@@ -86,6 +92,8 @@ Hidden choices are usually bound to an action card with `[&card_id]` — the car
 
 ### Diverts
 
+<Feature id="diverts" />
+
 Use `->` to jump to a named section (anchor):
 
 ```rea
@@ -96,6 +104,8 @@ You arrive at a small clearing bathed in moonlight.
 ```
 
 ### Nested choices
+
+<Feature id="nested-choices" />
 
 Choices can be nested using increasing `*` or `+`:
 
@@ -133,6 +143,8 @@ What do you do?
 
 ### Fallback choices
 
+<Feature id="fallback-choices" />
+
 A choice without text acts as a fallback (chosen automatically when no other options remain):
 
 ```rea
@@ -145,6 +157,8 @@ A choice without text acts as a fallback (chosen automatically when no other opt
 ```
 
 ### Tunnels (divert and return)
+
+<Feature id="tunnels" />
 
 A tunnel diverts into a section and automatically returns to the caller when it ends. Use `->->` to enter a tunnel:
 
@@ -181,6 +195,8 @@ Tunnels are useful for reusable passages (e.g., recurring inspections, shared di
 
 ### First-visit content
 
+<Feature id="once-then" />
+
 Show content only on the first visit to a passage, with optional fallback for subsequent visits:
 
 ```rea
@@ -198,6 +214,8 @@ The barkeep waves you over.
 The `{once begin}` block renders its primary content on the first encounter and the `{then}` fallback on all subsequent visits. If `{then}` is omitted, nothing is shown after the first visit.
 
 ### Text replacement (live labels)
+
+<Feature id="labels-replace" />
 
 Labels mark text that can be replaced in-place as the story progresses:
 
@@ -220,6 +238,8 @@ You see a {label clue begin}mysterious symbol{end label} on the wall.
 
 ### Cycling text (tap-to-cycle)
 
+<Feature id="cycling-text" />
+
 Inline text that readers can tap to cycle through options, useful for character customization or exploratory narrative:
 
 ```rea
@@ -231,6 +251,8 @@ The reader taps the highlighted word to cycle: `red` → `blue` → `green` → 
 The selected value is accessible as a variable: `{color}` returns the current selection.
 
 ### Varying text
+
+<Feature id="varying-text" />
 
 Text can vary based on visit count using `|` within `{ }`:
 
@@ -286,6 +308,8 @@ You stand in the town square.
 
 ### Parallel storylines
 
+<Feature id="parallel-storylines" />
+
 Multiple storylines that advance independently and converge at key moments:
 
 ```rea
@@ -311,6 +335,8 @@ Multiple storylines that advance independently and converge at key moments:
 In cooperative reading, different readers can follow different threads simultaneously, experiencing the story from different character perspectives.
 
 ### Storylets (quality-based narrative)
+
+<Feature id="storylets" />
 
 Storylets are modular content blocks with prerequisites and effects — the building blocks for non-linear, discovery-driven narratives. Instead of rigid branching, the platform selects eligible storylets and presents them as available options.
 
@@ -355,6 +381,8 @@ Storylets are modular content blocks with prerequisites and effects — the buil
 | `trigger`    | Real-world input kind that can wake this storylet (see [Triggered storylets](#triggered-storylets)) |
 | `match`      | Optional case-insensitive regex the input value must match |
 
+<Feature id="storylet-deck" />
+
 **Storylet deck** — present available storylets as a hand of cards the reader can choose from:
 
 ```rea
@@ -368,6 +396,8 @@ This presents up to 3 eligible storylets tagged `tavern_stories`, shuffled.
 Storylets enable organic, non-linear narratives where the story adapts to the reader's state, encouraging exploration and replay.
 
 ### Triggered storylets
+
+<Feature id="triggered-storylets" />
 
 A storylet with a `trigger:` line is woken by the world instead of a deck: at almost any moment while reading, a real-world input — scanning a QR sticker on a bench, saying a phrase aloud, tapping an NFC tag — can interrupt the main story, play the storylet as a side path, and return exactly where the reader left off:
 
@@ -406,6 +436,8 @@ When an input matches nothing — no eligible storylet, no pending [exploration 
 
 ### Exploration menus
 
+<Feature id="exploration-menus" />
+
 A choice group can also be a **hidden exploration menu** — a set of [hidden choices](#hidden-choices) that wake only when the reader produces a matching real-world input: scanning a QR code, photographing a hand-drawn mark, saying a phrase, or typing a description:
 
 ```rea
@@ -435,9 +467,11 @@ Each discovery is a separate recorded choice, so undo steps back one discovery a
 
 #### Priority with storylet triggers
 
-A single scan, spoken phrase, or drawn-mark photo can only mean one thing. If the reader has a pending exploration menu open when they produce that input, the menu is checked first; only if nothing in the menu matches does the input fall through to wake a storylet (see [Real-World Interactions](#21-real-world-interactions)).
+A single scan, spoken phrase, or drawn-mark photo can only mean one thing. If the reader has a pending exploration menu open when they produce that input, the menu is checked first; only if nothing in the menu matches does the input fall through to wake a storylet (see [Real-World Interactions](#_21-real-world-interactions)).
 
 ### Undo & back navigation
+
+<Feature id="undo" />
 
 The platform provides built-in back navigation, allowing readers to revisit previous passages. Authors can control this behavior:
 
@@ -469,39 +503,19 @@ Undo is **disabled by default** in cooperative mode because shared state cannot 
 
 ### Checkpoints
 
-The platform automatically saves reader progress at safe points (chapter boundaries, after choices). Authors can create explicit checkpoints for critical moments:
-
-```rea
-{checkpoint}
-```
-
-After a checkpoint, the reader can resume from this exact point if they close and reopen the story. The checkpoint captures all variable state (story-scoped and heading-scoped).
-
-```rea
-{checkpoint name="before_boss"}
-You stand at the gates of the Dark Fortress.
-```
-
-Named checkpoints allow the reader to select a specific save point when resuming. Unnamed checkpoints overwrite the previous unnamed checkpoint.
-
-| Attribute | Description                                        | Default        |
-| --------- | -------------------------------------------------- | -------------- |
-| `name`    | Optional label for the checkpoint (reader-visible) | auto-generated |
-
-**Platform requirements:**
-
-- The runtime **must** persist checkpoint state between sessions — saving progress is a core priority
-- On story open, the platform checks for existing checkpoints and offers to resume
-- In cooperative mode, `{checkpoint}` saves the individual reader's state; shared state is managed by the server independently
-- The platform may implement additional auto-save beyond author checkpoints (e.g., on app background, before battery-critical shutdown)
+Automatic saving happens at every choice, and an author can mark explicit restore points with `{checkpoint}`. Because a checkpoint is a state concern rather than a narrative one, it is specified in full — including exactly what a snapshot captures and how saves survive a story update — under [Save & checkpoints](02-logic-data.md#save-checkpoints).
 
 ### Multi-part stories
+
+<Feature id="multi-part-stories" />
 
 A longer story can be split into **story parts** — separate `.rea` files listed in the
 bundle manifest as `parts` (see Part 5 for the manifest schema). The reader plays
 through a sequence of parts: only the **current part** is the live document, and
 scrolling up reveals the **previously-visited parts** — the actual path taken,
 never an un-taken branch. There are two ways to move between parts.
+
+<Feature id="part-gates" />
 
 **Gate `[[ target ]]`** — an automatic, text-free transition. It occupies its own
 line and is terminal: when the flow reaches it, nothing after it in the current
@@ -528,6 +542,8 @@ express variable-driven branching without a manual choice:
 {end if}
 ```
 
+<Feature id="cross-part-links" />
+
 **Cross-part link** — a normal navigation link whose target is a part file lets
 the reader choose to move on by tapping:
 
@@ -549,6 +565,8 @@ Cards are interactive story elements that readers can tap to inspect. They bring
 
 ### Character cards `[@]`
 
+<Feature id="character-cards" />
+
 ```rea
 [@elena]
 You see [@elena] standing by the fountain.
@@ -568,6 +586,8 @@ Character cards are defined in metadata or a dedicated block:
 When a reader taps `[@elena]`, they see the character's card with portrait, name, title, and description.
 
 ### Item cards `[$]`
+
+<Feature id="item-cards" />
 
 ```rea
 You find a [$golden_key] on the ground.
@@ -591,6 +611,8 @@ Items can be added to a reader's inventory:
 ```
 
 ### Coins & wallet
+
+<Feature id="coins" />
 
 Stories that need money use the built-in coin wallet. It has three tiers —
 `gold`, `silver`, `bronze` — with the fixed base ratio **1 gold = 10 silver =
@@ -624,6 +646,8 @@ saves:
 
 ### Action cards `[&]`
 
+<Feature id="action-cards" />
+
 Action cards represent story branching points with visual emphasis:
 
 ```rea
@@ -645,6 +669,8 @@ Like character and item cards, an action can carry a `{define action}` block wit
 `description:` is shown on the card and doubles as the semantic target for [free-text action input](#free-text-action-input) — what a reader can type to name the action.
 
 #### Real-world activation
+
+<Feature id="real-world-activation" />
 
 An action card can also wake from a real-world input instead of — or alongside — a tap. Three optional fields sit next to `description:`:
 
@@ -679,6 +705,8 @@ A card can combine any number of these fields — `couch_secret` above answers t
 These fields shine when the option playing the card is `hidden` — see [Exploration menus](#exploration-menus) in Choices & Branching. A visible option with activation fields answers to both: the reader can tap its button or produce the matching real-world input.
 
 ### Card sets & categories
+
+<Feature id="card-sets" />
 
 `character`, `item` and `action` are the three **built-in card sets**. Authors can declare additional sets to group cards that share the same acquisition, loss and usage rules — for example an `ability` set, an `attribute` set, or a themed `relic` set. A set is declared with a `{define cardset <id> begin}` block:
 
@@ -735,6 +763,8 @@ An individual card may **override** any hook while still inheriting the set's ot
 
 #### Playing a card
 
+<Feature id="play-card" />
+
 `{play <card_id>}` triggers a card's usage. It runs the card's `{on_use}` hook (falling back to the owning set's `{on_use}` when the card does not redefine it), so an attribute card applies its attribute and an action card runs its effect through the same command:
 
 ```rea
@@ -761,6 +791,8 @@ The three built-in sets may be redefined to attach shared rules without changing
 When an author redefinition and the implicit built-in collide, the author's declaration wins.
 
 ### Dialogue attribution
+
+<Feature id="dialogue" />
 
 Use `@character_id:` at the start of a line to attribute dialogue. This links speech to a character card and enables automatic voice assignment:
 
@@ -792,6 +824,8 @@ Anonymous or unnamed speakers use a description:
 
 ### Text-to-Speech
 
+<Feature id="voice-output" />
+
 The `{voice}` command controls TTS rendering:
 
 ```rea
@@ -821,6 +855,8 @@ Reset to defaults by calling `{voice}` without attributes.
 
 ### Audio playback
 
+<Feature id="audio-playback" />
+
 ```rea
 {audio src="media/thunder.ogg", volume=0.8}
 {audio src="media/ambient.ogg", loop, volume=0.3, name=ambient_music}
@@ -832,6 +868,8 @@ Reset to defaults by calling `{voice}` without attributes.
 ## 19. Input & Interaction
 
 ### Text input
+
+<Feature id="text-input" />
 
 ```rea
 {input name=player_name, placeholder="Enter your name"}
@@ -849,6 +887,8 @@ Hello, {player_name}!
 Numeric input validates against `min`/`max` constraints. Out-of-range values are clamped to the nearest bound. Non-numeric input defaults to `0`.
 
 ### Free-text action input
+
+<Feature id="action-input" />
 
 `{input type="action"}` turns a scene from a menu into a place: the reader types what they want to do in their own words, and the story activates the choice that best describes it — even when the wording differs from anything on screen:
 
@@ -877,6 +917,8 @@ The typed sentence itself never leaves the device and is not stored in story sta
 
 ### Buttons
 
+<Feature id="buttons" />
+
 ```rea
 {button label="Continue the journey", target=next_chapter}
 {button label="Open inventory", action=show_inventory}
@@ -885,6 +927,8 @@ The typed sentence itself never leaves the device and is not stored in story sta
 Buttons with `target` navigate to anchors (equivalent to `-> anchor`). Buttons with `action` trigger named events that `{on action_name begin}` blocks can handle.
 
 ### Timer
+
+<Feature id="timer" />
 
 ```rea
 {timer duration=30, on_expire="-> times_up" begin}
@@ -899,6 +943,8 @@ Buttons with `target` navigate to anchors (equivalent to `-> anchor`). Buttons w
 **Timer behavior:** When a timer expires, the `on_expire` divert fires immediately — even if the reader is mid-choice. Pending choices are canceled and the story continues at the divert target. If no `on_expire` is set, the timer block simply ends and reading continues after `{end timer}`. Timers pause when the app is backgrounded and resume when foregrounded. Nested timers are not allowed — a new `{timer}` inside an active timer replaces the outer one.
 
 ### Verb-target interaction
+
+<Feature id="verb-target" />
 
 Inspired by Texture's word-on-word mechanic, verb-target interaction lets readers drag action words onto highlighted targets in the text. This creates a tactile, discovery-driven experience:
 
@@ -955,6 +1001,8 @@ Rea natively supports **multi-reader experiences** where multiple people read th
 
 ### Reader roles
 
+<Feature id="roles" />
+
 ```rea
 {define role captain begin}
   name: The Captain
@@ -981,6 +1029,8 @@ Rea natively supports **multi-reader experiences** where multiple people read th
 
 ### Synchronized choices
 
+<Feature id="vote" />
+
 ```rea
 {vote timeout=60 begin}
   The crew must decide together:
@@ -994,6 +1044,8 @@ The majority chose: {vote.result}
 
 ### Reader-to-reader communication
 
+<Feature id="whisper-broadcast" />
+
 ```rea
 {whisper to="captain" begin}
   Only the captain sees this: the treasure is hidden under the third stone.
@@ -1006,6 +1058,8 @@ The majority chose: {vote.result}
 
 ### Waiting for readers
 
+<Feature id="wait" />
+
 ```rea
 {wait readers=all begin}
   Waiting for all readers to reach this point...
@@ -1013,6 +1067,8 @@ The majority chose: {vote.result}
 ```
 
 ### Shared state
+
+<Feature id="shared-state" />
 
 Readers share a common state namespace. Any reader can modify shared variables, and changes propagate to other readers:
 
@@ -1027,6 +1083,8 @@ Readers share a common state namespace. Any reader can modify shared variables, 
 ```
 
 ### State synchronization
+
+<Feature id="synchronize" />
 
 By default, shared variable changes propagate automatically in real-time. The `{synchronize}` command gives authors explicit control over when state is sent and received:
 
@@ -1071,6 +1129,8 @@ After `auto=off`, changes only propagate when `{synchronize out}` or `{synchroni
 
 ### Conflict resolution
 
+<Feature id="conflict-resolution" />
+
 When multiple readers attempt conflicting actions simultaneously, the platform resolves conflicts:
 
 ```rea
@@ -1089,6 +1149,8 @@ When multiple readers attempt conflicting actions simultaneously, the platform r
 ```
 
 ### Live presence
+
+<Feature id="presence" />
 
 Readers can see each other's reading position and reactions in real-time:
 
@@ -1179,6 +1241,8 @@ Authors should always write defensive role checks:
 
 ### Solo mode behavior
 
+<Feature id="solo-degradation" />
+
 Cooperative stories must be playable by a single reader without modification. The platform applies these degradation rules automatically:
 
 | Command / Property                      | Multi-reader behavior                    | Solo degradation                                  |
@@ -1227,6 +1291,8 @@ Rea integrates with real-world sensors and APIs through the `world.*` namespace,
 
 ### Capability requirements
 
+<Feature id="capability-requirements" />
+
 Declare which real-world features a story needs. The reader app checks availability before starting:
 
 ```rea
@@ -1247,6 +1313,8 @@ Adding `optional` means the feature enhances the story but isn't required. The `
 ```
 
 ### Location
+
+<Feature id="location" />
 
 GPS coordinates use the `@` point literal and `@@` area literal:
 
@@ -1269,6 +1337,8 @@ GPS coordinates use the `@` point literal and `@@` area literal:
 | `world.speed`        | float | Movement speed in m/s              |
 
 ### Waypoints
+
+<Feature id="waypoints" />
 
 Inspired by geocaching, waypoints define named locations that the reader must visit:
 
@@ -1295,7 +1365,34 @@ Waypoints have optional attributes:
 | `icon`      | Map marker icon                                |
 | `hidden`    | Waypoint invisible on map until require is met |
 
+### Map images & pins
+
+<Feature id="maps" />
+
+A story set in a real place can show its own map instead of a generic one: an author-supplied image anchored to real-world GPS bounds, with pins placed at coordinates.
+
+```rea
+{map old_town begin}
+  image: assets/old-town.webp
+  bounds: @48.152;17.100 @48.140;17.120
+  {pin bridge begin}
+    at: @48.1432;17.1056
+    label: The old bridge
+  {end pin}
+  {pin reader begin}
+    at: world.location
+    label: You
+  {end pin}
+{end map}
+```
+
+`bounds:` gives the north-west and south-east corners of the image, and the engine projects each pin onto it equirectangularly. A pin's `at:` takes a coordinate literal or a variable reference, so a pin can follow the reader or appear only once a variable is set (`visible:`).
+
+Nothing in this block renders yet — the parser understands it, the projection maths is written, and the reader-side canvas is the remaining piece.
+
 ### Multi-stage routes
+
+<Feature id="routes" />
 
 Chain waypoints into sequential or non-sequential routes:
 
@@ -1311,6 +1408,8 @@ Chain waypoints into sequential or non-sequential routes:
 Setting `sequential` forces visiting waypoints in order. Without it, readers can visit in any order.
 
 ### Geo-fencing zones
+
+<Feature id="zones" />
 
 Define areas that trigger events when the reader enters or exits:
 
@@ -1328,6 +1427,8 @@ Define areas that trigger events when the reader enters or exits:
 ```
 
 ### Time of day
+
+<Feature id="time-of-day" />
 
 ```rea
 {if world.hour >= 22 or world.hour < 6 begin}
@@ -1360,6 +1461,8 @@ Combine time and light sensor for atmosphere:
 
 ### Weather
 
+<Feature id="weather" />
+
 ```rea
 {if world.weather = "rain" begin}
   How fitting — it's raining in the story and outside your window.
@@ -1376,6 +1479,8 @@ Combine time and light sensor for atmosphere:
 | `world.humidity`    | float  | Humidity percentage (0-100)                       |
 
 ### QR and barcode scanning
+
+<Feature id="scan" />
 
 ```rea
 {scan type="qr", target="REAST-SECRET-42" begin}
@@ -1404,6 +1509,8 @@ A `{scan}` block is *blocking* — the story stops at that point and waits for t
 
 ### NFC tags
 
+<Feature id="nfc" />
+
 ```rea
 {nfc target="reast:chapter5" begin}
   Tap your device on the NFC tag to reveal the hidden message.
@@ -1415,6 +1522,8 @@ A `{scan}` block is *blocking* — the story stops at that point and waits for t
 ```
 
 ### Camera and photo
+
+<Feature id="camera" />
 
 ```rea
 {capture type="photo", name=reader_photo begin}
@@ -1429,6 +1538,8 @@ A `{scan}` block is *blocking* — the story stops at that point and waits for t
 | `selfie` | Front camera photo                             |
 
 ### Motion and orientation
+
+<Feature id="motion" />
 
 Access device sensors for physical interactions:
 
@@ -1455,6 +1566,8 @@ Access device sensors for physical interactions:
 
 ### Light level
 
+<Feature id="light" />
+
 ```rea
 {if world.light < 10 begin}
   In complete darkness, the phosphorescent text begins to glow.
@@ -1469,6 +1582,8 @@ Access device sensors for physical interactions:
 
 ### Vibration and haptics
 
+<Feature id="vibration" />
+
 ```rea
 {vibrate 200}
 {vibrate pattern=[100, 50, 100, 50, 300]}
@@ -1478,6 +1593,8 @@ Pattern: array of alternating vibrate/pause durations in milliseconds.
 
 ### Proximity
 
+<Feature id="proximity" />
+
 ```rea
 {on proximity "near" begin}
   You hold the device close to the object. A secret message appears.
@@ -1485,6 +1602,8 @@ Pattern: array of alternating vibrate/pause durations in milliseconds.
 ```
 
 ### Voice input
+
+<Feature id="listen" />
 
 ```rea
 {listen language="en", name=spoken_word begin}
@@ -1503,6 +1622,8 @@ Like `{scan}`, a `{listen}` block stops and waits at one point. For phrases the 
 A scan, spoken phrase, or photographed mark is a single physical event — it cannot mean two things at once. If the reader has a pending [exploration menu](#exploration-menus) open when they produce that input, the engine checks the menu's `scan:`/`mark:`/`listen:` options first. Only when nothing in the menu matches does the same input fall through to wake a storylet trigger.
 
 ### Dice and randomization
+
+<Feature id="dice" />
 
 Inspired by tabletop RPG conventions, Rea supports dice notation for game-like interactions:
 
@@ -1533,6 +1654,8 @@ You rolled {combat.roll}!
 
 ### Real-world challenges
 
+<Feature id="challenges" />
+
 Combine multiple sensors into challenge-style interactions inspired by geocaching and adventure games:
 
 ```rea
@@ -1559,6 +1682,8 @@ Challenge attributes:
 | `reward`  | Variable set on completion                       |
 
 ### Privacy & data handling
+
+<Feature id="privacy-tiers" />
 
 Rea stories can access GPS, camera, microphone, and motion sensors. The platform enforces strict privacy rules:
 

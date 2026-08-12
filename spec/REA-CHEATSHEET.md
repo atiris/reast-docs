@@ -2,6 +2,8 @@
 
 > Plain text is valid content. Just write.
 
+This sheet shows the syntax, not its maturity. Some of what follows is `draft` or `development` — specified but not usable yet. Check the [feature index](features) before you rely on anything here.
+
 ## Two Core Symbols
 
 The entire Rea language builds on two characters:
@@ -175,8 +177,8 @@ for archive mechanics.
 {formatTime(now(), "short")}   {formatDateTime(now(), "iso")}
 ```
 
-The host supplies locale and formatting policy. `calendar()` is specified but not
-yet implemented.
+The host supplies locale and formatting policy. `calendar()` is still in
+development — see the [feature index](features#localization).
 
 ---
 

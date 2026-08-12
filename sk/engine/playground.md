@@ -11,33 +11,29 @@ Vitajte v Rea ihrisku!
 
 Toto je jednoduchý rozvetvený príbeh. Skúste ho upraviť.
 
-{choice}
-  {option} Preskúmať les
-    Vojdeš do hustého lesa. Vtáky spievajú nad hlavou.
-    Cesta sa rozdeľuje na dve.
+{set player.zvedavy = true}
 
-    {choice}
-      {option} Ísť doľava
-        Nájdeš skrytý vodopád. Nádherné!
-      {option} Ísť doprava
-        Objavíš starý kamenný most cez potok.
-    {end choice}
+* [Preskúmať les]
+  Vojdeš do hustého lesa. Vtáky spievajú nad hlavou.
+  Cesta sa rozdeľuje na dve.
 
-  {option} Navštíviť mesto
-    Mestské námestie sa hemží ľuďmi.
-    Obchodník ti máva.
+  * * [Ísť doľava]
+    Nájdeš skrytý vodopád. Nádherné!
+  * * [Ísť doprava]
+    Objavíš starý kamenný most cez potok.
 
-    "Chceli by ste vidieť moje tovary?"
+* [Navštíviť mesto]
+  Mestské námestie sa hemží ľuďmi.
+  Obchodník ti máva.
 
-    {choice}
-      {option} Áno, ukáž mi
-        Obchodník odhalí zbierku vzácnych máp.
-      {option} Nie, ďakujem
-        Slušne odmávneš a pokračuješ v ceste.
-    {end choice}
-{end choice}
+  @obchodnik: "Chceli by ste vidieť moje tovary?"
 
-**Koniec.**
+  * * [Áno, ukáž mi]
+    Obchodník odhalí zbierku vzácnych máp.
+  * * [Nie, ďakujem]
+    Slušne odmávneš a pokračuješ v ceste.
+
+- *Koniec.*
 `;
 
 const source = ref(defaultStory);

@@ -1,8 +1,8 @@
 # Reference: Grammar, Errors & Edge Cases
 
-> [Introduction](/spec/) · [Back to main specification](/)
+> [Introduction](/spec/) · [Feature index](features) · [Cheatsheet](REA-CHEATSHEET)
 >
-> **Implementation status:** `.reast` package format (28) with ZIP extraction and `manifest.json` manifest is implemented. The editor has a working CodeMirror 6-based implementation with syntax highlighting. Platform features like keyboard navigation, dark theme, PWA support, and accessibility basics (32) are implemented in the web app. File System Access API import/export is implemented in the editor. See [REA-CHEATSHEET.md](REA-CHEATSHEET.md) for detailed status.
+> Identifiers, conformance levels and the versioning rules on this page are **stable** — frozen with the 1.0 release, because an implementer has to be able to trust them. The built-in function library and the extension tiers are **experimental**. Each section carries its own badge.
 
 ---
 
@@ -10,9 +10,13 @@
 
 ### Single files: `.rea`
 
-A `.rea` file is a UTF-8 plain text file. It contains a single story (reast) with optional metadata.
+<Feature id="rea-file" />
+
+A `.rea` file is a UTF-8 plain text file holding one story's prose and syntax. It carries no metadata of its own — all of that lives in the package manifest.
 
 ### Packages: `.reast`
+
+<Feature id="reast-package" />
 
 A `.reast` file is a ZIP archive (like EPUB) that bundles one or more parts with
 their media and metadata, in either a manifest-driven or a flat layout. The
@@ -29,6 +33,8 @@ see [When rules differ in `.rext` files](rext-differences).
 
 
 ## 29. Identifiers & Naming
+
+<Feature id="identifiers" />
 
 ### Naming conventions
 
@@ -151,9 +157,7 @@ position, so restoring a save continues the identical sequence and undoing a
 choice reproduces the rolls that followed it. Restarting a story draws a new
 seed — a re-read is a genuinely new playthrough.
 
-> **Implementation status:** `dice(notation)` and `seed(n)` (see Testing
-> functions) are specified but not implemented. Use `{use "std/dice"}` for dice,
-> and the host's engine option to pin a seed.
+<Feature id="seeded-randomness" />
 
 ### Device & world functions
 
@@ -172,7 +176,7 @@ seed — a re-read is a genuinely new playthrough.
 | `datetime("ISO-8601-string")`   | Create datetime from ISO 8601 string (supports `*` wildcards)           |
 | `duration("ISO-8601-duration")` | Create duration from ISO 8601 duration string                           |
 
-Coordinate types use `@` literal syntax instead of constructor functions (see [Section 11](02-logic-data.md#11-variables--data-types)): `@lat;lng` for points, `@@lat;lng/radius` for circles, `@@p1@p2@p3` for polygons/routes. The separator is a semicolon, not a comma — a comma already separates the arguments a coordinate appears among.
+Coordinate types use `@` literal syntax instead of constructor functions (see [Section 11](02-logic-data.md#_11-variables-data-types)): `@lat;lng` for points, `@@lat;lng/radius` for circles, `@@p1@p2@p3` for polygons/routes. The separator is a semicolon, not a comma — a comma already separates the arguments a coordinate appears among.
 
 ### Text variation & localization functions
 
@@ -181,16 +185,17 @@ Coordinate types use `@` literal syntax instead of constructor functions (see [S
 | `select(value, he="x", she="y", other="z")`       | Return text matching value (fallback with `other`)                                                |
 | `plural(count, one="y", other="z", ...)`          | CLDR pluralization; category from `Intl.PluralRules` for the host locale                          |
 | `ordinal(n)` / `ordinal(n, one=..., ...)`         | Ordinal; English suffix only for `en*` locales, else the locale-formatted number (see below)      |
-| `formatNumber(value, locale?, style=..., ...)`    | Locale-aware number formatting (see [Section 22](04-utilities.md#22-pluralization--localization)) |
-| `calendar(date, month=..., weekday=..., era=...)` | Fantasy calendar mapping (see [Section 22](04-utilities.md#22-pluralization--localization))       |
+| `formatNumber(value, locale?, style=..., ...)`    | Locale-aware number formatting (see [Section 22](04-utilities.md#_22-pluralization-localization)) |
+| `calendar(date, month=..., weekday=..., era=...)` | Fantasy calendar mapping (see [Section 22](04-utilities.md#_22-pluralization-localization))       |
 
-> **Implementation status:** `select`, `plural`, `ordinal` and `formatNumber` are
-> implemented in `runtime/builtins/locale.ts`. `calendar()` is specified but not
-> yet implemented. Plural and ordinal categories are resolved from CLDR via
-> `Intl.PluralRules`, driven by the **host-supplied locale** — not a per-language
-> table baked into the engine.
+> Plural and ordinal categories are resolved from CLDR via `Intl.PluralRules`,
+> driven by the **host-supplied locale** — not a per-language table baked into
+> the engine. `calendar()` is the one function here that is still in
+> development; see the [feature index](features#localization).
 
 ### Date & time functions
+
+<Feature id="date-functions" />
 
 Date/time built-ins operate on ISO 8601 strings and millisecond timestamps. The
 clock, locale and time zone are **host-supplied**; formatting delegates to
@@ -225,7 +230,7 @@ string — the `style` enum is the whole surface.
 You found {plural(gem_count, one="a gem", other="{} gems")}.
 ```
 
-For detailed usage of all localization functions, see [Section 22](04-utilities.md#22-pluralization--localization).
+For detailed usage of all localization functions, see [Section 22](04-utilities.md#_22-pluralization-localization).
 
 ### Testing functions
 
@@ -257,6 +262,8 @@ Named commands expose state:
 
 ## 31. Extensibility
 
+<Feature id="rext-extensions" />
+
 Rea is extended in two tiers. **Tier 1 — Rea extensions** are portable, sandboxed
 Rea code that travels inside the package (`.rext` files) plus a reserved
 `std/*` standard library shipped with the language itself. **Tier 2 — Host
@@ -264,6 +271,8 @@ extensions** are JavaScript supplied by the embedder; they are outside the Rea
 language proper and reachable only when the embedder provides them.
 
 ### Tier 1 — Rea extensions (author space, portable, sandboxed)
+
+<Feature id="rext-file" />
 
 A Rea extension is a `.rext` file (see [When rules differ in `.rext` files](rext-differences))
 containing only **declarations**: `{function}`…`{end function}` blocks,
@@ -304,6 +313,8 @@ parts, put it in a `.rext` and `{use}` it.
 
 ### `std/*` — the standard library
 
+<Feature id="std-library" />
+
 `std/*` is a reserved namespace resolved from **inside the engine**, not from the
 archive and not from the host. `{use "std/dice" as dice}` therefore works on any
 host, offline, with no support from the embedder — it ships with the language,
@@ -329,6 +340,8 @@ You swing wildly for {dice.roll(2, 6)} damage.
 
 ### Tier 2 — Host extensions (JavaScript, supplied by the embedder)
 
+<Feature id="host-extensions" />
+
 Host extensions are JavaScript registered by the embedder **per player instance**
 (per engine element), never globally. Two players on one page can hold different
 host extensions. They contribute:
@@ -351,12 +364,12 @@ mid-chapter.
 
 ### Custom card types
 
-> **Implementation status:** Not implemented. Custom card **sets**
-> (`{define cardset ...}`) are implemented and specified in
-> [Section 17](03-narrative-interaction.md#17-cards-characters-items--actions);
-> the custom card **type** syntax below is specified but not yet built.
+<Feature id="custom-card-types" />
 
-Extensions may in future define new card types beyond the built-in `@`, `$`, `&`:
+Custom card **sets** (`{define cardset …}`) are released and cover most of what
+authors reach for — see [Section 17](03-narrative-interaction.md#card-sets-categories).
+Beyond them, extensions may in future define new card *types* with their own
+bracket prefix, past the built-in `@`, `$` and `&`:
 
 ```rea
 {define card_type location, prefix="📍" begin}
@@ -415,7 +428,7 @@ chapter, so `crypt.passphrase` is extractable. Encryption protects against
 spoilers, casual peeking and grepping the archive — not against a motivated
 attacker. Anything that must be genuinely unforgeable (a competition answer, a
 paid unlock) has to be verified **server-side**, which is the platform's job, not
-the engine's (see also [Content Protection](04-utilities.md#23-content-protection-lock)).
+the engine's (see also [Content Protection](04-utilities.md#_23-content-protection-lock)).
 
 ### Sandbox constraints
 
@@ -432,6 +445,8 @@ Rea extensions run in the same sandboxed environment as regular Rea code:
 
 ### Conformance levels
 
+<Feature id="conformance-levels" />
+
 Rea defines three conformance levels so that implementers can build partial implementations without claiming full spec compliance. Each level builds on the previous:
 
 | Level        | Sections                                  | Description                                                                                                                                                                                                                                     |
@@ -440,18 +455,20 @@ Rea defines three conformance levels so that implementers can build partial impl
 | **Standard** | Core + 8, 15, 17–19, 22–24, 27, 30–31, 32 | Full single-reader experience: media, events, cards, voice, input/interaction, pluralization, lock, captions, error handling, built-in functions, extensibility, accessibility.                                                                 |
 | **Platform** | Standard + 20–21                          | Multi-reader and real-world features: cooperative reading (parallel, vote, whisper, broadcast, race, exclusive, synchronize), real-world interactions (GPS, NFC, QR, camera, sensors). Requires network infrastructure and device APIs.         |
 
-An implementation MUST declare which conformance level it supports. When a story uses features above the implementation's level, the runtime MUST apply graceful degradation (see [Section 27](04-utilities.md#27-error-handling)) — unknown commands are treated as print expressions, unsupported blocks are silently skipped.
+An implementation MUST declare which conformance level it supports. When a story uses features above the implementation's level, the runtime MUST apply graceful degradation (see [Section 27](04-utilities.md#_27-error-handling)) — unknown commands are treated as print expressions, unsupported blocks are silently skipped.
 
 A **Core** implementation is sufficient for text-based interactive fiction with choices and variables — competitive with Ink or ChoiceScript. A **Standard** implementation matches the full single-reader Reast experience. A **Platform** implementation requires server infrastructure for multi-reader synchronization and device APIs for real-world interaction.
 
 ### Spec versioning
+
+<Feature id="spec-versioning" />
 
 Rea follows a **MAJOR.MINOR** version scheme (inspired by [YAML](https://yaml.org/spec/1.2.2/)):
 
 - **MAJOR** — Breaking changes that may invalidate existing stories
 - **MINOR** — Backward-compatible additions (new commands, attributes, functions)
 
-Version 0.x is pre-release: any feature may change without notice. Version 1.0 marks the first stable release.
+**1.0 is the first release of the language.** Everything published under it is available to authors now, at the maturity its badge declares.
 
 A Rea story declares which spec version it targets using the `rea` field in `manifest.json`:
 
@@ -470,17 +487,21 @@ If the `rea` key is omitted, the platform assumes the latest supported version. 
 
 ### Feature stability
 
-Each feature in the spec has an implicit stability level:
+Every feature in this specification carries an explicit status badge under its own heading, and the whole set is listed on the [feature index](features). There are five:
 
-| Level            | Meaning                                                                               |
-| ---------------- | ------------------------------------------------------------------------------------- |
-| **Stable**       | Will not change in MINOR versions. May only change in a new MAJOR version.            |
-| **Experimental** | May be modified or removed in any version. Marked with "(Experimental)" in the spec.  |
-| **Deprecated**   | Scheduled for removal. A deprecation notice includes the version and the replacement. |
+| Status             | Available today? | Meaning                                                                                                                            |
+| ------------------ | ---------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **`stable`**       | Yes              | Frozen. May only change in a new MAJOR version. The prose core of the language is here.                                            |
+| **`experimental`** | Yes              | Released and usable, but may still be refined within this MAJOR version. Most of Rea is at this level today.                       |
+| **`development`**  | No               | Designed and being built. The documented syntax is what it will be, but the engine does not accept it yet.                         |
+| **`draft`**        | No               | Specified and discussed so the shape of the idea is on record. No implementation has started; the design may still change entirely. |
+| **`cancelled`**    | Never            | Considered and deliberately ruled out. Recorded so the decision stays visible instead of being re-argued.                          |
 
-During the 0.x pre-release period, all features are implicitly Experimental.
+A **version badge** accompanies the status only for `stable` and `experimental` features — the two that are actually published — and names the spec version the feature became available in. A `development` or `draft` feature has no version yet, and a `cancelled` one never will.
 
-Features added after 1.0 SHOULD be annotated with their introduction version (e.g. "Since 1.1") so authors know which spec version they require.
+An implementation MAY ship any subset of `development` and `draft` features; it MUST NOT claim a [conformance level](#conformance-levels) on the strength of them, because a story cannot depend on something no other implementation has. Features added after 1.0 carry their introduction version in the same badge (`since 1.1`), so an author always knows which spec version a story requires.
+
+A status is not a promise about a date. `development` says work is under way, `draft` says the idea is written down and nothing more — neither implies when, or whether, it lands.
 
 ### Deprecation process
 
@@ -496,7 +517,7 @@ When a feature is deprecated:
 Parsers conforming to Rea MAJOR.MINOR MUST:
 
 1. Accept any valid story written for MAJOR.0 through MAJOR.MINOR
-2. Ignore unknown metadata keys (already specified in [Section 1](01-basics.md#1-document-structure))
+2. Ignore unknown metadata keys (already specified in [Section 1](01-basics.md#_1-document-structure))
 3. Handle unknown commands gracefully — display a warning and skip the command block, rather than failing
 4. Treat unknown inline formatting as literal text
 
@@ -505,6 +526,8 @@ This ensures forward compatibility: a story written for Rea 1.0 works on a Rea 1
 ---
 
 ## 32. Accessibility
+
+<Feature id="accessibility" />
 
 Rea targets **WCAG 2.2 Level AA** conformance. The platform handles the technical implementation; the spec defines what authors must and should provide.
 
@@ -537,7 +560,7 @@ Authors contribute to accessibility through existing syntax:
 - **Alt text on images** — Required by the image syntax: `[!alt text < source]`. Images without alt text trigger a validation warning.
 - **Voice/audio descriptions** — `{voice begin}` content is automatically available as an audio description for visual scenes.
 - **Meaningful choice text** — Choices should describe the action, not just "Option A" or "Click here".
-- **Captions on time-based media** — Use the `{caption ...}` command (see [Section 24](04-utilities.md#24-captions)) to provide text alternatives for audio and video.
+- **Captions on time-based media** — Use the `{caption ...}` command (see [Section 24](04-utilities.md#_24-captions)) to provide text alternatives for audio and video.
 
 ### Interactive element accessibility paths
 
@@ -556,16 +579,16 @@ Authors contribute to accessibility through existing syntax:
 
 ## Design Notes
 
-For detailed provenance tables, brainstorm material, and community research, see [DESIGN-NOTES.md](https://github.com/atiris/reast/blob/dev/research/DESIGN-NOTES.md).
-
 ### What Rea intentionally omits
 
-- **Lists as ordered enums** — Intentionally avoided. Rea uses arrays (with optional named items) and conditions for data management.
-- **HTML passthrough** — No raw HTML injection. The rendering layer is platform-controlled for security and consistency.
-- **CSS styling** — Visual presentation is the platform's responsibility. Authors write structure and content.
-- **Programming language embedding** — No JavaScript, Python, or other language embedding. Functions in Rea are sandboxed and intentionally limited.
-- **Numbered/bulleted lists** — Not included by design. Interactive stories don't use list formatting — choices fill this role naturally.
-- **Table markup** — Not included. Data tables are not a storytelling construct. Use formatted text or commands if needed.
+Each of these was considered and ruled out. They appear on the [feature index](features#omitted) as `cancelled`, so the decision stays visible rather than being rediscovered and re-argued.
+
+- **Numbered & bulleted lists** — Not included by design. Interactive stories don't use list formatting, `*` and `-` are already the choice and gather markers, and choices fill the role naturally. Structured data belongs in an array.
+- **Table markup** — Not included. A data table is not a storytelling construct, and supporting one would drag column alignment and cell spanning into a prose language.
+- **HTML passthrough** — Permanently excluded. Raw markup injection would make every story an XSS surface and would let one author's markup break another host's rendering.
+- **CSS styling** — Permanently excluded. Visual presentation is the platform's responsibility, so that a reader's own preferences — contrast, font size, dark mode — can never be overridden by a story.
+- **Programming language embedding** — Permanently excluded. A story is untrusted content; embedding JavaScript, Python or anything else would destroy the sandbox. Sandboxed [`.rext` extensions](#_31-extensibility) and embedder-supplied host extensions cover the real need.
+- **`try` / `catch`** — Ruled out with the [error model](04-utilities.md#_27-error-handling). All recovery is implicit, because a reader must never be shown a failure and an author should never have to write one.
 
 ### Resolved design decisions
 

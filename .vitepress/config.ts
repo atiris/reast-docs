@@ -13,10 +13,7 @@ const currentVersion = pkg.version;
 //
 // To archive a version before continuing edits, see
 // `scripts/snapshot-version.mjs` and the "Versioning" section of the README.
-const docVersions = [
-  { label: `v${currentVersion} (latest)`, link: '/', current: true },
-  { label: 'v0.1.0 (archived)', link: '/v0.1.0/' },
-];
+const docVersions = [{ label: `v${currentVersion} (latest)`, link: '/', current: true }];
 
 const enNav = [
   { text: 'Specification', link: '/spec/' },
@@ -35,6 +32,7 @@ const specSidebar = [
     text: 'Rea Language Specification',
     items: [
       { text: 'Introduction', link: '/spec/' },
+      { text: 'Feature Index', link: '/spec/features' },
       { text: 'Basics', link: '/spec/01-basics' },
       { text: 'Logic & Data', link: '/spec/02-logic-data' },
       { text: 'Narrative & Interaction', link: '/spec/03-narrative-interaction' },
@@ -104,6 +102,7 @@ const skSpecSidebar = [
     text: 'Špecifikácia jazyka Rea',
     items: [
       { text: 'Úvod', link: '/sk/spec/' },
+      { text: 'Zoznam funkcií', link: '/spec/features' },
       { text: 'Základy', link: '/sk/spec/01-basics' },
       { text: 'Logika a dáta', link: '/sk/spec/02-logic-data' },
       { text: 'Naratív a interakcia', link: '/sk/spec/03-narrative-interaction' },
@@ -146,7 +145,6 @@ const skPlatformSidebar = [
       { text: 'Pre čitateľov', link: '/sk/platform/for-readers' },
       { text: 'Pre autorov', link: '/sk/platform/for-authors' },
       { text: 'Návrh príbehov', link: '/sk/platform/design/' },
-      { text: 'Bezpečnosť a súkromie', link: '/sk/platform/security/' },
       { text: 'Slovník', link: '/sk/platform/glossary' },
     ],
   },

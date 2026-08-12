@@ -61,6 +61,8 @@ on the manifest `sensors` array.
 
 ### Importing from a public GitHub repository
 
+<Feature id="github-import" />
+
 A package can also live unzipped in a public GitHub repository: the repository
 root acts as the package root (`manifest.json`, `story/`, optional
 `README.md`). The platform accepts a repository URL and loads it as if it were
@@ -97,6 +99,8 @@ Rules a compliant reader enforces:
   never the manifest.
 
 ## `manifest.json`
+
+<Feature id="manifest" />
 
 The manifest is a single JSON object with **one canonical shape** — there is no
 "short form" of any field. `id` is always present (generated when the project is
@@ -180,6 +184,8 @@ preserved and ignored.
 - `requires` — string[] — Host-extension namespaces the story depends on (e.g.
   `["host"]`). An embedder that registered no extension for a required namespace
   refuses the load rather than answering wrong mid-story. See [Extending](extending).
+- `loading` — string — `"progressive"` to download parts on demand; absent means the whole package arrives at once. See [Progressive loading](#progressive-loading).
+- `preload`, `locked` — string[] — Part paths (matching `parts[].file`) to fetch immediately, and to withhold until a lock condition is met. Only meaningful with `loading: "progressive"`.
 - `offline` — boolean — Whether the story is fully playable offline.
 - `preview` — boolean — Marks a preview/sample build.
 - `integrity` — `Record<path, hash>` — Per-file SHA-256 hashes for tamper detection.
@@ -222,6 +228,8 @@ that an instruction may need to reference for the moderator.
 
 ## Reader tab bar
 
+<Feature id="reader-tab-bar" />
+
 Mobile readers can show a thumb-reachable bottom tab bar with up to five
 sections. The bar is **off by default**; authors opt in and enable individual
 sections under `reader.tabBar` in the manifest:
@@ -263,6 +271,8 @@ affordances on `actions`).
 
 ## Session settings: `reast.json`
 
+<Feature id="session-settings" />
+
 `reast.json`, when present, carries **session preparation settings** —
 variables and configuration for running the story in a specific context (e.g.
 number of players, difficulty, chosen scenario variant) — never manifest data:
@@ -277,40 +287,46 @@ number of players, difficulty, chosen scenario variant) — never manifest data:
 ```
 
 The platform reads `reast.json` at session start and injects its values into
-the story's variable space. Authors define which settings are expected through
-their story's `@config` directives.
+the story's variable space, where they behave like any other variable. A story
+that expects a setting gives it a default with an ordinary top-level `{set}`,
+which a `reast.json` value then overrides — so the same story still runs
+correctly when no session file is present.
 
 ## Progressive loading
 
+<Feature id="progressive-loading" />
+
 Large stories can load part-by-part rather than all at once. The manifest
-declares the strategy:
+declares the strategy alongside the ordinary `parts` array:
 
 ```json
 {
   "loading": "progressive",
-  "parts": ["0001-the-silence.rea", "0002-the-lantern.rea", "0003-epilogue.rea"],
-  "preload": ["0001-the-silence.rea"],
-  "locked": ["0003-epilogue.rea"]
+  "parts": [
+    { "file": "story/0001-the-silence.rea", "name": "The Silence" },
+    { "file": "story/0002-the-lantern.rea", "name": "The Lantern" },
+    { "file": "story/0003-epilogue.rea", "name": "Epilogue" }
+  ],
+  "preload": ["story/0001-the-silence.rea"],
+  "locked": ["story/0003-epilogue.rea"]
 }
 ```
 
-Parts listed in `preload` download immediately; others download once the
-reader is 80% through the current part; parts listed in `locked` download only
-after the lock condition is satisfied.
+`preload` and `locked` reference parts by the same archive-relative path
+`parts[].file` uses — there is no second, short form of a part reference.
+Parts listed in `preload` download immediately; others download once the reader
+is 80% through the current part; parts listed in `locked` download only after
+the lock condition is satisfied.
 
 ## Delta updates
 
-When a story is updated, readers can download only the changed files rather
-than the full package. The manifest carries per-file content hashes for this:
+<Feature id="delta-updates" />
 
-```json
-{
-  "files": {
-    "0001-the-silence.rea": { "hash": "sha256:abc123...", "size": 45012 },
-    "0002-the-lantern.rea": { "hash": "sha256:def456...", "size": 12300 }
-  }
-}
-```
+When a story is updated, readers can download only the changed files rather
+than the full package. This reuses the per-file hashes the manifest already
+carries in [`integrity`](#integrity-and-signing) — a reader compares the new
+manifest's hashes against what it holds and fetches only the entries that
+differ. There is no separate file list for updates.
 
 ## Capabilities
 
@@ -327,6 +343,8 @@ before rendering:
   everything else is blocked.
 
 ## Integrity and signing
+
+<Feature id="integrity-signing" />
 
 When `integrity` is present, a reader recomputes the SHA-256 hash of each listed
 file and refuses to load the package on mismatch. Packages may additionally
@@ -346,6 +364,8 @@ without a key (validation, linting, moderation) and must never materialise
 mid-story behind an unlock code (see [When rules differ in `.rext` files](../spec/rext-differences)).
 
 ## Minification & compression
+
+<Feature id="minification" />
 
 Before packaging into `.reast`, story files can be minified and compressed for
 distribution. **Minification** (a lossless transformation of `.rea` source)

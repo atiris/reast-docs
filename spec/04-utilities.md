@@ -1,8 +1,8 @@
 # Utilities: Media, Formatting & Helpers
 
-> [Introduction](/spec/) · [Back to main specification](/)
+> [Introduction](/spec/) · [Feature index](features) · [Cheatsheet](REA-CHEATSHEET)
 >
-> **Implementation status:** Sections 22–27 describe advanced features (pluralization & localization, content protection, captions, escaping, comments, error handling) that are specified but not yet implemented in the proof-of-concept parser. The error handling philosophy (graceful degradation) is followed in the parser design. See [REA-CHEATSHEET.md](REA-CHEATSHEET.md) for detailed status.
+> The localization built-ins and the error model on this page are released. Content protection, captions and the author diagnostics are **draft** — specified so a story can be designed around them, but not built. Each section carries its own badge.
 
 ---
 
@@ -17,6 +17,8 @@ Rea provides built-in functions for grammatically correct text across all langua
 > same locale.
 
 ### Pluralization with `plural()`
+
+<Feature id="plural" />
 
 The `plural()` function maps a count to the correct grammatical form using CLDR plural categories. Categories vary by language — English has 2 (`one`, `other`), Slovak has 4 (`one`, `few`, `many`, `other`), Arabic has 6.
 
@@ -49,6 +51,8 @@ The runtime resolves categories through `Intl.PluralRules` for the host-supplied
 
 ### Text selection with `select()`
 
+<Feature id="select" />
+
 The `select()` function maps a string value to text variants. Use it for gender, pronoun, role-based, or any key-based text variation:
 
 ```rea
@@ -64,6 +68,8 @@ The `select()` function maps a string value to text variants. Use it for gender,
 ```
 
 ### Number formatting with `formatNumber()`
+
+<Feature id="format-number" />
 
 The `formatNumber()` function delegates to locale-aware number formatting
 (`Intl.NumberFormat`). It defaults to the **host-supplied engine locale**; an
@@ -94,7 +100,7 @@ Distance: {formatNumber(meters, maximumFractionDigits=1)} m
 
 ### Fantasy calendars with `calendar()`
 
-> **Implementation status:** `calendar()` is specified but not yet implemented.
+<Feature id="calendar" />
 
 The `calendar()` function maps real date components to custom names — perfect for fantasy world-building:
 
@@ -118,6 +124,8 @@ Day of {calendar(world.date, weekday="Moonday,Fireday,Waterday,Earthday,Windday,
 
 ### Ordinal numbers with `ordinal()`
 
+<Feature id="ordinal" />
+
 ```rea
 You finished in {ordinal(position)} place.
 ```
@@ -133,6 +141,8 @@ So `ordinal(1)` is `1st` in English and `1` in German; the templated form yields
 ---
 
 ## 23. Content Protection (Lock)
+
+<Feature id="content-lock" />
 
 The `{lock}` command protects story content, preventing readers from accessing chapters until conditions are met. This supports the platform's progressive download and monetization model.
 
@@ -216,7 +226,7 @@ code is validated **before** prose runs (an unlock code can arrive mid-story, an
 code that materialises after the reader is committed fails at the worst moment);
 code is **auditable without a key** (`reast validate`, the editor, platform
 moderation); and a third-party embedder without the key can still run the story's
-logic. See [Extensibility](05-reference.md#31-extensibility) for the full rule.
+logic. See [Extensibility](05-reference.md#_31-extensibility) for the full rule.
 
 To keep a secret out of an extension while still checking it, keep the function
 generic and plaintext and put the secret in an **encrypted `.rea` chapter** via
@@ -246,6 +256,8 @@ platform's job, not the engine's.
 
 ## 24. Captions
 
+<Feature id="captions" />
+
 The `{caption}` command adds descriptive captions to preceding content (images, code blocks, or text sections):
 
 ```rea
@@ -263,6 +275,8 @@ The `{caption}` command adds descriptive captions to preceding content (images, 
 ## 25. Escaping & Raw Text
 
 ### Escaping special characters
+
+<Feature id="escaping" />
 
 Use `\` to escape any character with special meaning:
 
@@ -287,6 +301,8 @@ Content inside `{raw begin}` is rendered as-is with no processing:
 
 ## 26. Comments
 
+<Feature id="comments" />
+
 ### Author comments (hidden from reader)
 
 ```rea
@@ -303,6 +319,8 @@ Single-line comments use `{// text}`. The `//` token causes the parser to ignore
 Multi-line comments use the `{comment begin}...{end comment}` block syntax, consistent with all other paired commands.
 
 ### TODO markers (compile-time warnings)
+
+<Feature id="todo-note" />
 
 ```rea
 {todo: Write the battle scene here}
@@ -336,6 +354,8 @@ Rea does **not** have `try/catch`. All error handling is implicit — the runtim
 
 ### Graceful mode (default)
 
+<Feature id="error-handling" />
+
 By default, Rea fails gracefully — the reader's experience is never broken:
 
 | Error                              | Graceful behavior                                                                                               |
@@ -349,9 +369,11 @@ By default, Rea fails gracefully — the reader's experience is never broken:
 | Unclosed block `{if begin}` at EOF | Auto-closed at end of file                                                                                      |
 | Unknown command `{magic}`          | Treated as print expression                                                                                     |
 | Unknown host command `{ns.cmd a}`  | Treated as print expression (namespace not registered)                                                          |
-| Sensor unavailable                 | `world.has("sensor")` returns `false`; see [Section 21](03-narrative-interaction.md#21-real-world-interactions) |
+| Sensor unavailable                 | `world.has("sensor")` returns `false`; see [Section 21](03-narrative-interaction.md#_21-real-world-interactions) |
 
 ### Strict mode
+
+<Feature id="strict-mode" />
 
 Enable strict mode for development and testing:
 
@@ -382,6 +404,8 @@ Example strict mode warnings:
 
 ### Fallback values
 
+<Feature id="fallback-values" />
+
 Where it makes sense, syntax supports optional inline fallback values:
 
 ```rea
@@ -392,6 +416,8 @@ Where it makes sense, syntax supports optional inline fallback values:
 If the primary resource fails, the fallback is used. If the fallback also fails, the platform applies its default graceful behavior (placeholder for images, silence for audio, etc.).
 
 ### External API access
+
+<Feature id="external-api" />
 
 External API calls (network requests from within a story) must be declared in `manifest.json` via `allowed_urls`. URLs must not appear anywhere in `.rea` text — authors reference APIs by alias only. This ensures all external access is declared, auditable, and permission-controlled.
 

@@ -1,3 +1,3 @@
-# Contributing
+# Prispievanie
 
-TODO: Only EN version.
+Táto stránka zatiaľ existuje len v angličtine — pozrite [Contributing](/engine/contributing).

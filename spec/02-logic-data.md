@@ -1,12 +1,14 @@
 # Logic & Data: Variables, Conditions & Expressions
 
-> [Introduction](/spec/) · [Back to main specification](/)
+> [Introduction](/spec/) · [Feature index](features) · [Cheatsheet](REA-CHEATSHEET)
 >
-> **Implementation status:** Commands (10), variables (11), and basic control flow (13: `if`/`else`/`for`) are implemented. Expression printing (12) is partial — simple variable references work but arithmetic, ternary, and function calls are not yet evaluated at parse time. Functions (14), `while`, `switch/case`, and events (15) are specified but not yet implemented. See [REA-CHEATSHEET.md](REA-CHEATSHEET.md) for detailed status.
+> Most of this page is **experimental**: released and in daily use, but the syntax may still be refined within 1.x. Two features here are not available to authors yet — [coordinate literals](#data-types) (`draft`) and [state machines](#state-machines) (`development`). Each carries its own badge.
 
 ---
 
 ## 10. Commands
+
+<Feature id="commands" />
 
 Commands are the core mechanism for interactivity. They are enclosed in `{ }` curly braces.
 
@@ -39,6 +41,8 @@ Both forms produce identical results. The `content` attribute is set by the pars
 
 ### Print shorthand
 
+<Feature id="print-shorthand" />
+
 An expression inside `{ }` by itself is printed:
 
 ```rea
@@ -48,6 +52,8 @@ Hello, {player.name}! You have {player.gold} gold.
 This is conceptually equivalent to printing the expression's value.
 
 ### Attributes
+
+<Feature id="attributes" />
 
 Commands and functions share a unified parameter syntax. Parameters are **comma-separated**.
 
@@ -91,7 +97,7 @@ Commands can be named for later reference using `name=`:
 {end if}
 ```
 
-Named commands track execution state (see [Built-in Functions](05-reference.md#30-built-in-functions)).
+Named commands track execution state (see [Built-in Functions](05-reference.md#_30-built-in-functions)).
 
 ### Reserved keyword
 
@@ -110,6 +116,8 @@ Named commands track execution state (see [Built-in Functions](05-reference.md#3
 ## 11. Variables & Data Types
 
 ### Declaring variables
+
+<Feature id="set" />
 
 All persistent variables must have a **domain prefix** — a dot-separated namespace that organizes state into logical categories:
 
@@ -130,6 +138,8 @@ Authors choose domain names freely. Common patterns:
 | Multi-level nesting | Fine-grained organization | `role.king.power`, `map.zone.3` |
 
 ### Scoping
+
+<Feature id="scopes" />
 
 Variables exist in three scopes:
 
@@ -164,6 +174,8 @@ Heading-scoped variables are ideal for temporary story-local state that should n
 
 ### Built-in variable namespaces
 
+<Feature id="builtin-namespaces" />
+
 The platform provides read-only (or read-write where noted) namespaces:
 
 | Namespace  | Description         | Examples                                                                                                              |
@@ -175,6 +187,8 @@ The platform provides read-only (or read-write where noted) namespaces:
 | `group.*`  | Cooperative reading | `group.size`, `group.readers`, `group.role`                                                                           |
 
 ### Data types
+
+<Feature id="data-types" />
 
 | Type        | Example          | Description                      |
 | ----------- | ---------------- | -------------------------------- |
@@ -190,9 +204,11 @@ The platform provides read-only (or read-write where noted) namespaces:
 
 ```rea
 {set player.name = "Aiden"}
-"Ako si sa dnes vyspal{player.knight.rod ["a"]}?"
-{if weapon = "sword" begin}
+{set player.weapon = "sword"}
+{if player.weapon = "sword" begin}
 ```
+
+Here `"sword"` is a string value and `player.weapon` is a variable — the quotes are the only thing that tells them apart, and they are never optional.
 
 In command attributes, string values also require quotes. Bare attribute values are interpreted as numbers, booleans, or identifier references — not as strings:
 
@@ -202,6 +218,10 @@ In command attributes, string values also require quotes. Bare attribute values 
 ```
 
 `speed=3` is a number (no quotes), `name=guess` is an identifier binding (the variable name where input is stored), and `emotion="whisper"` is a string value (quoted).
+
+### Arrays
+
+<Feature id="arrays" />
 
 **Arrays** are the universal collection type. Items are comma-separated and can be **positional** (indexed by position) or **named** (indexed by key), or both:
 
@@ -222,14 +242,22 @@ Positional items are accessed by **0-based index** (the first item is `.0`, the 
 
 When mixing positional and named items, positional items must come before named items — consistent with function parameters. Named items can be reordered freely.
 
+### Date, time & duration values
+
+<Feature id="datetime-types" />
+
 **Constructor types** (runtime types without literal syntax):
 
 | Constructor                       | Description                                |
 | --------------------------------- | ------------------------------------------ |
-| `datetime("2025-06-15T10:30:00")` | ISO 8601 timestamp, supports wildcards `*` |
+| `datetime("2026-06-15T10:30:00")` | ISO 8601 timestamp, supports wildcards `*` |
 | `duration("P1DT2H30M")`           | ISO 8601 duration                          |
 
-**Coordinate literals** (geographic types with `@` syntax):
+### Coordinate literals
+
+<Feature id="coordinate-literals" />
+
+Geographic values are written with `@` rather than a constructor function, because a story that leans on real places writes a great many of them:
 
 | Literal             | Description                                   |
 | ------------------- | --------------------------------------------- |
@@ -242,7 +270,7 @@ When mixing positional and named items, positional items must come before named 
 | `@@area1 + @@area2` | Union of areas                                |
 | `@@area1 - @@area2` | Difference of areas (donut, exclusion)        |
 
-Points use `@`, areas use `@@`. Radius is always in meters. Examples:
+Points use `@`, areas use `@@`. The separator inside a coordinate is a **semicolon**, never a comma — a comma already separates the arguments a coordinate sits among. Radius is always in meters. Examples:
 
 ```rea
 {set home = @48.14;17.10}
@@ -250,6 +278,8 @@ Points use `@`, areas use `@@`. Radius is always in meters. Examples:
 {set forest = @@48.14;17.10@48.15;17.10@48.15;17.11@48.14;17.11}
 {set donut = @@48.14;17.10/1000 - @@48.14;17.10/200}
 ```
+
+Today the only place the engine reads a coordinate is the [`{waypoint}`](03-narrative-interaction.md#waypoints) command, which parses its own. Assigning one to a variable, or testing `world.location` against an area, needs the expression grammar to learn `@` — that is what the `draft` badge above means.
 
 ### DateTime wildcards
 
@@ -268,6 +298,8 @@ Wildcards enable time-based patterns using `datetime()` constructor strings:
 ---
 
 ## 12. Expressions & Operators
+
+<Feature id="operators" />
 
 Expressions can appear anywhere inside `{ }`. They follow standard precedence rules.
 
@@ -300,7 +332,20 @@ An expression is built from these atomic elements:
 | 12         | `or`                  | Logical OR                          |
 | 13         | `? :`                 | Ternary conditional                 |
 
+### Pattern & membership tests
+
+<Feature id="pattern-matching" />
+
+`matches` tests a value against a regular expression and `in` tests membership in an array. Both are keywords rather than symbols, and both take a `!` prefix to negate:
+
+```rea
+{if player.name matches /^[A-Z]/ begin}
+{if "sword" !in player.inventory begin}
+```
+
 ### Ternary conditional
+
+<Feature id="ternary" />
 
 The ternary operator provides inline conditional values:
 
@@ -334,6 +379,8 @@ Strings are **opaque values** — `{expression}` syntax is NOT interpreted insid
 The `{expression}` syntax works only in **narrative text** (outside of string literals), where it is evaluated and its result is inserted inline.
 
 ### Type coercion in expressions
+
+<Feature id="type-coercion" />
 
 When operands have different types, Rea applies implicit coercion:
 
@@ -390,6 +437,8 @@ To convert between types explicitly, use conversion functions:
 
 ### If / Else If / Else
 
+<Feature id="if-else" />
+
 ```rea
 {if player.gold > 100 begin}
   The merchant smiles greedily.
@@ -401,6 +450,8 @@ To convert between types explicitly, use conversion functions:
 ```
 
 ### Switch / Case
+
+<Feature id="switch-case" />
 
 ```rea
 {switch player.class begin}
@@ -416,6 +467,8 @@ To convert between types explicitly, use conversion functions:
 ```
 
 ### For Loop
+
+<Feature id="for-loop" />
 
 ```rea
 {for item in player.inventory begin}
@@ -434,6 +487,8 @@ With index variable (defined after a comma before `begin`):
 The index variable starts at 0 and increments with each iteration.
 
 ### While Loop
+
+<Feature id="while-loop" />
 
 ```rea
 {while lock.attempts > 0 begin}
@@ -455,6 +510,8 @@ The counter variable starts at 0 and increments with each iteration.
 
 ### Break & Continue
 
+<Feature id="break-continue" />
+
 ```rea
 {for item in player.inventory begin}
   {if item = "cursed_ring" begin}
@@ -468,6 +525,8 @@ The counter variable starts at 0 and increments with each iteration.
 ```
 
 ### State Machines
+
+<Feature id="state-machines" />
 
 Formal state machines model entities that transition between named states based on events and conditions. Useful for doors, NPCs, weather systems, or any entity with distinct behavioral modes:
 
@@ -532,6 +591,8 @@ Guard conditions on transitions prevent invalid state changes:
 ---
 
 ## 14. Functions
+
+<Feature id="functions" />
 
 ### Defining functions
 
@@ -608,6 +669,8 @@ Parameters support default values:
 
 ## 15. Events
 
+<Feature id="events" />
+
 Events respond to platform triggers. They are defined using `{on event_name begin}`:
 
 ```rea
@@ -665,6 +728,8 @@ Some events accept parameters that filter when they fire:
 The parameter narrows the event trigger. Without parameters, the event fires on any match (e.g., `{on scan begin}` fires on any scan, `{on scan "CODE-42" begin}` fires only when "CODE-42" is scanned).
 
 ### Save & checkpoints
+
+<Feature id="checkpoints" />
 
 The platform auto-saves reader progress after every choice. Authors can define named checkpoints for explicit save/restore points:
 

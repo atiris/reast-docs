@@ -11,33 +11,29 @@ Welcome to the Rea playground!
 
 This is a simple branching story. Try editing it.
 
-{choice}
-  {option} Explore the forest
-    You walk into a dense forest. Birds sing above.
-    The path splits in two.
+{set player.curious = true}
 
-    {choice}
-      {option} Go left
-        You find a hidden waterfall. Beautiful!
-      {option} Go right
-        You discover an old stone bridge crossing a stream.
-    {end choice}
+* [Explore the forest]
+  You walk into a dense forest. Birds sing above.
+  The path splits in two.
 
-  {option} Visit the town
-    The town square is bustling with people.
-    A merchant waves you over.
+  * * [Go left]
+    You find a hidden waterfall. Beautiful!
+  * * [Go right]
+    You discover an old stone bridge crossing a stream.
 
-    "Would you like to see my wares?"
+* [Visit the town]
+  The town square is bustling with people.
+  A merchant waves you over.
 
-    {choice}
-      {option} Yes, show me
-        The merchant reveals a collection of rare maps.
-      {option} No, thanks
-        You wave politely and continue walking.
-    {end choice}
-{end choice}
+  @merchant: "Would you like to see my wares?"
 
-**The End.**
+  * * [Yes, show me]
+    The merchant reveals a collection of rare maps.
+  * * [No, thanks]
+    You wave politely and continue walking.
+
+- *The End.*
 `;
 
 const source = ref(defaultStory);
@@ -159,16 +155,23 @@ The playground creates a `<reast-engine>` web component and feeds it your Rea so
 
 ### Supported syntax
 
-Everything from the [Rea specification](/spec/01-basics) works in the playground:
+Anything the engine implements works here — that is everything marked `stable`
+or `experimental` on the [feature index](/spec/features):
 
-- **Plain text** — paragraphs, headings, emphasis
-- **Choices** — `{choice}` / `{option}` / `{end choice}`
-- **Variables** — `{set name = value}`, `{if condition}...{end if}`
-- **Commands** — `{image}`, `{audio}`, `{timer}`, `{waypoint}`, etc.
-- **Logic** — expressions, built-in functions, string interpolation
+- **Prose** — paragraphs, headings, emphasis, blockquotes, rules, footnotes and hints
+- **Choices** — `*` one-time, `+` sticky, `-` gathers, `->` diverts, `->->` tunnels
+- **State** — `{set player.gold = 100}`, `{if …begin}…{end if}`, loops, functions
+- **Narrative** — `{once}`, varying text, storylets, decks, exploration menus, cards
+
+Features badged `development` or `draft` are not implemented, so the parser
+treats them as ordinary text — see [graceful degradation](/spec/04-utilities#_27-error-handling).
 
 ### Limitations
 
-- **No file access** — commands like `{image path.jpg}` won't load files in the playground
-- **No GPS/NFC/sensors** — hardware-dependent commands show placeholder UI
+- **No package** — the playground feeds a single `.rea` file to the player, so
+  there is no manifest, no media and no `.rext` extensions
+- **No media files** — an embed such as `[!map < media/map.jpg]` has nothing to
+  resolve against and renders its placeholder
+- **No GPS/NFC/sensors** — hardware-dependent commands emit their host request
+  and receive no answer
 - **No persistence** — story state resets on each render
