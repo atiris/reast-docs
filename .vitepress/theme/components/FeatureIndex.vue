@@ -8,6 +8,7 @@ import { computed, ref } from 'vue';
 import { useData } from 'vitepress';
 import {
   FEATURES,
+  STATUS_LABELS,
   STATUS_ORDER,
   countByStatus,
   langOf,
@@ -15,7 +16,7 @@ import {
   localizedGroups,
   renderNote,
   statusDescriptions,
-  statusLabels,
+  ui,
   type FeatureStatus,
 } from '../../data/features';
 
@@ -24,8 +25,8 @@ const locale = computed(() => langOf(lang.value));
 
 const features = computed(() => localizedFeatures(locale.value));
 const GROUPS = computed(() => localizedGroups(locale.value));
-const STATUS_LABELS = computed(() => statusLabels(locale.value));
-const STATUS_DESCRIPTIONS = computed(() => statusDescriptions(locale.value));
+const descriptions = computed(() => statusDescriptions(locale.value));
+const label = (key: string, vars?: Record<string, string | number>) => ui(key, locale.value, vars);
 
 const counts = countByStatus();
 const total = FEATURES.length;
@@ -61,30 +62,17 @@ const shownCount = computed(() => groups.value.reduce((n, g) => n + g.features.l
 <template>
   <div class="rea-index">
     <p class="rea-index__summary">
-      <template v-if="active.size === 0">
-        <template v-if="locale === 'sk'">
-          {{ total }} funkcií v {{ GROUPS.length }} oblastiach jazyka. Zoznam zúžite výberom stavu
-          nižšie.
-        </template>
-        <template v-else>
-          {{ total }} features across {{ GROUPS.length }} areas of the language. Select a status
-          below to narrow the list.
-        </template>
-      </template>
-      <template v-else-if="locale === 'sk'">
-        Zobrazených {{ shownCount }} z {{ total }} funkcií.
-      </template>
-      <template v-else> Showing {{ shownCount }} of {{ total }} features. </template>
+      {{
+        active.size === 0
+          ? label('indexSummary', { total, groups: GROUPS.length })
+          : label('indexFiltered', { n: shownCount, total })
+      }}
     </p>
 
     <!-- Legend: also the filter. Clicking a status narrows the tables below.
          It sticks to the top of the viewport, so it stays reachable while
          scrolling a list this long. -->
-    <div
-      class="rea-index__legend"
-      role="group"
-      :aria-label="locale === 'sk' ? 'Filtrovať funkcie podľa stavu' : 'Filter features by status'"
-    >
+    <div class="rea-index__legend" role="group" :aria-label="label('filterLabel')">
       <button
         v-for="status in STATUS_ORDER"
         :key="status"
@@ -92,7 +80,7 @@ const shownCount = computed(() => groups.value.reduce((n, g) => n + g.features.l
         class="rea-index__chip"
         :class="[`is-${status}`, { 'is-active': active.has(status) }]"
         :aria-pressed="active.has(status)"
-        :title="STATUS_DESCRIPTIONS[status]"
+        :title="descriptions[status]"
         @click="toggle(status)"
       >
         <span class="rea-index__dot" aria-hidden="true" />
@@ -105,7 +93,7 @@ const shownCount = computed(() => groups.value.reduce((n, g) => n + g.features.l
         class="rea-index__chip rea-index__reset"
         @click="active = new Set()"
       >
-        {{ locale === 'sk' ? 'zobraziť všetko' : 'show all' }}
+        {{ label('showAll') }}
       </button>
     </div>
 
@@ -126,7 +114,7 @@ const shownCount = computed(() => groups.value.reduce((n, g) => n + g.features.l
               <span
                 class="rea-index__status"
                 :class="`is-${feature.status}`"
-                :title="STATUS_DESCRIPTIONS[feature.status]"
+                :title="descriptions[feature.status]"
               >
                 <span class="rea-index__dot" aria-hidden="true" />
                 {{ STATUS_LABELS[feature.status] }}

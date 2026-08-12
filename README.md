@@ -7,10 +7,14 @@ Deployed to [docs.rea.st](https://docs.rea.st) via GitHub Pages.
 
 ```bash
 npm install
-npm run dev      # Start dev server (hot reload)
-npm run build    # Build static site
-npm run preview  # Preview production build
+npm run dev            # Start dev server (hot reload)
+npm run build          # Build static site (fails on dead links)
+npm run preview        # Preview production build
+npm run check:types    # Type-check .vitepress/ (the build does not)
+npm run check:anchors  # Verify every link's #anchor exists in dist/
 ```
+
+The pre-commit hook runs all three checks in that order.
 
 ## Deployment (GitHub Pages)
 
@@ -66,11 +70,16 @@ became available in. All of it lives in one place:
 To change a status, edit the registry — never the page. To add a feature, add
 the entry and drop a `<Feature>` under its heading.
 
-Every entry carries both languages: `title`/`note` and `titleSk`/`noteSk`, all
-four required by the `Feature` type, so a feature cannot be added in English
-only. `link` is stored once in its English form and the components prefix it per
-locale — which is why the translated headings need the explicit anchors
-described under [Internationalization](#internationalization-i18n).
+Every author-facing string is a `Localized` map — `{ en: '…', sk: '…' }` — and
+the type requires a key for every locale in `LOCALES`, so a feature cannot be
+added in one language only. `link` is stored once in its English form and the
+components prefix it per locale from `LOCALE_PATHS`, which is why the translated
+headings need the explicit anchors described under
+[Internationalization](#internationalization-i18n).
+
+`npm run check:types` is what enforces all of that. The site build compiles
+through esbuild, which strips types without checking them, so the type-check is
+a separate step — the pre-commit hook runs it first.
 
 Two rules keep this honest:
 
@@ -163,9 +172,9 @@ translated heading that anything links to carries an explicit English anchor:
 The payoff beyond working links is that a reader who switches language keeps
 their position on the page. `npm run check:anchors` enforces this — it reads the
 ids out of `dist/` and checks every markdown link and every registry link, in
-each locale, against them. VitePress' own dead-link check only validates the
-page half of a link, so this is the half that would otherwise rot unnoticed. The
-pre-commit hook runs the build and then this check.
+every locale `LOCALE_PATHS` declares, against them. VitePress' own dead-link
+check only validates the page half of a link, so this is the half that would
+otherwise rot unnoticed.
 
 ### Language persistence
 
@@ -220,16 +229,16 @@ browsing sessions until the user switches language manually.
    - `spec/01-basics.md` (language basics)
    - `engine/getting-started.md`
    - `platform/index.md`
-6. **Translate the feature registry** — `.vitepress/data/features.ts` currently
-   holds English and Slovak in parallel fields (`titleSk`, `noteSk`). A third
-   language is the point at which those fields should become a per-locale map
-   rather than another suffixed pair
-7. **Add the locale prefix** to `LOCALE_PREFIXES` in
-   `scripts/check-anchors.mjs`, so the registry links are checked for it too
-8. **Give every translated heading an explicit English anchor** — see
+6. **Translate the feature registry** — add the locale to `LOCALES` and
+   `LOCALE_PATHS` in `.vitepress/data/features.ts`, then run
+   `npm run check:types`: it reports one error per string still missing the new
+   key, which is your translation worklist (currently 336 of them). Nothing
+   ships half-translated, because nothing compiles until the list is empty.
+   `scripts/check-anchors.mjs` reads `LOCALE_PATHS` itself, so it needs no edit
+7. **Give every translated heading an explicit English anchor** — see
    [Anchors are English in every language](#anchors-are-english-in-every-language)
-9. **Build and verify** — `npm run build` must pass without dead links, and
-   `npm run check:anchors` without broken anchors
+8. **Build and verify** — `npm run check:types`, then `npm run build` without
+   dead links, then `npm run check:anchors` without broken anchors
 
 ### Translation guidelines
 

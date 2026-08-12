@@ -1,6 +1,16 @@
 #!/bin/sh
 # ROOT_DIR=$(git rev-parse --show-toplevel)
 
+# The build strips types without checking them, so this runs first: it is what
+# enforces that every registry entry carries a string for every locale.
+npm run check:types || (
+  echo "" >&2
+  echo "❌ ERROR (husky pre-commit hook): TypeScript check failed." >&2
+  echo "   A missing locale key in .vitepress/data/features.ts reports here." >&2
+  echo "" >&2
+  exit 1
+)
+
 npm run build || (
   echo "" >&2
   echo "❌ ERROR (husky pre-commit hook): VitePress build failed (dead links or syntax errors found)." >&2

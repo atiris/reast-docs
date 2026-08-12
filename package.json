@@ -12,10 +12,12 @@
     "preview": "vitepress preview",
     "check:anchors": "node scripts/check-anchors.mjs",
     "snapshot": "node scripts/snapshot-version.mjs",
-    "prepare": "husky"
+    "prepare": "husky",
+    "check:types": "tsc --noEmit"
   },
   "devDependencies": {
     "husky": "^9.1.7",
+    "typescript": "^5.9.2",
     "vitepress": "^1.6.4"
   },
   "repository": {

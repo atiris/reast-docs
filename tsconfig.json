@@ -1,0 +1,19 @@
+{
+  // Type-checking only — VitePress builds through esbuild, which strips types
+  // without ever checking them. `npm run check:types` is what actually enforces
+  // that every registry entry carries a string for every locale in LOCALES.
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "DOM"],
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true
+  },
+  "include": [".vitepress/**/*.ts"],
+  "exclude": ["node_modules", "dist", ".vitepress/cache", ".vitepress/dist"]
+}

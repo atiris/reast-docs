@@ -82,10 +82,19 @@ for (const md of walk(root, '.md')) {
 }
 
 // 2. Feature-registry links, in every locale the site publishes them under.
-const LOCALE_PREFIXES = ['', '/sk'];
+//    The locales come out of the registry's own LOCALE_PATHS, so adding a
+//    language does not need this script edited — a `/de` prefix starts being
+//    checked the moment the registry declares it.
 const registry = readFileSync(join(root, '.vitepress/data/features.ts'), 'utf8');
+const pathsBlock = /LOCALE_PATHS[^=]*=\s*\{([^}]*)\}/.exec(registry);
+if (!pathsBlock) {
+  console.error('[anchors] could not read LOCALE_PATHS from .vitepress/data/features.ts');
+  process.exit(1);
+}
+const localePrefixes = [...pathsBlock[1].matchAll(/'([^']*)'/g)].map((m) => m[1]);
+
 for (const [, link] of registry.matchAll(/link: '(\/[^']+)'/g)) {
-  for (const prefix of LOCALE_PREFIXES) {
+  for (const prefix of localePrefixes) {
     const full = prefix + link;
     const hash = full.indexOf('#');
     const page = (hash === -1 ? full : full.slice(0, hash)).replace(/\/$/, '') || '/';
@@ -99,4 +108,5 @@ if (problems.length) {
   process.exit(1);
 }
 
-console.log(`[anchors] ok — every anchor in ${idsByRoute.size} pages resolves.`);
+const locales = localePrefixes.map((p) => p || '/').join(', ');
+console.log(`[anchors] ok — every anchor in ${idsByRoute.size} pages resolves (locales: ${locales}).`);
