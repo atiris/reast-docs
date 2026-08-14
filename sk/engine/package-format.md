@@ -303,16 +303,7 @@ splnení podmienky uzamknutia.
 ## Delta aktualizácie {#delta-updates}
 
 Keď sa príbeh aktualizuje, čitatelia môžu stiahnuť iba zmenené súbory namiesto
-celého balíčka. Manifest na to nesie hashe obsahu jednotlivých súborov:
-
-```json
-{
-  "files": {
-    "0001-the-silence.rea": { "hash": "sha256:abc123...", "size": 45012 },
-    "0002-the-lantern.rea": { "hash": "sha256:def456...", "size": 12300 }
-  }
-}
-```
+celého balíčka. Znovu sa na to použijú hashe jednotlivých súborov, ktoré manifest už nesie v poli [`integrity`](#integrity-and-signing) — čitateľ porovná hashe nového manifestu s tým, čo má, a stiahne len položky, ktoré sa líšia. Pre aktualizácie neexistuje samostatný zoznam súborov.
 
 ## Schopnosti {#capabilities}
 
@@ -330,17 +321,18 @@ pred vykreslením:
 
 ## Integrita a podpisovanie {#integrity-and-signing}
 
-Keď je prítomné pole `integrity`, čitateľ prepočíta SHA-256 hash každého
-uvedeného súboru a pri nezhode odmietne balíček načítať. Balíčky môžu navyše
-niesť polia `signed` / `signature` pre overenie pôvodu na úrovni autora.
-Šifrované balíčky sa pred rozbalením dešifrujú (AES); dešifrovací kľúč sa
-dodáva mimo archívu, nikdy nie v ňom.
+Keď je prítomné pole `integrity`, čitateľ prepočíta SHA-256 hash každého uvedeného súboru a pri nezhode **odmietne balíček načítať** — `pkg/integrity-mismatch`, závažnosť `fatal`. Bajty, ktoré nesedia s manifestom, sú bajty, ktoré nikto nesľúbil, a neexistuje poctivý spôsob, ako vykresliť ich polovicu.
+
+Balíčky môžu navyše niesť polia `signed` / `signature` pre overenie pôvodu na úrovni autora. Nezhoda podpisu je iného druhu: bajty sú neporušené, len vydavateľ je nepotvrdený. To je `pkg/signature-mismatch`, závažnosť `error`, a príbeh sa **aj tak načíta** — od hostiteľa sa očakáva, že vlastným rozhraním oznámi, že vydavateľa nebolo možné overiť. Odmietnuť načítanie by trestalo čitateľa za výmenu kľúča; mlčať by nechalo neoverený balíček vydávať sa za overený.
+
+Šifrované balíčky sa pred rozbalením dešifrujú (AES); dešifrovací kľúč sa dodáva mimo archívu, nikdy nie v ňom.
 
 Autor podpíše balíček tak, že raz vygeneruje pár kľúčov Ed25519 a bezpečne ho
 uchová. `META-REA/checksum.sha256` potom nesie SHA-256 hashe každého súboru,
 `META-REA/signature.sig` je Ed25519 podpis tohto súboru s hashmi a
 `META-REA/author.pub` nesie verejný kľúč (alebo odkaz na identitu overenú
-platformou). Čitateľ overí podpis pred načítaním a pri nezhode upozorní.
+platformou). Čitateľ overí podpis pred načítaním a neovereného vydavateľa
+oznámi cez rozhranie hostiteľa, nie cez príbeh.
 
 **Kód rozšírenia (`.rext`) sa nikdy nešifruje** — musí zostať auditovateľný bez
 kľúča (validácia, linting, moderovanie) a nesmie sa objaviť uprostred príbehu za

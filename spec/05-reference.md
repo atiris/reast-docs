@@ -455,7 +455,7 @@ Rea defines three conformance levels so that implementers can build partial impl
 | **Standard** | Core + 8, 15, 17–19, 22–24, 27, 30–31, 32 | Full single-reader experience: media, events, cards, voice, input/interaction, pluralization, lock, captions, error handling, built-in functions, extensibility, accessibility.                                                                 |
 | **Platform** | Standard + 20–21                          | Multi-reader and real-world features: cooperative reading (parallel, vote, whisper, broadcast, race, exclusive, synchronize), real-world interactions (GPS, NFC, QR, camera, sensors). Requires network infrastructure and device APIs.         |
 
-An implementation MUST declare which conformance level it supports. When a story uses features above the implementation's level, the runtime MUST apply graceful degradation (see [Section 27](04-utilities.md#_27-error-handling)) — unknown commands are treated as print expressions, unsupported blocks are silently skipped.
+An implementation MUST declare which conformance level it supports. When a story uses features above the implementation's level, the feature does nothing and the reader sees nothing in its place — see [Records and the conformance split](#records-and-the-conformance-split) for what the author is told.
 
 A **Core** implementation is sufficient for text-based interactive fiction with choices and variables — competitive with Ink or ChoiceScript. A **Standard** implementation matches the full single-reader Reast experience. A **Platform** implementation requires server infrastructure for multi-reader synchronization and device APIs for real-world interaction.
 

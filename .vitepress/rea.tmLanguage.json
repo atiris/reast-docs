@@ -4,6 +4,7 @@
   "fileTypes": ["rea", "rext"],
   "patterns": [
     { "include": "#comment-block" },
+    { "include": "#todo-block" },
     { "include": "#comment-inline" },
     { "include": "#raw-block" },
     { "include": "#heading" },
@@ -23,7 +24,7 @@
   ],
   "repository": {
     "comment-inline": {
-      "match": "\\{//[^}]*\\}",
+      "match": "\\{comment\\s+(?!begin\\})[^}]*\\}",
       "name": "comment.line.rea"
     },
     "comment-block": {
@@ -31,6 +32,18 @@
       "end": "\\{end\\s+comment\\}",
       "name": "comment.block.rea",
       "contentName": "comment.block.content.rea"
+    },
+    "todo-block": {
+      "begin": "\\{todo\\s+begin\\}",
+      "end": "\\{end\\s+todo\\}",
+      "name": "comment.block.todo.rea",
+      "contentName": "comment.todo.text.rea",
+      "beginCaptures": {
+        "0": { "name": "keyword.other.todo.rea" }
+      },
+      "endCaptures": {
+        "0": { "name": "keyword.other.todo.rea" }
+      }
     },
     "raw-block": {
       "begin": "\\{raw\\s+begin\\}",
@@ -231,14 +244,14 @@
       }
     },
     "command-todo": {
-      "match": "\\{(todo):\\s*([^}]*)\\}",
+      "match": "\\{(todo)\\s+(?!begin\\})([^}]*)\\}",
       "captures": {
         "1": { "name": "keyword.other.todo.rea" },
         "2": { "name": "comment.todo.text.rea" }
       }
     },
     "command-card-action": {
-      "match": "\\{(give|take|stop|input|button|strict|replace)\\b([^}]*)\\}",
+      "match": "\\{(give|take|stop|input|button|replace)\\b([^}]*)\\}",
       "captures": {
         "1": { "name": "support.function.builtin.rea" },
         "2": {
@@ -270,7 +283,7 @@
       }
     },
     "command-expression": {
-      "begin": "\\{(?![/!@#$%])",
+      "begin": "\\{(?![!@#$%])",
       "end": "\\}",
       "name": "meta.expression.rea",
       "beginCaptures": {

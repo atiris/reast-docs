@@ -376,7 +376,7 @@ Rea definuje tri úrovne zhody, aby implementátori mohli stavať čiastočné i
 | **Standard**  | Core + 8, 15, 17 – 19, 22 – 24, 27, 30 – 31, 32 | Plný zážitok pre jedného čitateľa: médiá, udalosti, karty, hlas, vstup a interakcia, skloňovanie, zámok, popisky, spracovanie chýb, vstavané funkcie, rozšíriteľnosť, prístupnosť.                                                       |
 | **Platform**  | Standard + 20 – 21                        | Funkcie pre viacerých čitateľov a reálny svet: kooperatívne čítanie (parallel, vote, whisper, broadcast, race, exclusive, synchronize), interakcie s reálnym svetom (GPS, NFC, QR, fotoaparát, senzory). Vyžaduje sieťovú infraštruktúru a rozhrania zariadení. |
 
-Implementácia MUSÍ deklarovať, ktorú úroveň zhody podporuje. Keď príbeh použije funkcie nad úrovňou implementácie, runtime MUSÍ uplatniť elegantnú degradáciu (pozri [Sekciu 27](04-utilities.md#_27-error-handling)) — neznáme príkazy sa spracujú ako tlačové výrazy, nepodporované bloky sa ticho preskočia.
+Implementácia MUSÍ deklarovať, ktorú úroveň zhody podporuje. Keď príbeh použije funkcie nad úrovňou implementácie, funkcia neurobí nič a čitateľ na jej mieste nevidí nič — čo sa dozvie autor, popisuje [Záznamy a úrovne zhody](#records-and-the-conformance-split).
 
 Implementácia **Core** stačí na textovú interaktívnu fikciu s voľbami a premennými — konkurencieschopná s Ink alebo ChoiceScript. Implementácia **Standard** zodpovedá plnému zážitku Reast pre jedného čitateľa. Implementácia **Platform** vyžaduje serverovú infraštruktúru na synchronizáciu medzi čitateľmi a rozhrania zariadení na interakciu s reálnym svetom.
 
