@@ -347,17 +347,27 @@ before rendering:
 <Feature id="integrity-signing" />
 
 When `integrity` is present, a reader recomputes the SHA-256 hash of each listed
-file and refuses to load the package on mismatch. Packages may additionally
-carry `signed` / `signature` fields for author-level provenance. Encrypted
-packages are decrypted (AES) before extraction; the decryption key is supplied
-out of band, never inside the archive.
+file and **refuses to load** the package on mismatch — `pkg/integrity-mismatch`,
+severity `fatal`. Bytes that do not match the manifest are bytes nobody
+promised, and there is no honest way to render half of them.
+
+Packages may additionally carry `signed` / `signature` fields for author-level
+provenance. A signature mismatch is different in kind: the bytes are intact,
+only the publisher is unconfirmed. That is `pkg/signature-mismatch`, severity
+`error`, and the story **still loads** — the host is expected to show its own
+chrome saying the publisher could not be verified. Refusing to load would
+punish a reader for a key rotation; saying nothing would let an unverified
+package pass as a verified one.
+
+Encrypted packages are decrypted (AES) before extraction; the decryption key is
+supplied out of band, never inside the archive.
 
 An author signs a package by generating an Ed25519 key pair once and keeping it
 secure. `META-REA/checksum.sha256` then carries the SHA-256 hashes of every
 file, `META-REA/signature.sig` is the Ed25519 signature of that checksum file,
 and `META-REA/author.pub` carries the public key (or links to a
 platform-verified identity). A reader verifies the signature before loading and
-warns on a mismatch.
+surfaces an unverified publisher through host chrome, not through the story.
 
 **Extension code (`.rext`) is never encrypted** — it must stay auditable
 without a key (validation, linting, moderation) and must never materialise

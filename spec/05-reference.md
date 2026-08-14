@@ -518,10 +518,32 @@ Parsers conforming to Rea MAJOR.MINOR MUST:
 
 1. Accept any valid story written for MAJOR.0 through MAJOR.MINOR
 2. Ignore unknown metadata keys (already specified in [Section 1](01-basics.md#_1-document-structure))
-3. Handle unknown commands gracefully — display a warning and skip the command block, rather than failing
+3. Skip an unknown command whole — its block included — with **no reader-visible
+   warning**, and record `parse/unknown-command` on the author channel
 4. Treat unknown inline formatting as literal text
 
-This ensures forward compatibility: a story written for Rea 1.0 works on a Rea 1.3 parser. A story using Rea 1.3 features works on a Rea 1.0 parser with graceful degradation.
+Rule 3 used to say "display a warning and skip the command block". A warning
+displayed *where* is the question the two-channel model of
+[Section 27](04-utilities.md#_27-error-handling) answers: never to the reader,
+always to the author, as a record. The reader sees the block skipped and
+nothing else.
+
+This ensures forward compatibility: a story written for Rea 1.0 works on a Rea
+1.3 parser. A story using Rea 1.3 features works on a Rea 1.0 parser with
+graceful degradation.
+
+### Records and the conformance split
+
+A [conformance level](#conformance-levels) governs what an implementation
+*runs*, not what it *reports*. A Core engine emits no records at all — the
+author channel is a tool-side concern, and a Core embedder that wires nothing up
+produces nothing. Standard and Platform tooling reports the whole registry.
+
+Where a story uses a feature above the level the implementation claims, the
+feature does nothing and the author gets `meta/above-conformance-level` naming
+the feature and the level it needs. That record is `degraded`, not `error`: the
+implementation behaved correctly, and the author is being told which of their
+choices did not travel, not that they made a mistake.
 
 ---
 

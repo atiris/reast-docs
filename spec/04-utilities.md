@@ -343,38 +343,119 @@ content is bare prose and only `{todo begin}` opens a block.
 
 ## 27. Error Handling
 
-### Error categories
+Rea has two audiences and they never share a pipe.
 
-Rea distinguishes three categories of errors:
+The **reader** gets prose. Every failure has a defined, silent fallback, and no
+error text ever reaches the page — not a message, not a placeholder token, not a
+bare identifier. This is a language guarantee, not a runtime detail.
 
-| Category              | When detected    | Examples                                                                     |
-| --------------------- | ---------------- | ---------------------------------------------------------------------------- |
-| **Parse error**       | Before execution | Syntax errors, unclosed blocks, malformed metadata, invalid nesting          |
-| **Runtime error**     | During execution | Undefined variable, division by zero, missing divert target, recursion limit |
-| **Environment error** | During execution | Missing media file, sensor unavailable, network failure                      |
+The **author** gets *records*: structured, code-identified, position-carrying
+data with no rendered form. A record is never shown to a reader at any severity.
+`reast validate` prints them; the editor underlines them; a host formats them
+from `code + args + locale`.
 
-Parse errors are always reported before the story runs (in strict mode) or silently patched (in graceful mode). Runtime and environment errors occur during story execution and are subject to graceful degradation.
+The two channels are the whole design. A failure produces a fallback **and** a
+record, and neither one substitutes for the other.
 
-Rea does **not** have `try/catch`. All error handling is implicit — the runtime silently recovers, and the reader's experience is never interrupted. Authors see errors during testing (strict mode); readers never do.
+### Severities
 
-### Graceful mode (default)
+Every code carries exactly one severity, fixed in the engine's registry. A call
+site never chooses one, so two places noticing the same condition cannot
+disagree about how bad it is.
+
+| Severity   | What it means                                                                       | Fails CI          |
+| ---------- | ----------------------------------------------------------------------------------- | ----------------- |
+| `fatal`    | The artefact cannot be loaded at all. Package and extension faults only.             | yes               |
+| `error`    | An authoring mistake with a reader-visible consequence: content is lost, dead or wrong. | yes            |
+| `warning`  | An authoring mistake with no reader-visible consequence yet.                         | under `--strict`  |
+| `degraded` | *Correct* behaviour under a reduced environment or conformance level.                | **never**         |
+| `info`     | Hygiene, style and authoring notes.                                                  | no                |
+
+`degraded` is never promoted, not even by `--strict`. Promoting it would defeat
+the reason it is a separate severity: an author has to be able to tell "my
+Platform feature did nothing here, and that is by design" from "I made a
+mistake".
+
+Nothing in `parse/` is `fatal`. Any UTF-8 text is a valid Rea document — a
+`.rea` file never fails to parse.
+
+### Code partitions
+
+A code is a lowercase, slash-partitioned string; the prefix *is* the range, so
+codes sort, grep and glob.
+
+| Partition | Raised by                                                     |
+| --------- | ------------------------------------------------------------- |
+| `pkg/`    | Archive, manifest, integrity, decryption                      |
+| `ext/`    | `.rext` load-time trust and grammar, `{use}` resolution       |
+| `parse/`  | Reading one file                                              |
+| `link/`   | Resolving names across the whole package                      |
+| `eval/`   | Evaluating an expression                                      |
+| `flow/`   | Running the story: limits, control flow, saves                |
+| `env/`    | The environment the story is read in: media, sensors, readers |
+| `style/`  | Hygiene and authoring notes                                   |
+| `meta/`   | The record stream itself                                      |
+
+### What the reader gets
 
 <Feature id="error-handling" />
 
-By default, Rea fails gracefully — the reader's experience is never broken:
+| Failure                                   | What the reader sees                              | Record                     |
+| ----------------------------------------- | ------------------------------------------------- | -------------------------- |
+| Unset variable `{gold}`                   | Nothing — the empty string                        | `eval/undefined-variable`  |
+| Division by zero `{1 / 0}`                | Nothing — the expression has no value             | `eval/division-by-zero`    |
+| Missing image                             | Placeholder with the alt text                     | `env/missing-image`        |
+| Missing audio                             | Silence; reading continues                        | `env/missing-audio`        |
+| Missing video                             | Poster frame if there is one, else a placeholder  | `env/missing-video`        |
+| Text-to-speech unavailable                | Narration is skipped                              | `env/tts-unavailable`      |
+| Unclosed `{if begin}` at end of file      | The block auto-closes                             | `parse/unterminated-block` |
+| Unknown command `{magic begin}`           | The whole block is skipped                        | `parse/unknown-command`    |
+| Unknown namespace `{ns.cmd a}`            | The whole block is skipped                        | `parse/unknown-namespace`  |
+| Divert to an anchor that does not exist   | Reading continues past the divert                 | `link/undefined-anchor`    |
+| Sensor unavailable                        | `world.has("sensor")` is `false`                  | `env/sensor-unavailable`   |
 
-| Error                              | Graceful behavior                                                                                               |
-| ---------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| Undefined variable `{gold}`        | Renders as empty string (nothing shown)                                                                         |
-| Invalid expression `{1 / 0}`       | Skipped silently                                                                                                |
-| Missing image                      | Shows placeholder with alt text                                                                                 |
-| Missing audio                      | Silently skipped, story continues                                                                               |
-| Missing video                      | Poster frame shown if available, else placeholder                                                               |
-| Missing voice/TTS                  | Silently skipped                                                                                                |
-| Unclosed block `{if begin}` at EOF | Auto-closed at end of file                                                                                      |
-| Unknown command `{magic}`          | Treated as print expression                                                                                     |
-| Unknown host command `{ns.cmd a}`  | Treated as print expression (namespace not registered)                                                          |
-| Sensor unavailable                 | `world.has("sensor")` returns `false`; see [Section 21](03-narrative-interaction.md#_21-real-world-interactions) |
+An unknown command is **skipped whole** — including its block, if it opens one.
+It is not printed as an expression. Printing it put the author's markup on the
+reader's page, which is exactly the thing the reader channel exists to prevent.
+
+Division by zero yields **nothing**, which renders as nothing. It used to yield
+`0`, a value the reader could not tell from a real result.
+
+### What a record may carry
+
+A record may name an identifier the author wrote, quote what the author
+literally typed, and describe the *type* of a runtime value. It may never carry
+a runtime value.
+
+That rule is enforced by the shape of the API, not by review: there is no
+constructor that accepts a caller-supplied string. Quoted source is read back
+out of the file at a position. So a failed `{set gold = "abc"}` may report
+`"abc"`, because the author typed it into the file, while the same failure on a
+value that arrived through `{input}` can only report a type name.
+
+This binds the free-text and audio privacy guarantees of
+[Section 19](03-narrative-interaction.md#_19-input-interaction) and
+[Section 21](03-narrative-interaction.md#_21-real-world-interactions) to
+diagnostic records too, not only to story state. A `{listen}` that fails to
+match records that it failed to match — never what was said.
+
+### Reading the records
+
+```bash
+reast validate                 # every .rea and .rext under data/seed
+reast validate path/ --json    # the record stream, for CI
+reast validate path/ --strict  # warnings fail the build too
+```
+
+```text
+story/0001.rea:124:1 error link/undefined-anchor Divert to "the_vault" — no such anchor
+```
+
+The exit code is non-zero on any `fatal` or `error`, in every output mode.
+
+Rea does **not** have `try/catch`. All error handling is implicit — the runtime
+recovers, the reader's experience is never interrupted, and the author reads the
+record.
 
 ### Fallback values
 

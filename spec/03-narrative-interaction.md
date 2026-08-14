@@ -913,7 +913,7 @@ A match activates the option through the exact same path as a tap — narration,
 
 Matching runs entirely on the reader's device: the reader app provides a small multilingual embedding model, and a built-in word-overlap matcher answers when no model is available (or while it is still loading), so free-text input always works — offline, private, no per-interaction cost. Because the model is multilingual, the reader's wording can even drift from the author's description language within reason.
 
-The typed sentence itself never leaves the device and is not stored in story state; only the resulting choice is recorded.
+The typed sentence itself never leaves the device and is not stored in story state; only the resulting choice is recorded. That binds the author channel too: a submission that matches nothing raises `env/no-match`, and the record carries **no arguments at all** — not the sentence, not its length, not what it was compared against. A diagnostic is data that leaves the device the moment an author runs `reast validate` in CI, so it is held to the same rule as story state. See [Section 27](04-utilities.md#_27-error-handling).
 
 ### Buttons
 
@@ -1703,6 +1703,7 @@ Rea stories can access GPS, camera, microphone, and motion sensors. The platform
 3. **No server transmission of precise location.** In cooperative mode, other readers see events ("Reader A reached waypoint_X"), never raw coordinates
 4. **Session-only microphone.** `{listen}` transcribes locally. Audio is never stored or transmitted — only recognized text is available as a variable
 5. **Weather via approximate geolocation.** Weather API calls use IP-based location, not GPS coordinates
+6. **Diagnostics carry no reader data.** Every rule above binds the author channel as well as story state. A record may name a variable, quote what the author literally typed into the `.rea` file, and describe the *type* of a runtime value — never the value. There is no code path by which a `{listen}` transcript, a `{capture}` photo, `reader.*` or `world.location` becomes a diagnostic argument; the constructors that build one refuse a caller-supplied string outright. See [Section 27](04-utilities.md#_27-error-handling)
 
 **Reader-facing guarantees:**
 

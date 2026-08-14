@@ -891,7 +891,7 @@ Zhoda aktivuje možnosť presne tou istou cestou ako klepnutie — rozprávanie,
 
 Porovnávanie beží výhradne na zariadení čitateľa: čitateľská aplikácia poskytuje malý viacjazyčný model vnorení a vstavané porovnávanie prekryvu slov odpovie vtedy, keď model nie je dostupný (alebo kým sa ešte načítava), takže voľný textový vstup funguje vždy — offline, súkromne, bez nákladov na jednotlivú interakciu. Keďže je model viacjazyčný, formulácia čitateľa sa v rozumnej miere môže odchýliť aj od jazyka autorovho popisu.
 
-Samotná napísaná veta nikdy neopustí zariadenie a neukladá sa do stavu príbehu; zaznamená sa len výsledná voľba.
+Samotná napísaná veta nikdy neopustí zariadenie a neukladá sa do stavu príbehu; zaznamená sa len výsledná voľba. To viaže aj autorský kanál: odoslanie, ktoré sa s ničím nezhoduje, vyvolá `env/no-match` a záznam nenesie **žiadne argumenty** — ani vetu, ani jej dĺžku, ani to, s čím sa porovnávala. Diagnostika je dáta, ktoré opustia zariadenie vo chvíli, keď autor spustí `reast validate` v CI, takže platí pre ňu to isté pravidlo ako pre stav príbehu. Pozri [Sekciu 27](04-utilities.md#_27-error-handling).
 
 ### Tlačidlá {#buttons}
 
@@ -1681,6 +1681,7 @@ Príbehy Rea môžu pristupovať k GPS, fotoaparátu, mikrofónu a pohybovým se
 3. **Presná poloha sa neprenáša na server.** V kooperatívnom režime vidia ostatní čitatelia udalosti („Čitateľ A dorazil na waypoint_X"), nikdy nie surové súradnice
 4. **Mikrofón len počas relácie.** `{listen}` prepisuje miestne. Zvuk sa nikdy neukladá ani neprenáša — ako premenná je dostupný len rozpoznaný text
 5. **Počasie cez približnú geolokáciu.** Volania rozhrania počasia používajú polohu podľa IP adresy, nie súradnice GPS
+6. **Diagnostika nenesie dáta čitateľa.** Každé pravidlo vyššie viaže autorský kanál rovnako ako stav príbehu. Záznam smie pomenovať premennú, odcitovať to, čo autor doslova napísal do súboru `.rea`, a opísať *typ* hodnoty za behu — nikdy nie hodnotu. Neexistuje cesta v kóde, ktorou by sa prepis z `{listen}`, fotka z `{capture}`, `reader.*` alebo `world.location` stali argumentom diagnostiky; konštruktory, ktoré ich stavajú, odmietnu reťazec od volajúceho rovno. Pozri [Sekciu 27](04-utilities.md#_27-error-handling)
 
 **Záruky pre čitateľa:**
 
