@@ -222,7 +222,7 @@ Labels mark text that can be replaced in-place as the story progresses:
 ```rea
 The door is {label door_state begin}locked{end label}.
 
-{// Later, after unlocking}
+{comment Later, after unlocking}
 {replace door_state = "open"}
 ```
 
@@ -485,7 +485,7 @@ By default, undo is **enabled** for solo reading and **disabled** for cooperativ
 {lock condition="has_key" begin}
   {undo enabled=false}
   The door slams shut behind you. There is no going back.
-  {// Reader cannot undo past this point until the lock section ends}
+  {comment Reader cannot undo past this point until the lock section ends}
 {end lock}
 ```
 
@@ -1135,13 +1135,13 @@ When multiple readers attempt conflicting actions simultaneously, the platform r
 
 ```rea
 {exclusive action="open_chest" begin}
-  {// Only one reader can open the chest}
+  {comment Only one reader can open the chest}
   You reach the chest first and pry it open.
   {set shared.chest_opened = true}
 {end exclusive}
 
 {race timeout=10 begin}
-  {// First reader to complete wins}
+  {comment First reader to complete wins}
   * [Grab the gem]
     You snatch the gem before anyone else!
     {give ruby}
@@ -1156,11 +1156,11 @@ Readers can see each other's reading position and reactions in real-time:
 
 ```rea
 {presence show="cursor" begin}
-  {// Show where each reader is in the text}
+  {comment Show where each reader is in the text}
 {end presence}
 
 {react options=["😮", "😂", "😢", "❤️"] begin}
-  {// Floating emoji reactions visible to all readers}
+  {comment Floating emoji reactions visible to all readers}
 {end react}
 ```
 

@@ -406,14 +406,14 @@ generic and plaintext and put the secret in an **encrypted `.rea` chapter** via
 `{set}`, then verify *against* that variable rather than embedding it:
 
 ```rea
-{// extensions/gate.rext — plaintext, generic, holds no secret}
+{comment extensions/gate.rext — plaintext, generic, holds no secret}
 {function unlocked(given, expected) begin}
   {return given = expected}
 {end function}
 ```
 
 ```rea
-{// an encrypted .rea chapter carries the secret}
+{comment an encrypted .rea chapter carries the secret}
 {set crypt.passphrase = "moonlit-antler"}
 
 {input name=attempt, placeholder="Speak the word"}
@@ -603,7 +603,7 @@ Each of these was considered and ruled out. They appear on the [feature index](f
 | Variable naming      | `domain.name` required for all persistent variables | Self-documenting state; any Unicode except space and dot                          |
 | Assignment syntax    | `{set domain.var = value}`                          | Explicit, unambiguous, beginner-friendly                                          |
 | Equality operator    | `=` (single equals)                                 | Simpler for non-programmers. `{set}` prevents ambiguity.                          |
-| Comment syntax       | `{//}` and `{comment begin}...{end comment}`        | Single-line `//` ignores everything; multi-line uses standard paired block        |
+| Comment syntax       | `{comment text}` and `{comment begin}...{end comment}`    | One syntax, single-line and paired; only the exact `{comment begin}` opens a block |
 | Underline markup     | `{underline begin}text{end underline}`              | Command syntax — consistent with strike/mono                                      |
 | Regex operator       | `matches` / `!matches` keyword                      | Self-documenting, `!` prefix for negation consistent with `!=`, `!in`             |
 | String concatenation | `+` operator (dual arithmetic/concat)               | If either operand is a string, `+` concatenates; otherwise numeric addition       |

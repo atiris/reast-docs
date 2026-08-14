@@ -222,7 +222,7 @@ Návestia označujú text, ktorý sa dá počas príbehu nahradiť priamo na mie
 ```rea
 Dvere sú {label door_state begin}zamknuté{end label}.
 
-{// Neskôr, po odomknutí}
+{comment Neskôr, po odomknutí}
 {replace door_state = "otvorené"}
 ```
 
@@ -485,7 +485,7 @@ Predvolene je krok späť **zapnutý** pre sólo čítanie a **vypnutý** pre ko
 {lock condition="has_key" begin}
   {undo enabled=false}
   Dvere za tebou zapadnú. Niet cesty späť.
-  {// Čitateľ sa nemôže vrátiť za tento bod, kým sa sekcia so zámkom neskončí}
+  {comment Čitateľ sa nemôže vrátiť za tento bod, kým sa sekcia so zámkom neskončí}
 {end lock}
 ```
 
@@ -1113,13 +1113,13 @@ Keď sa viacerí čitatelia pokúsia o protichodné akcie súčasne, platforma k
 
 ```rea
 {exclusive action="open_chest" begin}
-  {// Truhlicu môže otvoriť len jeden čitateľ}
+  {comment Truhlicu môže otvoriť len jeden čitateľ}
   K truhlici sa dostaneš prvý a vypáčiš ju.
   {set shared.chest_opened = true}
 {end exclusive}
 
 {race timeout=10 begin}
-  {// Vyhráva prvý čitateľ, ktorý to dokončí}
+  {comment Vyhráva prvý čitateľ, ktorý to dokončí}
   * [Chyť drahokam]
     Schmatneš drahokam skôr než ktokoľvek iný!
     {give ruby}
@@ -1134,11 +1134,11 @@ Keď sa viacerí čitatelia pokúsia o protichodné akcie súčasne, platforma k
 
 ```rea
 {presence show="cursor" begin}
-  {// Ukáž, kde sa v texte nachádza každý čitateľ}
+  {comment Ukáž, kde sa v texte nachádza každý čitateľ}
 {end presence}
 
 {react options=["😮", "😂", "😢", "❤️"] begin}
-  {// Plávajúce emoji reakcie viditeľné pre všetkých čitateľov}
+  {comment Plávajúce emoji reakcie viditeľné pre všetkých čitateľov}
 {end react}
 ```
 

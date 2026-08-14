@@ -780,7 +780,7 @@ Readers can manually save at **any point during reading** (not just at author-de
 
 ```rea
 {save enabled=false}
-{// Auto-save still occurs but reader cannot manually save/load}
+{comment Auto-save still occurs but reader cannot manually save/load}
 ```
 
 When `{save enabled=false}` is active, the platform UI hides the save button. Auto-save continues at choices so that progress is not lost on app crash.

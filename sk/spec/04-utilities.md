@@ -215,14 +215,14 @@ Ochrana obsahu sa týka **len prózy**. Zavádzač zašifrované rozšírenie `.
 Ak chcete udržať tajomstvo mimo rozšírenia a zároveň ho overovať, nechajte funkciu všeobecnú a v čistom texte a tajomstvo vložte cez `{set}` do **zašifrovanej kapitoly `.rea`**, potom overujte *proti* tejto premennej namiesto jeho zapečenia:
 
 ```rea
-{// extensions/gate.rext — čistý text, všeobecný, neobsahuje tajomstvo}
+{comment extensions/gate.rext — čistý text, všeobecný, neobsahuje tajomstvo}
 {function unlocked(given, expected) begin}
   {return given = expected}
 {end function}
 ```
 
 ```rea
-{// zašifrovaná kapitola .rea nesie tajomstvo}
+{comment zašifrovaná kapitola .rea nesie tajomstvo}
 {set crypt.passphrase = "moonlit-antler"}
 ```
 
@@ -282,7 +282,7 @@ Obsah vnútri `{raw begin}` sa vykreslí tak, ako je, bez akéhokoľvek spracova
 ### Autorské komentáre (skryté pred čitateľom) {#author-comments-hidden-from-reader}
 
 ```rea
-{// Toto je jednoriadkový komentár}
+{comment Toto je jednoriadkový komentár}
 
 {comment begin}
   Toto je viacriadkový komentár.
@@ -290,25 +290,27 @@ Obsah vnútri `{raw begin}` sa vykreslí tak, ako je, bez akéhokoľvek spracova
 {end comment}
 ```
 
-Jednoriadkové komentáre používajú `{// text}`. Token `//` spôsobí, že parser ignoruje **všetko** vnútri zátvoriek — vrátane kľúčových slov ako `begin`. Napríklad `{// toto má na konci begin begin}` je stále platný jednoriadkový komentár.
+Obsah komentára je čistý text až po uzatváraciu zátvorku — bez úvodzoviek. Blok otvára len presné `{comment begin}`, takže slovo `begin` vnútri komentára je len slovo: `{comment oprav to skôr, než začneme begin}` je jednoriadkový komentár.
 
 Viacriadkové komentáre používajú blokovú syntax `{comment begin}…{end comment}`, v súlade so všetkými ostatnými párovými príkazmi.
 
-### Značky TODO (varovania pri zostavení) {#todo-markers-compile-time-warnings}
+### Značky TODO {#todo-markers}
 
-<Feature id="todo-note" />
-
-```rea
-{todo: Sem napísať bojovú scénu}
-```
-
-Platforma alebo prekladač ich počas vývoja zobrazí ako varovania.
-
-### Poznámky (vývojárske anotácie) {#notes-development-annotations}
+<Feature id="todo" />
 
 ```rea
-{note: Táto sekcia potrebuje otestovať s 3 a viac čitateľmi}
+{todo Sem napísať bojovú scénu}
+
+{todo begin}
+  Prepísať záver.
+  Potom aj stred.
+{end todo}
 ```
+
+TODO je komentár, ktorý sa sám ohlási: pred čitateľom je skrytý presne ako
+`{comment}` a na autorskom kanáli vyvolá `style/todo`, takže ho `reast validate`
+aj editor vypíšu. Rovnako ako komentár má čistý textový obsah a blok otvára len
+`{todo begin}`.
 
 ---
 
@@ -346,37 +348,6 @@ Predvolene Rea zlyháva elegantne — zážitok čitateľa sa nikdy nerozbije:
 | Neznámy príkaz `{magic}`              | Spracuje sa ako tlačový výraz                                                                                      |
 | Neznámy príkaz hostiteľa `{ns.cmd a}` | Spracuje sa ako tlačový výraz (menný priestor nie je zaregistrovaný)                                               |
 | Nedostupný senzor                     | `world.has("sensor")` vráti `false`; pozri [Sekciu 21](03-narrative-interaction.md#_21-real-world-interactions)     |
-
-### Prísny režim {#strict-mode}
-
-<Feature id="strict-mode" />
-
-Prísny režim zapnite pre vývoj a testovanie:
-
-```rea
-{strict on}
-```
-
-**V prísnom režime sa chyby zobrazujú ako inline varovania** viditeľné len pre autora (v náhľadovom či vývojovom zobrazení). Čitatelia chybové správy nikdy nevidia — vždy dostanú elegantné správanie.
-
-Príklady varovaní prísneho režimu:
-
-```text
-⚠ Riadok 42: Nedefinovaná premenná „goldd" — mysleli ste „gold"?
-⚠ Riadok 87: Neuzavretý blokový príkaz {if begin} otvorený na riadku 83
-⚠ Riadok 15: Chýbajúce médium „media/castle.jpg" — súbor sa v balíku nenašiel
-⚠ Riadok 63: Chyba výrazu v {1 / 0} — delenie nulou
-⚠ Riadok 10: {use "extensions/missing"} — v balíku také rozšírenie nie je
-⚠ Riadok 25: Neznáma funkcia „bearing" — nezabudli ste na {use}?
-```
-
-**Vlastnosti prísneho režimu:**
-
-- Zisťovanie preklepov s návrhmi (Levenshteinova vzdialenosť na názvoch premenných a príkazov)
-- Čísla riadkov vo všetkých varovaniach
-- Zvýraznenie neuzavretých blokov s odkazom na otvárací riadok
-- Overenie odkazov na médiá proti manifestu balíka
-- Overenie cieľov `{use}` proti rozšíreniam v balíku
 
 ### Náhradné hodnoty {#fallback-values}
 

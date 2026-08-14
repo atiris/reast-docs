@@ -233,14 +233,14 @@ generic and plaintext and put the secret in an **encrypted `.rea` chapter** via
 `{set}`, then verify *against* that variable rather than embedding it:
 
 ```rea
-{// extensions/gate.rext — plaintext, generic, holds no secret}
+{comment extensions/gate.rext — plaintext, generic, holds no secret}
 {function unlocked(given, expected) begin}
   {return given = expected}
 {end function}
 ```
 
 ```rea
-{// an encrypted .rea chapter carries the secret}
+{comment an encrypted .rea chapter carries the secret}
 {set crypt.passphrase = "moonlit-antler"}
 ```
 
@@ -306,7 +306,7 @@ Content inside `{raw begin}` is rendered as-is with no processing:
 ### Author comments (hidden from reader)
 
 ```rea
-{// This is a single-line comment}
+{comment This is a single-line comment}
 
 {comment begin}
   This is a multi-line comment.
@@ -314,25 +314,30 @@ Content inside `{raw begin}` is rendered as-is with no processing:
 {end comment}
 ```
 
-Single-line comments use `{// text}`. The `//` token causes the parser to ignore **everything** inside the braces — including any keywords like `begin`. For example, `{// this has begin at the end begin}` is still a valid single-line comment.
+A comment's content is bare prose up to the closing brace — no quotes. Only the
+exact `{comment begin}` opens a block, so the word `begin` inside a comment is
+just a word: `{comment fix this before we begin}` is a single-line comment.
 
-Multi-line comments use the `{comment begin}...{end comment}` block syntax, consistent with all other paired commands.
+Multi-line comments use the `{comment begin}...{end comment}` block syntax,
+consistent with all other paired commands.
 
-### TODO markers (compile-time warnings)
+### TODO markers
 
-<Feature id="todo-note" />
-
-```rea
-{todo: Write the battle scene here}
-```
-
-The platform/compiler shows these as warnings during development.
-
-### Notes (development annotations)
+<Feature id="todo" />
 
 ```rea
-{note: This section needs playtesting with 3+ readers}
+{todo Write the battle scene here}
+
+{todo begin}
+  Rewrite the ending.
+  Then the middle.
+{end todo}
 ```
+
+A TODO is a comment that reports itself: it is hidden from the reader exactly
+like `{comment}`, and it raises `style/todo` on the author channel, so
+`reast validate` and the editor list every one of them. Like a comment, its
+content is bare prose and only `{todo begin}` opens a block.
 
 ---
 
@@ -370,37 +375,6 @@ By default, Rea fails gracefully — the reader's experience is never broken:
 | Unknown command `{magic}`          | Treated as print expression                                                                                     |
 | Unknown host command `{ns.cmd a}`  | Treated as print expression (namespace not registered)                                                          |
 | Sensor unavailable                 | `world.has("sensor")` returns `false`; see [Section 21](03-narrative-interaction.md#_21-real-world-interactions) |
-
-### Strict mode
-
-<Feature id="strict-mode" />
-
-Enable strict mode for development and testing:
-
-```rea
-{strict on}
-```
-
-**In strict mode, errors are shown as inline warnings** visible only to the author (in a preview/development view). Readers never see error messages — they always get graceful behavior.
-
-Example strict mode warnings:
-
-```text
-⚠ Line 42: Undefined variable "goldd" — did you mean "gold"?
-⚠ Line 87: Unclosed block command {if begin} opened at line 83
-⚠ Line 15: Missing media "media/castle.jpg" — file not found in package
-⚠ Line 63: Expression error in {1 / 0} — division by zero
-⚠ Line 10: {use "extensions/missing"} — no such extension in the package
-⚠ Line 25: Unknown function "bearing" — did you forget a {use}?
-```
-
-**Strict mode features:**
-
-- Typo detection with suggestions (Levenshtein distance on variable/command names)
-- Line numbers in all warnings
-- Highlights unclosed blocks with the opening line reference
-- Validates media references against the package manifest
-- Validates `{use}` targets against the package's extensions
 
 ### Fallback values
 

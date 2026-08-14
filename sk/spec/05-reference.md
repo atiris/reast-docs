@@ -336,14 +336,14 @@ Prichádzaš do [📍tavern].
 Ak chcete udržať tajomstvo mimo rozšírenia a zároveň ho overovať, nechajte funkciu všeobecnú a v čistom texte a tajomstvo vložte cez `{set}` do **zašifrovanej kapitoly `.rea`**, potom overujte *proti* tejto premennej namiesto jeho zapečenia:
 
 ```rea
-{// extensions/gate.rext — čistý text, všeobecný, neobsahuje tajomstvo}
+{comment extensions/gate.rext — čistý text, všeobecný, neobsahuje tajomstvo}
 {function unlocked(given, expected) begin}
   {return given = expected}
 {end function}
 ```
 
 ```rea
-{// zašifrovaná kapitola .rea nesie tajomstvo}
+{comment zašifrovaná kapitola .rea nesie tajomstvo}
 {set crypt.passphrase = "moonlit-antler"}
 
 {input name=attempt, placeholder="Vyslov to slovo"}
@@ -524,7 +524,7 @@ Každá z týchto vecí bola zvážená a vylúčená. V [indexe funkcií](featu
 | Pomenovanie premenných   | `domena.nazov` povinné pre všetky trvalé premenné    | Sám o sebe zrozumiteľný stav; ľubovoľný Unicode okrem medzery a bodky                        |
 | Syntax priradenia        | `{set domena.premenna = hodnota}`                    | Výslovné, jednoznačné, priateľské k začiatočníkom                                            |
 | Operátor rovnosti        | `=` (jedno rovná sa)                                 | Jednoduchšie pre neprogramátorov. `{set}` zabraňuje nejednoznačnosti.                        |
-| Syntax komentárov        | `{//}` a `{comment begin}…{end comment}`             | Jednoriadkové `//` ignoruje všetko; viacriadkové používa štandardný párový blok              |
+| Syntax komentárov        | `{comment text}` a `{comment begin}…{end comment}`         | Jedna syntax, jednoriadková aj párová; blok otvára len presné `{comment begin}`              |
 | Značkovanie podčiarknutia | `{underline begin}text{end underline}`              | Syntax príkazu — v súlade s prečiarknutím a neproporcionálnym písmom                         |
 | Operátor regulárnych výrazov | Kľúčové slovo `matches` / `!matches`             | Sám o sebe zrozumiteľný, prefix `!` pre negáciu v súlade s `!=` a `!in`                      |
 | Spájanie reťazcov        | Operátor `+` (dvojaká aritmetika a spájanie)         | Ak je čo len jeden operand reťazec, `+` spája; inak číselné sčítanie                         |

@@ -312,7 +312,7 @@ Lokál a politiku formátovania dodáva hostiteľ. `calendar()` je stále vo vý
 ## Komentáre a autorské nástroje
 
 ```rea
-{// Jednoriadkový komentár}
+{comment Jednoriadkový komentár}
 {comment begin}
   Viacriadkový komentár — čitatelia ho nikdy neuvidia.
 {end comment}
@@ -320,8 +320,8 @@ Lokál a politiku formátovania dodáva hostiteľ. `calendar()` je stále vo vý
 \{nie je to príkaz\}                 Únik spätnou lomkou
 {raw begin} Všetko doslovne. {end raw}
 
-{todo: Opraviť túto scénu}           Varovanie vo vývojovom režime
-{strict on}                          Zobrazí všetky varovania
+{todo Opraviť túto scénu}            Skryté pred čitateľom, vypíše reast validate
+{todo begin} ... {end todo}          Viacriadkové TODO
 ```
 
 ---

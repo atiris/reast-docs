@@ -317,7 +317,7 @@ development — see the [feature index](features#localization).
 ## Comments & Author Tools
 
 ```rea
-{// Single-line comment}
+{comment Single-line comment}
 {comment begin}
   Multi-line comment — readers never see this.
 {end comment}
@@ -325,8 +325,8 @@ development — see the [feature index](features#localization).
 \{not a command\}                    Backslash escaping
 {raw begin} Everything literal. {end raw}
 
-{todo: Fix this scene}               Warning in dev mode
-{strict on}                          Show all warnings
+{todo Fix this scene}                Hidden from readers, listed by reast validate
+{todo begin} ... {end todo}          Multi-line TODO
 ```
 
 ---

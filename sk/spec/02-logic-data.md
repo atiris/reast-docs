@@ -780,7 +780,7 @@ Kontrolné body v kooperatívnom čítaní vyžadujú pred obnovením súhlas **
 
 ```rea
 {save enabled=false}
-{// Automatické ukladanie stále beží, ale čitateľ nemôže ručne uložiť ani načítať}
+{comment Automatické ukladanie stále beží, ale čitateľ nemôže ručne uložiť ani načítať}
 ```
 
 Keď je `{save enabled=false}` aktívne, rozhranie platformy skryje tlačidlo uloženia. Automatické ukladanie pri voľbách pokračuje, aby sa postup nestratil pri páde aplikácie.
