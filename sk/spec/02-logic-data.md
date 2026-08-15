@@ -664,6 +664,8 @@ Formálne stavové automaty modelujú entity, ktoré prechádzajú medzi pomenov
 
 Prístup k stavu a spúšťanie prechodov:
 
+Aktuálny stav automatu sa dá čítať na `story.<id>.state` — je to bežný stav príbehu, len ho zapisuje automat, nie `{set}`:
+
 ```rea
 {if story.door.state = "locked" begin}
   Potrebuješ kľúč.

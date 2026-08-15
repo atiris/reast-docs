@@ -730,10 +730,10 @@ Formal state machines model entities that transition between named states based 
 | `persist` | `true` to save state across sessions  |
 | `shared`  | `true` to share state between readers |
 
-Access and trigger state transitions:
+A machine's current state is readable at `story.<id>.state` — story state like any other, written by the machine rather than by a `{set}`:
 
 ```rea
-{if door.state = "locked" begin}
+{if story.door.state = "locked" begin}
   You need a key.
 {end if}
 
