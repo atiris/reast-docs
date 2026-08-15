@@ -387,6 +387,13 @@ kódy sa dajú triediť, grepovať aj filtrovať vzorom.
 | Odbočka na neexistujúcu kotvu                | Čítanie pokračuje za odbočkou                     | `link/undefined-anchor`    |
 | Nedostupný senzor                            | `world.has("sensor")` vráti `false`               | `env/sensor-unavailable`   |
 
+Táto tabuľka je **len ilustratívna** — 11 reprezentatívnych riadkov z celého
+registra. Normatívny je úplný, generovaný zoznam všetkých 175 kódov v
+anglickej verzii, [§27 „What the reader gets"](../../spec/04-utilities.md#what-the-reader-gets):
+`scripts/check-spec-fallback-table.mjs` ho generuje priamo z registra, takže
+nemôže so zdrojovým kódom rozísť. Táto slovenská tabuľka sa negeneruje a
+neaktualizuje automaticky, preto pri rozpore platí anglická verzia.
+
 Neznámy príkaz sa **preskočí celý** — vrátane bloku, ak nejaký otvára.
 Nevytlačí sa ako výraz. Vytlačenie by dostalo autorov zápis na stránku
 čitateľa, čomu má čitateľský kanál práve zabrániť.
