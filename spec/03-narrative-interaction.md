@@ -685,7 +685,7 @@ An individual card may **override** any hook while still inheriting the set's ot
 {play spinach}      Runs the ability set's on_use for spinach
 ```
 
-Card ids may contain letters, digits, hyphens and underscores. Playing an unknown card is a no-op. Each successful play emits a `card-played` runtime event carrying the card id and its set kind, which hosts can observe to update the UI.
+Card ids follow the same [identifier rules](05-reference#identifier-rules) as any other simple identifier — any Unicode character except space and dot, with at least one non-digit character. Playing an unknown card is a no-op. Each successful play emits a `card-played` runtime event carrying the card id and its set kind, which hosts can observe to update the UI.
 
 #### Redefining built-in sets
 
@@ -1330,11 +1330,11 @@ Define areas that trigger events when the reader enters or exits:
 {zone dark_forest @@48.14;17.10@48.15;17.10@48.15;17.11@48.14;17.11 begin}
   {on enter begin}
     The trees close in around you. The forest feels alive.
-    {set world.ambient = "forest"}
+    {set ui.ambient = "forest"}
   {end on}
   {on exit begin}
     You emerge from the forest, blinking in the sunlight.
-    {set world.ambient = "default"}
+    {set ui.ambient = "default"}
   {end on}
 {end zone}
 ```

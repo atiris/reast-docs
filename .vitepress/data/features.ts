@@ -1058,7 +1058,7 @@ export const FEATURES: Feature[] = [
       en: 'Declaration-only modules that travel inside the package and are compiled and validated before any prose runs.',
       sk: 'Moduly obsahujúce len deklarácie, ktoré cestujú vnútri balíka a sú skompilované a overené ešte pred spustením akejkoľvek prózy.',
     },
-    link: '/spec/rext-differences',
+    link: '/spec/05-reference#_31-extensibility',
   },
   {
     id: 'std-library',
@@ -2248,7 +2248,7 @@ export const FEATURES: Feature[] = [
     group: 'authoring',
     syntax: '{todo …} · {todo begin} … {end todo}',
     status: 'stable',
-    since: '1.1',
+    since: '1.0',
     note: {
       en: 'A comment that reports itself: hidden from the reader like `{comment}`, and raised as `style/todo` on the author channel, so `reast validate` and the editor list every one.',
       sk: 'Komentár, ktorý sa sám ohlási: pred čitateľom skrytý ako `{comment}` a na autorskom kanáli vyvolá `style/todo`, takže ho `reast validate` aj editor vypíšu.',
@@ -2348,7 +2348,7 @@ export const FEATURES: Feature[] = [
       en: 'A story file is pure text and carries no metadata at all — that separation is what keeps a `.rea` readable in any editor, and it is frozen.',
       sk: 'Súbor príbehu je čistý text a neobsahuje vôbec žiadne metadáta — práve toto oddelenie udržuje `.rea` čitateľné v ľubovoľnom editore a je zmrazené.',
     },
-    link: '/spec/#file-types',
+    link: '/spec/05-reference#single-files-rea',
   },
   {
     id: 'rext-file',
@@ -2364,7 +2364,7 @@ export const FEATURES: Feature[] = [
       en: 'Functions, top-level constants, `{use}` and comments only — any prose node anywhere in the file is a load error.',
       sk: 'Len funkcie, konštanty najvyššej úrovne, `{use}` a komentáre — akýkoľvek uzol prózy kdekoľvek v súbore je chybou načítania.',
     },
-    link: '/spec/rext-differences',
+    link: '/spec/05-reference#tier-1-—-rea-extensions-author-space-portable-sandboxed',
   },
   {
     id: 'reast-package',
@@ -2380,7 +2380,7 @@ export const FEATURES: Feature[] = [
       en: 'Both layouts — packaged (with a manifest) and flat (a single entry file, no metadata) — load today.',
       sk: 'Obe štruktúry — zabalená (s manifestom) aj plochá (jediný vstupný súbor, bez metadát) — sa dnes načítajú.',
     },
-    link: '/engine/package-format',
+    link: '/spec/05-reference#packages-reast',
   },
   {
     id: 'manifest',
