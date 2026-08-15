@@ -299,7 +299,7 @@ A link whose target is another part file is a [cross-part link](03-narrative-int
 A `reast://` link opens another reast on the platform that hosts it, addressed
 by the author slug and story slug.
 
-> **Note:** External URLs (http/https) are not allowed in `.rea` text. All external access is declared via `allowed_urls` in `manifest.json` and referenced by alias (see [External API access](04-utilities.md#external-api-access)).
+> **Note:** External URLs (http/https) are not allowed in `.rea` text. All external access is declared via `allowed_urls` in `manifest.json` and referenced by alias (see [External API access](error-handling.md#external-api-access)).
 
 ### Custom Anchors
 

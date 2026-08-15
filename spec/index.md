@@ -42,9 +42,9 @@ The [**feature index**](features) lists every feature grouped by what it is for,
 The specification is split into five parts, meant to be read in order the first time through:
 
 1. **[Basics](01-basics)** — document structure, text formatting, headings, links, media, anchors, and choices.
-2. **[Logic & Data](02-logic-data)** — commands, variables, expressions, and control flow.
-3. **[Narrative & Interaction](03-narrative-interaction)** — dialogue, cards, voice, input, cooperative reading, and real-world interactions.
-4. **[Utilities](04-utilities)** — pluralization, localization, content protection, captions, and error handling.
+2. **[Logic & Data](02-logic-data)** — commands, variables, expressions, and control flow. See also [Custom Functions](functions).
+3. **[Narrative & Interaction](03-narrative-interaction)** — dialogue, cards, voice, input, cooperative reading, and real-world interactions. See also [Storylets & Decks](storylets).
+4. **[Utilities](04-utilities)** — pluralization, localization, content protection, and captions. See also [Error Handling](error-handling).
 5. **[Reference](05-reference)** — identifiers, built-in functions, extensibility, accessibility, and conformance levels.
 
 Looking for a quick syntax refresher instead of the full spec? See the [Cheatsheet](REA-CHEATSHEET).

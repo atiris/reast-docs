@@ -16,7 +16,7 @@ The same badge appears under the feature's own heading in the specification, so 
 
 A **version badge** accompanies the status only where there is something to version: `stable` and `experimental` features carry the spec version they became available in. A `development` or `draft` feature has no version yet, and a `cancelled` one never will.
 
-Everything marked `stable` or `experimental` works in the current engine. Anything below that does not — if a story uses it, the runtime applies [graceful degradation](/spec/04-utilities#_27-error-handling) and the reader simply never sees it.
+Everything marked `stable` or `experimental` works in the current engine. Anything below that does not — if a story uses it, the runtime applies [graceful degradation](/spec/error-handling) and the reader simply never sees it.
 
 <FeatureIndex />
 

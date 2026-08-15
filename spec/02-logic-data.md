@@ -594,76 +594,9 @@ Guard conditions on transitions prevent invalid state changes:
 
 <Feature id="functions" />
 
-### Defining functions
-
-Functions are defined at the top of a file or in a shared library file:
-
-```rea
-{function greet(name, time_of_day) begin}
-  {if time_of_day = "morning" begin}
-    Good morning, {name}!
-  {else}
-    Good evening, {name}!
-  {end if}
-{end function}
-```
-
-Functions can return values:
-
-```rea
-{function max(a, b) begin}
-  {if a > b begin}
-    {return a}
-  {else}
-    {return b}
-  {end if}
-{end function}
-```
-
-### Calling functions
-
-```rea
-{greet("Aiden", "morning")}
-
-The stronger fighter has {max(player.strength, enemy.strength)} power.
-```
-
-### Function behavior by calling context
-
-Functions can render text, return values, or both. The behavior depends on context:
-
-| Context                           | Text rendered? | Return value used?   |
-| --------------------------------- | -------------- | -------------------- |
-| Standalone: `{greet("Aiden")}`    | Yes            | Discarded            |
-| In expression: `{max(a, b) + 10}` | Yes (if any)   | Yes                  |
-| In assignment: `{set x = fn()}`   | Yes (if any)   | Assigned to `x`      |
-| In condition: `{if fn() begin}`   | Yes (if any)   | Evaluated as boolean |
-
-**Function classifications:**
-
-- **Pure function** — only `{return}`, no narrative text. Behaves like a traditional function (`max`, `damage`)
-- **Template function** — only narrative text, no `{return}`. Behaves like a reusable text block (`greet`)
-- **Hybrid function** — renders text AND returns a value. Powerful but potentially confusing; linters should warn
-- **Side-effect function** — no text, no `{return}`. Only modifies variables or triggers commands (`reset_stats`)
-
-```rea
-{function reset_stats() begin}
-  {set player.health = 100}
-  {set player.gold = 0}
-{end function}
-```
-
-A function's text body always renders when called — even in expression context. `{return}` is optional; if absent, the function's value in expressions is `undefined`.
-
-### Parameters
-
-Parameters support default values:
-
-```rea
-{function damage(base, multiplier = 1.0) begin}
-  {return base * multiplier}
-{end function}
-```
+Custom functions defined with `{function}…{end function}` — pure, template, hybrid, and side-effect
+classifications, calling-context behavior, parameters with default values, and which classifications a
+`.rext` file may export — now live on their own page: see [Custom Functions](/spec/functions).
 
 ---
 

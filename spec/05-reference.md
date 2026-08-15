@@ -524,7 +524,7 @@ Parsers conforming to Rea MAJOR.MINOR MUST:
 
 Rule 3 used to say "display a warning and skip the command block". A warning
 displayed *where* is the question the two-channel model of
-[Section 27](04-utilities.md#_27-error-handling) answers: never to the reader,
+[Error Handling](error-handling.md) answers: never to the reader,
 always to the author, as a record. The reader sees the block skipped and
 nothing else.
 
@@ -610,7 +610,7 @@ Each of these was considered and ruled out. They appear on the [feature index](f
 - **HTML passthrough** — Permanently excluded. Raw markup injection would make every story an XSS surface and would let one author's markup break another host's rendering.
 - **CSS styling** — Permanently excluded. Visual presentation is the platform's responsibility, so that a reader's own preferences — contrast, font size, dark mode — can never be overridden by a story.
 - **Programming language embedding** — Permanently excluded. A story is untrusted content; embedding JavaScript, Python or anything else would destroy the sandbox. Sandboxed [`.rext` extensions](#_31-extensibility) and embedder-supplied host extensions cover the real need.
-- **`try` / `catch`** — Ruled out with the [error model](04-utilities.md#_27-error-handling). All recovery is implicit, because a reader must never be shown a failure and an author should never have to write one.
+- **`try` / `catch`** — Ruled out with the [error model](error-handling.md). All recovery is implicit, because a reader must never be shown a failure and an author should never have to write one.
 
 ### Resolved design decisions
 

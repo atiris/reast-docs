@@ -193,6 +193,8 @@ You pull out your tools and get to work.
 
 Tunnels are useful for reusable passages (e.g., recurring inspections, shared dialogue sequences) without manually routing back.
 
+A tunnel and a storylet solve different problems, and reach for one on purpose: a tunnel is a reusable content block scoped to the current chapter — the author writes the call site (`->->`) explicitly, and it always returns to exactly that point. A [storylet](/spec/storylets) is engine-selected, not author-called: it is drawn from a story-wide pool via `{deck}` or woken by a real-world `trigger:`, based on `require`/`priority`/`cooldown` rather than a fixed call site in the text.
+
 ### First-visit content
 
 <Feature id="once-then" />
@@ -338,101 +340,10 @@ In cooperative reading, different readers can follow different threads simultane
 
 <Feature id="storylets" />
 
-Storylets are modular content blocks with prerequisites and effects — the building blocks for non-linear, discovery-driven narratives. Instead of rigid branching, the platform selects eligible storylets and presents them as available options.
-
-```rea
-{storylet the_merchants_plea begin}
-  require: gold > 20 and visited("market")
-  priority: 5
-  repeatable: false
-
-  A merchant approaches you with a desperate look.
-  "Please, I need someone to deliver this package to the northern tower."
-
-  * [Accept the quest]
-    {set quest.has_merchant_quest = true}
-    {set player.gold = player.gold + 10}
-    "Bless you! Here's an advance."
-  * [Decline]
-    The merchant's shoulders slump.
-{end storylet}
-
-{storylet the_hidden_path begin}
-  require: quest.has_merchant_quest and world.hour >= 20
-  priority: 10
-  repeatable: false
-
-  As night falls, you notice a faint glow among the trees.
-  A path you've never seen before reveals itself.
-  -> hidden_path_adventure
-{end storylet}
-```
-
-**Storylet attributes:**
-
-| Attribute    | Description                                               |
-| ------------ | --------------------------------------------------------- |
-| `require`    | Condition that must be true for this storylet to appear   |
-| `priority`   | Higher priority storylets appear first (default: `0`)     |
-| `repeatable` | `true` to allow replaying, `false` for one-time (default) |
-| `cooldown`   | Minimum visits/time before reappearing                    |
-| `weight`     | Relative probability when multiple storylets are eligible |
-| `tags`       | Categorization for filtering (`tags: tavern, social`)     |
-| `trigger`    | Real-world input kind that can wake this storylet (see [Triggered storylets](#triggered-storylets)) |
-| `match`      | Optional case-insensitive regex the input value must match |
-
-<Feature id="storylet-deck" />
-
-**Storylet deck** — present available storylets as a hand of cards the reader can choose from:
-
-```rea
-{deck from="tavern_stories", max=3, shuffle begin}
-  Choose what catches your attention:
-{end deck}
-```
-
-This presents up to 3 eligible storylets tagged `tavern_stories`, shuffled.
-
-Storylets enable organic, non-linear narratives where the story adapts to the reader's state, encouraging exploration and replay.
-
-### Triggered storylets
-
-<Feature id="triggered-storylets" />
-
-A storylet with a `trigger:` line is woken by the world instead of a deck: at almost any moment while reading, a real-world input — scanning a QR sticker on a bench, saying a phrase aloud, tapping an NFC tag — can interrupt the main story, play the storylet as a side path, and return exactly where the reader left off:
-
-```rea
-{storylet bench_secret begin}
-  trigger: scan
-  match: "^REAST-BENCH-.*"
-  require: story.act >= 2
-  weight: 2
-  repeatable: false
-
-  The code on the bench flickers to life. A voice whispers: "You found me."
-  * [Follow the whisper]
-    -> bench_alley
-  * [Ignore it]
-{end storylet}
-
-{storylet magic_word begin}
-  trigger: listen
-  match: "abracadabra"
-
-  The word hangs in the air — and the wall answers.
-{end storylet}
-```
-
-- **`trigger:`** names the input kind. The set is open — the reader app decides which kinds it can physically capture. Common kinds: `scan` (QR/barcode payload), `listen` (recognized speech transcript), `text`, `vision`, `nfc`, `shake`, `location`. A storylet without `trigger:` behaves exactly as before (deck-only); a storylet may carry both `trigger:` and `tags:` and appear in decks too
-- **`match:`** is a case-insensitive regular expression tested against the input's value (the QR payload, the transcript). Omit it to accept any input of that kind
-- **Selection** follows normal storylet rules: among storylets whose kind and `match:` fit, `require:` conditions, drawn-state, `cooldown:` and `priority:` are respected, then one is picked by weighted random. One input wakes exactly one storylet
-- **Inside the body**, `event.kind` and `event.value` expose the triggering input to conditions and text (they are also visible to `require:` during selection), so the scanned payload or the spoken words can be quoted back to the reader: `Its tag reads {event.value}.`
-
-#### Interruption and return
-
-A triggered storylet plays like an author-written tunnel (`->->`): the engine remembers the main-story position — including a pending, not-yet-answered choice group — plays the storylet, and resumes the main story exactly where it was when the storylet ends (its last line, or an explicit divert out). State changes made inside (`{set}`, `{give}`, coins) persist into the main story. Saves taken mid-storylet restore into the storylet with the return position intact. A new trigger is ignored while a triggered storylet is already running — side paths never nest.
-
-When an input matches nothing — no eligible storylet, no pending [exploration menu](#exploration-menus) option — the reader app gives gentle feedback ("that did nothing… yet") rather than an error, so scanning stray codes is always safe. When both a pending exploration menu and a triggered storylet could answer the same input, the menu wins — see [Priority with storylet triggers](#priority-with-storylet-triggers).
+Modular content blocks with prerequisites and effects — `require`, `priority`, `repeatable`,
+`cooldown`, `weight`, `tags` — selected by the engine into a `{deck}` or woken by a real-world
+`trigger:` as a side path that returns exactly where the reader left off. Storylets now have their
+own page: see [Storylets & Decks](/spec/storylets).
 
 ### Exploration menus
 
@@ -468,6 +379,8 @@ Each discovery is a separate recorded choice, so undo steps back one discovery a
 #### Priority with storylet triggers
 
 A single scan, spoken phrase, or drawn-mark photo can only mean one thing. If the reader has a pending exploration menu open when they produce that input, the menu is checked first; only if nothing in the menu matches does the input fall through to wake a storylet (see [Real-World Interactions](#_21-real-world-interactions)).
+
+See [Storylets & Decks](/spec/storylets) for storylet selection, triggers, and priority/weight.
 
 ### Undo & back navigation
 
@@ -913,7 +826,7 @@ A match activates the option through the exact same path as a tap — narration,
 
 Matching runs entirely on the reader's device: the reader app provides a small multilingual embedding model, and a built-in word-overlap matcher answers when no model is available (or while it is still loading), so free-text input always works — offline, private, no per-interaction cost. Because the model is multilingual, the reader's wording can even drift from the author's description language within reason.
 
-The typed sentence itself never leaves the device and is not stored in story state; only the resulting choice is recorded. That binds the author channel too: a submission that matches nothing raises `env/no-match`, and the record carries **no arguments at all** — not the sentence, not its length, not what it was compared against. A diagnostic is data that leaves the device the moment an author runs `reast validate` in CI, so it is held to the same rule as story state. See [Section 27](04-utilities.md#_27-error-handling).
+The typed sentence itself never leaves the device and is not stored in story state; only the resulting choice is recorded. That binds the author channel too: a submission that matches nothing raises `env/no-match`, and the record carries **no arguments at all** — not the sentence, not its length, not what it was compared against. A diagnostic is data that leaves the device the moment an author runs `reast validate` in CI, so it is held to the same rule as story state. See [Error Handling](error-handling.md).
 
 ### Buttons
 
@@ -1505,7 +1418,7 @@ The `target` attribute matches the scanned value. Use `pattern` for regex matchi
 {end scan}
 ```
 
-A `{scan}` block is *blocking* — the story stops at that point and waits for the code. For codes the reader may encounter anywhere along the way, use [triggered storylets](#triggered-storylets) (`trigger: scan`) or an [exploration menu](#exploration-menus) option with a `scan:` card field instead: those are opt-in interruptions that fire whenever the input arrives.
+A `{scan}` block is *blocking* — the story stops at that point and waits for the code. For codes the reader may encounter anywhere along the way, use [triggered storylets](/spec/storylets#triggered-storylets) (`trigger: scan`) or an [exploration menu](#exploration-menus) option with a `scan:` card field instead: those are opt-in interruptions that fire whenever the input arrives.
 
 ### NFC tags
 
@@ -1615,11 +1528,13 @@ Pattern: array of alternating vibrate/pause durations in milliseconds.
 {end if}
 ```
 
-Like `{scan}`, a `{listen}` block stops and waits at one point. For phrases the reader can say at any moment, use [triggered storylets](#triggered-storylets) (`trigger: listen`) or an exploration-menu option with a `listen:` card field.
+Like `{scan}`, a `{listen}` block stops and waits at one point. For phrases the reader can say at any moment, use [triggered storylets](/spec/storylets#triggered-storylets) (`trigger: listen`) or an exploration-menu option with a `listen:` card field.
 
 ### Priority: exploration menus vs. storylet triggers
 
 A scan, spoken phrase, or photographed mark is a single physical event — it cannot mean two things at once. If the reader has a pending [exploration menu](#exploration-menus) open when they produce that input, the engine checks the menu's `scan:`/`mark:`/`listen:` options first. Only when nothing in the menu matches does the same input fall through to wake a storylet trigger.
+
+See [Storylets & Decks](/spec/storylets) for storylet selection, triggers, and priority/weight.
 
 ### Dice and randomization
 
@@ -1703,7 +1618,7 @@ Rea stories can access GPS, camera, microphone, and motion sensors. The platform
 3. **No server transmission of precise location.** In cooperative mode, other readers see events ("Reader A reached waypoint_X"), never raw coordinates
 4. **Session-only microphone.** `{listen}` transcribes locally. Audio is never stored or transmitted — only recognized text is available as a variable
 5. **Weather via approximate geolocation.** Weather API calls use IP-based location, not GPS coordinates
-6. **Diagnostics carry no reader data.** Every rule above binds the author channel as well as story state. A record may name a variable, quote what the author literally typed into the `.rea` file, and describe the *type* of a runtime value — never the value. There is no code path by which a `{listen}` transcript, a `{capture}` photo, `reader.*` or `world.location` becomes a diagnostic argument; the constructors that build one refuse a caller-supplied string outright. See [Section 27](04-utilities.md#_27-error-handling)
+6. **Diagnostics carry no reader data.** Every rule above binds the author channel as well as story state. A record may name a variable, quote what the author literally typed into the `.rea` file, and describe the *type* of a runtime value — never the value. There is no code path by which a `{listen}` transcript, a `{capture}` photo, `reader.*` or `world.location` becomes a diagnostic argument; the constructors that build one refuse a caller-supplied string outright. See [Error Handling](error-handling.md)
 
 **Reader-facing guarantees:**
 

@@ -193,6 +193,8 @@ Vytiahneš náradie a pustíš sa do práce.
 
 Tunely sa hodia na znovupoužiteľné pasáže (napr. opakované obhliadky, spoločné dialógové sekvencie) bez ručného smerovania späť.
 
+Tunel a storylet riešia odlišné problémy a siahnite po každom zámerne: tunel je znovupoužiteľný blok obsahu viazaný na aktuálnu kapitolu — autor explicitne píše miesto volania (`->->`) a tunel sa vždy vráti presne na to miesto. [Storylet](/sk/spec/storylets) vyberá jadro, autor ho nevolá: ťahá sa z celopríbehového zásobníka cez `{deck}` alebo ho zobudí vstup z reálneho sveta cez `trigger:`, na základe `require`/`priority`/`cooldown`, nie pevného miesta volania v texte.
+
 ### Obsah pri prvej návšteve {#first-visit-content}
 
 <Feature id="once-then" />
@@ -338,101 +340,10 @@ V kooperatívnom čítaní môžu rôzni čitatelia sledovať rôzne vlákna sú
 
 <Feature id="storylets" />
 
-Storylety sú modulárne bloky obsahu s podmienkami a účinkami — stavebné kamene nelineárnych rozprávaní poháňaných objavovaním. Namiesto pevného vetvenia platforma vyberá použiteľné storylety a predkladá ich ako dostupné možnosti.
-
-```rea
-{storylet the_merchants_plea begin}
-  require: gold > 20 and visited("market")
-  priority: 5
-  repeatable: false
-
-  Pristúpi k tebe kupec so zúfalým pohľadom.
-  „Prosím, potrebujem niekoho, kto doručí tento balík do severnej veže."
-
-  * [Prijmi úlohu]
-    {set quest.has_merchant_quest = true}
-    {set player.gold = player.gold + 10}
-    „Nech ti je odplatou! Tu máš zálohu."
-  * [Odmietni]
-    Kupcovi klesnú plecia.
-{end storylet}
-
-{storylet the_hidden_path begin}
-  require: quest.has_merchant_quest and world.hour >= 20
-  priority: 10
-  repeatable: false
-
-  Keď padne noc, zbadáš medzi stromami slabú žiaru.
-  Odhalí sa cesta, akú si predtým nikdy nevidel.
-  -> hidden_path_adventure
-{end storylet}
-```
-
-**Atribúty storyletu:**
-
-| Atribút      | Popis                                                                                   |
-| ------------ | --------------------------------------------------------------------------------------- |
-| `require`    | Podmienka, ktorá musí platiť, aby sa storylet objavil                                   |
-| `priority`   | Storylety s vyššou prioritou sa objavia skôr (predvolene `0`)                           |
-| `repeatable` | `true` povolí opakované prehratie, `false` znamená jednorazový (predvolené)             |
-| `cooldown`   | Minimálny počet návštev alebo čas, kým sa môže objaviť znovu                            |
-| `weight`     | Relatívna pravdepodobnosť, keď je použiteľných viac storyletov                          |
-| `tags`       | Kategorizácia na filtrovanie (`tags: tavern, social`)                                   |
-| `trigger`    | Druh vstupu z reálneho sveta, ktorý môže tento storylet zobudiť (pozri [Spúšťané storylety](#triggered-storylets)) |
-| `match`      | Voliteľný regulárny výraz bez ohľadu na veľkosť písmen, ktorému musí hodnota vstupu vyhovieť |
-
-<Feature id="storylet-deck" />
-
-**Balíček storyletov** — predloží dostupné storylety ako ruku kariet, z ktorej si čitateľ vyberá:
-
-```rea
-{deck from="tavern_stories", max=3, shuffle begin}
-  Vyber si, čo ťa zaujme:
-{end deck}
-```
-
-Predloží až 3 použiteľné storylety označené štítkom `tavern_stories`, premiešané.
-
-Storylety umožňujú organické, nelineárne rozprávanie, kde sa príbeh prispôsobuje stavu čitateľa a povzbudzuje k objavovaniu aj opätovnému prehratiu.
-
-### Spúšťané storylety {#triggered-storylets}
-
-<Feature id="triggered-storylets" />
-
-Storylet s riadkom `trigger:` zobúdza svet namiesto balíčka: takmer v ktorejkoľvek chvíli čítania môže vstup z reálneho sveta — naskenovanie QR nálepky na lavičke, vyslovenie frázy nahlas, priloženie NFC štítku — prerušiť hlavný príbeh, prehrať storylet ako vedľajšiu cestu a vrátiť sa presne tam, kde čitateľ prestal:
-
-```rea
-{storylet bench_secret begin}
-  trigger: scan
-  match: "^REAST-BENCH-.*"
-  require: story.act >= 2
-  weight: 2
-  repeatable: false
-
-  Kód na lavičke ožije. Hlas šepká: „Našiel si ma."
-  * [Nasleduj šepot]
-    -> bench_alley
-  * [Ignoruj ho]
-{end storylet}
-
-{storylet magic_word begin}
-  trigger: listen
-  match: "abrakadabra"
-
-  Slovo visí vo vzduchu — a stena odpovie.
-{end storylet}
-```
-
-- **`trigger:`** pomenúva druh vstupu. Množina je otvorená — čitateľská aplikácia rozhoduje, ktoré druhy dokáže fyzicky zachytiť. Bežné druhy: `scan` (obsah QR alebo čiarového kódu), `listen` (prepis rozpoznanej reči), `text`, `vision`, `nfc`, `shake`, `location`. Storylet bez `trigger:` sa správa presne ako doteraz (len z balíčka); storylet môže niesť `trigger:` aj `tags:` a objavovať sa aj v balíčkoch
-- **`match:`** je regulárny výraz bez ohľadu na veľkosť písmen, testovaný proti hodnote vstupu (obsah QR kódu, prepis reči). Vynechajte ho, ak má prijať akýkoľvek vstup daného druhu
-- **Výber** sa riadi bežnými pravidlami storyletov: spomedzi storyletov, ktorým sedí druh aj `match:`, sa rešpektujú podmienky `require:`, stav vytiahnutia, `cooldown:` a `priority:`, a potom sa jeden vyberie váženým náhodným výberom. Jeden vstup zobudí presne jeden storylet
-- **Vnútri tela** sprístupňujú `event.kind` a `event.value` spúšťací vstup podmienkam aj textu (sú viditeľné aj pre `require:` počas výberu), takže naskenovaný obsah alebo vyslovené slová možno čitateľovi zopakovať: `Na štítku stojí {event.value}.`
-
-#### Prerušenie a návrat {#interruption-and-return}
-
-Spúšťaný storylet sa prehráva ako autorom napísaný tunel (`->->`): jadro si zapamätá pozíciu v hlavnom príbehu — vrátane čakajúcej, ešte nezodpovedanej skupiny volieb — prehrá storylet a po jeho skončení (posledný riadok alebo výslovná odbočka von) pokračuje v hlavnom príbehu presne tam, kde bol. Zmeny stavu urobené vnútri (`{set}`, `{give}`, mince) pretrvávajú do hlavného príbehu. Uloženia vytvorené uprostred storyletu sa obnovia do storyletu s nedotknutou pozíciou návratu. Kým beží spúšťaný storylet, nový spúšťač sa ignoruje — vedľajšie cesty sa nikdy nevnárajú.
-
-Keď vstupu nič nesedí — žiadny použiteľný storylet, žiadna čakajúca možnosť [menu objavovania](#exploration-menus) — čitateľská aplikácia dá jemnú spätnú väzbu („to zatiaľ nič neurobilo") namiesto chyby, takže skenovať náhodné kódy je vždy bezpečné. Keď by na ten istý vstup mohlo odpovedať čakajúce menu objavovania aj spúšťaný storylet, vyhráva menu — pozri [Priorita pri spúšťačoch storyletov](#priority-with-storylet-triggers).
+Modulárne bloky obsahu s podmienkami a účinkami — `require`, `priority`, `repeatable`,
+`cooldown`, `weight`, `tags` — ktoré vyberá jadro do `{deck}` alebo ktoré zobudí vstup z reálneho
+sveta cez `trigger:` ako vedľajšiu cestu, ktorá sa vráti presne tam, kde čitateľ prestal. Storylety
+majú teraz vlastnú stránku: pozri [Storylety a balíčky](/sk/spec/storylets).
 
 ### Menu objavovania {#exploration-menus}
 
@@ -468,6 +379,8 @@ Každý objav je samostatne zaznamenaná voľba, takže krok späť sa vracia po
 #### Priorita pri spúšťačoch storyletov {#priority-with-storylet-triggers}
 
 Jedno naskenovanie, vyslovená fráza či fotka nakreslenej značky môže znamenať len jednu vec. Ak má čitateľ vo chvíli, keď taký vstup vytvorí, otvorené čakajúce menu objavovania, kontroluje sa najprv menu; len ak v menu nič nesedí, vstup prepadne ďalej a zobudí storylet (pozri [Interakcie s reálnym svetom](#_21-real-world-interactions)).
+
+Pozri [Storylety a balíčky](/sk/spec/storylets) pre výber storyletov, spúšťače a prioritu/váhu.
 
 ### Krok späť a spätná navigácia {#undo-back-navigation}
 
@@ -891,7 +804,7 @@ Zhoda aktivuje možnosť presne tou istou cestou ako klepnutie — rozprávanie,
 
 Porovnávanie beží výhradne na zariadení čitateľa: čitateľská aplikácia poskytuje malý viacjazyčný model vnorení a vstavané porovnávanie prekryvu slov odpovie vtedy, keď model nie je dostupný (alebo kým sa ešte načítava), takže voľný textový vstup funguje vždy — offline, súkromne, bez nákladov na jednotlivú interakciu. Keďže je model viacjazyčný, formulácia čitateľa sa v rozumnej miere môže odchýliť aj od jazyka autorovho popisu.
 
-Samotná napísaná veta nikdy neopustí zariadenie a neukladá sa do stavu príbehu; zaznamená sa len výsledná voľba. To viaže aj autorský kanál: odoslanie, ktoré sa s ničím nezhoduje, vyvolá `env/no-match` a záznam nenesie **žiadne argumenty** — ani vetu, ani jej dĺžku, ani to, s čím sa porovnávala. Diagnostika je dáta, ktoré opustia zariadenie vo chvíli, keď autor spustí `reast validate` v CI, takže platí pre ňu to isté pravidlo ako pre stav príbehu. Pozri [Sekciu 27](04-utilities.md#_27-error-handling).
+Samotná napísaná veta nikdy neopustí zariadenie a neukladá sa do stavu príbehu; zaznamená sa len výsledná voľba. To viaže aj autorský kanál: odoslanie, ktoré sa s ničím nezhoduje, vyvolá `env/no-match` a záznam nenesie **žiadne argumenty** — ani vetu, ani jej dĺžku, ani to, s čím sa porovnávala. Diagnostika je dáta, ktoré opustia zariadenie vo chvíli, keď autor spustí `reast validate` v CI, takže platí pre ňu to isté pravidlo ako pre stav príbehu. Pozri [Spracovanie chýb](error-handling.md).
 
 ### Tlačidlá {#buttons}
 
@@ -1483,7 +1396,7 @@ Atribút `target` sa porovnáva s naskenovanou hodnotou. Na zhodu regulárnym v�
 {end scan}
 ```
 
-Blok `{scan}` je *blokujúci* — príbeh sa na tom mieste zastaví a čaká na kód. Pre kódy, na ktoré čitateľ môže naraziť kdekoľvek cestou, radšej použite [spúšťané storylety](#triggered-storylets) (`trigger: scan`) alebo možnosť [menu objavovania](#exploration-menus) s poľom karty `scan:`: tie sú dobrovoľnými prerušeniami, ktoré sa spustia vtedy, keď vstup dorazí.
+Blok `{scan}` je *blokujúci* — príbeh sa na tom mieste zastaví a čaká na kód. Pre kódy, na ktoré čitateľ môže naraziť kdekoľvek cestou, radšej použite [spúšťané storylety](/sk/spec/storylets#triggered-storylets) (`trigger: scan`) alebo možnosť [menu objavovania](#exploration-menus) s poľom karty `scan:`: tie sú dobrovoľnými prerušeniami, ktoré sa spustia vtedy, keď vstup dorazí.
 
 ### NFC štítky {#nfc-tags}
 
@@ -1593,11 +1506,13 @@ Vzor: pole striedajúcich sa dĺžok vibrácie a pauzy v milisekundách.
 {end if}
 ```
 
-Rovnako ako `{scan}` aj blok `{listen}` zastaví a čaká na jednom mieste. Pre frázy, ktoré čitateľ môže vysloviť kedykoľvek, použite [spúšťané storylety](#triggered-storylets) (`trigger: listen`) alebo možnosť menu objavovania s poľom karty `listen:`.
+Rovnako ako `{scan}` aj blok `{listen}` zastaví a čaká na jednom mieste. Pre frázy, ktoré čitateľ môže vysloviť kedykoľvek, použite [spúšťané storylety](/sk/spec/storylets#triggered-storylets) (`trigger: listen`) alebo možnosť menu objavovania s poľom karty `listen:`.
 
 ### Priorita: menu objavovania verzus spúšťače storyletov {#priority-exploration-menus-vs-storylet-triggers}
 
 Naskenovanie, vyslovená fráza či odfotená značka je jediná fyzická udalosť — nemôže znamenať dve veci naraz. Ak má čitateľ vo chvíli, keď taký vstup vytvorí, otvorené čakajúce [menu objavovania](#exploration-menus), jadro najprv skontroluje možnosti menu s poľami `scan:`, `mark:` a `listen:`. Len keď v menu nič nesedí, ten istý vstup prepadne ďalej a zobudí spúšťač storyletu.
+
+Pozri [Storylety a balíčky](/sk/spec/storylets) pre výber storyletov, spúšťače a prioritu/váhu.
 
 ### Kocky a náhodnosť {#dice-and-randomization}
 
@@ -1681,7 +1596,7 @@ Príbehy Rea môžu pristupovať k GPS, fotoaparátu, mikrofónu a pohybovým se
 3. **Presná poloha sa neprenáša na server.** V kooperatívnom režime vidia ostatní čitatelia udalosti („Čitateľ A dorazil na waypoint_X"), nikdy nie surové súradnice
 4. **Mikrofón len počas relácie.** `{listen}` prepisuje miestne. Zvuk sa nikdy neukladá ani neprenáša — ako premenná je dostupný len rozpoznaný text
 5. **Počasie cez približnú geolokáciu.** Volania rozhrania počasia používajú polohu podľa IP adresy, nie súradnice GPS
-6. **Diagnostika nenesie dáta čitateľa.** Každé pravidlo vyššie viaže autorský kanál rovnako ako stav príbehu. Záznam smie pomenovať premennú, odcitovať to, čo autor doslova napísal do súboru `.rea`, a opísať *typ* hodnoty za behu — nikdy nie hodnotu. Neexistuje cesta v kóde, ktorou by sa prepis z `{listen}`, fotka z `{capture}`, `reader.*` alebo `world.location` stali argumentom diagnostiky; konštruktory, ktoré ich stavajú, odmietnu reťazec od volajúceho rovno. Pozri [Sekciu 27](04-utilities.md#_27-error-handling)
+6. **Diagnostika nenesie dáta čitateľa.** Každé pravidlo vyššie viaže autorský kanál rovnako ako stav príbehu. Záznam smie pomenovať premennú, odcitovať to, čo autor doslova napísal do súboru `.rea`, a opísať *typ* hodnoty za behu — nikdy nie hodnotu. Neexistuje cesta v kóde, ktorou by sa prepis z `{listen}`, fotka z `{capture}`, `reader.*` alebo `world.location` stali argumentom diagnostiky; konštruktory, ktoré ich stavajú, odmietnu reťazec od volajúceho rovno. Pozri [Spracovanie chýb](error-handling.md)
 
 **Záruky pre čitateľa:**
 

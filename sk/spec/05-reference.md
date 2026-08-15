@@ -446,7 +446,7 @@ Parsery zhodné s Rea MAJOR.MINOR MUSIA:
 
 Pravidlo 3 predtým znelo „zobraziť varovanie a blok príkazu preskočiť". Kde sa
 varovanie zobrazí, je práve otázka, na ktorú odpovedá dvojkanálový model zo
-[Sekcie 27](04-utilities.md#_27-error-handling): čitateľovi nikdy, autorovi
+[Spracovanie chýb](error-handling.md): čitateľovi nikdy, autorovi
 vždy, ako záznam. Čitateľ vidí preskočený blok a nič viac.
 
 Tým je zaistená dopredná kompatibilita: príbeh napísaný pre Rea 1.0 funguje na
@@ -531,7 +531,7 @@ Každá z týchto vecí bola zvážená a vylúčená. V [indexe funkcií](featu
 - **Priepust HTML** — trvalo vylúčené. Vkladanie surového značkovania by z každého príbehu urobilo plochu pre XSS a umožnilo by, aby značkovanie jedného autora rozbilo vykresľovanie u iného hostiteľa.
 - **Štýlovanie cez CSS** — trvalo vylúčené. Vizuálna prezentácia je zodpovednosťou platformy, aby príbeh nikdy nemohol prebiť vlastné predvoľby čitateľa — kontrast, veľkosť písma, tmavý režim.
 - **Vkladanie programovacích jazykov** — trvalo vylúčené. Príbeh je nedôveryhodný obsah; vloženie JavaScriptu, Pythonu či čohokoľvek iného by zničilo sandbox. Reálnu potrebu pokrývajú izolované [rozšírenia `.rext`](#_31-extensibility) a rozšírenia hostiteľa dodané vkladateľom.
-- **`try` / `catch`** — vylúčené spolu s [modelom chýb](04-utilities.md#_27-error-handling). Každé zotavenie je implicitné, pretože čitateľovi sa nikdy nesmie ukázať zlyhanie a autor by ho nikdy nemal musieť písať.
+- **`try` / `catch`** — vylúčené spolu s [modelom chýb](error-handling.md). Každé zotavenie je implicitné, pretože čitateľovi sa nikdy nesmie ukázať zlyhanie a autor by ho nikdy nemal musieť písať.
 
 ### Vyriešené rozhodnutia o návrhu {#resolved-design-decisions}
 

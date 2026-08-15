@@ -16,7 +16,7 @@ Tá istá značka sa objavuje pod vlastným nadpisom funkcie v špecifikácii, t
 
 **Značka verzie** sprevádza stav len tam, kde je čo verziovať: funkcie `stable` a `experimental` nesú verziu špecifikácie, v ktorej sa stali dostupnými. Funkcia `development` alebo `draft` verziu zatiaľ nemá a `cancelled` ju mať nikdy nebude.
 
-Všetko označené ako `stable` alebo `experimental` v súčasnom jadre funguje. Čokoľvek pod tým nie — ak to príbeh použije, runtime uplatní [elegantnú degradáciu](/sk/spec/04-utilities#_27-error-handling) a čitateľ to jednoducho nikdy neuvidí.
+Všetko označené ako `stable` alebo `experimental` v súčasnom jadre funguje. Čokoľvek pod tým nie — ak to príbeh použije, runtime uplatní [elegantnú degradáciu](/sk/spec/error-handling) a čitateľ to jednoducho nikdy neuvidí.
 
 <FeatureIndex />
 

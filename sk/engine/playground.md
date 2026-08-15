@@ -161,7 +161,7 @@ Funguje tu všetko, čo jadro implementuje — teda všetko označené ako `stab
 - **Stav** — `{set player.gold = 100}`, `{if …begin}…{end if}`, cykly, funkcie
 - **Naratív** — `{once}`, meniaci sa text, storylety, balíčky, menu objavovania, karty
 
-Funkcie so značkou `development` alebo `draft` implementované nie sú, takže ich parser spracuje ako bežný text — pozri [elegantnú degradáciu](/sk/spec/04-utilities#_27-error-handling).
+Funkcie so značkou `development` alebo `draft` implementované nie sú, takže ich parser spracuje ako bežný text — pozri [elegantnú degradáciu](/sk/spec/error-handling).
 
 ### Obmedzenia
 

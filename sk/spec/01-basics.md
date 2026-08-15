@@ -298,7 +298,7 @@ Odkaz, ktorého cieľom je súbor inej časti, je [odkaz medzi časťami](03-nar
 
 Odkaz `reast://` otvorí iný reast na platforme, ktorá ho hostí, adresovaný slugom autora a slugom príbehu.
 
-> **Poznámka:** Externé URL (http/https) nie sú v texte `.rea` povolené. Všetok externý prístup sa deklaruje cez `allowed_urls` v `manifest.json` a odkazuje sa naň aliasom (pozri [Prístup k externým API](04-utilities.md#external-api-access)).
+> **Poznámka:** Externé URL (http/https) nie sú v texte `.rea` povolené. Všetok externý prístup sa deklaruje cez `allowed_urls` v `manifest.json` a odkazuje sa naň aliasom (pozri [Prístup k externým API](error-handling.md#external-api-access)).
 
 ### Vlastné kotvy {#custom-anchors}
 

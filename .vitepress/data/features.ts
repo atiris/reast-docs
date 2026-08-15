@@ -256,7 +256,7 @@ export const GROUPS: FeatureGroup[] = [
       en: 'Reusable logic inside a story, portable modules that travel in the package, and host-supplied code.',
       sk: 'Znovupoužiteľná logika vnútri príbehu, prenosné moduly cestujúce v balíku a kód dodaný hostiteľom.',
     },
-    link: '/spec/02-logic-data#_14-functions',
+    link: '/spec/functions',
   },
   {
     id: 'choices',
@@ -280,7 +280,7 @@ export const GROUPS: FeatureGroup[] = [
       en: 'Non-linear, quality-based narrative: content the story deals out instead of routing to.',
       sk: 'Nelineárny naratív riadený kvalitami: obsah, ktorý príbeh rozdáva namiesto toho, aby naň smeroval.',
     },
-    link: '/spec/03-narrative-interaction#storylets-quality-based-narrative',
+    link: '/spec/storylets',
   },
   {
     id: 'cards',
@@ -1042,7 +1042,7 @@ export const FEATURES: Feature[] = [
       en: 'Definition, calls, default parameters and `{return}` all work; the four calling-context classifications are released but may gain linting rules.',
       sk: 'Definícia, volania, predvolené parametre aj `{return}` fungujú; štyri klasifikácie kontextu volania sú vydané, ale môžu pribudnúť pravidlá kontroly.',
     },
-    link: '/spec/02-logic-data#_14-functions',
+    link: '/spec/functions',
   },
   {
     id: 'rext-extensions',
@@ -1361,7 +1361,7 @@ export const FEATURES: Feature[] = [
       en: 'Requirements, priority, weight, cooldown and tags all drive selection; the attribute set is still open to additions.',
       sk: 'Požiadavky, priorita, váha, ochladenie aj štítky riadia výber; množina atribútov je stále otvorená doplneniam.',
     },
-    link: '/spec/03-narrative-interaction#storylets-quality-based-narrative',
+    link: '/spec/storylets',
   },
   {
     id: 'storylet-deck',
@@ -1377,7 +1377,7 @@ export const FEATURES: Feature[] = [
       en: 'Presents eligible storylets as a hand of cards the reader picks from.',
       sk: 'Predkladá použiteľné storylety ako ruku kariet, z ktorej si čitateľ vyberá.',
     },
-    link: '/spec/03-narrative-interaction#storylets-quality-based-narrative',
+    link: '/spec/storylets',
   },
   {
     id: 'triggered-storylets',
@@ -1393,7 +1393,7 @@ export const FEATURES: Feature[] = [
       en: 'A storylet the world deals instead of a deck; it plays as a side path and returns exactly where the reader left off. Which trigger kinds actually fire depends on the reader app and on features still in development.',
       sk: 'Storylet, ktorý rozdáva svet namiesto balíčka; prehrá sa ako vedľajšia cesta a vráti sa presne tam, kde čitateľ prestal. Ktoré druhy spúšťačov skutočne fungujú, závisí od čitateľskej aplikácie a od funkcií, ktoré sú ešte vo vývoji.',
     },
-    link: '/spec/03-narrative-interaction#triggered-storylets',
+    link: '/spec/storylets#triggered-storylets',
   },
   {
     id: 'exploration-menus',
@@ -2237,7 +2237,7 @@ export const FEATURES: Feature[] = [
       en: 'A reader never sees an error: an unknown command is skipped whole, missing media falls back, an unclosed block auto-closes. The author hears about every one of them on a separate channel of coded records. This is a language guarantee, not a runtime detail, so it is frozen.',
       sk: 'Čitateľ nikdy neuvidí chybu: neznámy príkaz sa celý preskočí, chýbajúce médiá majú náhradu, neuzavretý blok sa uzavrie sám. Autor sa o každej z nich dozvie na samostatnom kanáli kódovaných záznamov. Toto je záruka jazyka, nie detail runtime, takže je zmrazená.',
     },
-    link: '/spec/04-utilities#_27-error-handling',
+    link: '/spec/error-handling',
   },
   {
     id: 'todo',
@@ -2268,7 +2268,7 @@ export const FEATURES: Feature[] = [
       en: 'A second source tried before the platform’s own placeholder. Specified; the attribute is currently parsed and ignored.',
       sk: 'Druhý zdroj vyskúšaný predtým, než sa použije zástupný obsah platformy. Špecifikované; atribút sa dnes parsuje a ignoruje.',
     },
-    link: '/spec/04-utilities#fallback-values',
+    link: '/spec/error-handling#fallback-values',
   },
   {
     id: 'captions',
@@ -2314,7 +2314,7 @@ export const FEATURES: Feature[] = [
       en: 'URLs live in the manifest and never in `.rea` text, so every external call is declared and auditable; the alias call surface is still settling.',
       sk: 'URL adresy žijú v manifeste a nikdy v texte `.rea`, takže každé externé volanie je deklarované a auditovateľné; volacie rozhranie cez alias sa ešte ustaľuje.',
     },
-    link: '/spec/04-utilities#external-api-access',
+    link: '/spec/error-handling#external-api-access',
   },
   {
     id: 'seeded-randomness',
@@ -2658,7 +2658,7 @@ export const FEATURES: Feature[] = [
       en: 'Ruled out with the error model: all recovery is implicit, because a reader must never be shown a failure and an author should never have to write one.',
       sk: 'Vylúčené spolu s modelom chýb: každé zotavenie je implicitné, pretože čitateľovi sa nikdy nesmie ukázať zlyhanie a autor by ho nikdy nemal musieť písať.',
     },
-    link: '/spec/04-utilities#_27-error-handling',
+    link: '/spec/error-handling',
   },
 ];
 

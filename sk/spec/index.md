@@ -42,9 +42,9 @@ Rea 1.0 je prvým vydaním jazyka a nie každá funkcia v tejto špecifikácii j
 Špecifikácia je rozdelená na päť častí, ktoré sa pri prvom čítaní odporúča prejsť v poradí:
 
 1. **[Základy](01-basics)** — štruktúra dokumentu, formátovanie textu, nadpisy, odkazy, médiá, kotvy a voľby.
-2. **[Logika a dáta](02-logic-data)** — príkazy, premenné, výrazy a riadenie toku.
-3. **[Naratív a interakcia](03-narrative-interaction)** — dialóg, karty, hlas, vstup, kooperatívne čítanie a interakcie s reálnym svetom.
-4. **[Utility](04-utilities)** — množné číslo, lokalizácia, ochrana obsahu, titulky a spracovanie chýb.
+2. **[Logika a dáta](02-logic-data)** — príkazy, premenné, výrazy a riadenie toku. Pozri aj [Vlastné funkcie](functions).
+3. **[Naratív a interakcia](03-narrative-interaction)** — dialóg, karty, hlas, vstup, kooperatívne čítanie a interakcie s reálnym svetom. Pozri aj [Storylety a balíčky](storylets).
+4. **[Utility](04-utilities)** — množné číslo, lokalizácia, ochrana obsahu a titulky. Pozri aj [Spracovanie chýb](error-handling).
 5. **[Referencia](05-reference)** — identifikátory, vstavané funkcie, rozšíriteľnosť, prístupnosť a úrovne zhody.
 
 Hľadáte skôr rýchly prehľad syntaxe než celú špecifikáciu? Pozrite [Ťahák](REA-CHEATSHEET).

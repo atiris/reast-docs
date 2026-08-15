@@ -23,7 +23,7 @@ const enNav = [
 
 const skNav = [
   { text: 'Špecifikácia', link: '/sk/spec/' },
-  { text: 'Jadro', link: '/sk/engine/' },
+  { text: 'Engine', link: '/sk/engine/' },
   { text: 'Platforma', link: '/sk/platform/' },
 ];
 
@@ -35,8 +35,11 @@ const specSidebar = [
       { text: 'Feature Index', link: '/spec/features' },
       { text: 'Basics', link: '/spec/01-basics' },
       { text: 'Logic & Data', link: '/spec/02-logic-data' },
+      { text: 'Custom Functions', link: '/spec/functions' },
       { text: 'Narrative & Interaction', link: '/spec/03-narrative-interaction' },
+      { text: 'Storylets & Decks', link: '/spec/storylets' },
       { text: 'Utilities', link: '/spec/04-utilities' },
+      { text: 'Error Handling', link: '/spec/error-handling' },
       { text: 'Reference', link: '/spec/05-reference' },
       { text: 'When rules differ in .rext files', link: '/spec/rext-differences' },
       { text: 'Cheatsheet', link: '/spec/REA-CHEATSHEET' },
@@ -105,8 +108,11 @@ const skSpecSidebar = [
       { text: 'Index funkcií', link: '/sk/spec/features' },
       { text: 'Základy', link: '/sk/spec/01-basics' },
       { text: 'Logika a dáta', link: '/sk/spec/02-logic-data' },
+      { text: 'Vlastné funkcie', link: '/sk/spec/functions' },
       { text: 'Naratív a interakcia', link: '/sk/spec/03-narrative-interaction' },
+      { text: 'Storylety a balíčky', link: '/sk/spec/storylets' },
       { text: 'Utility', link: '/sk/spec/04-utilities' },
+      { text: 'Spracovanie chýb', link: '/sk/spec/error-handling' },
       { text: 'Referencia', link: '/sk/spec/05-reference' },
       { text: 'Kde sa pravidlá líšia v .rext súboroch', link: '/sk/spec/rext-differences' },
       { text: 'Ťahák', link: '/sk/spec/REA-CHEATSHEET' },

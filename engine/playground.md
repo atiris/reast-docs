@@ -164,7 +164,7 @@ or `experimental` on the [feature index](/spec/features):
 - **Narrative** — `{once}`, varying text, storylets, decks, exploration menus, cards
 
 Features badged `development` or `draft` are not implemented, so the parser
-treats them as ordinary text — see [graceful degradation](/spec/04-utilities#_27-error-handling).
+treats them as ordinary text — see [graceful degradation](/spec/error-handling).
 
 ### Limitations
 
