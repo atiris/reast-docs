@@ -49,18 +49,18 @@ see [When rules differ in `.rext` files](rext-differences).
 
 ### Variable naming rules
 
-All persistent variables (story-scoped and global) **must** have at least one domain prefix separated by `.` (dot):
+Every variable — every `{set}` target and every read — **must** carry a domain prefix: one of the four domains (`part.`, `story.`, `shared.`, `context.`), or a manifest rename. Persistence is entirely domain-driven; there is no separate persistent/non-persistent variable kind (see [Scoping](02-logic-data#scoping)):
 
 ```rea
-{set player.gold = 100}
-{set quest.has_key = true}
-{set tool.knife = "rusty"}
-{set role.king.power = 9}
+{set story.player.gold = 100}
+{set story.quest.has_key = true}
+{set story.tool.knife = "rusty"}
+{set story.role.king.power = 9}
 ```
 
-Domain prefixes organize variables into logical namespaces that make the story state self-documenting. Authors choose domain names freely — common patterns include character names, object categories, or story concepts.
+Domain prefixes organize variables into logical namespaces that make the story state self-documenting. Authors choose the free-namespace segments after the domain freely — common patterns include character names, object categories, or story concepts.
 
-**Exempt from domain requirement:** heading-scoped variables (simple name without dot), loop variables (`{for}`), and function parameters — these use simple names without dots.
+**The one exception:** function parameters are bare, dotless, call-frame-scoped identifiers — not domain-prefixed (see [Custom Functions](/spec/functions#parameters)). Loop variables (`{for}`/`{while}`) are not exempt — they are ordinary domain-prefixed variables like any other `{set}` target.
 
 ### Identifier rules
 
@@ -161,9 +161,9 @@ seed — a re-read is a genuinely new playthrough.
 
 ### Device & world functions
 
-| Function             | Description                                                 |
-| -------------------- | ----------------------------------------------------------- |
-| `world.has(feature)` | Check device capability (e.g. `"camera"`, `"gps"`, `"nfc"`) |
+| Function        | Description                                                 |
+| ---------------- | ------------------------------------------------------------- |
+| `has(feature)`   | Check device capability (e.g. `"camera"`, `"gps"`, `"nfc"`) |
 
 ### Type constructor and conversion functions
 
@@ -621,8 +621,8 @@ Each of these was considered and ruled out. They appear on the [feature index](f
 | Anchor separator     | `_` underscore                                      | Consistent with variable naming convention                                        |
 | Function naming      | `snake_case`                                        | Matches all other Rea identifiers                                                 |
 | Heading levels       | Unlimited `#` depth                                 | Platform renders up to N levels distinctly                                        |
-| Variable domains     | `reader.*`, `story.*`, `world.*` etc.               | Clear namespacing, read-only platform data                                        |
-| Variable naming      | `domain.name` required for all persistent variables | Self-documenting state; any Unicode except space and dot                          |
+| Variable domains     | `part.`, `story.`, `shared.`, `context.` — exactly four | Clear namespacing; `context.` is read-only platform data                      |
+| Variable naming      | `domain.name` required for every variable            | Self-documenting state; any Unicode except space and dot                          |
 | Assignment syntax    | `{set domain.var = value}`                          | Explicit, unambiguous, beginner-friendly                                          |
 | Equality operator    | `=` (single equals)                                 | Simpler for non-programmers. `{set}` prevents ambiguity.                          |
 | Comment syntax       | `{comment text}` and `{comment begin}...{end comment}`    | One syntax, single-line and paired; only the exact `{comment begin}` opens a block |

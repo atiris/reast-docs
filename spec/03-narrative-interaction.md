@@ -1277,6 +1277,10 @@ Waypoints have optional attributes:
 | `proximity` | Distance in km at which hint becomes visible   |
 | `icon`      | Map marker icon                                |
 | `hidden`    | Waypoint invisible on map until require is met |
+| `escape`    | Timeout duration (e.g. `duration("PT30M")`) after which the waypoint is skipped |
+| `escape_to` | Fallback anchor the reader is sent to instead of waiting indefinitely |
+
+A waypoint whose passage condition depends on `context.*` (device, location, or time state outside the author's control) MUST declare `escape=` or `escape_to=` — an author who omits both gets `link/waypoint-no-escape` (warning, not error: a deliberate hard physical gate with no digital bypass is a valid design choice). A [`{route}`](#multi-stage-routes)'s constituent waypoints need the same when they depend on `context.*`.
 
 ### Map images & pins
 

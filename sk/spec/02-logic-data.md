@@ -172,7 +172,7 @@ Prefix `shared.` je modifikátor rozsahu — `shared.player.name` znamená „pr
 
 Premenné v rozsahu nadpisu sú ideálne pre dočasný stav miestny pre príbeh, ktorý nemá pretrvať za hranicu aktuálnej naratívnej sekcie. Premenné cyklu (`{for}`) a parametre funkcií majú podobný rozsah bez domény.
 
-### Vstavané menné priestory premenných {#built-in-variable-namespaces}
+### Vstavané menné priestory premenných {#context-domain}
 
 <Feature id="builtin-namespaces" />
 

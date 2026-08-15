@@ -104,7 +104,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `ext/requires-missing` | `fatal` | load refused |
 | `ext/unbound-alias` | `error` | call yields `undefined` → empty |
 
-#### `parse/` — Reading one file (31)
+#### `parse/` — Reading one file (35)
 
 | Code | Severity | What the reader gets |
 | ---- | -------- | -------------------- |
@@ -139,8 +139,12 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `parse/indent-depth-clamped` | `degraded` | rendered at the deepest supported |
 | `parse/duplicate-anchor` | `error` | first definition wins; the rest unreachable |
 | `parse/content-after-gate` | `warning` | unreachable — a gate is terminal |
+| `parse/reserved-word-misuse` | `error` | block skipped entirely |
+| `parse/dotless-set` | `error` | block skipped entirely |
+| `parse/comma-on-no-attribute-command` | `error` | block skipped entirely |
+| `parse/bare-word-attribute-value` | `error` | block skipped entirely |
 
-#### `link/` — Resolving names across the package (31)
+#### `link/` — Resolving names across the package (35)
 
 | Code | Severity | What the reader gets |
 | ---- | -------- | -------------------- |
@@ -162,7 +166,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `link/missing-gate-target` | `error` | gate is terminal — the story ends |
 | `link/missing-part-anchor` | `error` | part opens at its start |
 | `link/preload-target-missing` | `warning` | nothing preloaded |
-| `link/sensor-not-declared` | `error` | `world.has()` is `false` |
+| `link/sensor-not-declared` | `error` | `has()` is `false` |
 | `link/sensor-declared-unused` | `info` | a permission is requested for nothing |
 | `link/unreachable-choice` | `warning` | authored content the reader cannot reach |
 | `link/undefined-replace-target` | `error` | `{replace}` is a no-op |
@@ -175,8 +179,12 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `link/unknown-storylet-trigger` | `warning` | storylet never triggered |
 | `link/undefined-timer-target` | `error` | `on_expire` fires into nothing |
 | `link/unknown-checkpoint` | `error` | `{restore}` is a no-op |
+| `link/unknown-domain` | `error` | block skipped entirely |
+| `link/unwritten-variable` | `error` | `undefined` → empty |
+| `link/possibly-unwritten-variable` | `warning` | `undefined` → empty |
+| `link/waypoint-no-escape` | `warning` | none — gate behaves as authored |
 
-#### `eval/` — Evaluating an expression (28)
+#### `eval/` — Evaluating an expression (30)
 
 | Code | Severity | What the reader gets |
 | ---- | -------- | -------------------- |
@@ -208,8 +216,10 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `eval/ordinal-unsupported-locale` | `degraded` | number, no suffix |
 | `eval/invalid-dice-notation` | `warning` | `undefined` → empty |
 | `eval/strict-undeclared-write` | `warning` | the write succeeds |
+| `eval/context-write-refused` | `error` | the write is dropped |
+| `eval/story-meta-write-refused` | `error` | the write is dropped |
 
-#### `flow/` — Running the story (18)
+#### `flow/` — Running the story (19)
 
 | Code | Severity | What the reader gets |
 | ---- | -------- | -------------------- |
@@ -231,6 +241,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `flow/timer-replaced` | `warning` | outer `on_expire` never fires |
 | `flow/save-position-lost` | `degraded` | nearest checkpoint / chapter start |
 | `flow/save-major-mismatch` | `error` | host notice + fresh start (the one specified reader-facing message) |
+| `flow/restore-condition-failed` | `info` | restore refused; reading continues |
 
 #### `env/` — The environment the story is read in (27)
 
@@ -241,7 +252,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `env/missing-video` | `degraded` | poster frame, else placeholder |
 | `env/media-fallback-failed` | `warning` | platform default |
 | `env/tts-unavailable` | `degraded` | silently skipped |
-| `env/sensor-unavailable` | `degraded` | `world.has()` is `false` |
+| `env/sensor-unavailable` | `degraded` | `has()` is `false` |
 | `env/permission-denied` | `degraded` | story degrades per §21 |
 | `env/permission-revoked` | `degraded` | treated as newly unavailable |
 | `env/requirement-unsatisfiable` | `error` | host refuses to start; not story text |
@@ -264,7 +275,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `env/undo-chapter-boundary` | `degraded` | undo stops at the chapter start |
 | `env/undo-blocked` | `degraded` | lock not released; vote not retracted |
 
-#### `style/` — Authoring hygiene (10)
+#### `style/` — Authoring hygiene (11)
 
 | Code | Severity | What the reader gets |
 | ---- | -------- | -------------------- |
@@ -278,6 +289,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `style/heading-level-skipped` | `info` | nothing — a hygiene note has no reader consequence |
 | `style/paragraph-too-long` | `info` | nothing — a hygiene note has no reader consequence |
 | `style/todo` | `info` | nothing — a hygiene note has no reader consequence |
+| `style/confusable-identifier` | `info` | nothing — a hygiene note has no reader consequence |
 
 #### `meta/` — The record stream itself (3)
 
