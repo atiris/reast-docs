@@ -60,7 +60,7 @@ Funkcia `select()` mapuje reťazcovú hodnotu na varianty textu. Použite ju pre
 **Variácia podľa roly:**
 
 ```rea
-{select(reader.class, warrior="Zaženieš sa čepeľou", mage="Zošleš kúzlo", other="Konáš")}
+{select(story.player.class, warrior="Zaženieš sa čepeľou", mage="Zošleš kúzlo", other="Konáš")}
 ```
 
 ### Formátovanie čísel pomocou `formatNumber()` {#number-formatting-with-formatnumber}
@@ -70,7 +70,7 @@ Funkcia `select()` mapuje reťazcovú hodnotu na varianty textu. Použite ju pre
 Funkcia `formatNumber()` deleguje na formátovanie čísel podľa lokálu (`Intl.NumberFormat`). Predvolene používa **lokál jadra dodaný hostiteľom**; voliteľný druhý pozičný argument ho prebije konkrétnou značkou BCP 47:
 
 ```rea
-Skóre: {formatNumber(player.score)}
+Skóre: {formatNumber(story.player.score)}
 Lokalizované: {formatNumber(1234567, "sk")}
 ```
 
@@ -97,7 +97,7 @@ Vzdialenosť: {formatNumber(meters, maximumFractionDigits=1)} m
 Funkcia `calendar()` mapuje reálne zložky dátumu na vlastné názvy — ideálne na budovanie fantasy sveta:
 
 ```rea
-Mesiac {calendar(world.date, month="Mráz,Kvet,Oheň,Dážď,Vietor,Slnko,Búrka,Žatva,Hmla,Tieň,Ľad,Hviezda")}
+Mesiac {calendar(context.time.date, month="Mráz,Kvet,Oheň,Dážď,Vietor,Slnko,Búrka,Žatva,Hmla,Tieň,Ľad,Hviezda")}
 ```
 
 Pre január: „Mráz", pre marec: „Oheň", pre december: „Hviezda".
@@ -109,9 +109,9 @@ Pre január: „Mráz", pre marec: „Oheň", pre december: „Hviezda".
 | `era`     | Výraz definujúci výpočet éry                                 |
 
 ```rea
-Deň {calendar(world.date, weekday="Mesiacok,Ohnivec,Vodnik,Zemedeň,Vetrovec,Svetlodeň,Temnodeň")},
-{calendar(world.date, month="Mráz,Kvet,Oheň,Dážď,Vietor,Slnko,Búrka,Žatva,Hmla,Tieň,Ľad,Hviezda")}
-{ordinal(world.date.day)}
+Deň {calendar(context.time.date, weekday="Mesiacok,Ohnivec,Vodnik,Zemedeň,Vetrovec,Svetlodeň,Temnodeň")},
+{calendar(context.time.date, month="Mráz,Kvet,Oheň,Dážď,Vietor,Slnko,Búrka,Žatva,Hmla,Tieň,Ľad,Hviezda")}
+{ordinal(context.time.date.day)}
 ```
 
 ### Radové číslovky pomocou `ordinal()` {#ordinal-numbers-with-ordinal}
@@ -182,7 +182,7 @@ Tvrdé zámky používajú overenie na strane servera: odpoveď čitateľa sa za
 Zamknutie obsahu za podmienky príbehu:
 
 ```rea
-{lock condition="player.level >= 10 and has_dragon_scale" begin}
+{lock condition="story.player.level >= 10 and has_dragon_scale" begin}
   Starodávny text sa odhalí len hodným.
 {end lock}
 ```

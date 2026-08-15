@@ -40,7 +40,7 @@ see [When rules differ in `.rext` files](rext-differences).
 
 | Element       | Convention    | Example                        |
 | ------------- | ------------- | ------------------------------ |
-| Variables     | `domain.name` | `player.gold`, `quest.has_key` |
+| Variables     | `domain.name` | `story.player.gold`, `part.quest.has_key` |
 | Functions     | `snake_case`  | `calculate_damage`, `greet`    |
 | Anchors       | `snake_case`  | `#the_clearing`                |
 | Commands      | `snake_case`  | `{voice}`, `{wait}`            |
@@ -127,9 +127,9 @@ This means non-English authors can use their native alphabet freely:
 Arrays support method-like calls:
 
 ```rea
-{set player.inventory = ["sword", "shield"]}
-{append(player.inventory, "potion")}
-{remove(player.inventory, "shield")}
+{set story.player.inventory = ["sword", "shield"]}
+{append(story.player.inventory, "potion")}
+{remove(story.player.inventory, "shield")}
 ```
 
 ### Query functions

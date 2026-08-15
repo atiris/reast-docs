@@ -18,15 +18,15 @@ Storylety sú modulárne bloky obsahu s podmienkami a účinkami — stavebné k
   „Prosím, potrebujem niekoho, kto doručí tento balík do severnej veže."
 
   * [Prijmi úlohu]
-    {set quest.has_merchant_quest = true}
-    {set player.gold = player.gold + 10}
+    {set story.quest.has_merchant_quest = true}
+    {set story.player.gold = story.player.gold + 10}
     „Nech ti je odplatou! Tu máš zálohu."
   * [Odmietni]
     Kupcovi klesnú plecia.
 {end storylet}
 
 {storylet the_hidden_path begin}
-  require: quest.has_merchant_quest and world.hour >= 20
+  require: story.quest.has_merchant_quest and context.time.hour >= 20
   priority: 10
   repeatable: false
 

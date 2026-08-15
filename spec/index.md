@@ -9,7 +9,7 @@ The three stages below are all valid Rea. The first line is already a complete s
 ```rea
 The road forked at the old oak.
 
-{set player.torch = true}
+{set story.player.torch = true}
 
 * [Take the left path]
 * [Take the right path]

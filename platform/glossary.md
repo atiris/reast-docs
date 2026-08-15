@@ -13,7 +13,7 @@ Key terms used across the Reast platform.
 | **Scene**         | A subsection within a chapter, defined by `##` or deeper headings.                              |
 | **Choice**        | A decision point where the reader selects from options that affect the narrative.               |
 | **Command**       | A `{keyword}` instruction in Rea that controls logic, media, or behavior.                       |
-| **Variable**      | A named value (`{set name = value}`) that stores state during a reading session.                |
+| **Variable**      | A named value (`{set domain.name = value}`) whose domain — `part.`, `story.`, `shared.` — decides how long it lives.                |
 | **Reader**        | A person consuming/playing an interactive story.                                                |
 | **Author**        | A person who writes and publishes interactive stories on the platform.                          |
 | **Player**        | The runtime component that renders and executes Rea stories in the browser.                     |

@@ -71,7 +71,7 @@ kódy sa dajú triediť, grepovať aj filtrovať vzorom.
 | Neznámy príkaz `{magic begin}`               | Celý blok sa preskočí                             | `parse/unknown-command`    |
 | Neznámy menný priestor `{ns.cmd a}`          | Celý blok sa preskočí                             | `parse/unknown-namespace`  |
 | Odbočka na neexistujúcu kotvu                | Čítanie pokračuje za odbočkou                     | `link/undefined-anchor`    |
-| Nedostupný senzor                            | `world.has("sensor")` vráti `false`               | `env/sensor-unavailable`   |
+| Nedostupný senzor                            | `has("sensor")` vráti `false`               | `env/sensor-unavailable`   |
 
 Táto tabuľka je **len ilustratívna** — 11 reprezentatívnych riadkov z celého
 registra. Normatívny je úplný, generovaný zoznam všetkých 175 kódov v
@@ -95,7 +95,7 @@ behu.
 
 Toto pravidlo vynucuje tvar API, nie kontrola pri revízii: neexistuje
 konštruktor, ktorý by prijal reťazec od volajúceho. Citovaný zdroj sa spätne
-načíta zo súboru na danej pozícii. Zlyhané `{set gold = "abc"}` teda smie
+načíta zo súboru na danej pozícii. Zlyhané `{set story.gold = "abc"}` teda smie
 ohlásiť `"abc"`, lebo to autor napísal do súboru, kým to isté zlyhanie na
 hodnote, ktorá prišla cez `{input}`, môže ohlásiť len názov typu.
 

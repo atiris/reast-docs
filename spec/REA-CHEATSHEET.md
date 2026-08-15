@@ -68,32 +68,41 @@ picks the destination:
 ## Variables & Printing `{set}` `{name}`
 
 ```rea
-{set player.gold = 100}              Number
-{set player.name = "Aria"}           String (always double-quoted)
-{set player.items = ["sword", "map"]} Array
-{set stats = [hp=100, dex=8]}        Named items
+{set story.player.gold = 100}         Number
+{set story.player.name = "Aria"}      String (always double-quoted)
+{set story.player.items = ["sword", "map"]}  Array
+{set story.stats = [hp=100, dex=8]}   Named items
 
-Hello, {player.name}! You have {player.gold} gold.
-{player.gold > 50 ? "rich" : "poor"}
+Hello, {story.player.name}! You have {story.player.gold} gold.
+{story.player.gold > 50 ? "rich" : "poor"}
 ```
 
-**Domain prefixes** (read-only platform data):
-`reader.*` `story.*` `world.*` `device.*` `group.*`
+**Every path starts with a domain** — there is no domain-free form. The domain
+alone decides how long the variable lives:
+
+| Domain     | Lives                                                              |
+| ---------- | ------------------------------------------------------------------ |
+| `part.`    | Until the reader changes part, including on a return visit          |
+| `story.`   | The whole reading, and across sessions via save/restore             |
+| `shared.`  | Like `story.`, and every write replicates to every reader           |
+| `context.` | Read-only: the reader, the device, the world, the running session   |
+
+A manifest may rename all four (`"domains": {"story": "物語"}`).
 
 ---
 
 ## Control Flow
 
 ```rea
-{if player.gold > 10 begin}         {for item in player.items begin}
-  You have enough gold.                - {item}
-{else if player.gold > 0}           {end for}
+{if story.player.gold > 10 begin}   {for part.item in story.player.items begin}
+  You have enough gold.                - {part.item}
+{else if story.player.gold > 0}     {end for}
   Still have something.
-{else}                               {while fuel > 0 begin}
+{else}                               {while story.fuel > 0 begin}
   Broke.                               Keep going...
-{end if}                               {set fuel = fuel - 1}
+{end if}                               {set story.fuel = story.fuel - 1}
                                      {end while}
-{switch weapon begin}
+{switch story.weapon begin}
   {case "sword"} Melee.              {case "bow"} Ranged.
   {default} Fists.
 {end switch}
@@ -110,8 +119,8 @@ Hello, {player.name}! You have {player.gold} gold.
 + [Sticky choice]                    Always available
   Text after choosing.
 
-* {player.gold >= 10} [Buy potion]   Conditional choice
-  {set player.gold = player.gold - 10}
+* {story.player.gold >= 10} [Buy potion]   Conditional choice
+  {set story.player.gold = story.player.gold - 10}
 
 * * [Nested choice]                  Second level
 
@@ -143,7 +152,7 @@ Hello, {player.name}! You have {player.gold} gold.
 {end function}
 
 {greet("Aria")}                      Call (renders text)
-{set dmg = damage(10, 1.5)}         Call (returns value)
+{set story.dmg = damage(10, 1.5)}    Call (returns value)
 ```
 
 **Built-ins:** `abs` `min` `max` `round` `random(1,6)` `clamp` `length` `upper` `lower` `trim` `contains` `replace` `split` `join` `append` `remove` `shuffle` `sort`
@@ -173,7 +182,7 @@ for archive mechanics.
 {select(pronoun, he="his", she="her", other="their")}
 {ordinal(3)}                          "3rd" (en only); other locales get "3"
 {formatNumber(1234567, "sk")}         Locale number format (2nd arg = locale)
-{formatDate(world.date, "long")}      style: iso | short | medium | long | full
+{formatDate(context.time.date, "long")}   style: iso | short | medium | long | full
 {formatTime(now(), "short")}   {formatDateTime(now(), "iso")}
 ```
 
@@ -275,7 +284,7 @@ development — see the [feature index](features#localization).
 {coins silver_per_gold=5 bronze_per_silver=4}        Redefine ratios
 {earn gold 2}               Add 2 gold (1 gold = 10 silver = 100 bronze)
 {spend bronze 3}            Spend 3 bronze (breaks higher coins as needed)
-{if reader.coins.total >= 100 begin} ... {end if}    Check wallet value
+{if story.reader.coins.total >= 100 begin} ... {end if}  Check wallet value
 ```
 
 ```rea
@@ -283,7 +292,7 @@ development — see the [feature index](features#localization).
   name: Ability Cards
   use: Play to apply the bonus.
   {on_use begin}                 Hook runs for every card of the set
-    {set ability_count = ability_count + 1}
+    {set story.ability_count = story.ability_count + 1}
   {end on_use}
 {end define}
 
@@ -335,8 +344,8 @@ development — see the [feature index](features#localization).
 
 1. **`{ }` = action**, **`[ ]` = reference** — that's the whole language
 2. **`begin` / `end`** — all block commands use this pair
-3. **Single `=` for comparison** (not `==`), assignment is always `{set x = ...}`
-4. **Domain prefixes** separate author variables (`player.*`) from platform (`reader.*`)
+3. **Single `=` for comparison** (not `==`), assignment is always `{set domain.name = ...}`
+4. **Every path carries a domain** — `part.` `story.` `shared.` are the author's, `context.` is the platform's and read-only
 5. **`*` = one-time choice**, **`+` = sticky choice**, **`-` = gather (reconverge)**
 6. **`->` = jump**, **`->->` = tunnel (jump + automatic return)**
 7. **First char in `[ ]`** decides media/anchor: `!` image, `>` video, `?` audio, `#` anchor; in a link, the **target** prefix `^` = footnote, `*` = hint

@@ -85,7 +85,7 @@ Voľba označená ako `hidden` nevykreslí žiadne tlačidlo. Zostáva vo výber
 Kľúčové slovo `hidden` stojí na riadku voľby ako prvé; podmienka môže nasledovať za ním:
 
 ```rea
-* hidden {player.curious} [&look_under_sofa] …
+* hidden {story.player.curious} [&look_under_sofa] …
 ```
 
 Skryté voľby sa zvyčajne viažu na kartu akcie cez `[&card_id]` — pole `description:` karty je to, s čím sa porovnáva voľný text, a jej polia `scan:`, `mark:` a `listen:` sú to, na čo sedia vstupy z reálneho sveta. Keďže sa návestie objaví až po spustení voľby, na skrytý obsah naznačte v okolitej próze; návestie a rozprávanie sú odmena, nie pozvánka. Skupiny zložené prevažne zo skrytých volieb popisujú [Menu objavovania](#exploration-menus).
@@ -290,18 +290,18 @@ Stojíš na námestí.
 {once name=visit_market begin}
   * [Navštív trh]
     Preskúmaš rušné trhové stánky.
-    {set flag.visited_market = true}
+    {set story.flag.visited_market = true}
     -> town_square
 {end once}
 
 {once name=visit_temple begin}
   * [Vstúp do chrámu]
     V chráme je ticho a chlad.
-    {set flag.temple_blessing = true}
+    {set story.flag.temple_blessing = true}
     -> town_square
 {end once}
 
-{if flag.visited_market and flag.temple_blessing begin}
+{if story.flag.visited_market and story.flag.temple_blessing begin}
   * [Vyraz k hradu]
     So zásobami aj požehnaním si pripravený.
     -> castle_gates
@@ -319,7 +319,7 @@ Viaceré dejové línie, ktoré napredujú nezávisle a v kľúčových chvíľa
   {thread elena_thread begin}
     [#elena_journey]
     Elena putuje na západ cez les.
-    {set elena.location = "forest"}
+    {set story.elena.location = "forest"}
     {wait gareth_thread.reached("bridge") begin}{end wait}
     Stretnú sa pri moste.
   {end thread}
@@ -327,7 +327,7 @@ Viaceré dejové línie, ktoré napredujú nezávisle a v kľúčových chvíľa
   {thread gareth_thread begin}
     [#gareth_journey]
     Gareth sa vydá horskou cestou.
-    {set gareth.location = "mountain"}
+    {set story.gareth.location = "mountain"}
     [#bridge]
     Dorazí k starému kamennému mostu.
   {end thread}
@@ -503,7 +503,7 @@ Predmety sa dajú pridať do inventára čitateľa:
 ```rea
 {give golden_key}
 {take golden_key}
-{if "golden_key" in reader.inventory begin}
+{if "golden_key" in story.reader.inventory begin}
   Kľúč ti vo vrecku hreje.
 {end if}
 ```
@@ -522,7 +522,7 @@ Príbehy, ktoré potrebujú peniaze, používajú vstavanú peňaženku mincí. 
 {earn silver 5}
 {spend bronze 3}
 
-{if reader.coins.total >= 100 begin}
+{if story.reader.coins.total >= 100 begin}
   Na začarovanú čepeľ máš.
 {end if}
 ```
@@ -531,9 +531,9 @@ Príbehy, ktoré potrebujú peniaze, používajú vstavanú peňaženku mincí. 
 
 | Premenná             | Obsah                                                 |
 | -------------------- | ----------------------------------------------------- |
-| `reader.coins`       | Normalizovaný zostatok `{gold, silver, bronze, total}` |
-| `reader.coins.total` | Celková hodnota v bronzových základných jednotkách    |
-| `reader.coinNames`   | Autorské označenia `{gold, silver, bronze}`           |
+| `story.reader.coins`       | Normalizovaný zostatok `{gold, silver, bronze, total}` |
+| `story.reader.coins.total` | Celková hodnota v bronzových základných jednotkách    |
+| `story.reader.coinNames`   | Autorské označenia `{gold, silver, bronze}`           |
 
 ### Karty akcií `[&]` {#action-cards}
 
@@ -630,10 +630,10 @@ Sada môže pripojiť spustiteľné háčiky, ktoré sa vykonajú pri **každej*
 {define cardset ability begin}
   name: Karty schopností
   {on_acquire begin}
-    {set ability_count = ability_count + 1}
+    {set story.ability_count = story.ability_count + 1}
   {end on_acquire}
   {on_use begin}
-    {set last_ability_used = event.card_id}
+    {set story.last_ability_used = event.card_id}
   {end on_use}
 {end define}
 ```
@@ -645,7 +645,7 @@ Jednotlivá karta môže ktorýkoľvek háčik **prekryť** a zároveň zdediť 
   name: Ginko
   intelligence: +2
   {on_use begin}
-    {set intelligence = intelligence + 2}
+    {set story.player.intelligence = story.player.intelligence + 2}
   {end on_use}
 {end define}
 ```
@@ -674,7 +674,7 @@ Tri vstavané sady sa dajú predefinovať a pripojiť im spoločné pravidlá be
   name: Bojové akcie
   use: Na zahranie minie akčný bod.
   {on_use begin}
-    {set actions_played = actions_played + 1}
+    {set story.actions_played = story.actions_played + 1}
   {end on_use}
 {end define}
 ```
@@ -911,7 +911,7 @@ Rea natívne podporuje **zážitky pre viacerých čitateľov**, kde ten istý p
 ### Obsah pre konkrétnu rolu {#role-specific-content}
 
 ```rea
-{if group.role = "captain" begin}
+{if context.group.role = "captain" begin}
   Tajnú mapu vidíš len ty. Čo povieš posádke?
 {else}
   Kapitán niečo študuje. Čakáš na rozkazy.
@@ -965,7 +965,7 @@ Väčšina si zvolila: {vote.result}
 
 ```rea
 {set shared.torch_lit = true}
-{set shared.door_opened_by = reader.name}
+{set shared.door_opened_by = context.reader.name}
 
 {if shared.torch_lit begin}
   Fakľa osvetľuje chodbu pre všetkých.
@@ -1093,7 +1093,7 @@ Keď viacerí čitatelia menia zdieľanú premennú súčasne:
 
 ```rea
 {exclusive action="modify_treasury" begin}
-  {set shared.gold = shared.gold + player.contribution}
+  {set shared.gold = shared.gold + story.player.contribution}
 {end exclusive}
 ```
 
@@ -1125,7 +1125,7 @@ Roly sa pri odpojení čitateľa **neprerozdeľujú automaticky**. Ak kapitán o
 Autori by mali vždy písať obranné kontroly rolí:
 
 ```rea
-{if group.readers_in_role("captain") = 0 begin}
+{if readers_in_role("captain") = 0 begin}
   Posádka je bez vodcu. Niekto sa musí ujať velenia.
 {end if}
 ```
@@ -1152,10 +1152,10 @@ Kooperatívne príbehy musia byť hrateľné jediným čitateľom bez úprav. Pl
 | `{on reader_join begin}`                | Spustí sa pri pripojení čitateľa          | **Nikdy sa nespustí**                                |
 | `{on reader_leave begin}`               | Spustí sa pri odchode čitateľa            | **Nikdy sa nespustí**                                |
 | `{on reader_idle begin}`                | Spustí sa pri nečinnosti čitateľa         | **Môže sa spustiť** — aj sólo čitateľ môže byť nečinný |
-| `group.size`                            | Počet pripojených čitateľov               | Vráti **1**                                          |
-| `group.readers`                         | Zoznam objektov čitateľov                 | Vráti **[self]**                                     |
-| `group.role`                            | Rola aktuálneho čitateľa                  | Vráti prvú definovanú rolu                           |
-| `group.readers_in_role(R)`              | Počet čitateľov v role R                  | Vráti **1** pre všetky roly                          |
+| `context.group.size`                            | Počet pripojených čitateľov               | Vráti **1**                                          |
+| `context.group.readers`                         | Zoznam objektov čitateľov                 | Vráti **[self]**                                     |
+| `context.group.role`                            | Rola aktuálneho čitateľa                  | Vráti prvú definovanú rolu                           |
+| `readers_in_role(R)`              | Počet čitateľov v role R                  | Vráti **1** pre všetky roly                          |
 
 **Zásady sólo režimu:**
 
@@ -1166,7 +1166,7 @@ Kooperatívne príbehy musia byť hrateľné jediným čitateľom bez úprav. Pl
 
 #### Zaobchádzanie s rolami v sólo režime {#role-handling-in-solo-mode}
 
-Predvolene je sólo čitateľ priradený **ku všetkým rolám naraz**. Bloky viazané na rolu (`{if group.role = "captain" begin}`) sa vyhodnotia ako pravdivé, a keď pre tú istú pasáž existuje viac blokov rolí, zobrazia sa všetky s vizuálnym označením roly (napr. `[Kapitán]`, `[Posádka]`).
+Predvolene je sólo čitateľ priradený **ku všetkým rolám naraz**. Bloky viazané na rolu (`{if context.group.role = "captain" begin}`) sa vyhodnotia ako pravdivé, a keď pre tú istú pasáž existuje viac blokov rolí, zobrazia sa všetky s vizuálnym označením roly (napr. `[Kapitán]`, `[Posádka]`).
 
 Autori, ktorí chcú sólo hru s jednou rolou (čitateľ si vyberie jednu rolu a pre ostatné príbeh prehrá znovu), sa môžu prihlásiť cez manifest:
 
@@ -1193,10 +1193,10 @@ Deklarujte, ktoré funkcie reálneho sveta príbeh potrebuje. Čitateľská apli
 {require nfc optional}
 ```
 
-Pridanie `optional` znamená, že funkcia príbeh obohatí, ale nie je nutná. Funkcia `world.has()` overuje za behu:
+Pridanie `optional` znamená, že funkcia príbeh obohatí, ale nie je nutná. Funkcia `has()` overuje za behu:
 
 ```rea
-{if world.has("nfc") begin}
+{if has("nfc") begin}
   Prilož zariadenie k NFC štítku ukrytému pod lavičkou.
 {else}
   Napíš kód vytlačený na lavičke: {input type="text", name=bench_code}
@@ -1210,7 +1210,7 @@ Pridanie `optional` znamená, že funkcia príbeh obohatí, ale nie je nutná. F
 Súradnice GPS používajú bodový literál `@` a oblastný literál `@@`:
 
 ```rea
-{if world.location matches @@48.14;17.10/500 begin}
+{if context.location matches @@48.14;17.10/500 begin}
   Cítiš zvláštnu rezonanciu. Toto je to miesto z príbehu!
 {end if}
 ```
@@ -1219,13 +1219,13 @@ Súradnice GPS používajú bodový literál `@` a oblastný literál `@@`:
 
 | Vlastnosť            | Typ   | Popis                                 |
 | -------------------- | ----- | ------------------------------------- |
-| `world.location`     | bod   | Aktuálna pozícia (lat, lng)           |
-| `world.location.lat` | float | Zemepisná šírka                       |
-| `world.location.lng` | float | Zemepisná dĺžka                       |
-| `world.location.alt` | float | Nadmorská výška v metroch (ak je známa) |
-| `world.location.acc` | float | Presnosť v metroch                    |
-| `world.heading`      | float | Smer kompasu v stupňoch (0–360)       |
-| `world.speed`        | float | Rýchlosť pohybu v m/s                 |
+| `context.location`     | bod   | Aktuálna pozícia (lat, lng)           |
+| `context.location.lat` | float | Zemepisná šírka                       |
+| `context.location.lng` | float | Zemepisná dĺžka                       |
+| `context.location.alt` | float | Nadmorská výška v metroch (ak je známa) |
+| `context.location.acc` | float | Presnosť v metroch                    |
+| `context.heading`      | float | Smer kompasu v stupňoch (0–360)       |
+| `context.speed`        | float | Rýchlosť pohybu v m/s                 |
 
 ### Zastávky {#waypoints}
 
@@ -1271,7 +1271,7 @@ Príbeh zasadený do reálneho miesta môže ukázať vlastnú mapu namiesto vš
     label: Starý most
   {end pin}
   {pin reader begin}
-    at: world.location
+    at: context.location
     label: Ty
   {end pin}
 {end map}
@@ -1308,11 +1308,11 @@ Definujte oblasti, ktoré spúšťajú udalosti pri vstupe alebo odchode čitate
 {zone dark_forest @@48.14;17.10@48.15;17.10@48.15;17.11@48.14;17.11 begin}
   {on enter begin}
     Stromy sa okolo teba zomknú. Les pôsobí živo.
-    {set world.ambient = "forest"}
+    {set story.ui.ambient = "forest"}
   {end on}
   {on exit begin}
     Vynoríš sa z lesa a žmúriš do slnka.
-    {set world.ambient = "default"}
+    {set story.ui.ambient = "default"}
   {end on}
 {end zone}
 ```
@@ -1322,7 +1322,7 @@ Definujte oblasti, ktoré spúšťajú udalosti pri vstupe alebo odchode čitate
 <Feature id="time-of-day" />
 
 ```rea
-{if world.hour >= 22 or world.hour < 6 begin}
+{if context.time.hour >= 22 or context.time.hour < 6 begin}
   Tma okolo teba dnes v noci pôsobí skutočne.
 {else}
   Denné svetlo robí príbeh menej desivým.
@@ -1333,19 +1333,19 @@ Definujte oblasti, ktoré spúšťajú udalosti pri vstupe alebo odchode čitate
 
 | Vlastnosť       | Typ     | Popis                            |
 | --------------- | ------- | -------------------------------- |
-| `world.hour`    | integer | Aktuálna hodina (0–23)           |
-| `world.minute`  | integer | Aktuálna minúta (0–59)           |
-| `world.weekday` | string  | Názov dňa (malými písmenami)     |
-| `world.date`    | string  | Dátum ako reťazec ISO            |
-| `world.season`  | string  | Ročné obdobie podľa pologule     |
+| `context.time.hour`    | integer | Aktuálna hodina (0–23)           |
+| `context.time.minute`  | integer | Aktuálna minúta (0–59)           |
+| `context.time.weekday` | string  | Názov dňa (malými písmenami)     |
+| `context.time.date`    | string  | Dátum ako reťazec ISO            |
+| `context.time.season`  | string  | Ročné obdobie podľa pologule     |
 
 ### Nočný režim {#night-mode}
 
 Skombinujte čas a svetelný senzor pre atmosféru:
 
 ```rea
-{if world.hour >= 22 and world.light < 50 begin}
-  {set ui.theme = "dark"}
+{if context.time.hour >= 22 and context.light < 50 begin}
+  {set story.ui.theme = "dark"}
   Táto kapitola sa dá čítať len v tme. Zhasni svetlá.
 {end if}
 ```
@@ -1355,7 +1355,7 @@ Skombinujte čas a svetelný senzor pre atmosféru:
 <Feature id="weather" />
 
 ```rea
-{if world.weather = "rain" begin}
+{if context.weather = "rain" begin}
   Aké príhodné — prší v príbehu aj za tvojím oknom.
 {end if}
 ```
@@ -1364,10 +1364,10 @@ Skombinujte čas a svetelný senzor pre atmosféru:
 
 | Vlastnosť           | Typ    | Popis                                                    |
 | ------------------- | ------ | -------------------------------------------------------- |
-| `world.weather`     | string | Aktuálny stav (clear, rain, snow, fog, storm)            |
-| `world.temperature` | float  | Teplota v stupňoch Celzia                                |
-| `world.wind`        | float  | Rýchlosť vetra v m/s                                     |
-| `world.humidity`    | float  | Vlhkosť v percentách (0–100)                             |
+| `context.weather`     | string | Aktuálny stav (clear, rain, snow, fog, storm)            |
+| `context.temperature` | float  | Teplota v stupňoch Celzia                                |
+| `context.wind`        | float  | Rýchlosť vetra v m/s                                     |
+| `context.humidity`    | float  | Vlhkosť v percentách (0–100)                             |
 
 ### Skenovanie QR a čiarových kódov {#qr-and-barcode-scanning}
 
@@ -1448,28 +1448,28 @@ Prístup k senzorom zariadenia pre fyzické interakcie:
 
 | Vlastnosť              | Typ   | Popis                                    |
 | ---------------------- | ----- | ---------------------------------------- |
-| `world.tilt.x`         | float | Náklon dopredu a dozadu (−180 až 180)    |
-| `world.tilt.y`         | float | Náklon doľava a doprava (−90 až 90)      |
-| `world.orientation`    | float | Otočenie zariadenia (0–360, kompas)      |
-| `world.acceleration.x` | float | Zrýchlenie pozdĺž osi X                  |
-| `world.acceleration.y` | float | Zrýchlenie pozdĺž osi Y                  |
-| `world.acceleration.z` | float | Zrýchlenie pozdĺž osi Z                  |
+| `context.tilt.x`         | float | Náklon dopredu a dozadu (−180 až 180)    |
+| `context.tilt.y`         | float | Náklon doľava a doprava (−90 až 90)      |
+| `context.orientation`    | float | Otočenie zariadenia (0–360, kompas)      |
+| `context.acceleration.x` | float | Zrýchlenie pozdĺž osi X                  |
+| `context.acceleration.y` | float | Zrýchlenie pozdĺž osi Y                  |
+| `context.acceleration.z` | float | Zrýchlenie pozdĺž osi Z                  |
 
 ### Úroveň svetla {#light-level}
 
 <Feature id="light" />
 
 ```rea
-{if world.light < 10 begin}
+{if context.light < 10 begin}
   V úplnej tme začne fosforeskujúci text svietiť.
 {end if}
 
-{if world.light > 500 begin}
+{if context.light > 500 begin}
   Jasné slnko odhalí na strane neviditeľný atrament.
 {end if}
 ```
 
-`world.light` vracia okolité svetlo v luxoch (0 = tma, 500 a viac = jasné denné svetlo).
+`context.light` vracia okolité svetlo v luxoch (0 = tma, 500 a viac = jasné denné svetlo).
 
 ### Vibrácie a haptika {#vibration-and-haptics}
 
@@ -1521,12 +1521,12 @@ Pozri [Storylety a balíčky](/sk/spec/storylets) pre výber storyletov, spúš�
 Rea podporuje zápis hodov kockou inšpirovaný zvyklosťami stolových hier na hrdinov:
 
 ```rea
-{set combat.roll = dice("2d6+3")}
-Hodil si {combat.roll}!
+{set story.combat.roll = dice("2d6+3")}
+Hodil si {story.combat.roll}!
 
-{if combat.roll >= 10 begin}
+{if story.combat.roll >= 10 begin}
   Kritický úspech! Drak uteká.
-{else if combat.roll >= 7}
+{else if story.combat.roll >= 7}
   Draka zraníš.
 {else}
   Drak ťa odhodí bokom.
@@ -1553,8 +1553,8 @@ Skombinujte viacero senzorov do interakcií v štýle výziev, inšpirovaných g
 
 ```rea
 {challenge night_vigil begin}
-  require: world.hour >= 23 and world.light < 20
-  require: world.location matches @@48.14;17.10/200
+  require: context.time.hour >= 23 and context.light < 20
+  require: context.location matches @@48.14;17.10/200
   timeout: 30m
   hint: "Nájdi starú kaplnku po polnoci. Neber si svetlo."
 
@@ -1592,11 +1592,11 @@ Príbehy Rea môžu pristupovať k GPS, fotoaparátu, mikrofónu a pohybovým se
 **Pravidlá nakladania s údajmi:**
 
 1. **Predvolene pominuteľné.** Hodnoty senzorov existujú len počas aktuálnej relácie čítania. Žiadna trvalá história polohy, žiadne záznamy senzorov
-2. **Autori nemajú prístup k surovým údajom.** Autori dostávajú logické výsledky a udalosti (`world.location matches @@…` → `true`/`false`), nie presné súradnice. Výnimka: `{capture}` poskytuje fotografie len na zobrazenie v príbehu
+2. **Autori nemajú prístup k surovým údajom.** Autori dostávajú logické výsledky a udalosti (`context.location matches @@…` → `true`/`false`), nie presné súradnice. Výnimka: `{capture}` poskytuje fotografie len na zobrazenie v príbehu
 3. **Presná poloha sa neprenáša na server.** V kooperatívnom režime vidia ostatní čitatelia udalosti („Čitateľ A dorazil na waypoint_X"), nikdy nie surové súradnice
 4. **Mikrofón len počas relácie.** `{listen}` prepisuje miestne. Zvuk sa nikdy neukladá ani neprenáša — ako premenná je dostupný len rozpoznaný text
 5. **Počasie cez približnú geolokáciu.** Volania rozhrania počasia používajú polohu podľa IP adresy, nie súradnice GPS
-6. **Diagnostika nenesie dáta čitateľa.** Každé pravidlo vyššie viaže autorský kanál rovnako ako stav príbehu. Záznam smie pomenovať premennú, odcitovať to, čo autor doslova napísal do súboru `.rea`, a opísať *typ* hodnoty za behu — nikdy nie hodnotu. Neexistuje cesta v kóde, ktorou by sa prepis z `{listen}`, fotka z `{capture}`, `reader.*` alebo `world.location` stali argumentom diagnostiky; konštruktory, ktoré ich stavajú, odmietnu reťazec od volajúceho rovno. Pozri [Spracovanie chýb](error-handling.md)
+6. **Diagnostika nenesie dáta čitateľa.** Každé pravidlo vyššie viaže autorský kanál rovnako ako stav príbehu. Záznam smie pomenovať premennú, odcitovať to, čo autor doslova napísal do súboru `.rea`, a opísať *typ* hodnoty za behu — nikdy nie hodnotu. Neexistuje cesta v kóde, ktorou by sa prepis z `{listen}`, fotka z `{capture}`, `reader.*` alebo `context.location` stali argumentom diagnostiky; konštruktory, ktoré ich stavajú, odmietnu reťazec od volajúceho rovno. Pozri [Spracovanie chýb](error-handling.md)
 
 **Záruky pre čitateľa:**
 

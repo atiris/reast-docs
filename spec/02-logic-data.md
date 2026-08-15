@@ -268,12 +268,24 @@ A manifest MAY remap the four domain names to author-chosen identifiers:
 | `context.time.now`                                  | datetime |                                                                                             |
 | `context.time.date`                                 | string   |                                                                                             |
 | `context.time.hour`                                 | integer  |                                                                                             |
+| `context.time.minute`                               | integer  |                                                                                             |
 | `context.time.day`                                  | integer  |                                                                                             |
 | `context.time.month`                                | integer  |                                                                                             |
 | `context.time.year`                                 | integer  |                                                                                             |
-| `context.weather`                                   | string   |                                                                                             |
+| `context.time.weekday`                              | string   | Day name, lowercase.                                                                        |
+| `context.time.season`                               | string   | Hemisphere-aware.                                                                           |
+| `context.weather`                                   | string   | `clear`, `rain`, `snow`, `fog`, `storm`.                                                    |
+| `context.temperature`                               | float    | Celsius.                                                                                    |
+| `context.wind`                                      | float    | m/s.                                                                                        |
+| `context.humidity`                                  | float    | Percentage, 0–100.                                                                          |
 | `context.location`                                  | point    | Draft coordinate-literal grammar still gates direct use in comparisons.                    |
 | `context.location.lat` / `.lng` / `.alt` / `.acc`   | float    |                                                                                             |
+| `context.heading`                                   | float    | Compass heading, 0–360.                                                                     |
+| `context.speed`                                     | float    | m/s.                                                                                        |
+| `context.orientation`                               | float    | Device rotation, 0–360.                                                                     |
+| `context.tilt.x` / `.y`                             | float    | Forward/backward and left/right tilt.                                                       |
+| `context.acceleration.x` / `.y` / `.z`              | float    |                                                                                             |
+| `context.light`                                     | float    | Ambient light in lux.                                                                       |
 | `context.device.camera`                             | boolean  |                                                                                             |
 | `context.device.gps`                                | boolean  |                                                                                             |
 | `context.device.vibration`                          | boolean  |                                                                                             |
@@ -281,7 +293,9 @@ A manifest MAY remap the four domain names to author-chosen identifiers:
 | `context.group.readers`                             | array    |                                                                                             |
 | `context.group.role`                                | string   |                                                                                             |
 
-This replaces the old `reader.*`, `world.*`, `device.*`, `group.*` built-in namespaces — a breaking change with no compatibility shim; a story referencing `world.location` gets `link/unknown-domain`. A scanned/spoken payload (`{scan}`/`{listen}`) stays a lexical `event.kind`/`event.value` binding, not a `context.*` path — there is no "last scan result" to read continuously. The built-in `world.has(feature)` function is renamed to the plain global builtin **`has(feature)`**, matching the un-prefixed style of `max()`/`length()`/`number()`.
+This replaces the old `reader.*`, `world.*`, `device.*`, `group.*` built-in namespaces — a breaking change with no compatibility shim; a story referencing `world.location` gets `link/unknown-domain`. A scanned/spoken payload (`{scan}`/`{listen}`) stays a lexical `event.kind`/`event.value` binding, not a `context.*` path — there is no "last scan result" to read continuously. The two built-ins that used to hang off a namespace become plain global builtins, matching the un-prefixed style of `max()`/`length()`/`number()`: `world.has(feature)` is **`has(feature)`** and `group.readers_in_role(role)` is **`readers_in_role(role)`**.
+
+**What the reader carries is not `context.`** — `{give}`/`{take}` and the coin wallet write `story.reader.inventory`, `story.reader.pocket` and `story.reader.coins`, under `story.` because they are consequences of the story that a save must carry. `context.` is only what the platform observes and the story cannot change.
 
 A manifest MAY remap individual `context.*` paths, independently of a domain rename:
 
@@ -415,10 +429,10 @@ Geographic values are written with `@` rather than a constructor function, becau
 Points use `@`, areas use `@@`. The separator inside a coordinate is a **semicolon**, never a comma — a comma already separates the arguments a coordinate sits among. Radius is always in meters. Examples:
 
 ```rea
-{set home = @48.14;17.10}
-{set park = @@48.14;17.10/500}
-{set forest = @@48.14;17.10@48.15;17.10@48.15;17.11@48.14;17.11}
-{set donut = @@48.14;17.10/1000 - @@48.14;17.10/200}
+{set story.home = @48.14;17.10}
+{set story.park = @@48.14;17.10/500}
+{set story.forest = @@48.14;17.10@48.15;17.10@48.15;17.11@48.14;17.11}
+{set story.donut = @@48.14;17.10/1000 - @@48.14;17.10/200}
 ```
 
 Today the only place the engine reads a coordinate is the [`{waypoint}`](03-narrative-interaction.md#waypoints) command, which parses its own. Assigning one to a variable, or testing `context.location` against an area, needs the expression grammar to learn `@` — that is what the `draft` badge above means.

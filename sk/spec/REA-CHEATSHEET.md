@@ -67,13 +67,13 @@ Pri odkaze (`[text > cieľ]`) vyberá cieľové miesto prvý znak **cieľa** (za
 ## Premenné a tlač `{set}` `{nazov}`
 
 ```rea
-{set player.gold = 100}              Číslo
-{set player.name = "Aria"}           Reťazec (vždy v dvojitých úvodzovkách)
-{set player.items = ["sword", "map"]} Pole
-{set stats = [hp=100, dex=8]}        Pomenované položky
+{set story.player.gold = 100}              Číslo
+{set story.player.name = "Aria"}           Reťazec (vždy v dvojitých úvodzovkách)
+{set story.player.items = ["sword", "map"]} Pole
+{set story.stats = [hp=100, dex=8]}   Pomenované položky
 
-Ahoj, {player.name}! Máš {player.gold} zlata.
-{player.gold > 50 ? "bohatý" : "chudobný"}
+Ahoj, {story.player.name}! Máš {story.player.gold} zlata.
+{story.player.gold > 50 ? "bohatý" : "chudobný"}
 ```
 
 **Prefixy domén** (údaje platformy len na čítanie):
@@ -84,13 +84,13 @@ Ahoj, {player.name}! Máš {player.gold} zlata.
 ## Riadenie toku
 
 ```rea
-{if player.gold > 10 begin}         {for item in player.items begin}
+{if story.player.gold > 10 begin}         {for item in story.player.items begin}
   Máš dosť zlata.                      - {item}
-{else if player.gold > 0}           {end for}
+{else if story.player.gold > 0}           {end for}
   Ešte niečo máš.
 {else}                               {while fuel > 0 begin}
   Si na mizine.                        Pokračuj…
-{end if}                               {set fuel = fuel - 1}
+{end if}                               {set story.fuel = story.fuel - 1}
                                      {end while}
 {switch weapon begin}
   {case "sword"} Zblízka.            {case "bow"} Na diaľku.
@@ -109,8 +109,8 @@ Ahoj, {player.name}! Máš {player.gold} zlata.
 + [Trvalá voľba]                     Vždy dostupná
   Text po výbere.
 
-* {player.gold >= 10} [Kúp elixír]   Podmienená voľba
-  {set player.gold = player.gold - 10}
+* {story.player.gold >= 10} [Kúp elixír]   Podmienená voľba
+  {set story.player.gold = story.player.gold - 10}
 
 * * [Vnorená voľba]                  Druhá úroveň
 
@@ -142,7 +142,7 @@ Ahoj, {player.name}! Máš {player.gold} zlata.
 {end function}
 
 {greet("Aria")}                      Volanie (vykreslí text)
-{set dmg = damage(10, 1.5)}         Volanie (vráti hodnotu)
+{set story.dmg = damage(10, 1.5)}    Volanie (vráti hodnotu)
 ```
 
 **Vstavané:** `abs` `min` `max` `round` `random(1,6)` `clamp` `length` `upper` `lower` `trim` `contains` `replace` `split` `join` `append` `remove` `shuffle` `sort`
@@ -169,7 +169,7 @@ Pravidlá jazyka vnútri `.rext` nájdete v časti [Kde sa pravidlá líšia v s
 {select(pronoun, he="jeho", she="jej", other="ich")}
 {ordinal(3)}                          „3rd" (len en); iné lokály dostanú „3"
 {formatNumber(1234567, "sk")}         Formát čísla podľa lokálu (2. argument = lokál)
-{formatDate(world.date, "long")}      style: iso | short | medium | long | full
+{formatDate(context.time.date, "long")}      style: iso | short | medium | long | full
 {formatTime(now(), "short")}   {formatDateTime(now(), "iso")}
 ```
 
@@ -270,7 +270,7 @@ Lokál a politiku formátovania dodáva hostiteľ. `calendar()` je stále vo vý
 {coins silver_per_gold=5 bronze_per_silver=4}        Predefinovanie pomerov
 {earn gold 2}               Pridaj 2 zlaté (1 gold = 10 silver = 100 bronze)
 {spend bronze 3}            Minie 3 bronzové (podľa potreby rozmení vyššie)
-{if reader.coins.total >= 100 begin} … {end if}      Kontrola hodnoty peňaženky
+{if story.reader.coins.total >= 100 begin} … {end if}      Kontrola hodnoty peňaženky
 ```
 
 ```rea
@@ -278,7 +278,7 @@ Lokál a politiku formátovania dodáva hostiteľ. `calendar()` je stále vo vý
   name: Karty schopností
   use: Zahraním sa uplatní bonus.
   {on_use begin}                 Háčik sa spustí pri každej karte sady
-    {set ability_count = ability_count + 1}
+    {set story.ability_count = story.ability_count + 1}
   {end on_use}
 {end define}
 
@@ -330,8 +330,8 @@ Lokál a politiku formátovania dodáva hostiteľ. `calendar()` je stále vo vý
 
 1. **`{ }` = akcia**, **`[ ]` = odkaz** — to je celý jazyk
 2. **`begin` / `end`** — všetky blokové príkazy používajú túto dvojicu
-3. **Jedno `=` na porovnanie** (nie `==`), priradenie je vždy `{set x = …}`
-4. **Prefixy domén** oddeľujú premenné autora (`player.*`) od platformových (`reader.*`)
+3. **Jedno `=` na porovnanie** (nie `==`), priradenie je vždy `{set domena.meno = …}`
+4. **Prefixy domén** oddeľujú premenné autora (`story.player.*`) od platformových (`reader.*`)
 5. **`*` = jednorazová voľba**, **`+` = trvalá voľba**, **`-` = zber (opätovné zbiehanie)**
 6. **`->` = skok**, **`->->` = tunel (skok a automatický návrat)**
 7. **Prvý znak v `[ ]`** rozhoduje o médiu či kotve: `!` obrázok, `>` video, `?` zvuk, `#` kotva; v odkaze prefix **cieľa** `^` = poznámka pod čiarou, `*` = nápoveda

@@ -30,7 +30,7 @@ Pravidlá na úrovni jazyka špecifické pre moduly rozšírení `.rext` (ktoré
 
 | Prvok            | Konvencia      | Príklad                        |
 | ---------------- | -------------- | ------------------------------ |
-| Premenné         | `domena.nazov` | `player.gold`, `quest.has_key` |
+| Premenné         | `domena.nazov` | `story.player.gold`, `story.quest.has_key` |
 | Funkcie          | `snake_case`   | `calculate_damage`, `greet`    |
 | Kotvy            | `snake_case`   | `#the_clearing`                |
 | Príkazy          | `snake_case`   | `{voice}`, `{wait}`            |
@@ -42,10 +42,10 @@ Pravidlá na úrovni jazyka špecifické pre moduly rozšírení `.rext` (ktoré
 Všetky trvalé premenné (v rozsahu príbehu aj globálne) **musia** mať aspoň jeden prefix domény oddelený bodkou `.`:
 
 ```rea
-{set player.gold = 100}
-{set quest.has_key = true}
-{set tool.knife = "rusty"}
-{set role.king.power = 9}
+{set story.player.gold = 100}
+{set story.quest.has_key = true}
+{set story.tool.knife = "rusty"}
+{set story.role.king.power = 9}
 ```
 
 Prefixy domén organizujú premenné do logických menných priestorov, vďaka ktorým je stav príbehu sám o sebe zrozumiteľný. Názvy domén si autori volia voľne — bežné vzory zahŕňajú mená postáv, kategórie objektov alebo pojmy príbehu.
@@ -117,9 +117,9 @@ To znamená, že neanglicky píšuci autori môžu voľne používať vlastnú a
 Polia podporujú volania v štýle metód:
 
 ```rea
-{set player.inventory = ["sword", "shield"]}
-{append(player.inventory, "potion")}
-{remove(player.inventory, "shield")}
+{set story.player.inventory = ["sword", "shield"]}
+{append(story.player.inventory, "potion")}
+{remove(story.player.inventory, "shield")}
 ```
 
 ### Dopytovacie funkcie {#query-functions}
@@ -147,7 +147,7 @@ Polia podporujú volania v štýle metód:
 
 | Funkcia              | Popis                                                              |
 | -------------------- | ------------------------------------------------------------------ |
-| `world.has(feature)` | Overí schopnosť zariadenia (napr. `"camera"`, `"gps"`, `"nfc"`)    |
+| `has(feature)` | Overí schopnosť zariadenia (napr. `"camera"`, `"gps"`, `"nfc"`)    |
 
 ### Konštruktory typov a konverzné funkcie {#type-constructor-and-conversion-functions}
 

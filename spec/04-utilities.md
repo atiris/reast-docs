@@ -23,7 +23,7 @@ Rea provides built-in functions for grammatically correct text across all langua
 The `plural()` function maps a count to the correct grammatical form using CLDR plural categories. Categories vary by language — English has 2 (`one`, `other`), Slovak has 4 (`one`, `few`, `many`, `other`), Arabic has 6.
 
 ```rea
-{plural(gold, zero="no coins", one="{} coin", other="{} coins")}
+{plural(story.player.gold, zero="no coins", one="{} coin", other="{} coins")}
 ```
 
 For 0: "no coins", for 1: "1 coin", for 5: "5 coins". The `{}` placeholder inserts the count value.
@@ -31,7 +31,7 @@ For 0: "no coins", for 1: "1 coin", for 5: "5 coins". The `{}` placeholder inser
 **Slovak (4 categories):**
 
 ```rea
-{plural(count, one="{} pero", few="{} perá", other="{} pier")}
+{plural(story.pens, one="{} pero", few="{} perá", other="{} pier")}
 ```
 
 For 1: "1 pero", for 3: "3 perá", for 5: "5 pier".
@@ -56,7 +56,7 @@ The runtime resolves categories through `Intl.PluralRules` for the host-supplied
 The `select()` function maps a string value to text variants. Use it for gender, pronoun, role-based, or any key-based text variation:
 
 ```rea
-{select(pronoun, he="He draws his sword", she="She draws her sword", other="They draw their sword")}
+{select(story.player.pronoun, he="He draws his sword", she="She draws her sword", other="They draw their sword")}
 ```
 
 `other` is the fallback for unmatched values.
@@ -64,7 +64,7 @@ The `select()` function maps a string value to text variants. Use it for gender,
 **Role-based variation:**
 
 ```rea
-{select(reader.class, warrior="You swing your blade", mage="You cast a spell", other="You act")}
+{select(story.player.class, warrior="You swing your blade", mage="You cast a spell", other="You act")}
 ```
 
 ### Number formatting with `formatNumber()`
@@ -76,7 +76,7 @@ The `formatNumber()` function delegates to locale-aware number formatting
 optional second positional argument overrides it with a specific BCP 47 tag:
 
 ```rea
-Score: {formatNumber(player.score)}
+Score: {formatNumber(story.player.score)}
 Localised: {formatNumber(1234567, "sk")}
 ```
 
@@ -105,7 +105,7 @@ Distance: {formatNumber(meters, maximumFractionDigits=1)} m
 The `calendar()` function maps real date components to custom names — perfect for fantasy world-building:
 
 ```rea
-The month of {calendar(world.date, month="Frost,Bloom,Fire,Rain,Wind,Sun,Storm,Harvest,Mist,Shadow,Ice,Star")}
+The month of {calendar(context.time.date, month="Frost,Bloom,Fire,Rain,Wind,Sun,Storm,Harvest,Mist,Shadow,Ice,Star")}
 ```
 
 For January: "Frost", for March: "Fire", for December: "Star".
@@ -117,9 +117,9 @@ For January: "Frost", for March: "Fire", for December: "Star".
 | `era`     | Expression defining era calculation                  |
 
 ```rea
-Day of {calendar(world.date, weekday="Moonday,Fireday,Waterday,Earthday,Windday,Lightday,Darkday")},
-{calendar(world.date, month="Frost,Bloom,Fire,Rain,Wind,Sun,Storm,Harvest,Mist,Shadow,Ice,Star")} the
-{ordinal(world.date.day)}.
+Day of {calendar(context.time.date, weekday="Moonday,Fireday,Waterday,Earthday,Windday,Lightday,Darkday")},
+{calendar(context.time.date, month="Frost,Bloom,Fire,Rain,Wind,Sun,Storm,Harvest,Mist,Shadow,Ice,Star")} the
+{ordinal(context.time.day)}.
 ```
 
 ### Ordinal numbers with `ordinal()`
@@ -127,13 +127,13 @@ Day of {calendar(world.date, weekday="Moonday,Fireday,Waterday,Earthday,Windday,
 <Feature id="ordinal" />
 
 ```rea
-You finished in {ordinal(position)} place.
+You finished in {ordinal(story.race.position)} place.
 ```
 
 The ordinal category (one/two/few/other) comes from `Intl.PluralRules(locale, { type: "ordinal" })` for the host-supplied locale. Without named args, `ordinal()` appends the English suffixes `st`/`nd`/`rd`/`th` **only for `en*` locales**; every other locale receives the locale-formatted number with no suffix, because `Intl` carries no ordinal spell-out data and inventing suffixes per language would be wrong. Authors who want suffixes in another language pass per-category templates, where `{}` is replaced by the formatted number:
 
 ```rea
-{ordinal(position, one="{}.", other="{}.")}
+{ordinal(story.race.position, one="{}.", other="{}.")}
 ```
 
 So `ordinal(1)` is `1st` in English and `1` in German; the templated form yields `1.` in either.
@@ -190,7 +190,7 @@ Hard locks use server-side validation: the reader's answer is hashed client-side
 Lock content behind story conditions:
 
 ```rea
-{lock condition="player.level >= 10 and has_dragon_scale" begin}
+{lock condition="story.player.level >= 10 and story.player.has_dragon_scale" begin}
   The ancient text reveals itself only to the worthy.
 {end lock}
 ```

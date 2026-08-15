@@ -35,7 +35,7 @@ Funkcie môžu vracať hodnoty:
 ```rea
 {greet("Aiden", "morning")}
 
-Silnejší bojovník má {max(player.strength, enemy.strength)} sily.
+Silnejší bojovník má {max(story.player.strength, enemy.strength)} sily.
 ```
 
 ### Správanie funkcie podľa kontextu volania {#function-behavior-by-calling-context}
@@ -46,7 +46,7 @@ Funkcie môžu vykresľovať text, vracať hodnoty alebo oboje. Správanie závi
 | ----------------------------------- | ----------------- | ----------------------------- |
 | Samostatne: `{greet("Aiden")}`      | Áno               | Zahodí sa                     |
 | Vo výraze: `{max(a, b) + 10}`       | Áno (ak nejaký je) | Áno                          |
-| V priradení: `{set x = fn()}`       | Áno (ak nejaký je) | Priradí sa do `x`            |
+| V priradení: `{set story.x = fn()}` | Áno (ak nejaký je) | Priradí sa do `story.x`      |
 | V podmienke: `{if fn() begin}`      | Áno (ak nejaký je) | Vyhodnotí sa ako logická hodnota |
 
 **Klasifikácia funkcií:**
@@ -58,8 +58,8 @@ Funkcie môžu vykresľovať text, vracať hodnoty alebo oboje. Správanie závi
 
 ```rea
 {function reset_stats() begin}
-  {set player.health = 100}
-  {set player.gold = 0}
+  {set story.player.health = 100}
+  {set story.player.gold = 0}
 {end function}
 ```
 

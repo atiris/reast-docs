@@ -309,7 +309,7 @@ a runtime value.
 
 That rule is enforced by the shape of the API, not by review: there is no
 constructor that accepts a caller-supplied string. Quoted source is read back
-out of the file at a position. So a failed `{set gold = "abc"}` may report
+out of the file at a position. So a failed `{set story.gold = "abc"}` may report
 `"abc"`, because the author typed it into the file, while the same failure on a
 value that arrived through `{input}` can only report a type name.
 

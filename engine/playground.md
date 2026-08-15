@@ -11,7 +11,7 @@ Welcome to the Rea playground!
 
 This is a simple branching story. Try editing it.
 
-{set player.curious = true}
+{set story.player.curious = true}
 
 * [Explore the forest]
   You walk into a dense forest. Birds sing above.
@@ -160,7 +160,7 @@ or `experimental` on the [feature index](/spec/features):
 
 - **Prose** — paragraphs, headings, emphasis, blockquotes, rules, footnotes and hints
 - **Choices** — `*` one-time, `+` sticky, `-` gathers, `->` diverts, `->->` tunnels
-- **State** — `{set player.gold = 100}`, `{if …begin}…{end if}`, loops, functions
+- **State** — `{set story.player.gold = 100}`, `{if …begin}…{end if}`, loops, functions
 - **Narrative** — `{once}`, varying text, storylets, decks, exploration menus, cards
 
 Features badged `development` or `draft` are not implemented, so the parser

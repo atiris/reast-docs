@@ -104,23 +104,23 @@ Player emituje custom udalosti, na ktoré môžete počúvať:
 ```javascript
 const player = document.querySelector('reast-engine');
 
-player.addEventListener('rea-loaded', () => {
+story.player.addEventListener('rea-loaded', () => {
   console.log('Príbeh načítaný a vykreslený');
 });
 
-player.addEventListener('rea-metadata', (e) => {
+story.player.addEventListener('rea-metadata', (e) => {
   console.log('Názov:', e.detail.title);
 });
 
-player.addEventListener('rea-choice', (e) => {
+story.player.addEventListener('rea-choice', (e) => {
   console.log('Čitateľ si vybral možnosť', e.detail.index, 'zo skupiny', e.detail.nodeId);
 });
 
-player.addEventListener('rea-complete', () => {
+story.player.addEventListener('rea-complete', () => {
   console.log('Príbeh dokončený');
 });
 
-player.addEventListener('rea-error', (e) => {
+story.player.addEventListener('rea-error', (e) => {
   console.error('Chyba:', e.detail.message);
 });
 ```

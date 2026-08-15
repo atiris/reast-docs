@@ -380,14 +380,14 @@ mid-story behind an unlock code (see [When rules differ in `.rext` files](../spe
 Before packaging into `.reast`, story files can be minified and compressed for
 distribution. **Minification** (a lossless transformation of `.rea` source)
 strips all comments, removes unnecessary whitespace, shortens variable names
-(`player.health` → `p.h`) via a name-mapping table, and collapses multi-line
+(`story.player.health` → `p.h`) via a name-mapping table, and collapses multi-line
 commands onto single lines where possible. The mapping is written to
 `META-REA/names.json` for debugging:
 
 ```json
 {
-  "p.h": "player.health",
-  "p.g": "player.gold",
+  "p.h": "story.player.health",
+  "p.g": "story.player.gold",
   "e.s": "enemy.strength"
 }
 ```

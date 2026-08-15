@@ -61,10 +61,10 @@ As a choice, displays: `"I need to think about this."`
 Choices can have conditions:
 
 ```rea
-* {has_key} [Unlock the door]
+* {story.quest.has_key} [Unlock the door]
   The key fits perfectly. The door swings open.
 
-* {gold >= 50} [Bribe the guard]
+* {story.player.gold >= 50} [Bribe the guard]
   The guard pockets your gold and steps aside.
 
 * [Walk away]
@@ -85,7 +85,7 @@ A choice marked `hidden` renders no button. It stays in the group's pool — con
 The `hidden` keyword comes first on the choice line; a condition can follow it:
 
 ```rea
-* hidden {player.curious} [&look_under_sofa] …
+* hidden {story.player.curious} [&look_under_sofa] …
 ```
 
 Hidden choices are usually bound to an action card with `[&card_id]` — the card's `description:` is what free-text matching compares against, and its `scan:`/`mark:`/`listen:` fields are what real-world inputs match. Because the label only appears after the choice fires, hint at hidden content in the surrounding prose; the label and narration are the reward, not the invitation. Groups built mostly from hidden choices are covered in [Exploration menus](#exploration-menus).
@@ -183,7 +183,7 @@ The lock is old and rusted. Iron, with a simple mechanism.
 
 [#pick_lock_sequence]
 You pull out your tools and get to work.
-{if dexterity > 5 begin}
+{if story.player.dexterity > 5 begin}
   The pins click into place smoothly.
 {else}
   It takes several attempts, but finally...
@@ -245,12 +245,12 @@ You see a {label clue begin}mysterious symbol{end label} on the wall.
 Inline text that readers can tap to cycle through options, useful for character customization or exploratory narrative:
 
 ```rea
-You chose the {cycle color begin}red|blue|green|black{end cycle} cloak.
+You chose the {cycle story.cloak_color begin}red|blue|green|black{end cycle} cloak.
 ```
 
 The reader taps the highlighted word to cycle: `red` → `blue` → `green` → `black` → `red` → ...
 
-The selected value is accessible as a variable: `{color}` returns the current selection.
+The selected value is accessible as a variable: `{story.cloak_color}` returns the current selection.
 
 ### Varying text
 
@@ -290,18 +290,18 @@ You stand in the town square.
 {once name=visit_market begin}
   * [Visit the market]
     You explore the bustling market stalls.
-    {set flag.visited_market = true}
+    {set story.flag.visited_market = true}
     -> town_square
 {end once}
 
 {once name=visit_temple begin}
   * [Enter the temple]
     The temple is quiet and cool inside.
-    {set flag.temple_blessing = true}
+    {set story.flag.temple_blessing = true}
     -> town_square
 {end once}
 
-{if flag.visited_market and flag.temple_blessing begin}
+{if story.flag.visited_market and story.flag.temple_blessing begin}
   * [Head to the castle]
     With supplies and blessing, you're ready.
     -> castle_gates
@@ -319,7 +319,7 @@ Multiple storylines that advance independently and converge at key moments:
   {thread elena_thread begin}
     [#elena_journey]
     Elena travels west through the forest.
-    {set elena.location = "forest"}
+    {set story.elena.location = "forest"}
     {wait gareth_thread.reached("bridge") begin}{end wait}
     They meet at the bridge.
   {end thread}
@@ -327,7 +327,7 @@ Multiple storylines that advance independently and converge at key moments:
   {thread gareth_thread begin}
     [#gareth_journey]
     Gareth takes the mountain path.
-    {set gareth.location = "mountain"}
+    {set story.gareth.location = "mountain"}
     [#bridge]
     He arrives at the old stone bridge.
   {end thread}
@@ -395,7 +395,7 @@ The platform provides built-in back navigation, allowing readers to revisit prev
 By default, undo is **enabled** for solo reading and **disabled** for cooperative reading (shared state cannot be rewound). Authors can explicitly disable it for puzzle sections where undoing defeats the purpose:
 
 ```rea
-{lock condition="has_key" begin}
+{lock condition="story.quest.has_key" begin}
   {undo enabled=false}
   The door slams shut behind you. There is no going back.
   {comment Reader cannot undo past this point until the lock section ends}
@@ -447,10 +447,10 @@ flags it as a warning. A gate may target a scene within the part with
 express variable-driven branching without a manual choice:
 
 ```rea
-{if has_key begin}
+{if story.quest.has_key begin}
 [[ story/0006-castle.rea ]]
 {end if}
-{if not has_key begin}
+{if not story.quest.has_key begin}
 [[ story/0006-bush.rea ]]
 {end if}
 ```
@@ -518,7 +518,7 @@ Items can be added to a reader's inventory:
 ```rea
 {give golden_key}
 {take golden_key}
-{if "golden_key" in reader.inventory begin}
+{if "golden_key" in story.reader.inventory begin}
   The key grows warm in your pocket.
 {end if}
 ```
@@ -541,7 +541,7 @@ conversion ratios:
 {earn silver 5}
 {spend bronze 3}
 
-{if reader.coins.total >= 100 begin}
+{if story.reader.coins.total >= 100 begin}
   You can afford the enchanted blade.
 {end if}
 ```
@@ -553,9 +553,9 @@ saves:
 
 | Variable             | Contents                                           |
 | -------------------- | -------------------------------------------------- |
-| `reader.coins`       | Normalized `{gold, silver, bronze, total}` balance |
-| `reader.coins.total` | Total value in bronze base units                   |
-| `reader.coinNames`   | Author display labels `{gold, silver, bronze}`     |
+| `story.reader.coins`       | Normalized `{gold, silver, bronze, total}` balance |
+| `story.reader.coins.total` | Total value in bronze base units                   |
+| `story.reader.coinNames`   | Author display labels `{gold, silver, bronze}`     |
 
 ### Action cards `[&]`
 
@@ -652,10 +652,10 @@ A set may attach executable hooks that run for **every** card of that set. The h
 {define cardset ability begin}
   name: Ability Cards
   {on_acquire begin}
-    {set ability_count = ability_count + 1}
+    {set story.ability_count = story.ability_count + 1}
   {end on_acquire}
   {on_use begin}
-    {set last_ability_used = event.card_id}
+    {set story.last_ability_used = event.card_id}
   {end on_use}
 {end define}
 ```
@@ -665,9 +665,9 @@ An individual card may **override** any hook while still inheriting the set's ot
 ```rea
 {define ability ginko begin}
   name: Ginko
-  intelligence: +2
+  story.player.intelligence: +2
   {on_use begin}
-    {set intelligence = intelligence + 2}
+    {set story.player.intelligence = story.player.intelligence + 2}
   {end on_use}
 {end define}
 ```
@@ -681,7 +681,7 @@ An individual card may **override** any hook while still inheriting the set's ot
 `{play <card_id>}` triggers a card's usage. It runs the card's `{on_use}` hook (falling back to the owning set's `{on_use}` when the card does not redefine it), so an attribute card applies its attribute and an action card runs its effect through the same command:
 
 ```rea
-{play ginko}        Runs ginko's on_use → intelligence + 2
+{play ginko}        Runs ginko's on_use → story.player.intelligence + 2
 {play spinach}      Runs the ability set's on_use for spinach
 ```
 
@@ -696,7 +696,7 @@ The three built-in sets may be redefined to attach shared rules without changing
   name: Combat Actions
   use: Spend an action point to play.
   {on_use begin}
-    {set actions_played = actions_played + 1}
+    {set story.actions_played = story.actions_played + 1}
   {end on_use}
 {end define}
 ```
@@ -785,8 +785,8 @@ Reset to defaults by calling `{voice}` without attributes.
 <Feature id="text-input" />
 
 ```rea
-{input name=player_name, placeholder="Enter your name"}
-Hello, {player_name}!
+{input name=story.player.name, placeholder="Enter your name"}
+Hello, {story.player.name}!
 ```
 
 **Input behavior:** Execution pauses at `{input}` until the reader submits a value. The value is stored in the variable specified by `name`. If the reader submits an empty value, the variable is set to an empty string `""`.
@@ -794,7 +794,7 @@ Hello, {player_name}!
 ### Numeric input
 
 ```rea
-{input name=guess, type="number", min=1, max=100, placeholder="Guess a number"}
+{input name=story.answer.guess, type="number", min=1, max=100, placeholder="Guess a number"}
 ```
 
 Numeric input validates against `min`/`max` constraints. Out-of-range values are clamped to the nearest bound. Non-numeric input defaults to `0`.
@@ -901,8 +901,8 @@ Verbs can be conditional and context-sensitive:
 
 ```rea
 {verbs begin}
-  unlock: "Unlock" {if has_key}
-  pick: "Pick the lock" {if dexterity > 5}
+  unlock: "Unlock" {if story.quest.has_key}
+  pick: "Pick the lock" {if story.player.dexterity > 5}
 {end verbs}
 ```
 
@@ -933,7 +933,7 @@ Rea natively supports **multi-reader experiences** where multiple people read th
 ### Role-specific content
 
 ```rea
-{if group.role = "captain" begin}
+{if context.group.role = "captain" begin}
   Only you can see the secret map. What do you tell your crew?
 {else}
   The captain is studying something. You wait for orders.
@@ -987,7 +987,7 @@ Readers share a common state namespace. Any reader can modify shared variables, 
 
 ```rea
 {set shared.torch_lit = true}
-{set shared.door_opened_by = reader.name}
+{set shared.door_opened_by = context.reader.name}
 
 {if shared.torch_lit begin}
   The torch illuminates the passage for everyone.
@@ -1115,7 +1115,7 @@ When multiple readers modify a shared variable simultaneously:
 
 ```rea
 {exclusive action="modify_treasury" begin}
-  {set shared.gold = shared.gold + player.contribution}
+  {set shared.gold = shared.gold + story.player.contribution}
 {end exclusive}
 ```
 
@@ -1147,7 +1147,7 @@ Roles are **not automatically reassigned** when a reader disconnects. If the cap
 Authors should always write defensive role checks:
 
 ```rea
-{if group.readers_in_role("captain") = 0 begin}
+{if readers_in_role("captain") = 0 begin}
   The crew is leaderless. Someone must step up.
 {end if}
 ```
@@ -1174,10 +1174,10 @@ Cooperative stories must be playable by a single reader without modification. Th
 | `{on reader_join begin}`                | Fires when a reader joins                | **Never fires**                                   |
 | `{on reader_leave begin}`               | Fires when a reader leaves               | **Never fires**                                   |
 | `{on reader_idle begin}`                | Fires when a reader is idle              | **Can fire** — solo reader can be idle            |
-| `group.size`                            | Number of connected readers              | Returns **1**                                     |
-| `group.readers`                         | List of reader objects                   | Returns **[self]**                                |
-| `group.role`                            | Current reader's role                    | Returns first defined role                        |
-| `group.readers_in_role(R)`              | Count of readers in role R               | Returns **1** for all roles                       |
+| `context.group.size`                            | Number of connected readers              | Returns **1**                                     |
+| `context.group.readers`                         | List of reader objects                   | Returns **[self]**                                |
+| `context.group.role`                            | Current reader's role                    | Returns first defined role                        |
+| `readers_in_role(R)`              | Count of readers in role R               | Returns **1** for all roles                       |
 
 **Solo principles:**
 
@@ -1188,7 +1188,7 @@ Cooperative stories must be playable by a single reader without modification. Th
 
 #### Role handling in solo mode
 
-By default, the solo reader is assigned to **all roles simultaneously**. Role-gated blocks (`{if group.role = "captain" begin}`) evaluate to true, and when multiple role blocks exist for the same passage, all display with a visual role badge (e.g., `[Captain]`, `[Crew]`).
+By default, the solo reader is assigned to **all roles simultaneously**. Role-gated blocks (`{if context.group.role = "captain" begin}`) evaluate to true, and when multiple role blocks exist for the same passage, all display with a visual role badge (e.g., `[Captain]`, `[Crew]`).
 
 Authors who want single-role solo play (reader picks one role, replays for others) can opt in via the manifest:
 
@@ -1215,13 +1215,13 @@ Declare which real-world features a story needs. The reader app checks availabil
 {require nfc optional}
 ```
 
-Adding `optional` means the feature enhances the story but isn't required. The `world.has()` function checks at runtime:
+Adding `optional` means the feature enhances the story but isn't required. The `has()` function checks at runtime:
 
 ```rea
-{if world.has("nfc") begin}
+{if has("nfc") begin}
   Tap the NFC tag hidden under the bench.
 {else}
-  Type the code printed on the bench: {input type="text", name=bench_code}
+  Type the code printed on the bench: {input type="text", name=part.bench_code}
 {end if}
 ```
 
@@ -1232,7 +1232,7 @@ Adding `optional` means the feature enhances the story but isn't required. The `
 GPS coordinates use the `@` point literal and `@@` area literal:
 
 ```rea
-{if world.location matches @@48.14;17.10/500 begin}
+{if context.location matches @@48.14;17.10/500 begin}
   You feel a strange resonance. This is the place from the story!
 {end if}
 ```
@@ -1241,13 +1241,13 @@ GPS coordinates use the `@` point literal and `@@` area literal:
 
 | Property             | Type  | Description                        |
 | -------------------- | ----- | ---------------------------------- |
-| `world.location`     | point | Current (lat, lng) position        |
-| `world.location.lat` | float | Latitude                           |
-| `world.location.lng` | float | Longitude                          |
-| `world.location.alt` | float | Altitude in meters (if available)  |
-| `world.location.acc` | float | Accuracy in meters                 |
-| `world.heading`      | float | Compass heading in degrees (0-360) |
-| `world.speed`        | float | Movement speed in m/s              |
+| `context.location`     | point | Current (lat, lng) position        |
+| `context.location.lat` | float | Latitude                           |
+| `context.location.lng` | float | Longitude                          |
+| `context.location.alt` | float | Altitude in meters (if available)  |
+| `context.location.acc` | float | Accuracy in meters                 |
+| `context.heading`      | float | Compass heading in degrees (0-360) |
+| `context.speed`        | float | Movement speed in m/s              |
 
 ### Waypoints
 
@@ -1297,7 +1297,7 @@ A story set in a real place can show its own map instead of a generic one: an au
     label: The old bridge
   {end pin}
   {pin reader begin}
-    at: world.location
+    at: context.location
     label: You
   {end pin}
 {end map}
@@ -1334,11 +1334,11 @@ Define areas that trigger events when the reader enters or exits:
 {zone dark_forest @@48.14;17.10@48.15;17.10@48.15;17.11@48.14;17.11 begin}
   {on enter begin}
     The trees close in around you. The forest feels alive.
-    {set ui.ambient = "forest"}
+    {set story.ui.ambient = "forest"}
   {end on}
   {on exit begin}
     You emerge from the forest, blinking in the sunlight.
-    {set ui.ambient = "default"}
+    {set story.ui.ambient = "default"}
   {end on}
 {end zone}
 ```
@@ -1348,7 +1348,7 @@ Define areas that trigger events when the reader enters or exits:
 <Feature id="time-of-day" />
 
 ```rea
-{if world.hour >= 22 or world.hour < 6 begin}
+{if context.time.hour >= 22 or context.time.hour < 6 begin}
   The darkness around you feels real tonight.
 {else}
   Daylight makes the story feel less frightening.
@@ -1359,19 +1359,19 @@ Define areas that trigger events when the reader enters or exits:
 
 | Property        | Type    | Description                |
 | --------------- | ------- | -------------------------- |
-| `world.hour`    | integer | Current hour (0-23)        |
-| `world.minute`  | integer | Current minute (0-59)      |
-| `world.weekday` | string  | Day name (lowercase)       |
-| `world.date`    | string  | ISO date string            |
-| `world.season`  | string  | Season based on hemisphere |
+| `context.time.hour`    | integer | Current hour (0-23)        |
+| `context.time.minute`  | integer | Current minute (0-59)      |
+| `context.time.weekday` | string  | Day name (lowercase)       |
+| `context.time.date`    | string  | ISO date string            |
+| `context.time.season`  | string  | Season based on hemisphere |
 
 ### Night mode
 
 Combine time and light sensor for atmosphere:
 
 ```rea
-{if world.hour >= 22 and world.light < 50 begin}
-  {set ui.theme = "dark"}
+{if context.time.hour >= 22 and context.light < 50 begin}
+  {set story.ui.theme = "dark"}
   The chapter can only be read in darkness. Turn off the lights.
 {end if}
 ```
@@ -1381,7 +1381,7 @@ Combine time and light sensor for atmosphere:
 <Feature id="weather" />
 
 ```rea
-{if world.weather = "rain" begin}
+{if context.weather = "rain" begin}
   How fitting — it's raining in the story and outside your window.
 {end if}
 ```
@@ -1390,10 +1390,10 @@ Combine time and light sensor for atmosphere:
 
 | Property            | Type   | Description                                       |
 | ------------------- | ------ | ------------------------------------------------- |
-| `world.weather`     | string | Current condition (clear, rain, snow, fog, storm) |
-| `world.temperature` | float  | Temperature in Celsius                            |
-| `world.wind`        | float  | Wind speed in m/s                                 |
-| `world.humidity`    | float  | Humidity percentage (0-100)                       |
+| `context.weather`     | string | Current condition (clear, rain, snow, fog, storm) |
+| `context.temperature` | float  | Temperature in Celsius                            |
+| `context.wind`        | float  | Wind speed in m/s                                 |
+| `context.humidity`    | float  | Humidity percentage (0-100)                       |
 
 ### QR and barcode scanning
 
@@ -1433,8 +1433,8 @@ A `{scan}` block is *blocking* — the story stops at that point and waits for t
   Tap your device on the NFC tag to reveal the hidden message.
 {end nfc}
 
-{nfc read, name=tag_data begin}
-  The tag contains: {tag_data}
+{nfc read, name=part.tag_data begin}
+  The tag contains: {part.tag_data}
 {end nfc}
 ```
 
@@ -1474,28 +1474,28 @@ Access device sensors for physical interactions:
 
 | Property               | Type  | Description                         |
 | ---------------------- | ----- | ----------------------------------- |
-| `world.tilt.x`         | float | Forward/backward tilt (-180 to 180) |
-| `world.tilt.y`         | float | Left/right tilt (-90 to 90)         |
-| `world.orientation`    | float | Device rotation (0-360, compass)    |
-| `world.acceleration.x` | float | Acceleration along X axis           |
-| `world.acceleration.y` | float | Acceleration along Y axis           |
-| `world.acceleration.z` | float | Acceleration along Z axis           |
+| `context.tilt.x`         | float | Forward/backward tilt (-180 to 180) |
+| `context.tilt.y`         | float | Left/right tilt (-90 to 90)         |
+| `context.orientation`    | float | Device rotation (0-360, compass)    |
+| `context.acceleration.x` | float | Acceleration along X axis           |
+| `context.acceleration.y` | float | Acceleration along Y axis           |
+| `context.acceleration.z` | float | Acceleration along Z axis           |
 
 ### Light level
 
 <Feature id="light" />
 
 ```rea
-{if world.light < 10 begin}
+{if context.light < 10 begin}
   In complete darkness, the phosphorescent text begins to glow.
 {end if}
 
-{if world.light > 500 begin}
+{if context.light > 500 begin}
   The bright sunlight reveals invisible ink on the page.
 {end if}
 ```
 
-`world.light` returns ambient light in lux (0 = darkness, 500+ = bright daylight).
+`context.light` returns ambient light in lux (0 = darkness, 500+ = bright daylight).
 
 ### Vibration and haptics
 
@@ -1523,11 +1523,11 @@ Pattern: array of alternating vibrate/pause durations in milliseconds.
 <Feature id="listen" />
 
 ```rea
-{listen language="en", name=spoken_word begin}
+{listen language="en", name=story.spoken_word begin}
   Speak the magic word to open the door.
 {end listen}
 
-{if spoken_word = "abracadabra" begin}
+{if story.spoken_word = "abracadabra" begin}
   The door slowly creaks open.
 {end if}
 ```
@@ -1547,12 +1547,12 @@ See [Storylets & Decks](/spec/storylets) for storylet selection, triggers, and p
 Inspired by tabletop RPG conventions, Rea supports dice notation for game-like interactions:
 
 ```rea
-{set combat.roll = dice("2d6+3")}
-You rolled {combat.roll}!
+{set story.combat.roll = dice("2d6+3")}
+You rolled {story.combat.roll}!
 
-{if combat.roll >= 10 begin}
+{if story.combat.roll >= 10 begin}
   Critical success! The dragon flees.
-{else if combat.roll >= 7}
+{else if story.combat.roll >= 7}
   You wound the dragon.
 {else}
   The dragon swipes you aside.
@@ -1579,8 +1579,8 @@ Combine multiple sensors into challenge-style interactions inspired by geocachin
 
 ```rea
 {challenge night_vigil begin}
-  require: world.hour >= 23 and world.light < 20
-  require: world.location matches @@48.14;17.10/200
+  require: context.time.hour >= 23 and context.light < 20
+  require: context.location matches @@48.14;17.10/200
   timeout: 30m
   hint: "Find the old chapel after midnight. Bring no light."
 
@@ -1618,11 +1618,11 @@ Rea stories can access GPS, camera, microphone, and motion sensors. The platform
 **Data handling rules:**
 
 1. **Ephemeral by default.** Sensor values exist only during the current reading session. No persistent location history, no sensor logs
-2. **No author access to raw data.** Authors receive boolean/event results (`world.location matches @@...` → `true`/`false`), not exact coordinates. Exception: `{capture}` gives photos for in-story display only
+2. **No author access to raw data.** Authors receive boolean/event results (`context.location matches @@...` → `true`/`false`), not exact coordinates. Exception: `{capture}` gives photos for in-story display only
 3. **No server transmission of precise location.** In cooperative mode, other readers see events ("Reader A reached waypoint_X"), never raw coordinates
 4. **Session-only microphone.** `{listen}` transcribes locally. Audio is never stored or transmitted — only recognized text is available as a variable
 5. **Weather via approximate geolocation.** Weather API calls use IP-based location, not GPS coordinates
-6. **Diagnostics carry no reader data.** Every rule above binds the author channel as well as story state. A record may name a variable, quote what the author literally typed into the `.rea` file, and describe the *type* of a runtime value — never the value. There is no code path by which a `{listen}` transcript, a `{capture}` photo, `reader.*` or `world.location` becomes a diagnostic argument; the constructors that build one refuse a caller-supplied string outright. See [Error Handling](error-handling.md)
+6. **Diagnostics carry no reader data.** Every rule above binds the author channel as well as story state. A record may name a variable, quote what the author literally typed into the `.rea` file, and describe the *type* of a runtime value — never the value. There is no code path by which a `{listen}` transcript, a `{capture}` photo, `reader.*` or `context.location` becomes a diagnostic argument; the constructors that build one refuse a caller-supplied string outright. See [Error Handling](error-handling.md)
 
 **Reader-facing guarantees:**
 

@@ -11,7 +11,7 @@ Vitajte v Rea ihrisku!
 
 Toto je jednoduchý rozvetvený príbeh. Skúste ho upraviť.
 
-{set player.zvedavy = true}
+{set story.player.zvedavy = true}
 
 * [Preskúmať les]
   Vojdeš do hustého lesa. Vtáky spievajú nad hlavou.
@@ -45,7 +45,7 @@ function renderStory() {
   container.innerHTML = '';
   const player = document.createElement('reast-engine');
   const blob = new Blob([source.value], { type: 'text/plain' });
-  player.setAttribute('src', URL.createObjectURL(blob));
+  story.player.setAttribute('src', URL.createObjectURL(blob));
   container.appendChild(player);
 }
 
@@ -158,7 +158,7 @@ Funguje tu všetko, čo jadro implementuje — teda všetko označené ako `stab
 
 - **Próza** — odseky, nadpisy, dôraz, citácie, čiary, poznámky pod čiarou a nápovedy
 - **Voľby** — `*` jednorazové, `+` trvalé, `-` zbery, `->` odbočky, `->->` tunely
-- **Stav** — `{set player.gold = 100}`, `{if …begin}…{end if}`, cykly, funkcie
+- **Stav** — `{set story.player.gold = 100}`, `{if …begin}…{end if}`, cykly, funkcie
 - **Naratív** — `{once}`, meniaci sa text, storylety, balíčky, menu objavovania, karty
 
 Funkcie so značkou `development` alebo `draft` implementované nie sú, takže ich parser spracuje ako bežný text — pozri [elegantnú degradáciu](/sk/spec/error-handling).

@@ -9,7 +9,7 @@ Nasledujúce tri fázy sú všetky platné Rea. Prvý riadok je už úplný prí
 ```rea
 Cesta sa vetvila pri starom dube.
 
-{set player.torch = true}
+{set story.player.torch = true}
 
 * [Vydaj sa ľavou cestou]
 * [Vydaj sa pravou cestou]

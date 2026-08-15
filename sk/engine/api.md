@@ -48,7 +48,7 @@ z metadát príbehu → `<html lang>` hostiteľskej stránky → `en`.
 | `load(url)` | Načítať príbeh z URL archívu `.reast`. |
 | `render(text)` | Sparsovať a vykresliť surový text `.rea`. |
 | `importVariables(vars)` | Zlúčiť premenné do runtime a znovu zosynchronizovať podmienený obsah. |
-| `updateLocation(position)` | Vrátiť `GeoPosition` (alebo `null`) po evente `location-start`; poháňa `world.location.*`. |
+| `updateLocation(position)` | Vrátiť `GeoPosition` (alebo `null`) po evente `location-start`; poháňa `context.location.*`. |
 | `selectChoice(nodeId, optionIndex)` | Programovo vybrať možnosť. `optionIndex` adresuje **viditeľné** možnosti — rovnaké číslovanie, aké reportuje `choices`, takže skrytá podmienená možnosť ho nikdy neposunie. Vráti `false`, ak skupina zmizla, už je vybraná, alebo je index mimo rozsahu. |
 | `blockAt(index)` | Vykreslený blokový element na indexe kontajnera (číslovanie, ktoré používa `rea-progress`), alebo `null`. |
 | `revertChoice(nodeId)` | Vrátiť skupinu volieb: zruší jej výber aj všetko za ním, prehrá ponechané výbery, previnie tok. |

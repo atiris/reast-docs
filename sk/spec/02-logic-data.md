@@ -46,7 +46,7 @@ Obidva tvary dávajú rovnaký výsledok. Atribút `content` nastavuje parser na
 Samotný výraz v `{ }` sa vytlačí:
 
 ```rea
-Ahoj, {player.name}! Máš {player.gold} zlata.
+Ahoj, {story.player.name}! Máš {story.player.gold} zlata.
 ```
 
 Koncepčne je to rovnaké ako vytlačenie hodnoty výrazu.
@@ -80,8 +80,8 @@ Logické atribúty možno uviesť bez hodnoty (prítomnosť znamená `true`):
 **Pozičné parametre** predchádzajú pomenovaným. Vo volaniach funkcií idú pozičné argumenty ako prvé:
 
 ```rea
-{plural(player.gold, zero="žiadne mince", one="{} minca", other="{} mincí")}
-{formatNumber(player.score, style="decimal", maximumFractionDigits=0)}
+{plural(story.player.gold, zero="žiadne mince", one="{} minca", other="{} mincí")}
+{formatNumber(story.player.score, style="decimal", maximumFractionDigits=0)}
 {max(a, b)}
 ```
 
@@ -92,7 +92,7 @@ Logické atribúty možno uviesť bez hodnoty (prítomnosť znamená `true`):
 Príkazy sa dajú pomenovať pre neskoršie použitie pomocou `name=`:
 
 ```rea
-{if player.gold > 100, name=rich_check begin}
+{if story.player.gold > 100, name=rich_check begin}
   Predvádzaš svoje bohatstvo.
 {end if}
 ```
@@ -119,72 +119,164 @@ Pomenované príkazy sledujú stav vykonania (pozri [Vstavané funkcie](05-refer
 
 <Feature id="set" />
 
-Všetky trvalé premenné musia mať **prefix domény** — bodkami oddelený menný priestor, ktorý organizuje stav do logických kategórií:
+Každá referencia na premennú a každý cieľ `{set}` musí niesť **prefix domény**. Holé meno bez bodky v pozícii `{set}` je chyba (`parse/dotless-set`). Doména je povinný prvý segment; všetko za ňou je voľný, nedeklarovaný menný priestor autora, usporiadaný do logických kategórií. Neexistuje samostatný „trvalý" a „netrvalý" druh premennej — životnosť premennej určuje výhradne doména (pozri [Rozsahy platnosti](#scoping)):
 
 ```rea
-{set player.name = "Aiden"}
-{set player.gold = 100}
-{set quest.has_key = true}
-{set player.inventory = ["meč", "fakľa", "mapa"]}
+{set story.player.name = "Aiden"}
+{set story.player.gold = 100}
+{set story.quest.has_key = true}
+{set story.player.inventory = ["meč", "fakľa", "mapa"]}
 ```
 
-Názvy domén si autori volia voľne. Bežné vzory:
+Bežné vzory voľného menného priestoru, pod tou doménou, ktorá zodpovedá životnosti premennej:
 
-| Vzor domény         | Použitie                    | Príklad                         |
-| ------------------- | --------------------------- | ------------------------------- |
-| Meno postavy        | Stav postavy                | `player.gold`, `elena.location` |
-| Kategória objektu   | Predmety, nástroje, prostredie | `tool.knife`, `door.state`   |
-| Pojem príbehu       | Príznaky, úlohy, postup     | `quest.has_key`, `flag.visited` |
-| Viacúrovňové vnorenie | Jemnejšie členenie        | `role.king.power`, `map.zone.3` |
+| Vzor                  | Použitie                       | Príklad                                       |
+| --------------------- | ------------------------------ | --------------------------------------------- |
+| Meno postavy          | Stav postavy                   | `story.player.gold`, `story.elena.location`   |
+| Kategória objektu     | Predmety, nástroje, prostredie | `story.tool.knife`, `story.door.state`        |
+| Pojem príbehu         | Príznaky, úlohy, postup        | `story.quest.has_key`, `story.flag.visited`   |
+| Viacúrovňové vnorenie | Jemnejšie členenie             | `story.role.king.power`, `story.map.zone.3`   |
 
 ### Rozsahy platnosti {#scoping}
 
 <Feature id="scopes" />
 
-Premenné existujú v troch rozsahoch:
+Bez premenovania domén v manifeste ([nižšie](#domain-renaming)) existujú presne tieto štyri domény:
 
-| Rozsah      | Syntax                          | Popis                                                                                                                     |
-| ----------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| **príbeh**  | `{set domena.premenna = hod}`   | Predvolený. Dostupný v celom reaste.                                                                                      |
-| **zdieľaný** | `{set shared.domena.premenna = hod}` | Zdieľaný medzi všetkými čitateľmi v skupine. Pretrváva medzi reastami v sérii.                                     |
-| **nadpis**  | `{set jednoducha = hod}`        | Platný v aktuálnom nadpise a jeho podnadpisoch. Prestáva existovať, keď sa začne nadpis rovnakej alebo vyššej úrovne.     |
-
-```rea
-{set player.gold = 50}
-{set shared.player.name = "Aiden"}
-```
-
-Prefix `shared.` je modifikátor rozsahu — `shared.player.name` znamená „premenná `player.name` zdieľaná medzi všetkými čitateľmi v skupine a medzi reastami".
-
-**Premenné v rozsahu nadpisu** používajú jednoduché názvy **bez** bodky (bez prefixu domény):
+| Doména     | Životnosť a účel                                                                                                                                                              |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `part.`    | Lokálny dočasný stav. Vynuluje sa pri každej zmene aktívnej **časti** (terminálna brána, odkaz medzi časťami alebo akýkoľvek iný prechod medzi súbormi častí) — vrátane opätovného vstupu do už navštívenej časti; obnovenie neexistuje. |
+| `story.`   | Pretrváva v celom balíku `.reast`, naprieč všetkými časťami, po celý čas čítania (a medzi sedeniami cez uloženie/obnovenie).                                                   |
+| `shared.`  | Pretrváva ako `story.`, ale každý zápis sa replikuje ku každému pripojenému čitateľovi v kooperatívnom sedení (`env/shared-write-conflict` — vyhráva posledný zápis).          |
+| `context.` | Interakcia so svetom, čitateľom, zariadením a bežiacim sedením, len na čítanie — pozri [Doména context](#context-domain).                                                       |
 
 ```rea
-## Hrad
-
-{set strength = 50}
-
-### Brána
-{comment begin}strength je tu stále 50 — podnadpis dedí rozsah rodiča{end comment}
-
-## Po obliehaní
-{comment begin}strength už neexistuje — nový nadpis rovnakej úrovne{end comment}
+{set story.player.gold = 50}
+{set shared.story.player.name = "Aiden"}
+{set part.scratch.attempts = 0}
 ```
 
-Premenné v rozsahu nadpisu sú ideálne pre dočasný stav miestny pre príbeh, ktorý nemá pretrvať za hranicu aktuálnej naratívnej sekcie. Premenné cyklu (`{for}`) a parametre funkcií majú podobný rozsah bez domény.
+`shared.` a `part.` sú domény samy osebe, nie modifikátory nad `story.` — `shared.story.player.name` znamená „`story.player.name` pod doménou `shared`", nie „`story.player.name` z domény story, zdieľaná".
 
-### Vstavané menné priestory premenných {#context-domain}
+**Rozsah nadpisu už neexistuje.** Neexistuje forma premennej bez domény — každý cieľ `{set}` aj každé čítanie nesie jednu zo štyroch domén vyššie (alebo jej premenovanie z manifestu). Autor, ktorý chce dočasný stav miestny pre sekciu, použije `part.`: správa sa ako `story.` (pretrváva cez hranice nadpisov, telá cyklov aj vetvy `{if}`) s tým rozdielom, že sa vynuluje pri zmene časti, nie na hranici nadpisu.
 
-<Feature id="builtin-namespaces" />
+**Premenné cyklu (`{for}` položka/index, počítadlo `{while}`) nie sú výnimkou.** Sú to bežné premenné s prefixom domény, ktoré si autor volí ako každý iný cieľ `{set}` — `part.item` je typická voľba pre pracovný stav, ale `story.item` alebo ktorákoľvek iná doména funguje rovnako. Hlavička cyklu vykoná ekvivalent `{set <cesta> = <hodnota>}` pri každej iterácii; pozri [Cyklus for](#for-loop) a [Cyklus while](#while-loop). Po skončení cyklu sa premenná nijako nevyprázdňuje — drží poslednú hodnotu tak dlho, ako hovorí jej doména.
 
-Platforma poskytuje menné priestory len na čítanie (alebo na čítanie aj zápis tam, kde je to uvedené):
+**Parametre funkcií sú jediná výnimka bez bodky** — pozri [Vlastné funkcie](/sk/spec/functions#parameters) (rekurzia potrebuje čerstvú väzbu pre každý rámec volania, čo zdieľaná cesta v doméne poskytnúť nevie).
 
-| Menný priestor | Popis                        | Príklady                                                                                                              |
-| -------------- | ---------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| `reader.*`     | Informácie o čitateľovi      | `reader.name`, `reader.language`, `reader.age`                                                                        |
-| `story.*`      | Informácie o príbehu         | `story.title`, `story.chapter`, `story.progress`                                                                      |
-| `world.*`      | Kontext reálneho sveta       | `world.time`, `world.date`, `world.hour`, `world.day`, `world.month`, `world.year`, `world.location`, `world.weather` |
-| `device.*`     | Schopnosti zariadenia        | `device.camera`, `device.gps`, `device.vibration`                                                                     |
-| `group.*`      | Kooperatívne čítanie         | `group.size`, `group.readers`, `group.role`                                                                           |
+### Vyhradené holé slová {#reserved-bare-words}
+
+<Feature id="reserved-words" />
+
+`begin`, `end`, `else`, `elseif`, `true`, `false`, `undefined` sú vyhradené ako:
+
+- **Názov domény** (iba prvý segment): `{set begin.x = 1}` je chyba, aj keď je s bodkou — segment domény je jediné miesto, kde je holé kľúčové slovo naozaj nejednoznačné.
+- **Názov funkcie**: `{function true(...) ...}` je chyba.
+- **Názov atribútu**: `{image end="..."}` je chyba.
+
+Za prvým segmentom cesty vyhradené byť nemusia (`story.quest.true` je v poriadku) a mimo týchto troch pozícií nemusia byť vyhradené ani ako lexikálne identifikátory.
+
+### Premenovanie domén {#domain-renaming}
+
+<Feature id="domain-renaming" />
+
+Manifest MÔŽE premenovať štyri domény na identifikátory podľa voľby autora:
+
+```json
+{
+  "domains": {
+    "context": "okolie",
+    "story": "pribeh"
+  }
+}
+```
+
+- Kľúče sú vždy kanonické anglické názvy (`part`, `story`, `shared`, `context`) — lokalizuje sa iba identifikátor v príbehu.
+- Cieľ premenovania nesmie kolidovať s vyhradeným holým slovom ([vyššie](#reserved-bare-words)) ani s názvom inej domény (kanonickým či premenovaným). Obe kontroly bežia pri načítaní manifestu, ešte pred spracovaním ktoréhokoľvek súboru `.rea`.
+- Cieľ premenovania musí byť platný identifikátor Rea podľa pravidla Unicode ([nižšie](#unicode-identifiers)).
+- Vynechanie `domains` alebo jednotlivých kľúčov ponechá kanonický anglický názov — čiastočné premenovanie je povolené.
+- Nerozpoznaný kľúč vnútri `domains` sa riadi konvenciou `pkg/manifest-unknown-key` (info, bez dôsledku pre čitateľa), nie tvrdým zlyhaním.
+
+### Doména context {#context-domain}
+
+<Feature id="context-domain" />
+
+`context.` je okno platformy na čitateľa, zariadenie, svet a bežiace sedenie, určené len na čítanie. Predvolená tabuľka schopností:
+
+| Cesta                                             | Typ      | Poznámky                                                              |
+| ------------------------------------------------- | -------- | ---------------------------------------------------------------------- |
+| `context.reader.name`                             | string   |                                                                        |
+| `context.reader.language`                         | string   |                                                                        |
+| `context.reader.age`                              | integer  |                                                                        |
+| `context.story.title`                             | string   | Metadáta platformy — nie vyhradený podstrom `story.meta.*`.            |
+| `context.story.chapter`                           | string   |                                                                        |
+| `context.story.progress`                          | float    |                                                                        |
+| `context.time.now`                                | datetime |                                                                        |
+| `context.time.date`                               | string   |                                                                        |
+| `context.time.hour` / `.minute`                   | integer  |                                                                        |
+| `context.time.day` / `.month` / `.year`           | integer  |                                                                        |
+| `context.time.weekday`                            | string   | Názov dňa, malými písmenami.                                           |
+| `context.time.season`                             | string   | Podľa pologule.                                                        |
+| `context.weather`                                 | string   | `clear`, `rain`, `snow`, `fog`, `storm`.                               |
+| `context.temperature` / `.wind` / `.humidity`     | float    | Stupne Celzia, m/s, percentá.                                          |
+| `context.location`                                | point    | Návrh gramatiky súradnicových literálov zatiaľ obmedzuje priame porovnávanie. |
+| `context.location.lat` / `.lng` / `.alt` / `.acc` | float    |                                                                        |
+| `context.heading` / `.speed`                      | float    | Kurz kompasu 0–360, rýchlosť v m/s.                                    |
+| `context.orientation`                             | float    | Otočenie zariadenia, 0–360.                                            |
+| `context.tilt.x` / `.y`                           | float    | Náklon dopredu/dozadu a doľava/doprava.                                |
+| `context.acceleration.x` / `.y` / `.z`            | float    |                                                                        |
+| `context.light`                                   | float    | Okolité svetlo v luxoch.                                               |
+| `context.device.camera` / `.gps` / `.vibration`   | boolean  |                                                                        |
+| `context.group.size`                              | integer  |                                                                        |
+| `context.group.readers`                           | array    |                                                                        |
+| `context.group.role`                              | string   |                                                                        |
+
+Toto nahrádza staré vstavané menné priestory `reader.*`, `world.*`, `device.*`, `group.*` — nekompatibilná zmena bez prechodovej vrstvy; príbeh, ktorý sa odvoláva na `world.location`, dostane `link/unknown-domain`. Naskenovaná či vyslovená hodnota (`{scan}`/`{listen}`) zostáva lexikálnou väzbou `event.kind`/`event.value`, nie cestou `context.*` — neexistuje „posledný výsledok skenu", ktorý by sa dal priebežne čítať. Dva vstavané prvky, ktoré viseli na mennom priestore, sa stávajú obyčajnými globálnymi funkciami v štýle `max()`/`length()`: `world.has(feature)` je **`has(feature)`** a `group.readers_in_role(role)` je **`readers_in_role(role)`**.
+
+**To, čo čitateľ nesie, nie je `context.`** — `{give}`/`{take}` a peňaženka zapisujú do `story.reader.inventory`, `story.reader.pocket` a `story.reader.coins`, teda pod `story.`, pretože sú dôsledkom príbehu a uloženie ich musí niesť so sebou. `context.` je len to, čo platforma pozoruje a príbeh zmeniť nemôže.
+
+Manifest MÔŽE premenovať jednotlivé cesty `context.*` nezávisle od premenovania domény:
+
+```json
+{
+  "domains": { "context": "okolie" },
+  "context": { "location": "poloha" }
+}
+```
+
+**Zapisovateľnosť:** `context.` je celá len na čítanie — `{set context.* = ...}` na ktorejkoľvek ceste je chyba (`eval/context-write-refused`). Každú súčasnú cestu napĺňa platforma, nikdy `{set}`.
+
+**Redakcia:** *hodnota* žiadnej cesty `context.` sa nikdy nesmie objaviť v diagnostickom zázname, pri žiadnej závažnosti — názov typu sa uviesť smie, hodnota nikdy. Bez výnimiek podľa cesty (`context.time.hour` nie je „len hodina, to je v poriadku" — redaguje sa rovnako ako `context.location`).
+
+### Metadáta príbehu {#story-metadata}
+
+<Feature id="story-metadata" />
+
+`meta` je vyhradený ako prvý voľný segment **iba** pod `story.`:
+
+```rea
+story.meta.title
+story.meta.chapter
+story.meta.progress
+```
+
+`part.meta.*`, `shared.meta.*` a `context.meta.*` sú bežný menný priestor autora — nie sú vyhradené. `{set story.meta.* = ...}` na ktorejkoľvek ceste v tomto podstrome je chyba: `eval/story-meta-write-refused`.
+
+### Identifikátory Unicode {#unicode-identifiers}
+
+<Feature id="unicode-identifiers" />
+
+Identifikátory Rea (segmenty domén po prípadnom premenovaní z manifestu a všetko vo voľnom mennom priestore autora) sú definované nad znakmi Unicode Identifier and Pattern Syntax (`ID_Start`/`ID_Continue`, podľa UAX #31) plus `_` a číslice v pokračovacej pozícii, s výnimkou tej ASCII interpunkcie, ktorú si gramatika Rea už vyhradzuje (`.`, `,`, `=`, zátvorky, úvodzovky). `周囲.位置` je presne tak platné ako `context.location`.
+
+Každý identifikátor sa porovnáva a ukladá v **NFC (Normalization Form C)**, normalizovaný hneď pri načítaní, pred akýmkoľvek porovnaním, uložením či diagnostikou — predkomponovaný zápis a zápis s kombinujúcimi znakmi toho istého viditeľného identifikátora sú vždy tá istá premenná.
+
+**Miešanie zameniteľných písiem je diagnostika, nie chyba:** identifikátor, ktorý mieša znaky z dvoch alebo viacerých písiem {latinka, cyrilika, gréčtina} zameniteľné navzájom podľa tabuľky Unicode confusables, dostane `style/confusable-identifier` (info) s uvedením zmiešaných písiem. Spoločné a zdedené znaky (číslice, `_`, kombinujúce znaky) sa do počtu písiem nerátajú, takže identifikátor v jedinom nelatinskom písme (`周囲.位置`, `context.météo`) sa neoznačí nikdy — kontrola je zámerne úzka: zachytáva zámenu homoglyfom, ktorá má vyzerať identicky, nie bežné lokalizované identifikátory.
+
+### Mazanie cez `undefined` {#deletion}
+
+<Feature id="deletion" />
+
+`{set story.x = undefined}` premennú zmaže — ďalšie čítanie `story.x` je nerozoznateľné od stavu, keď nikdy nastavená nebola. Priradenie `undefined` uzlu s potomkami zmaže celý podstrom. Príkaz na vyčistenie celej domény neexistuje — zmazanie všetkého pod doménou je `{set domena.koren = undefined}` na najplytkejšom spoločnom predkovi, keďže mazanie podstromu to už pokrýva.
 
 ### Dátové typy {#data-types}
 
@@ -203,12 +295,12 @@ Platforma poskytuje menné priestory len na čítanie (alebo na čítanie aj zá
 **Reťazce vždy vyžadujú dvojité úvodzovky** — neexistujú reťazcové literály bez úvodzoviek. Holé slovo vo výraze je vždy odkaz na premennú, nikdy nie reťazec. Tým sa odstraňuje nejednoznačnosť:
 
 ```rea
-{set player.name = "Aiden"}
-{set player.weapon = "sword"}
-{if player.weapon = "sword" begin}
+{set story.player.name = "Aiden"}
+{set story.player.weapon = "sword"}
+{if story.player.weapon = "sword" begin}
 ```
 
-Tu je `"sword"` reťazcová hodnota a `player.weapon` premenná — jediné, čo ich odlišuje, sú úvodzovky, a tie nie sú nikdy voliteľné.
+Tu je `"sword"` reťazcová hodnota a `story.player.weapon` premenná — jediné, čo ich odlišuje, sú úvodzovky, a tie nie sú nikdy voliteľné.
 
 V atribútoch príkazov reťazcové hodnoty takisto vyžadujú úvodzovky. Holé hodnoty atribútov sa interpretujú ako čísla, logické hodnoty alebo odkazy na identifikátory — nie ako reťazce:
 
@@ -226,15 +318,15 @@ V atribútoch príkazov reťazcové hodnoty takisto vyžadujú úvodzovky. Holé
 **Polia** sú univerzálnym kolekčným typom. Položky sa oddeľujú čiarkami a môžu byť **pozičné** (indexované podľa poradia), **pomenované** (indexované kľúčom) alebo oboje:
 
 ```rea
-{set player.inventory = ["meč", "fakľa", "mapa"]}
-{set stats = [strength=10, dexterity=8, wisdom=12]}
-{set mixed = ["prvá pozičná", 12.345, shift=true]}
+{set story.player.inventory = ["meč", "fakľa", "mapa"]}
+{set story.stats = [strength=10, dexterity=8, wisdom=12]}
+{set story.mixed = ["prvá pozičná", 12.345, shift=true]}
 ```
 
 K pozičným položkám sa pristupuje **indexom od nuly** (prvá položka je `.0`, druhá `.1` atď.), k pomenovaným kľúčom:
 
 ```rea
-{player.inventory.0}
+{story.player.inventory.0}
 {stats.strength}
 {mixed.0}
 {mixed.shift}
@@ -273,24 +365,24 @@ Geografické hodnoty sa zapisujú znakom `@`, nie konštruktorovou funkciou, pre
 Body používajú `@`, oblasti `@@`. Oddeľovačom vnútri súradnice je **bodkočiarka**, nikdy nie čiarka — čiarka už oddeľuje argumenty, medzi ktorými súradnica stojí. Polomer je vždy v metroch. Príklady:
 
 ```rea
-{set home = @48.14;17.10}
-{set park = @@48.14;17.10/500}
-{set forest = @@48.14;17.10@48.15;17.10@48.15;17.11@48.14;17.11}
-{set donut = @@48.14;17.10/1000 - @@48.14;17.10/200}
+{set story.home = @48.14;17.10}
+{set story.park = @@48.14;17.10/500}
+{set story.forest = @@48.14;17.10@48.15;17.10@48.15;17.11@48.14;17.11}
+{set story.donut = @@48.14;17.10/1000 - @@48.14;17.10/200}
 ```
 
-Jediné miesto, kde jadro dnes súradnicu číta, je príkaz [`{waypoint}`](03-narrative-interaction.md#waypoints), ktorý si ju parsuje sám. Priradenie súradnice do premennej alebo test `world.location` proti oblasti si vyžaduje, aby sa gramatika výrazov naučila `@` — presne to znamená značka `draft` vyššie.
+Jediné miesto, kde jadro dnes súradnicu číta, je príkaz [`{waypoint}`](03-narrative-interaction.md#waypoints), ktorý si ju parsuje sám. Priradenie súradnice do premennej alebo test `context.location` proti oblasti si vyžaduje, aby sa gramatika výrazov naučila `@` — presne to znamená značka `draft` vyššie.
 
 ### Zástupné znaky v dátume a čase {#datetime-wildcards}
 
 Zástupné znaky umožňujú vzory podľa času pomocou reťazcov konštruktora `datetime()`:
 
 ```rea
-{if world.time matches datetime("*-12-24T*") begin}
-  Veselé Vianoce, {reader.name}!
+{if context.time.now matches datetime("*-12-24T*") begin}
+  Veselé Vianoce, {context.reader.name}!
 {end if}
 
-{if world.time matches datetime("*-*-*T22:*:*") begin}
+{if context.time.now matches datetime("*-*-*T22:*:*") begin}
   Noc sa okolo teba prehlbuje…
 {end if}
 ```
@@ -310,9 +402,9 @@ Výraz sa skladá z týchto atomárnych prvkov:
 | Atóm               | Príklad                             | Popis                                   |
 | ------------------ | ----------------------------------- | --------------------------------------- |
 | Literál            | `42`, `"text"`, `true`, `[1, 2, 3]` | Číslo, reťazec, logická hodnota či pole |
-| Premenná           | `player.gold`, `quest.has_key`      | Cesta k premennej s prefixom domény     |
+| Premenná           | `story.player.gold`, `story.quest.has_key`      | Cesta k premennej s prefixom domény     |
 | Volanie funkcie    | `max(a, b)`, `length(inv.items)`    | Volanie s argumentmi oddelenými čiarkou |
-| Zoskupený výraz    | `(player.gold + bonus) * 2`         | Zátvorky prebijú prioritu               |
+| Zoskupený výraz    | `(story.player.gold + bonus) * 2`         | Zátvorky prebijú prioritu               |
 
 ### Priorita operátorov (od najvyššej po najnižšiu) {#operator-precedence-highest-to-lowest}
 
@@ -339,8 +431,8 @@ Výraz sa skladá z týchto atomárnych prvkov:
 `matches` testuje hodnotu proti regulárnemu výrazu a `in` testuje členstvo v poli. Oba sú kľúčové slová, nie symboly, a oba sa negujú prefixom `!`:
 
 ```rea
-{if player.name matches /^[A-Z]/ begin}
-{if "sword" !in player.inventory begin}
+{if story.player.name matches /^[A-Z]/ begin}
+{if "sword" !in story.player.inventory begin}
 ```
 
 ### Ternárna podmienka {#ternary-conditional}
@@ -350,7 +442,7 @@ Výraz sa skladá z týchto atomárnych prvkov:
 Ternárny operátor poskytuje inline podmienené hodnoty:
 
 ```rea
-{set mood = health < 50 ? "zúfalý" : "odhodlaný"}
+{set story.mood = story.player.health < 50 ? "zúfalý" : "odhodlaný"}
 Hrdina vyzerá {gold > 0 ? "nádejne" : "skleslo"}.
 ```
 
@@ -364,16 +456,16 @@ Najprv sa vyhodnotí podmienka; ak je pravdivá, vráti sa výraz pred `:`, inak
 
 - `=` vo výrazoch je rovnosť (nie priradenie). Priraďuje sa príkazom `{set}`.
 - `and` a `or` používajú skrátené vyhodnocovanie.
-- Unárne `-` neguje číslo: `-player.gold`, `-(a + b)`.
-- `+` s reťazcovým operandom spája: `"Ahoj, " + player.name`
-- Reťazce prístupov k vlastnostiam sa vyhodnocujú zľava doprava: `group.readers.0.name`
+- Unárne `-` neguje číslo: `-story.player.gold`, `-(a + b)`.
+- `+` s reťazcovým operandom spája: `"Ahoj, " + story.player.name`
+- Reťazce prístupov k vlastnostiam sa vyhodnocujú zľava doprava: `context.group.readers.0.name`
 
 ### Správanie reťazcov {#string-behavior}
 
 Reťazce sú **nepriehľadné hodnoty** — syntax `{výraz}` sa vnútri reťazcových literálov NEinterpretuje. Dynamické reťazce sa skladajú spájaním:
 
 ```rea
-{set msg.greeting = "Ahoj, " + reader.name + "!"}
+{set msg.greeting = "Ahoj, " + context.reader.name + "!"}
 ```
 
 Syntax `{výraz}` funguje len v **naratívnom texte** (mimo reťazcových literálov), kde sa vyhodnotí a jej výsledok sa vloží priamo do textu.
@@ -413,22 +505,22 @@ Na explicitný prevod medzi typmi slúžia konverzné funkcie:
 | `integer(x)` | Prevod na celé číslo (oreže). `integer(3.7)` → `3`                           |
 
 ```rea
-{set total = number(reader_input) + player.gold}
-{set label = "Skóre: " + string(player.score)}
-{set has_items = boolean(length(player.inventory))}
+{set total = number(reader_input) + story.player.gold}
+{set label = "Skóre: " + string(story.player.score)}
+{set has_items = boolean(length(story.player.inventory))}
 ```
 
 ### Príklady {#examples}
 
 ```rea
-{player.gold * 2 + combat.bonus}
-{player.level >= 10 and quest.has_key}
-{player.name matches /^[A-Z]/}
-{"sword" in player.inventory}
-{!door.is_locked or quest.has_master_key}
-{player.health < 50 ? "utekaj" : "bojuj"}
+{story.player.gold * 2 + combat.bonus}
+{story.player.level >= 10 and story.quest.has_key}
+{story.player.name matches /^[A-Z]/}
+{"sword" in story.player.inventory}
+{!door.is_locked or story.quest.has_master_key}
+{story.player.health < 50 ? "utekaj" : "bojuj"}
 {-combat.penalty + combat.bonus}
-{reader.name + " — " + upper(reader.class)}
+{context.reader.name + " — " + upper(story.player.class)}
 ```
 
 ---
@@ -440,9 +532,9 @@ Na explicitný prevod medzi typmi slúžia konverzné funkcie:
 <Feature id="if-else" />
 
 ```rea
-{if player.gold > 100 begin}
+{if story.player.gold > 100 begin}
   Kupec sa chamtivo usmeje.
-{else if player.gold > 50}
+{else if story.player.gold > 50}
   Kupec zdvorilo prikývne.
 {else}
   Kupec sa na teba pozrie s ľútosťou.
@@ -454,7 +546,7 @@ Na explicitný prevod medzi typmi slúžia konverzné funkcie:
 <Feature id="switch-case" />
 
 ```rea
-{switch player.class begin}
+{switch story.player.class begin}
 {case "warrior"}
   Vytasíš meč.
 {case "mage"}
@@ -471,7 +563,7 @@ Na explicitný prevod medzi typmi slúžia konverzné funkcie:
 <Feature id="for-loop" />
 
 ```rea
-{for item in player.inventory begin}
+{for item in story.player.inventory begin}
   Máš: {item}
 {end for}
 ```
@@ -479,7 +571,7 @@ Na explicitný prevod medzi typmi slúžia konverzné funkcie:
 S premennou indexu (definovanou za čiarkou pred `begin`):
 
 ```rea
-{for item in player.inventory, index begin}
+{for item in story.player.inventory, index begin}
   {index + 1}. {item}
 {end for}
 ```
@@ -513,7 +605,7 @@ Premenná počítadla začína na 0 a s každou iteráciou sa zvyšuje.
 <Feature id="break-continue" />
 
 ```rea
-{for item in player.inventory begin}
+{for item in story.player.inventory begin}
   {if item = "cursed_ring" begin}
     {continue}
   {end if}
@@ -573,7 +665,7 @@ Formálne stavové automaty modelujú entity, ktoré prechádzajú medzi pomenov
 Prístup k stavu a spúšťanie prechodov:
 
 ```rea
-{if door.state = "locked" begin}
+{if story.door.state = "locked" begin}
   Potrebuješ kľúč.
 {end if}
 
@@ -583,7 +675,7 @@ Prístup k stavu a spúšťanie prechodov:
 Strážne podmienky na prechodoch bránia neplatným zmenám stavu:
 
 ```rea
-{on unlock when quest.has_key and !alarm.active begin}
+{on unlock when story.quest.has_key and !alarm.active begin}
   {-> closed}
 {end on}
 ```
@@ -609,8 +701,8 @@ Udalosti reagujú na spúšťače platformy. Definujú sa pomocou `{on nazov_uda
 
 ```rea
 {on story_start begin}
-  {set player.gold = 100}
-  {set player.health = 100}
+  {set story.player.gold = 100}
+  {set story.player.health = 100}
 {end on}
 
 {on chapter_start begin}

@@ -48,7 +48,7 @@ the `locale` attribute → the story's metadata language → the host page's
 | `load(url)` | Load a story from a `.reast` archive URL. |
 | `render(text)` | Parse and render raw `.rea` text. |
 | `importVariables(vars)` | Merge variables into the runtime and re-sync conditional content. |
-| `updateLocation(position)` | Feed a `GeoPosition` (or `null`) back after a `location-start` event; drives `world.location.*`. |
+| `updateLocation(position)` | Feed a `GeoPosition` (or `null`) back after a `location-start` event; drives `context.location.*`. |
 | `selectChoice(nodeId, optionIndex)` | Select an option programmatically. `optionIndex` addresses the **visible** options — the same numbering `choices` reports, so a hidden conditional option never shifts it. Returns `false` if the group is gone, already selected, or the index is out of range. |
 | `blockAt(index)` | The rendered block element at a container index (the numbering `rea-progress` uses), or `null`. |
 | `revertChoice(nodeId)` | Revert a choice group: clears its selection and everything after, replays the kept selections, rewinds the flow. |

@@ -31,8 +31,8 @@ extension reviewable and mechanically checkable. Control-flow commands (`{if}`,
 `extensions/inventory.rext`:
 
 ```rea
-{set sword_weight = 3}
-{set shield_weight = 5}
+{set story.sword_weight = 3}
+{set story.shield_weight = 5}
 
 {function total_weight(swords, shields) begin}
 {return swords * sword_weight + shields * shield_weight}
@@ -72,8 +72,8 @@ and call through the alias:
 title: The Armory
 ---
 {use "extensions/inventory" as inv}
-{set swords = 4}
-{set shields = 2}
+{set story.swords = 4}
+{set story.shields = 2}
 
 You are carrying {inv.total_weight(swords, shields)} kg.
 

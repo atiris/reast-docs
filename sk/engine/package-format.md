@@ -343,14 +343,14 @@ odomykacím kódom (pozri [Kde sa pravidlá líšia v `.rext` súboroch](../spec
 Pred zabalením do `.reast` možno súbory príbehu pred distribúciou minifikovať a
 skomprimovať. **Minifikácia** (bezstratová transformácia zdroja `.rea`)
 odstráni všetky komentáre, zbytočné medzery, skráti mená premenných
-(`player.health` → `p.h`) cez tabuľku mapovania mien a zlúči viacriadkové
+(`story.player.health` → `p.h`) cez tabuľku mapovania mien a zlúči viacriadkové
 príkazy na jeden riadok, kde je to možné. Mapovanie sa zapíše do
 `META-REA/names.json` pre potreby ladenia:
 
 ```json
 {
-  "p.h": "player.health",
-  "p.g": "player.gold",
+  "p.h": "story.player.health",
+  "p.g": "story.player.gold",
   "e.s": "enemy.strength"
 }
 ```

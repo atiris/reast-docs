@@ -46,7 +46,7 @@ Functions can render text, return values, or both. The behavior depends on conte
 | --------------------------------- | -------------- | --------------------- |
 | Standalone: `{greet("Aiden")}`    | Yes            | Discarded              |
 | In expression: `{max(a, b) + 10}` | Yes (if any)   | Yes                    |
-| In assignment: `{set x = fn()}`   | Yes (if any)   | Assigned to `x`        |
+| In assignment: `{set story.x = fn()}` | Yes (if any) | Assigned to `story.x`  |
 | In condition: `{if fn() begin}`   | Yes (if any)   | Evaluated as boolean   |
 
 **Function classifications:**
