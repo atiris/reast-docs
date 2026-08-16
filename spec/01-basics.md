@@ -306,8 +306,7 @@ A link whose target is another part file is a [cross-part link](03-narrative-int
 [continue the adventure > reast://author-slug/story-slug]
 ```
 
-A `reast://` link opens another reast on the platform that hosts it, addressed
-by the author slug and story slug.
+A `reast://` link opens another reast on the platform that hosts it, addressed by the author slug and story slug.
 
 > **Note:** External URLs (http/https) are not allowed in `.rea` text. All external access is declared via `allowed_urls` in `manifest.json` and referenced by alias (see [External API access](error-handling.md#external-api-access)).
 
@@ -327,8 +326,7 @@ Jump to it from anywhere in the story:
 [return to safety > #anchor_name]
 ```
 
-Custom anchors sit alongside the auto-generated [heading anchors](#_4-headings): a
-heading defines its anchor implicitly, while `[#anchor_name]` marks any other spot.
+Custom anchors sit alongside the auto-generated [heading anchors](#_4-headings): a heading defines its anchor implicitly, while `[#anchor_name]` marks any other spot.
 
 ---
 
@@ -354,9 +352,7 @@ Media commands use the bracket syntax with type-specific prefixes. The `<` arrow
 
 <Feature id="media-attributes" />
 
-Parameters inside `[ ]` and `{ }` are separated by commas (with optional
-surrounding spaces). The source path is the first parameter of a media embed,
-so a comma also separates it from the first attribute:
+Parameters inside `[ ]` and `{ }` are separated by commas (with optional surrounding spaces). The source path is the first parameter of a media embed, so a comma also separates it from the first attribute:
 
 ```rea
 [!The castle < media/castle.jpg, width=800, height=600]
@@ -364,62 +360,42 @@ so a comma also separates it from the first attribute:
 [?Background music < media/theme.ogg, volume=0.5, loop]
 ```
 
-This comma rule applies to all bracketed `[…]` and braced `{…}` parameters
-throughout Rea — the source path is simply the first parameter.
+This comma rule applies to all bracketed `[…]` and braced `{…}` parameters throughout Rea — the source path is simply the first parameter.
 
 ---
 
 ## 9. Help & Footnotes
 
-Footnotes and hints both hang extra information off a span of text using the
-link bracket. The `>` arrow points from the displayed text to the annotation;
-the first character after `>` decides which kind it is — `^` for a footnote,
-`*` for a hint. (Custom anchors, which also live in `[ … ]`, are covered under
-[Links](#_7-links).)
+Footnotes and hints both hang extra information off a span of text using the link bracket. The `>` arrow points from the displayed text to the annotation; the first character after `>` decides which kind it is — `^` for a footnote, `*` for a hint. (Custom anchors, which also live in `[ … ]`, are covered under [Links](#_7-links).)
 
 ### Footnotes
 
 <Feature id="footnotes" />
 
-A footnote attaches an inline note to a span of text — the note travels with the
-text, there is no separate definition block:
+A footnote attaches an inline note to a span of text — the note travels with the text, there is no separate definition block:
 
 ```rea
 The [ancient dialect > ^A form of Old Elvish spoken only in the north.] was nearly forgotten.
 ```
 
-The reader sees `ancient dialect` marked with a `^`. Pointing at it (desktop) or
-tapping it (touch) reveals the note as a tooltip. Footnote text is plain — no
-nested formatting — and may contain `>` (only the first `>` splits the text from
-the note); it may not contain `]`.
+The reader sees `ancient dialect` marked with a `^`. Pointing at it (desktop) or tapping it (touch) reveals the note as a tooltip. Footnote text is plain — no nested formatting — and may contain `>` (only the first `>` splits the text from the note); it may not contain `]`.
 
 ### Hints
 
 <Feature id="hints" />
 
-A hint is a footnote that only appears once the reader has switched on hints. It
-can carry several progressive levels, so the reader chooses how much help to
-reveal. Levels are numbered with a run of asterisks — one `*` is level 1, `**`
-is level 2, up to nine — and each level's text runs until the next asterisk run
-or the closing `]`:
+A hint is a footnote that only appears once the reader has switched on hints. It can carry several progressive levels, so the reader chooses how much help to reveal. Levels are numbered with a run of asterisks — one `*` is level 1, `**` is level 2, up to nine — and each level's text runs until the next asterisk run or the closing `]`:
 
 ```rea
 This key needs to [use in the treasure room > *A first-level nudge.**A second-level, more direct hint.].
 ```
 
-A hint may also start straight at a higher level when only a strong hint makes
-sense:
+A hint may also start straight at a higher level when only a strong hint makes sense:
 
 ```rea
 This key needs to [use in the top tower > ***A third-level hint that gives a lot away.].
 ```
 
-The reader turns hints on and picks an **enabled level** (1–9; off by default). A
-hint marker appears next to the text only when the hint defines a level at or
-below the enabled level; clicking it reveals that hint's levels up to the enabled
-level. Whenever a page contains any hint — even ones above the reader's enabled
-level — the reader is told that hints are available on the page, without being
-shown where. Hint text follows the same plain-text rules as footnotes; because an
-asterisk run always opens a new level, hint text cannot itself contain a bare `*`.
+The reader turns hints on and picks an **enabled level** (1–9; off by default). A hint marker appears next to the text only when the hint defines a level at or below the enabled level; clicking it reveals that hint's levels up to the enabled level. Whenever a page contains any hint — even ones above the reader's enabled level — the reader is told that hints are available on the page, without being shown where. Hint text follows the same plain-text rules as footnotes; because an asterisk run always opens a new level, hint text cannot itself contain a bare `*`.
 
 ---

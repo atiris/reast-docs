@@ -51,8 +51,7 @@ Ahoj, {story.player.name}! Máš {story.player.gold} zlata.
 
 Koncepčne je to rovnaké ako vytlačenie hodnoty výrazu.
 
-::: warning Dnes sa vytlačí iba obyčajná cesta
-Inline parser rozpozná **cestu s doménou** a nič iné. Literál, volanie funkcie, aritmetika či ternárny výraz napísaný priamo do textu sa nevyhodnotí — čitateľ ho uvidí presne tak, ako ste ho napísali, aj so zátvorkami.
+::: warning Dnes sa vytlačí iba obyčajná cesta Inline parser rozpozná **cestu s doménou** a nič iné. Literál, volanie funkcie, aritmetika či ternárny výraz napísaný priamo do textu sa nevyhodnotí — čitateľ ho uvidí presne tak, ako ste ho napísali, aj so zátvorkami.
 
 Vypočítajte to v `{set}` a vytlačte premennú:
 
@@ -65,8 +64,7 @@ Vyzeráš {story.hrdina.pokoj > 0 ? "pokojne" : "nervózne"}.
 Vyzeráš {story.hrdina.nalada}.
 ```
 
-To isté platí pre všetky vstavané funkcie: `plural`, `select`, `ordinal`, `formatNumber` aj dátumové pomocníky fungujú v `{set}` a ani jedna z nich nefunguje v texte.
-:::
+To isté platí pre všetky vstavané funkcie: `plural`, `select`, `ordinal`, `formatNumber` aj dátumové pomocníky fungujú v `{set}` a ani jedna z nich nefunguje v texte. :::
 
 ### Atribúty {#attributes}
 
@@ -351,8 +349,7 @@ K pozičným položkám sa pristupuje **indexom od nuly** (prvá položka je `.0
 
 Pri miešaní pozičných a pomenovaných položiek musia pozičné predchádzať pomenované — v súlade s parametrami funkcií. Pomenované položky sa dajú preusporiadať voľne.
 
-::: warning Pomenované položky nie sú implementované
-`[strength=10, dexterity=8]` sa rozparsuje ako **test rovnosti**, takže pole vyjde ako `[false, false]` a `story.stats.strength` sa číta ako nenastavené. Dnes fungujú iba pozičné polia:
+::: warning Pomenované položky nie sú implementované `[strength=10, dexterity=8]` sa rozparsuje ako **test rovnosti**, takže pole vyjde ako `[false, false]` a `story.stats.strength` sa číta ako nenastavené. Dnes fungujú iba pozičné polia:
 
 ```rea
 {comment ZLE — vyjde [false, false]}
@@ -630,8 +627,7 @@ S počítadlom iterácií (definovaným za čiarkou pred `begin`):
 
 Premenná počítadla začína na 0 a s každou iteráciou sa zvyšuje.
 
-::: warning Počítadlo `{while}` nie je implementované
-Parser neoddelí `, part.pokus` od podmienky — pohltí ho, takže sa počítadlo nikdy nenaviaže a podmienka je pokazená. Indexová premenná v `{for}` funguje správne, počítadlo vo `{while}` nie. Dovtedy počítajte obyčajným `{set}`:
+::: warning Počítadlo `{while}` nie je implementované Parser neoddelí `, part.pokus` od podmienky — pohltí ho, takže sa počítadlo nikdy nenaviaže a podmienka je pokazená. Indexová premenná v `{for}` funguje správne, počítadlo vo `{while}` nie. Dovtedy počítajte obyčajným `{set}`:
 
 ```rea
 {set part.pokus = 0}
@@ -731,10 +727,7 @@ Strážne podmienky na prechodoch bránia neplatným zmenám stavu:
 
 <Feature id="functions" />
 
-Vlastné funkcie definované pomocou `{function}…{end function}` — klasifikácie čistá, šablónová,
-hybridná a s vedľajším účinkom, správanie podľa kontextu volania, parametre s predvolenými
-hodnotami a to, ktoré klasifikácie smie exportovať súbor `.rext` — majú teraz vlastnú stránku:
-pozri [Vlastné funkcie](/sk/spec/functions).
+Vlastné funkcie definované pomocou `{function}…{end function}` — klasifikácie čistá, šablónová, hybridná a s vedľajším účinkom, správanie podľa kontextu volania, parametre s predvolenými hodnotami a to, ktoré klasifikácie smie exportovať súbor `.rext` — majú teraz vlastnú stránku: pozri [Vlastné funkcie](/sk/spec/functions).
 
 ---
 

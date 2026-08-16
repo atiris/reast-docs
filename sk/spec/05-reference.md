@@ -444,27 +444,15 @@ Parsery zhodné s Rea MAJOR.MINOR MUSIA:
    autorskom kanáli
 4. Považovať neznáme inline formátovanie za doslovný text
 
-Pravidlo 3 predtým znelo „zobraziť varovanie a blok príkazu preskočiť". Kde sa
-varovanie zobrazí, je práve otázka, na ktorú odpovedá dvojkanálový model zo
-[Spracovanie chýb](error-handling.md): čitateľovi nikdy, autorovi
-vždy, ako záznam. Čitateľ vidí preskočený blok a nič viac.
+Pravidlo 3 predtým znelo „zobraziť varovanie a blok príkazu preskočiť". Kde sa varovanie zobrazí, je práve otázka, na ktorú odpovedá dvojkanálový model zo [Spracovanie chýb](error-handling.md): čitateľovi nikdy, autorovi vždy, ako záznam. Čitateľ vidí preskočený blok a nič viac.
 
-Tým je zaistená dopredná kompatibilita: príbeh napísaný pre Rea 1.0 funguje na
-parseri Rea 1.3. Príbeh používajúci funkcie Rea 1.3 funguje na parseri Rea 1.0
-s elegantnou degradáciou.
+Tým je zaistená dopredná kompatibilita: príbeh napísaný pre Rea 1.0 funguje na parseri Rea 1.3. Príbeh používajúci funkcie Rea 1.3 funguje na parseri Rea 1.0 s elegantnou degradáciou.
 
 ### Záznamy a úrovne zhody {#records-and-the-conformance-split}
 
-[Úroveň zhody](#conformance-levels) určuje, čo implementácia *spúšťa*, nie čo
-*hlási*. Engine úrovne Core nevydáva žiadne záznamy — autorský kanál je vec
-nástrojov a embedder úrovne Core, ktorý nič nezapojí, nevyprodukuje nič.
-Nástroje úrovne Standard a Platform hlásia celý register.
+[Úroveň zhody](#conformance-levels) určuje, čo implementácia *spúšťa*, nie čo *hlási*. Engine úrovne Core nevydáva žiadne záznamy — autorský kanál je vec nástrojov a embedder úrovne Core, ktorý nič nezapojí, nevyprodukuje nič. Nástroje úrovne Standard a Platform hlásia celý register.
 
-Ak príbeh použije funkciu nad úrovňou, ktorú si implementácia nárokuje, funkcia
-neurobí nič a autor dostane `meta/above-conformance-level` s názvom funkcie a
-potrebnou úrovňou. Ten záznam je `degraded`, nie `error`: implementácia sa
-zachovala správne a autor sa dozvedá, ktoré z jeho rozhodnutí sa neprenieslo,
-nie že urobil chybu.
+Ak príbeh použije funkciu nad úrovňou, ktorú si implementácia nárokuje, funkcia neurobí nič a autor dostane `meta/above-conformance-level` s názvom funkcie a potrebnou úrovňou. Ten záznam je `degraded`, nie `error`: implementácia sa zachovala správne a autor sa dozvedá, ktoré z jeho rozhodnutí sa neprenieslo, nie že urobil chybu.
 
 ---
 

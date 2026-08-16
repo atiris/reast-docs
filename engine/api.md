@@ -1,7 +1,6 @@
 # API Reference
 
-The `<reast-engine>` custom element drives the full pipeline and exposes its
-state and controls as attributes, properties, methods and events.
+The `<reast-engine>` custom element drives the full pipeline and exposes its state and controls as attributes, properties, methods and events.
 
 ## Attributes
 
@@ -14,10 +13,7 @@ state and controls as attributes, properties, methods and events.
 | `locale` | `string` | BCP-47 locale for i18n/date built-ins. |
 | `media-controls` | `native \| none` | Whether `<video>`/`<audio>` render native controls (`native`, default) or become host-handled activation targets (`none`). |
 
-`src`, `content`, `locale` and `media-controls` are observed and re-render on
-change; `speed` and `story-id` are read on demand. Locale resolution order is:
-the `locale` attribute → the story's metadata language → the host page's
-`<html lang>` → `en`.
+`src`, `content`, `locale` and `media-controls` are observed and re-render on change; `speed` and `story-id` are read on demand. Locale resolution order is: the `locale` attribute → the story's metadata language → the host page's `<html lang>` → `en`.
 
 ## Properties
 
@@ -78,19 +74,11 @@ All events are `CustomEvent` instances that bubble.
 
 ### `rea-media-activate`
 
-Cancelable and `composed`. `kind` is `'image' | 'video' | 'audio'`; `src` is a
-renderable URL (a `blob:` URL for archive media); `path` is the original
-archive-relative path (name a download, or look the entry up in the manifest);
-`alt` is the author's alternative text. Images always fire; video/audio only
-under `media-controls="none"`. **The engine renders no overlay** — it only
-reports the activation. Only the standalone CDN build ships a default lightbox
-(registered through this same event); an embedding host opens its own viewer and
-calls `preventDefault()`.
+Cancelable and `composed`. `kind` is `'image' | 'video' | 'audio'`; `src` is a renderable URL (a `blob:` URL for archive media); `path` is the original archive-relative path (name a download, or look the entry up in the manifest); `alt` is the author's alternative text. Images always fire; video/audio only under `media-controls="none"`. **The engine renders no overlay** — it only reports the activation. Only the standalone CDN build ships a default lightbox (registered through this same event); an embedding host opens its own viewer and calls `preventDefault()`.
 
 ## Slots
 
-Host chrome is injected through named slots: `before-identity`,
-`after-identity`, `before-chapter`, `after-chapter`, `story-end`.
+Host chrome is injected through named slots: `before-identity`, `after-identity`, `before-chapter`, `after-chapter`, `story-end`.
 
 ## Module exports worth naming
 

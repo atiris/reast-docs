@@ -4,24 +4,15 @@
 
 Rea má dve publiká a nikdy nezdieľajú tú istú rúru.
 
-**Čitateľ** dostáva text. Každé zlyhanie má definované, tiché náhradné
-správanie a na stránku sa nikdy nedostane žiadny text chyby — ani správa, ani
-zástupný token, ani holý identifikátor. Toto je záruka jazyka, nie detail
-runtime.
+**Čitateľ** dostáva text. Každé zlyhanie má definované, tiché náhradné správanie a na stránku sa nikdy nedostane žiadny text chyby — ani správa, ani zástupný token, ani holý identifikátor. Toto je záruka jazyka, nie detail runtime.
 
-**Autor** dostáva *záznamy*: štruktúrované dáta s kódom a pozíciou, bez
-vykresliteľnej podoby. Záznam sa čitateľovi nikdy nezobrazí, v žiadnej
-závažnosti. Vypisuje ich `reast validate`, podčiarkuje ich editor a hostiteľ ich
-formátuje z `code + args + locale`.
+**Autor** dostáva *záznamy*: štruktúrované dáta s kódom a pozíciou, bez vykresliteľnej podoby. Záznam sa čitateľovi nikdy nezobrazí, v žiadnej závažnosti. Vypisuje ich `reast validate`, podčiarkuje ich editor a hostiteľ ich formátuje z `code + args + locale`.
 
-Tieto dva kanály sú celý návrh. Zlyhanie vytvorí náhradné správanie **aj**
-záznam a ani jedno nenahrádza druhé.
+Tieto dva kanály sú celý návrh. Zlyhanie vytvorí náhradné správanie **aj** záznam a ani jedno nenahrádza druhé.
 
 ### Závažnosti {#severities}
 
-Každý kód nesie práve jednu závažnosť, pevne danú v registri enginu. Miesto
-volania si ju nikdy nevyberá, takže dve miesta, ktoré si všimnú tú istú
-podmienku, sa nemôžu nezhodnúť na tom, aká je vážna.
+Každý kód nesie práve jednu závažnosť, pevne danú v registri enginu. Miesto volania si ju nikdy nevyberá, takže dve miesta, ktoré si všimnú tú istú podmienku, sa nemôžu nezhodnúť na tom, aká je vážna.
 
 | Závažnosť  | Čo znamená                                                                     | Zhodí CI              |
 | ---------- | ------------------------------------------------------------------------------ | --------------------- |
@@ -31,17 +22,13 @@ podmienku, sa nemôžu nezhodnúť na tom, aká je vážna.
 | `degraded` | *Správne* správanie v obmedzenom prostredí alebo na nižšej úrovni zhody.        | **nikdy**             |
 | `info`     | Hygiena, štýl a autorské poznámky.                                             | nie                   |
 
-`degraded` sa nikdy nepovyšuje, ani pri `--strict`. Povýšenie by poprelo dôvod,
-prečo je to samostatná závažnosť: autor musí vedieť rozlíšiť „moja funkcia
-úrovne Platform tu nespravila nič, a tak to má byť" od „urobil som chybu".
+`degraded` sa nikdy nepovyšuje, ani pri `--strict`. Povýšenie by poprelo dôvod, prečo je to samostatná závažnosť: autor musí vedieť rozlíšiť „moja funkcia úrovne Platform tu nespravila nič, a tak to má byť" od „urobil som chybu".
 
-Nič v `parse/` nie je `fatal`. Ľubovoľný text v UTF-8 je platný dokument Rea —
-súbor `.rea` nikdy nezlyhá na parsovaní.
+Nič v `parse/` nie je `fatal`. Ľubovoľný text v UTF-8 je platný dokument Rea — súbor `.rea` nikdy nezlyhá na parsovaní.
 
 ### Oblasti kódov {#code-partitions}
 
-Kód je reťazec malými písmenami rozdelený lomkou; predpona *je* oblasť, takže
-kódy sa dajú triediť, grepovať aj filtrovať vzorom.
+Kód je reťazec malými písmenami rozdelený lomkou; predpona *je* oblasť, takže kódy sa dajú triediť, grepovať aj filtrovať vzorom.
 
 | Oblasť    | Vyvoláva                                                        |
 | --------- | --------------------------------------------------------------- |
@@ -73,37 +60,19 @@ kódy sa dajú triediť, grepovať aj filtrovať vzorom.
 | Odbočka na neexistujúcu kotvu                | Čítanie pokračuje za odbočkou                     | `link/undefined-anchor`    |
 | Nedostupný senzor                            | `has("sensor")` vráti `false`               | `env/sensor-unavailable`   |
 
-Táto tabuľka je **len ilustratívna** — 11 reprezentatívnych riadkov z celého
-registra. Normatívny je úplný, generovaný zoznam všetkých 175 kódov v
-anglickej verzii, [„What the reader gets"](../../spec/error-handling.md#what-the-reader-gets):
-`scripts/check-spec-fallback-table.mjs` ho generuje priamo z registra, takže
-nemôže so zdrojovým kódom rozísť. Táto slovenská tabuľka sa negeneruje a
-neaktualizuje automaticky, preto pri rozpore platí anglická verzia.
+Táto tabuľka je **len ilustratívna** — 11 reprezentatívnych riadkov z celého registra. Normatívny je úplný, generovaný zoznam všetkých 175 kódov v anglickej verzii, [„What the reader gets"](../../spec/error-handling.md#what-the-reader-gets): `scripts/check-spec-fallback-table.mjs` ho generuje priamo z registra, takže nemôže so zdrojovým kódom rozísť. Táto slovenská tabuľka sa negeneruje a neaktualizuje automaticky, preto pri rozpore platí anglická verzia.
 
-Neznámy príkaz sa **preskočí celý** — vrátane bloku, ak nejaký otvára.
-Nevytlačí sa ako výraz. Vytlačenie by dostalo autorov zápis na stránku
-čitateľa, čomu má čitateľský kanál práve zabrániť.
+Neznámy príkaz sa **preskočí celý** — vrátane bloku, ak nejaký otvára. Nevytlačí sa ako výraz. Vytlačenie by dostalo autorov zápis na stránku čitateľa, čomu má čitateľský kanál práve zabrániť.
 
-Delenie nulou nedáva **nič**, čo sa vykreslí ako nič. Predtým dávalo `0` —
-hodnotu, ktorú čitateľ nevedel odlíšiť od skutočného výsledku.
+Delenie nulou nedáva **nič**, čo sa vykreslí ako nič. Predtým dávalo `0` — hodnotu, ktorú čitateľ nevedel odlíšiť od skutočného výsledku.
 
 ### Čo smie záznam niesť {#what-a-record-may-carry}
 
-Záznam smie pomenovať identifikátor, ktorý autor napísal, odcitovať to, čo autor
-doslova napísal, a opísať *typ* hodnoty za behu. Nikdy nesmie niesť hodnotu za
-behu.
+Záznam smie pomenovať identifikátor, ktorý autor napísal, odcitovať to, čo autor doslova napísal, a opísať *typ* hodnoty za behu. Nikdy nesmie niesť hodnotu za behu.
 
-Toto pravidlo vynucuje tvar API, nie kontrola pri revízii: neexistuje
-konštruktor, ktorý by prijal reťazec od volajúceho. Citovaný zdroj sa spätne
-načíta zo súboru na danej pozícii. Zlyhané `{set story.gold = "abc"}` teda smie
-ohlásiť `"abc"`, lebo to autor napísal do súboru, kým to isté zlyhanie na
-hodnote, ktorá prišla cez `{input}`, môže ohlásiť len názov typu.
+Toto pravidlo vynucuje tvar API, nie kontrola pri revízii: neexistuje konštruktor, ktorý by prijal reťazec od volajúceho. Citovaný zdroj sa spätne načíta zo súboru na danej pozícii. Zlyhané `{set story.gold = "abc"}` teda smie ohlásiť `"abc"`, lebo to autor napísal do súboru, kým to isté zlyhanie na hodnote, ktorá prišla cez `{input}`, môže ohlásiť len názov typu.
 
-Tým sa záruky súkromia pre voľný text a zvuk zo
-[Sekcie 19](03-narrative-interaction.md#_19-input-interaction) a
-[Sekcie 21](03-narrative-interaction.md#_21-real-world-interactions) vzťahujú aj
-na diagnostické záznamy, nielen na stav príbehu. `{listen}`, ktoré sa
-nezhoduje, zaznamená, že sa nezhodovalo — nikdy to, čo bolo povedané.
+Tým sa záruky súkromia pre voľný text a zvuk zo [Sekcie 19](03-narrative-interaction.md#_19-input-interaction) a [Sekcie 21](03-narrative-interaction.md#_21-real-world-interactions) vzťahujú aj na diagnostické záznamy, nielen na stav príbehu. `{listen}`, ktoré sa nezhoduje, zaznamená, že sa nezhodovalo — nikdy to, čo bolo povedané.
 
 ### Ako sa záznamy čítajú {#reading-the-records}
 
@@ -117,11 +86,9 @@ reast validate path/ --strict  # zostavenie zhodia aj varovania
 story/0001.rea:124:1 error link/undefined-anchor Divert to "the_vault" — no such anchor
 ```
 
-Návratový kód je nenulový pri akomkoľvek `fatal` alebo `error`, v každom
-výstupnom režime.
+Návratový kód je nenulový pri akomkoľvek `fatal` alebo `error`, v každom výstupnom režime.
 
-Rea **nemá** `try/catch`. Všetko spracovanie chýb je implicitné — runtime sa
-zotaví, zážitok čitateľa sa nikdy nepreruší a autor si prečíta záznam.
+Rea **nemá** `try/catch`. Všetko spracovanie chýb je implicitné — runtime sa zotaví, zážitok čitateľa sa nikdy nepreruší a autor si prečíta záznam.
 
 ### Náhradné hodnoty {#fallback-values}
 

@@ -4,8 +4,7 @@ Webový komponent `<reast-engine>` funguje v ľubovoľnej HTML stránke alebo Ja
 
 ## Zodpovednosti hostiteľa
 
-Engine emituje sémantiku a vyžiada si schopnosti; svet okolo neho dodáva
-hostiteľ. Platforma integrujúca engine zodpovedá za:
+Engine emituje sémantiku a vyžiada si schopnosti; svet okolo neho dodáva hostiteľ. Platforma integrujúca engine zodpovedá za:
 
 - **Povolenia a eventy schopností.** Engine nikdy nevolá `navigator.*`. Emituje
   eventy runtime zbernice (`vibrate`, `location-start`, `speak`, `notify`, …) na
@@ -105,9 +104,7 @@ export class StoryComponent {
 
 ## Odovzdanie sparsovaného dokumentu
 
-Naviazanie atribútu `content` prinúti element text sparsovať. Hostiteľ, ktorý má
-príbeh *už* sparsovaný (pre súhlasovú bránu, SEO alebo offline cache), by mal
-odovzdať `ReaDocument` priamo — element ho vykreslí bez druhého parsovania:
+Naviazanie atribútu `content` prinúti element text sparsovať. Hostiteľ, ktorý má príbeh *už* sparsovaný (pre súhlasovú bránu, SEO alebo offline cache), by mal odovzdať `ReaDocument` priamo — element ho vykreslí bez druhého parsovania:
 
 ```ts
 import { parseRea } from '@reast/engine/parser';
@@ -128,9 +125,7 @@ engine.document = doc; // vykreslí — bez opätovného parsovania
 
 ## Médiá
 
-Archívne médiá loader extrahuje do `blob:` object URL, takže hostiteľ, ktorý
-dostane `src` v `rea-media-activate`, už drží bajty — sťahovanie alebo galéria
-nestoja **žiadny sieťový round-trip**:
+Archívne médiá loader extrahuje do `blob:` object URL, takže hostiteľ, ktorý dostane `src` v `rea-media-activate`, už drží bajty — sťahovanie alebo galéria nestoja **žiadny sieťový round-trip**:
 
 ```ts
 engine.addEventListener('rea-media-activate', (e) => {
@@ -140,14 +135,9 @@ engine.addEventListener('rea-media-activate', (e) => {
 });
 ```
 
-Nastavte `media-controls="none"`, aby ste potlačili natívne ovládanie
-`<video>`/`<audio>` enginu a mohli dodať vlastný prehrávač; predvolené je
-`native`. Pri `none` sa video a audio stanú cieľmi aktivácie, ktoré tiež
-reportujú cez `rea-media-activate`.
+Nastavte `media-controls="none"`, aby ste potlačili natívne ovládanie `<video>`/`<audio>` enginu a mohli dodať vlastný prehrávač; predvolené je `native`. Pri `none` sa video a audio stanú cieľmi aktivácie, ktoré tiež reportujú cez `rea-media-activate`.
 
-Na vymenovanie každého mediálneho uzla vopred — vrátane tých vnorených vo
-vetvách volieb, stavových automatoch a hookoch kariet — zavolajte
-`collectMedia(document)`:
+Na vymenovanie každého mediálneho uzla vopred — vrátane tých vnorených vo vetvách volieb, stavových automatoch a hookoch kariet — zavolajte `collectMedia(document)`:
 
 ```ts
 import { collectMedia } from '@reast/engine';

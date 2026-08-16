@@ -76,8 +76,7 @@ Ahoj, {story.player.name}! Máš {story.player.gold} zlata.
 {story.player.gold > 50 ? "bohatý" : "chudobný"}
 ```
 
-**Prefixy domén** (údaje platformy len na čítanie):
-`reader.*` `story.*` `world.*` `device.*` `group.*`
+**Prefixy domén** (údaje platformy len na čítanie): `reader.*` `story.*` `world.*` `device.*` `group.*`
 
 ---
 

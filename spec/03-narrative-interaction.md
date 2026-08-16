@@ -32,8 +32,7 @@ The path splits before you.
   -> the_crossroads
 ```
 
-::: warning An `{if}` inside a branch ends the whole group
-A block command indented under a choice closes the choice group, so every option written after it disappears and the reader is left with the ones above. Set a flag in the branch and put the conditional prose after the gather:
+::: warning An `{if}` inside a branch ends the whole group A block command indented under a choice closes the choice group, so every option written after it disappears and the reader is left with the ones above. Set a flag in the branch and put the conditional prose after the gather:
 
 ```rea
 {comment WRONG — "Take the right path" never appears}
@@ -57,8 +56,7 @@ The lamp showed you the roots.
 {end if}
 ```
 
-`{set}`, `{give}`, `{take}`, `{earn}`, `{spend}` and `{play}` are all fine inside a branch — it is the block commands that close the group.
-:::
+`{set}`, `{give}`, `{take}`, `{earn}`, `{spend}` and `{play}` are all fine inside a branch — it is the block commands that close the group. :::
 
 **Choice text rules:**
 
@@ -184,9 +182,7 @@ A choice without text acts as a fallback (chosen automatically when no other opt
   The conversation fizzled out. -> leave_tavern
 ```
 
-::: warning Parsed, but not yet auto-selected
-The fallback is recognised as an option and renders no button, but the runtime does not yet pick it when the others run out — `flow/fallback-choice-taken` has no emitter. A group that relies on it will simply end with nothing to click, so give the reader a visible way on until this lands.
-:::
+::: warning Parsed, but not yet auto-selected The fallback is recognised as an option and renders no button, but the runtime does not yet pick it when the others run out — `flow/fallback-choice-taken` has no emitter. A group that relies on it will simply end with nothing to click, so give the reader a visible way on until this lands. :::
 
 ### Tunnels (divert and return)
 
@@ -372,10 +368,7 @@ In cooperative reading, different readers can follow different threads simultane
 
 <Feature id="storylets" />
 
-Modular content blocks with prerequisites and effects — `require`, `priority`, `repeatable`,
-`cooldown`, `weight`, `tags` — selected by the engine into a `{deck}` or woken by a real-world
-`trigger:` as a side path that returns exactly where the reader left off. Storylets now have their
-own page: see [Storylets & Decks](/spec/storylets).
+Modular content blocks with prerequisites and effects — `require`, `priority`, `repeatable`, `cooldown`, `weight`, `tags` — selected by the engine into a `{deck}` or woken by a real-world `trigger:` as a side path that returns exactly where the reader left off. Storylets now have their own page: see [Storylets & Decks](/spec/storylets).
 
 ### Exploration menus
 
@@ -454,18 +447,11 @@ Automatic saving happens at every choice, and an author can mark explicit restor
 
 <Feature id="multi-part-stories" />
 
-A longer story can be split into **story parts** — separate `.rea` files listed in the
-bundle manifest as `parts` (see Part 5 for the manifest schema). The reader plays
-through a sequence of parts: only the **current part** is the live document, and
-scrolling up reveals the **previously-visited parts** — the actual path taken,
-never an un-taken branch. There are two ways to move between parts.
+A longer story can be split into **story parts** — separate `.rea` files listed in the bundle manifest as `parts` (see Part 5 for the manifest schema). The reader plays through a sequence of parts: only the **current part** is the live document, and scrolling up reveals the **previously-visited parts** — the actual path taken, never an un-taken branch. There are two ways to move between parts.
 
 <Feature id="part-gates" />
 
-**Gate `[[ target ]]`** — an automatic, text-free transition. It occupies its own
-line and is terminal: when the flow reaches it, nothing after it in the current
-part renders, and the gate marks where the story continues. Scrolling past the
-current part's end reveals the gated part inline, as a seamless continuation.
+**Gate `[[ target ]]`** — an automatic, text-free transition. It occupies its own line and is terminal: when the flow reaches it, nothing after it in the current part renders, and the gate marks where the story continues. Scrolling past the current part's end reveals the gated part inline, as a seamless continuation.
 
 ```rea
 You step through the archway; there is no going back.
@@ -473,10 +459,7 @@ You step through the archway; there is no going back.
 [[ story/0005-forest.rea ]]
 ```
 
-Because a gate ends the part, content placed after it is unreachable — the editor
-flags it as a warning. A gate may target a scene within the part with
-`[[ part.rea:scene ]]`, resuming at that `[#scene]` anchor. Gates inside an `{if}`
-express variable-driven branching without a manual choice:
+Because a gate ends the part, content placed after it is unreachable — the editor flags it as a warning. A gate may target a scene within the part with `[[ part.rea:scene ]]`, resuming at that `[#scene]` anchor. Gates inside an `{if}` express variable-driven branching without a manual choice:
 
 ```rea
 {if story.quest.has_key begin}
@@ -489,18 +472,13 @@ express variable-driven branching without a manual choice:
 
 <Feature id="cross-part-links" />
 
-**Cross-part link** — a normal navigation link whose target is a part file lets
-the reader choose to move on by tapping:
+**Cross-part link** — a normal navigation link whose target is a part file lets the reader choose to move on by tapping:
 
 ```rea
 [enter the castle > story/0006-castle.rea] rises ahead of you.
 ```
 
-Variables carry across parts: each part's top-level `{set}` commands run once as
-it is entered, on top of the state accumulated so far. Saved progress records the
-ordered path of visited parts plus the current part and in-part position, so a
-resume replays the visited parts for the scroll-back and continues the current
-part where the reader left off (see Part 5, _Reading state_).
+Variables carry across parts: each part's top-level `{set}` commands run once as it is entered, on top of the state accumulated so far. Saved progress records the ordered path of visited parts plus the current part and in-part position, so a resume replays the visited parts for the scroll-back and continues the current part where the reader left off (see Part 5, _Reading state_).
 
 ---
 
@@ -567,11 +545,7 @@ More than one of something uses `count=`. A bare number is not a count — it is
 
 <Feature id="coins" />
 
-Stories that need money use the built-in coin wallet. It has three tiers —
-`gold`, `silver`, `bronze` — with the fixed base ratio **1 gold = 10 silver =
-100 bronze**. The internal tier names never change (so save files stay
-portable), but authors can rename the labels shown to the reader and adjust the
-conversion ratios:
+Stories that need money use the built-in coin wallet. It has three tiers — `gold`, `silver`, `bronze` — with the fixed base ratio **1 gold = 10 silver = 100 bronze**. The internal tier names never change (so save files stay portable), but authors can rename the labels shown to the reader and adjust the conversion ratios:
 
 ```rea
 {coins gold="Dukát" silver="Groš" bronze="Halier"}
@@ -586,10 +560,7 @@ conversion ratios:
 {end if}
 ```
 
-`{spend}` automatically breaks higher denominations when the reader lacks the
-exact tier, and refuses (changing nothing) when the wallet cannot cover the
-cost. The balance is mirrored into reader-facing variables and persisted across
-saves:
+`{spend}` automatically breaks higher denominations when the reader lacks the exact tier, and refuses (changing nothing) when the wallet cannot cover the cost. The balance is mirrored into reader-facing variables and persisted across saves:
 
 | Variable             | Contents                                           |
 | -------------------- | -------------------------------------------------- |

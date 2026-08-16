@@ -9,9 +9,7 @@ The engine has two independent extension tiers, for two different audiences:
   supplied by the page, registered per `<reast-engine>` element, and can reach
   device APIs on the story's behalf.
 
-Neither tier is a module-global registry. Everything is scoped — Rea extensions
-to the archive they ship in, host extensions to the element instance they are
-registered on.
+Neither tier is a module-global registry. Everything is scoped — Rea extensions to the archive they ship in, host extensions to the element instance they are registered on.
 
 ## Tier 1 — Rea extensions (`.rext`)
 
@@ -22,9 +20,7 @@ A `.rext` file is **declaration-only Rea**. It may contain only:
 - `{use}` imports,
 - comments.
 
-Any prose node anywhere in the file is a **load error** — this is what keeps an
-extension reviewable and mechanically checkable. Control-flow commands (`{if}`,
-`{return}`, …) are allowed only inside function bodies.
+Any prose node anywhere in the file is a **load error** — this is what keeps an extension reviewable and mechanically checkable. Control-flow commands (`{if}`, `{return}`, …) are allowed only inside function bodies.
 
 ### Writing one
 
@@ -46,26 +42,15 @@ extension reviewable and mechanically checkable. Control-flow commands (`{if}`,
 {end function}
 ```
 
-Top-level `{set}` values become module constants that its functions can read;
-functions in the same module can call each other.
+Top-level `{set}` values become module constants that its functions can read; functions in the same module can call each other.
 
-Constants are **private to the module**. They never become story variables, so
-they never appear in exported reading state, two modules may use the same
-constant name without colliding, and a module can never clobber a variable the
-author declared. A function parameter of the same name shadows the constant.
+Constants are **private to the module**. They never become story variables, so they never appear in exported reading state, two modules may use the same constant name without colliding, and a module can never clobber a variable the author declared. A function parameter of the same name shadows the constant.
 
-::: warning
-A `{set}` **inside a function body**, of a name the function does not already
-hold, writes a **story variable** — that is ordinary Rea function scoping, and
-it applies to extensions too. Use it deliberately (to record something in the
-story) and never as a loop counter, or it will surface in the reader's saved
-state. Accumulate with recursion, as `std/dice`'s `roll` does.
-:::
+::: warning A `{set}` **inside a function body**, of a name the function does not already hold, writes a **story variable** — that is ordinary Rea function scoping, and it applies to extensions too. Use it deliberately (to record something in the story) and never as a loop counter, or it will surface in the reader's saved state. Accumulate with recursion, as `std/dice`'s `roll` does. :::
 
 ### Using one
 
-Import with `{use}` — the path omits the `.rext` suffix — bind it to an alias,
-and call through the alias:
+Import with `{use}` — the path omits the `.rext` suffix — bind it to an alias, and call through the alias:
 
 ```rea
 ---
@@ -84,10 +69,7 @@ You stagger under the weight and drop the shield.
 
 ### Rules the loader enforces
 
-Every `.rext` in the archive is compiled and validated at load, **before any
-prose runs** — a broken extension surfaces at publish time, not on a reader's
-device. But compilation is not activation: only a `{use}` actually binds a
-module. Beyond that:
+Every `.rext` in the archive is compiled and validated at load, **before any prose runs** — a broken extension surfaces at publish time, not on a reader's device. But compilation is not activation: only a `{use}` actually binds a module. Beyond that:
 
 - the `{use}` graph must be **acyclic** and every target must resolve;
 - **duplicate export names** are an error, not silent first-wins;
@@ -96,9 +78,7 @@ module. Beyond that:
 
 ### `std/*` — the standard library
 
-`std/` is a reserved namespace resolved from **inside the engine**, never from
-the archive and never from the host. `{use "std/dice" as dice}` therefore needs
-nothing shipped alongside the story and works identically on every host:
+`std/` is a reserved namespace resolved from **inside the engine**, never from the archive and never from the host. `{use "std/dice" as dice}` therefore needs nothing shipped alongside the story and works identically on every host:
 
 ```rea
 {use "std/dice" as dice}
@@ -116,16 +96,11 @@ The trap deals {dice.d(8)} damage.
 | `advantage(sides)` | The higher of two `d(sides)` rolls. |
 | `disadvantage(sides)` | The lower of two `d(sides)` rolls. |
 
-An archive `.rext` that resolves under `std/`, and a host extension that
-declares `namespace: 'std'`, are both load errors.
+An archive `.rext` that resolves under `std/`, and a host extension that declares `namespace: 'std'`, are both load errors.
 
 ## Tier 2 — Host extensions
 
-A host extension is a plain object implementing `EngineExtension`, registered on
-**one element instance** with `element.use(ext)` and removed with
-`element.unuse(name)`. Two elements on one page can hold different extensions.
-Registration survives story reloads and applies to every story the element
-loads afterwards.
+A host extension is a plain object implementing `EngineExtension`, registered on **one element instance** with `element.use(ext)` and removed with `element.unuse(name)`. Two elements on one page can hold different extensions. Registration survives story reloads and applies to every story the element loads afterwards.
 
 ```ts
 import type { EngineExtension } from '@reast/engine/player';
@@ -167,15 +142,11 @@ engine.use(host);
 
 ### functions
 
-Each entry is `{ fn, schema? }`. `fn` receives sanitized arguments and returns a
-value. Functions become callable as `{host.fnName(...)}`. Because the namespace
-is always dotted, an extension function can never shadow a core builtin.
+Each entry is `{ fn, schema? }`. `fn` receives sanitized arguments and returns a value. Functions become callable as `{host.fnName(...)}`. Because the namespace is always dotted, an extension function can never shadow a core builtin.
 
 ### commands
 
-A command handles a namespaced command node `{host.command args}`. **A command
-requires arguments** — a bare `{host.buzz}` is parsed as a *dotted variable
-reference*, not a command. The handler receives `{ emit, setVariables, node }`:
+A command handles a namespaced command node `{host.command args}`. **A command requires arguments** — a bare `{host.buzz}` is parsed as a *dotted variable reference*, not a command. The handler receives `{ emit, setVariables, node }`:
 
 - `emit(event)` — emit a runtime bus event (the only way to reach a device);
 - `setVariables(vars)` — merge variables back into the runtime (the sensor
@@ -184,10 +155,7 @@ reference*, not a command. The handler receives `{ emit, setVariables, node }`:
 
 ### The capability boundary
 
-**An extension that needs a device API emits a bus event; engine code never
-calls `navigator.*` on its behalf.** A vibration command does not call
-`navigator.vibrate` — it emits, and the host (which asked the user for
-permission) decides whether to honour it:
+**An extension that needs a device API emits a bus event; engine code never calls `navigator.*` on its behalf.** A vibration command does not call `navigator.vibrate` — it emits, and the host (which asked the user for permission) decides whether to honour it:
 
 ```ts
 engine.use({
@@ -209,10 +177,7 @@ engine.events.on('vibrate', ({ pattern }) => {
 
 ### renderers
 
-A renderer substitutes the DOM produced for a node type — this is what the old
-`beforeRenderNode` hook could not do, since it could only veto. Keys are a
-`ReaNode` `type` (e.g. `paragraph`) or `card:<card_kind>` for a custom card. A
-renderer returning `null` falls back to the built-in rendering.
+A renderer substitutes the DOM produced for a node type — this is what the old `beforeRenderNode` hook could not do, since it could only veto. Keys are a `ReaNode` `type` (e.g. `paragraph`) or `card:<card_kind>` for a custom card. A renderer returning `null` falls back to the built-in rendering.
 
 ### Lifecycle hooks
 
@@ -231,17 +196,8 @@ A story can declare in its manifest which host namespaces it depends on:
 { "requires": ["host"] }
 ```
 
-When the element loads such a story, `assertRequiredExtensions` checks the
-declared namespaces against the extensions actually registered. If any is
-missing, the load is **refused with a clear diagnostic** rather than the story
-calling `host.*` and getting a wrong answer mid-chapter. Hosts that load
-bundles themselves can call `assertRequiredExtensions(manifest, namespaces)`
-directly.
+When the element loads such a story, `assertRequiredExtensions` checks the declared namespaces against the extensions actually registered. If any is missing, the load is **refused with a clear diagnostic** rather than the story calling `host.*` and getting a wrong answer mid-chapter. Hosts that load bundles themselves can call `assertRequiredExtensions(manifest, namespaces)` directly.
 
 ## Related surfaces
 
-For host-side reading of runtime state (variables, cards, condition
-evaluation), the currently loaded story exposes its `runtime`
-(`StoryEngine`) — see the [API Reference](api). Persist and restore reading
-progress with `exportState()` / `importState()`, and theme the player through
-[CSS custom properties](theming).
+For host-side reading of runtime state (variables, cards, condition evaluation), the currently loaded story exposes its `runtime` (`StoryEngine`) — see the [API Reference](api). Persist and restore reading progress with `exportState()` / `importState()`, and theme the player through [CSS custom properties](theming).

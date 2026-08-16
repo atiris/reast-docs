@@ -1,7 +1,6 @@
 # API referencia
 
-Custom element `<reast-engine>` poháňa celú pipeline a svoj stav aj ovládanie
-sprístupňuje ako atribúty, vlastnosti, metódy a udalosti.
+Custom element `<reast-engine>` poháňa celú pipeline a svoj stav aj ovládanie sprístupňuje ako atribúty, vlastnosti, metódy a udalosti.
 
 ## Atribúty
 
@@ -14,10 +13,7 @@ sprístupňuje ako atribúty, vlastnosti, metódy a udalosti.
 | `locale` | `string` | BCP-47 locale pre i18n/dátumové vstavané funkcie. |
 | `media-controls` | `native \| none` | Či `<video>`/`<audio>` vykresľujú natívne ovládanie (`native`, predvolené) alebo sa stanú cieľmi aktivácie riešenými hostiteľom (`none`). |
 
-`src`, `content`, `locale` a `media-controls` sú sledované a pri zmene sa
-prevykreslia; `speed` a `story-id` sa čítajú na požiadanie (nie sú v
-`observedAttributes`). Poradie rozlíšenia locale je: atribút `locale` → jazyk
-z metadát príbehu → `<html lang>` hostiteľskej stránky → `en`.
+`src`, `content`, `locale` a `media-controls` sú sledované a pri zmene sa prevykreslia; `speed` a `story-id` sa čítajú na požiadanie (nie sú v `observedAttributes`). Poradie rozlíšenia locale je: atribút `locale` → jazyk z metadát príbehu → `<html lang>` hostiteľskej stránky → `en`.
 
 ## Vlastnosti
 
@@ -78,19 +74,11 @@ Všetky udalosti sú inštancie `CustomEvent`, ktoré bublajú.
 
 ### `rea-media-activate`
 
-Zrušiteľná (cancelable) a `composed`. `kind` je `'image' | 'video' | 'audio'`;
-`src` je vykresliteľná URL (`blob:` URL pri archívnych médiách); `path` je
-pôvodná cesta relatívna k archívu (pomenujte podľa nej sťahovanie alebo si
-položku vyhľadajte v manifeste); `alt` je alternatívny text autora. Obrázky
-emitujú vždy; video/audio iba pri `media-controls="none"`. **Engine nevykresľuje
-žiadny overlay** — iba nahlási aktiváciu. Predvolený lightbox dodáva jedine
-standalone CDN build (zaregistrovaný cez tú istú udalosť); embedujúci hostiteľ
-otvorí vlastný prehliadač a zavolá `preventDefault()`.
+Zrušiteľná (cancelable) a `composed`. `kind` je `'image' | 'video' | 'audio'`; `src` je vykresliteľná URL (`blob:` URL pri archívnych médiách); `path` je pôvodná cesta relatívna k archívu (pomenujte podľa nej sťahovanie alebo si položku vyhľadajte v manifeste); `alt` je alternatívny text autora. Obrázky emitujú vždy; video/audio iba pri `media-controls="none"`. **Engine nevykresľuje žiadny overlay** — iba nahlási aktiváciu. Predvolený lightbox dodáva jedine standalone CDN build (zaregistrovaný cez tú istú udalosť); embedujúci hostiteľ otvorí vlastný prehliadač a zavolá `preventDefault()`.
 
 ## Sloty
 
-Chrome hostiteľa sa vkladá cez pomenované sloty: `before-identity`,
-`after-identity`, `before-chapter`, `after-chapter`, `story-end`.
+Chrome hostiteľa sa vkladá cez pomenované sloty: `before-identity`, `after-identity`, `before-chapter`, `after-chapter`, `story-end`.
 
 ## Exporty modulu, ktoré stoja za zmienku
 

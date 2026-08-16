@@ -36,8 +36,7 @@ Toto je jednoduchý rozvetvený príbeh. Skúste ho upraviť.
 - *Koniec.*
 `;
 
-const source = ref(defaultStory);
-const playerContainer = ref(null);
+const source = ref(defaultStory); const playerContainer = ref(null);
 
 function renderStory() {
   if (!playerContainer.value) return;
@@ -61,8 +60,7 @@ onMounted(async () => {
   renderStory();
 });
 
-let debounce;
-watch(source, () => {
+let debounce; watch(source, () => {
   clearTimeout(debounce);
   debounce = setTimeout(renderStory, 500);
 });
@@ -106,8 +104,7 @@ watch(source, () => {
   }
 }
 
-.playground-editor,
-.playground-preview {
+.playground-editor, .playground-preview {
   border: 1px solid var(--vp-c-border);
   border-radius: 8px;
   padding: 1rem;

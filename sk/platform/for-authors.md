@@ -6,9 +6,7 @@ Všetko platformovo-špecifické o písaní a publikovaní na Reast. Pre samotn�
 
 Príbehy sa píšu v Rea — jednoduchom značkovacom jazyku navrhnutom pre interaktívne naratívy. Ak viete napísať textovú správu, viete napísať príbeh v Rea. Vopred sa nemusíte učiť žiadne programátorské koncepty — jednoducho začnite písať.
 
-::: tip Vyskúšajte si to naživo
-Otvorte editor a píšte popri tomto návode. Živý náhľad sa aktualizuje počas písania, takže presne vidíte, čo zažijú čitatelia.
-:::
+::: tip Vyskúšajte si to naživo Otvorte editor a píšte popri tomto návode. Živý náhľad sa aktualizuje počas písania, takže presne vidíte, čo zažijú čitatelia. :::
 
 Platný príbeh je jednoducho text. Žiadna špeciálna syntax nie je potrebná:
 

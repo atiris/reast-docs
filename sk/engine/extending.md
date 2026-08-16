@@ -9,9 +9,7 @@ Engine má dve nezávislé úrovne rozšírení pre dve rôzne publiká:
   dodaný stránkou, registrovaný na jednotlivý element `<reast-engine>`, a smie
   siahať na API zariadenia v mene príbehu.
 
-Ani jedna úroveň nie je modulovo-globálny register. Všetko je scoped — Rea
-rozšírenia na archív, v ktorom cestujú, hostiteľské rozšírenia na inštanciu
-elementu, na ktorej sú zaregistrované.
+Ani jedna úroveň nie je modulovo-globálny register. Všetko je scoped — Rea rozšírenia na archív, v ktorom cestujú, hostiteľské rozšírenia na inštanciu elementu, na ktorej sú zaregistrované.
 
 ## Úroveň 1 — Rea rozšírenia (`.rext`)
 
@@ -22,9 +20,7 @@ Súbor `.rext` je **iba deklaratívna Rea**. Smie obsahovať len:
 - `{use}` importy,
 - komentáre.
 
-Akýkoľvek prozaický uzol kdekoľvek v súbore je **chyba pri načítaní** — práve to
-udržiava rozšírenie recenzovateľné a mechanicky overiteľné. Príkazy riadenia
-toku (`{if}`, `{return}`, …) sú povolené len vnútri tiel funkcií.
+Akýkoľvek prozaický uzol kdekoľvek v súbore je **chyba pri načítaní** — práve to udržiava rozšírenie recenzovateľné a mechanicky overiteľné. Príkazy riadenia toku (`{if}`, `{return}`, …) sú povolené len vnútri tiel funkcií.
 
 ### Ako ho napísať
 
@@ -46,19 +42,15 @@ toku (`{if}`, `{return}`, …) sú povolené len vnútri tiel funkcií.
 {end function}
 ```
 
-`{set}` hodnoty na najvyššej úrovni sa stanú modulovými konštantami, ktoré jeho
-funkcie vedia čítať; funkcie v tom istom module sa môžu navzájom volať.
+`{set}` hodnoty na najvyššej úrovni sa stanú modulovými konštantami, ktoré jeho funkcie vedia čítať; funkcie v tom istom module sa môžu navzájom volať.
 
 Konštanty sú **súkromné pre modul**. Nikdy sa nestanú premennými príbehu, takže sa nikdy neobjavia v exportovanom stave čítania, dva moduly môžu použiť rovnaký názov konštanty bez kolízie a modul nikdy nemôže prepísať premennú deklarovanú autorom. Parameter funkcie s rovnakým názvom konštantu zatieni.
 
-::: warning
-`{set}` **vnútri tela funkcie** pre názov, ktorý funkcia ešte nedrží, zapisuje **premennú príbehu** — to je bežný rozsah funkcií v Rea a platí aj pre rozšírenia. Použite to zámerne (na zaznamenanie niečoho v príbehu) a nikdy nie ako počítadlo cyklu, inak sa to objaví v uloženom stave čitateľa. Hromaďte rekurziou, tak ako to robí `roll` v `std/dice`.
-:::
+::: warning `{set}` **vnútri tela funkcie** pre názov, ktorý funkcia ešte nedrží, zapisuje **premennú príbehu** — to je bežný rozsah funkcií v Rea a platí aj pre rozšírenia. Použite to zámerne (na zaznamenanie niečoho v príbehu) a nikdy nie ako počítadlo cyklu, inak sa to objaví v uloženom stave čitateľa. Hromaďte rekurziou, tak ako to robí `roll` v `std/dice`. :::
 
 ### Ako ho použiť
 
-Importujte cez `{use}` — cesta vynecháva príponu `.rext` — priraďte alias a
-volajte cez alias:
+Importujte cez `{use}` — cesta vynecháva príponu `.rext` — priraďte alias a volajte cez alias:
 
 ```rea
 ---
@@ -77,9 +69,7 @@ Podlomíš sa pod váhou a odhodíš štít.
 
 ### Pravidlá, ktoré loader vynucuje
 
-Každý `.rext` v archíve sa skompiluje a overí pri načítaní, **ešte pred prózou** —
-pokazené rozšírenie sa ukáže pri publikovaní, nie na zariadení čitateľa.
-Kompilácia však nie je aktivácia: modul viaže až samotné `{use}`. Okrem toho:
+Každý `.rext` v archíve sa skompiluje a overí pri načítaní, **ešte pred prózou** — pokazené rozšírenie sa ukáže pri publikovaní, nie na zariadení čitateľa. Kompilácia však nie je aktivácia: modul viaže až samotné `{use}`. Okrem toho:
 
 - graf `{use}` musí byť **acyklický** a každý cieľ sa musí rozlíšiť;
 - **duplicitné mená exportov** sú chyba, nie tiché „vyhráva prvý";
@@ -88,9 +78,7 @@ Kompilácia však nie je aktivácia: modul viaže až samotné `{use}`. Okrem to
 
 ### `std/*` — štandardná knižnica
 
-`std/` je vyhradený menný priestor riešený **vnútri enginu**, nikdy z archívu a
-nikdy od hostiteľa. `{use "std/dice" as dice}` preto nepotrebuje nič dodané
-spolu s príbehom a funguje identicky na každom hostiteľovi:
+`std/` je vyhradený menný priestor riešený **vnútri enginu**, nikdy z archívu a nikdy od hostiteľa. `{use "std/dice" as dice}` preto nepotrebuje nič dodané spolu s príbehom a funguje identicky na každom hostiteľovi:
 
 ```rea
 {use "std/dice" as dice}
@@ -108,16 +96,11 @@ Pasca uštedrí {dice.d(8)} zranenia.
 | `advantage(sides)` | Vyšší z dvoch hodov `d(sides)`. |
 | `disadvantage(sides)` | Nižší z dvoch hodov `d(sides)`. |
 
-Archívny `.rext`, ktorý sa rozlíši pod `std/`, aj hostiteľské rozšírenie, ktoré
-deklaruje `namespace: 'std'`, sú oba chyby pri načítaní.
+Archívny `.rext`, ktorý sa rozlíši pod `std/`, aj hostiteľské rozšírenie, ktoré deklaruje `namespace: 'std'`, sú oba chyby pri načítaní.
 
 ## Úroveň 2 — hostiteľské rozšírenia
 
-Hostiteľské rozšírenie je obyčajný objekt implementujúci `EngineExtension`,
-zaregistrovaný na **jednej inštancii elementu** cez `element.use(ext)` a
-odstránený cez `element.unuse(name)`. Dva elementy na jednej stránke môžu držať
-rôzne rozšírenia. Registrácia prežije prenačítania príbehu a platí pre každý
-príbeh, ktorý element potom načíta.
+Hostiteľské rozšírenie je obyčajný objekt implementujúci `EngineExtension`, zaregistrovaný na **jednej inštancii elementu** cez `element.use(ext)` a odstránený cez `element.unuse(name)`. Dva elementy na jednej stránke môžu držať rôzne rozšírenia. Registrácia prežije prenačítania príbehu a platí pre každý príbeh, ktorý element potom načíta.
 
 ```ts
 import type { EngineExtension } from '@reast/engine/player';
@@ -159,15 +142,11 @@ engine.use(host);
 
 ### functions
 
-Každá položka je `{ fn, schema? }`. `fn` dostane sanitizované argumenty a vráti
-hodnotu. Funkcie sú volateľné ako `{host.fnName(...)}`. Keďže menný priestor je
-vždy bodkovaný, funkcia rozšírenia nikdy nemôže zatieniť jadrový builtin.
+Každá položka je `{ fn, schema? }`. `fn` dostane sanitizované argumenty a vráti hodnotu. Funkcie sú volateľné ako `{host.fnName(...)}`. Keďže menný priestor je vždy bodkovaný, funkcia rozšírenia nikdy nemôže zatieniť jadrový builtin.
 
 ### commands
 
-Príkaz obslúži menný príkazový uzol `{host.command args}`. **Príkaz vyžaduje
-argumenty** — samotné `{host.buzz}` sa sparsuje ako *bodkovaná referencia na
-premennú*, nie ako príkaz. Handler dostane `{ emit, setVariables, node }`:
+Príkaz obslúži menný príkazový uzol `{host.command args}`. **Príkaz vyžaduje argumenty** — samotné `{host.buzz}` sa sparsuje ako *bodkovaná referencia na premennú*, nie ako príkaz. Handler dostane `{ emit, setVariables, node }`:
 
 - `emit(event)` — emitovať event runtime zbernice (jediný spôsob, ako sa dostať
   k zariadeniu);
@@ -176,10 +155,7 @@ premennú*, nie ako príkaz. Handler dostane `{ emit, setVariables, node }`:
 
 ### Hranica schopností
 
-**Rozšírenie, ktoré potrebuje API zariadenia, emituje event na zbernici; engine
-nikdy nevolá `navigator.*` zaň.** Príkaz vibrácie nevolá `navigator.vibrate` —
-emituje, a hostiteľ (ktorý si vypýtal povolenie od používateľa) rozhodne, či ho
-uctí:
+**Rozšírenie, ktoré potrebuje API zariadenia, emituje event na zbernici; engine nikdy nevolá `navigator.*` zaň.** Príkaz vibrácie nevolá `navigator.vibrate` — emituje, a hostiteľ (ktorý si vypýtal povolenie od používateľa) rozhodne, či ho uctí:
 
 ```ts
 engine.use({
@@ -201,10 +177,7 @@ engine.events.on('vibrate', ({ pattern }) => {
 
 ### renderers
 
-Renderer nahradí DOM vytvorený pre typ uzla — presne to, čo starý hook
-`beforeRenderNode` nevedel, keďže mohol vykreslenie iba zakázať. Kľúče sú `type`
-uzla `ReaNode` (napr. `paragraph`) alebo `card:<card_kind>` pre vlastnú kartu.
-Renderer, ktorý vráti `null`, prepadne späť na vstavané vykreslenie.
+Renderer nahradí DOM vytvorený pre typ uzla — presne to, čo starý hook `beforeRenderNode` nevedel, keďže mohol vykreslenie iba zakázať. Kľúče sú `type` uzla `ReaNode` (napr. `paragraph`) alebo `card:<card_kind>` pre vlastnú kartu. Renderer, ktorý vráti `null`, prepadne späť na vstavané vykreslenie.
 
 ### Lifecycle hooky
 
@@ -217,24 +190,14 @@ Renderer, ktorý vráti `null`, prepadne späť na vstavané vykreslenie.
 
 ### Vyžadované hostiteľské menné priestory
 
-Príbeh môže v manifeste deklarovať, na ktorých hostiteľských menných priestoroch
-závisí:
+Príbeh môže v manifeste deklarovať, na ktorých hostiteľských menných priestoroch závisí:
 
 ```json
 { "requires": ["host"] }
 ```
 
-Keď element načíta takýto príbeh, `assertRequiredExtensions` porovná deklarované
-menné priestory s reálne zaregistrovanými rozšíreniami. Ak niektorý chýba,
-načítanie sa **odmietne s jasnou diagnostikou**, namiesto toho, aby príbeh volal
-`host.*` a dostal uprostred kapitoly zlú odpoveď. Hostitelia, ktorí si balíky
-načítavajú sami, môžu zavolať `assertRequiredExtensions(manifest, namespaces)`
-priamo.
+Keď element načíta takýto príbeh, `assertRequiredExtensions` porovná deklarované menné priestory s reálne zaregistrovanými rozšíreniami. Ak niektorý chýba, načítanie sa **odmietne s jasnou diagnostikou**, namiesto toho, aby príbeh volal `host.*` a dostal uprostred kapitoly zlú odpoveď. Hostitelia, ktorí si balíky načítavajú sami, môžu zavolať `assertRequiredExtensions(manifest, namespaces)` priamo.
 
 ## Súvisiace plochy
 
-Pre čítanie runtime stavu na strane hostiteľa (premenné, karty, vyhodnocovanie
-podmienok) práve načítaný príbeh sprístupňuje svoj `runtime` (`StoryEngine`) —
-pozri [API referenciu](api). Perzistujte a obnovujte čítací postup cez
-`exportState()` / `importState()` a témujte player cez
-[CSS custom properties](theming).
+Pre čítanie runtime stavu na strane hostiteľa (premenné, karty, vyhodnocovanie podmienok) práve načítaný príbeh sprístupňuje svoj `runtime` (`StoryEngine`) — pozri [API referenciu](api). Perzistujte a obnovujte čítací postup cez `exportState()` / `importState()` a témujte player cez [CSS custom properties](theming).

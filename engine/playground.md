@@ -36,8 +36,7 @@ This is a simple branching story. Try editing it.
 - *The End.*
 `;
 
-const source = ref(defaultStory);
-const playerContainer = ref(null);
+const source = ref(defaultStory); const playerContainer = ref(null);
 
 function renderStory() {
   if (!playerContainer.value) return;
@@ -62,8 +61,7 @@ onMounted(async () => {
   renderStory();
 });
 
-let debounce;
-watch(source, () => {
+let debounce; watch(source, () => {
   clearTimeout(debounce);
   debounce = setTimeout(renderStory, 500);
 });
@@ -107,8 +105,7 @@ watch(source, () => {
   }
 }
 
-.playground-editor,
-.playground-preview {
+.playground-editor, .playground-preview {
   border: 1px solid var(--vp-c-border);
   border-radius: 8px;
   padding: 1rem;
@@ -155,16 +152,14 @@ The playground creates a `<reast-engine>` web component and feeds it your Rea so
 
 ### Supported syntax
 
-Anything the engine implements works here — that is everything marked `stable`
-or `experimental` on the [feature index](/spec/features):
+Anything the engine implements works here — that is everything marked `stable` or `experimental` on the [feature index](/spec/features):
 
 - **Prose** — paragraphs, headings, emphasis, blockquotes, rules, footnotes and hints
 - **Choices** — `*` one-time, `+` sticky, `-` gathers, `->` diverts, `->->` tunnels
 - **State** — `{set story.player.gold = 100}`, `{if …begin}…{end if}`, loops, functions
 - **Narrative** — `{once}`, varying text, storylets, decks, exploration menus, cards
 
-Features badged `development` or `draft` are not implemented, so the parser
-treats them as ordinary text — see [graceful degradation](/spec/error-handling).
+Features badged `development` or `draft` are not implemented, so the parser treats them as ordinary text — see [graceful degradation](/spec/error-handling).
 
 ### Limitations
 

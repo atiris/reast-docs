@@ -18,18 +18,9 @@ A `.rea` file is a UTF-8 plain text file holding one story's prose and syntax. I
 
 <Feature id="reast-package" />
 
-A `.reast` file is a ZIP archive (like EPUB) that bundles one or more parts with
-their media and metadata, in either a manifest-driven or a flat layout. The
-on-disk archive layout, the full `manifest.json` schema, GitHub-repository
-import, the reader tab bar, session settings (`reast.json`), progressive
-loading, delta updates, package signing, minification, and multi-part reading
-state are documented in full in the engine's
-[`.reast` package format reference](/engine/package-format) — this section
-covers only the language-level rules that follow from that format.
+A `.reast` file is a ZIP archive (like EPUB) that bundles one or more parts with their media and metadata, in either a manifest-driven or a flat layout. The on-disk archive layout, the full `manifest.json` schema, GitHub-repository import, the reader tab bar, session settings (`reast.json`), progressive loading, delta updates, package signing, minification, and multi-part reading state are documented in full in the engine's [`.reast` package format reference](/engine/package-format) — this section covers only the language-level rules that follow from that format.
 
-For the language-level rules specific to `.rext` extension modules (which
-constructs are legal inside one, and why `{use}` is required to bind them),
-see [When rules differ in `.rext` files](rext-differences).
+For the language-level rules specific to `.rext` extension modules (which constructs are legal inside one, and why `{use}` is required to bind them), see [When rules differ in `.rext` files](rext-differences).
 
 
 ## 29. Identifiers & Naming
@@ -149,13 +140,7 @@ Arrays support method-like calls:
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | `dice(notation)` | Roll dice using standard notation (e.g. `"2d6+3"`). See [Section 21](03-narrative-interaction.md#dice-and-randomization) |
 
-**Randomness is seeded, and a reading is replayable.** `random()`, `shuffle()`
-and everything built on them (including `std/dice`) draw from a generator the
-runtime owns, not from the host's global random source. A story draws one seed
-when it starts; the reading state carries that seed and the generator's current
-position, so restoring a save continues the identical sequence and undoing a
-choice reproduces the rolls that followed it. Restarting a story draws a new
-seed — a re-read is a genuinely new playthrough.
+**Randomness is seeded, and a reading is replayable.** `random()`, `shuffle()` and everything built on them (including `std/dice`) draw from a generator the runtime owns, not from the host's global random source. A story draws one seed when it starts; the reading state carries that seed and the generator's current position, so restoring a save continues the identical sequence and undoing a choice reproduces the rolls that followed it. Restarting a story draws a new seed — a re-read is a genuinely new playthrough.
 
 <Feature id="seeded-randomness" />
 
@@ -197,9 +182,7 @@ Coordinate types use `@` literal syntax instead of constructor functions (see [S
 
 <Feature id="date-functions" />
 
-Date/time built-ins operate on ISO 8601 strings and millisecond timestamps. The
-clock, locale and time zone are **host-supplied**; formatting delegates to
-`Intl.DateTimeFormat` (CLDR data). Invalid input returns `''` or `0`.
+Date/time built-ins operate on ISO 8601 strings and millisecond timestamps. The clock, locale and time zone are **host-supplied**; formatting delegates to `Intl.DateTimeFormat` (CLDR data). Invalid input returns `''` or `0`.
 
 | Function                        | Description                                                                     |
 | ------------------------------- | ------------------------------------------------------------------------------- |
@@ -213,9 +196,7 @@ clock, locale and time zone are **host-supplied**; formatting delegates to
 | `dayOfWeek(value)`              | Day of week in the host time zone (`0` = Sunday, `6` = Saturday)                |
 | `dateAdd(value, amount, unit?)` | Add a duration (`unit ∈ ms \| s \| m \| h \| d \| M \| y`); returns an ISO string |
 
-The `iso` style yields `YYYY-MM-DD` (date), `HH:mm:ss` (time) or a full ISO 8601
-string (date-time). There is no author-facing date-token (`YYYY-MM-DD`) format
-string — the `style` enum is the whole surface.
+The `iso` style yields `YYYY-MM-DD` (date), `HH:mm:ss` (time) or a full ISO 8601 string (date-time). There is no author-facing date-token (`YYYY-MM-DD`) format string — the `style` enum is the whole surface.
 
 **`select()`** enables pronoun and gendered text variation without branching:
 
@@ -264,33 +245,17 @@ Named commands expose state:
 
 <Feature id="rext-extensions" />
 
-Rea is extended in two tiers. **Tier 1 — Rea extensions** are portable, sandboxed
-Rea code that travels inside the package (`.rext` files) plus a reserved
-`std/*` standard library shipped with the language itself. **Tier 2 — Host
-extensions** are JavaScript supplied by the embedder; they are outside the Rea
-language proper and reachable only when the embedder provides them.
+Rea is extended in two tiers. **Tier 1 — Rea extensions** are portable, sandboxed Rea code that travels inside the package (`.rext` files) plus a reserved `std/*` standard library shipped with the language itself. **Tier 2 — Host extensions** are JavaScript supplied by the embedder; they are outside the Rea language proper and reachable only when the embedder provides them.
 
 ### Tier 1 — Rea extensions (author space, portable, sandboxed)
 
 <Feature id="rext-file" />
 
-A Rea extension is a `.rext` file (see [When rules differ in `.rext` files](rext-differences))
-containing only **declarations**: `{function}`…`{end function}` blocks,
-top-level `{set}` constants, `{use}` and comments. Any prose node — a paragraph,
-heading, choice group, media, blockquote, dialogue or card definition — anywhere
-in a `.rext` is a **load error**. That restriction is what makes an extension
-reviewable by eye and mechanically checkable.
+A Rea extension is a `.rext` file (see [When rules differ in `.rext` files](rext-differences)) containing only **declarations**: `{function}`…`{end function}` blocks, top-level `{set}` constants, `{use}` and comments. Any prose node — a paragraph, heading, choice group, media, blockquote, dialogue or card definition — anywhere in a `.rext` is a **load error**. That restriction is what makes an extension reviewable by eye and mechanically checkable.
 
-Top-level `{set}` values are the module's **private constants**. Its functions
-read them, but they are not story variables: they never appear in exported
-reading state, two modules may declare the same constant name without
-colliding, and a module can never overwrite a variable the author declared. A
-function parameter of the same name shadows the constant. A `{set}` *inside* a
-function body follows ordinary Rea function scoping and does write a story
-variable — so accumulate loop state by recursion, not by a counter.
+Top-level `{set}` values are the module's **private constants**. Its functions read them, but they are not story variables: they never appear in exported reading state, two modules may declare the same constant name without colliding, and a module can never overwrite a variable the author declared. A function parameter of the same name shadows the constant. A `{set}` *inside* a function body follows ordinary Rea function scoping and does write a story variable — so accumulate loop state by recursion, not by a counter.
 
-Import an extension with `{use}`, giving it an alias; the written path omits the
-`.rext` suffix. Then call its exported functions through the alias:
+Import an extension with `{use}`, giving it an alias; the written path omits the `.rext` suffix. Then call its exported functions through the alias:
 
 ```rea
 {use "extensions/inventory" as inv}
@@ -307,21 +272,13 @@ Rules:
 - **A `{use}` of a missing path fails the load** (as does a `manifest.extensions`
   entry that is not in the archive).
 
-Story (`.rea`) files may still declare `{function}`s, but those are **private and
-document-scoped** — only extension files export. To share a function across
-parts, put it in a `.rext` and `{use}` it.
+Story (`.rea`) files may still declare `{function}`s, but those are **private and document-scoped** — only extension files export. To share a function across parts, put it in a `.rext` and `{use}` it.
 
 ### `std/*` — the standard library
 
 <Feature id="std-library" />
 
-`std/*` is a reserved namespace resolved from **inside the engine**, not from the
-archive and not from the host. `{use "std/dice" as dice}` therefore works on any
-host, offline, with no support from the embedder — it ships with the language,
-rather than being injected by the platform. (Were it injected, a story would
-render on rea.st and break in a third-party embed, forfeiting the portability the
-extension system exists for.) An archive `.rext` resolving under `std/` is a load
-error, and a host extension that declares the `std` namespace is rejected too.
+`std/*` is a reserved namespace resolved from **inside the engine**, not from the archive and not from the host. `{use "std/dice" as dice}` therefore works on any host, offline, with no support from the embedder — it ships with the language, rather than being injected by the platform. (Were it injected, a story would render on rea.st and break in a third-party embed, forfeiting the portability the extension system exists for.) An archive `.rext` resolving under `std/` is a load error, and a host extension that declares the `std` namespace is rejected too.
 
 `std/dice` exports:
 
@@ -342,9 +299,7 @@ You swing wildly for {dice.roll(2, 6)} damage.
 
 <Feature id="host-extensions" />
 
-Host extensions are JavaScript registered by the embedder **per player instance**
-(per engine element), never globally. Two players on one page can hold different
-host extensions. They contribute:
+Host extensions are JavaScript registered by the embedder **per player instance** (per engine element), never globally. Two players on one page can hold different host extensions. They contribute:
 
 - **Functions** callable from Rea expressions as `{ns.fn()}`.
 - **Command handlers** for namespaced commands `{ns.command args}`. A command
@@ -352,24 +307,15 @@ host extensions. They contribute:
   variable reference, not a command.
 - **Node renderers** that substitute the built-in rendering of a node type.
 
-Hard rule: a host extension that needs a device API **emits a bus event**,
-exactly as a built-in sensor command does; engine code never calls a device API
-on the extension's behalf.
+Hard rule: a host extension that needs a device API **emits a bus event**, exactly as a built-in sensor command does; engine code never calls a device API on the extension's behalf.
 
-Host extensions are outside the Rea language proper and are reachable only when
-the embedder provides them. A story declares the host namespaces it needs with
-[`manifest.requires`](/engine/package-format#field-reference); an embedder that has not
-registered a required namespace refuses to load the story rather than failing
-mid-chapter.
+Host extensions are outside the Rea language proper and are reachable only when the embedder provides them. A story declares the host namespaces it needs with [`manifest.requires`](/engine/package-format#field-reference); an embedder that has not registered a required namespace refuses to load the story rather than failing mid-chapter.
 
 ### Custom card types
 
 <Feature id="custom-card-types" />
 
-Custom card **sets** (`{define cardset …}`) are released and cover most of what
-authors reach for — see [Section 17](03-narrative-interaction.md#card-sets-categories).
-Beyond them, extensions may in future define new card *types* with their own
-bracket prefix, past the built-in `@`, `$` and `&`:
+Custom card **sets** (`{define cardset …}`) are released and cover most of what authors reach for — see [Section 17](03-narrative-interaction.md#card-sets-categories). Beyond them, extensions may in future define new card *types* with their own bracket prefix, past the built-in `@`, `$` and `&`:
 
 ```rea
 {define card_type location, prefix="📍" begin}
@@ -389,10 +335,7 @@ You arrive at [📍tavern].
 
 ### Encryption of extension code
 
-**Extension code is never encrypted.** The loader rejects an encrypted `.rext`.
-Encryption is content protection, not a security boundary — the sandbox
-constrains an extension identically whether or not its source is encrypted — so
-forbidding it costs nothing defensively and buys three things:
+**Extension code is never encrypted.** The loader rejects an encrypted `.rext`. Encryption is content protection, not a security boundary — the sandbox constrains an extension identically whether or not its source is encrypted — so forbidding it costs nothing defensively and buys three things:
 
 1. **Validated before prose runs.** An unlock code can arrive mid-story; code
    that only materialises after the reader is committed would fail at the worst
@@ -401,9 +344,7 @@ forbidding it costs nothing defensively and buys three things:
    moderation.
 3. **Runnable by a third-party embedder** that holds no key.
 
-To keep a secret out of an extension while still checking it, keep the function
-generic and plaintext and put the secret in an **encrypted `.rea` chapter** via
-`{set}`, then verify *against* that variable rather than embedding it:
+To keep a secret out of an extension while still checking it, keep the function generic and plaintext and put the secret in an **encrypted `.rea` chapter** via `{set}`, then verify *against* that variable rather than embedding it:
 
 ```rea
 {comment extensions/gate.rext — plaintext, generic, holds no secret}
@@ -422,13 +363,7 @@ generic and plaintext and put the secret in an **encrypted `.rea` chapter** via
 {end if}
 ```
 
-The caveat, stated plainly: an encrypted `.rea` is **not** a secret from a
-determined reader. The key reaches the reader's device in order to render the
-chapter, so `crypt.passphrase` is extractable. Encryption protects against
-spoilers, casual peeking and grepping the archive — not against a motivated
-attacker. Anything that must be genuinely unforgeable (a competition answer, a
-paid unlock) has to be verified **server-side**, which is the platform's job, not
-the engine's (see also [Content Protection](04-utilities.md#_23-content-protection-lock)).
+The caveat, stated plainly: an encrypted `.rea` is **not** a secret from a determined reader. The key reaches the reader's device in order to render the chapter, so `crypt.passphrase` is extractable. Encryption protects against spoilers, casual peeking and grepping the archive — not against a motivated attacker. Anything that must be genuinely unforgeable (a competition answer, a paid unlock) has to be verified **server-side**, which is the platform's job, not the engine's (see also [Content Protection](04-utilities.md#_23-content-protection-lock)).
 
 ### Sandbox constraints
 
@@ -522,28 +457,15 @@ Parsers conforming to Rea MAJOR.MINOR MUST:
    warning**, and record `parse/unknown-command` on the author channel
 4. Treat unknown inline formatting as literal text
 
-Rule 3 used to say "display a warning and skip the command block". A warning
-displayed *where* is the question the two-channel model of
-[Error Handling](error-handling.md) answers: never to the reader,
-always to the author, as a record. The reader sees the block skipped and
-nothing else.
+Rule 3 used to say "display a warning and skip the command block". A warning displayed *where* is the question the two-channel model of [Error Handling](error-handling.md) answers: never to the reader, always to the author, as a record. The reader sees the block skipped and nothing else.
 
-This ensures forward compatibility: a story written for Rea 1.0 works on a Rea
-1.3 parser. A story using Rea 1.3 features works on a Rea 1.0 parser with
-graceful degradation.
+This ensures forward compatibility: a story written for Rea 1.0 works on a Rea 1.3 parser. A story using Rea 1.3 features works on a Rea 1.0 parser with graceful degradation.
 
 ### Records and the conformance split
 
-A [conformance level](#conformance-levels) governs what an implementation
-*runs*, not what it *reports*. A Core engine emits no records at all — the
-author channel is a tool-side concern, and a Core embedder that wires nothing up
-produces nothing. Standard and Platform tooling reports the whole registry.
+A [conformance level](#conformance-levels) governs what an implementation *runs*, not what it *reports*. A Core engine emits no records at all — the author channel is a tool-side concern, and a Core embedder that wires nothing up produces nothing. Standard and Platform tooling reports the whole registry.
 
-Where a story uses a feature above the level the implementation claims, the
-feature does nothing and the author gets `meta/above-conformance-level` naming
-the feature and the level it needs. That record is `degraded`, not `error`: the
-implementation behaved correctly, and the author is being told which of their
-choices did not travel, not that they made a mistake.
+Where a story uses a feature above the level the implementation claims, the feature does nothing and the author gets `meta/above-conformance-level` naming the feature and the level it needs. That record is `degraded`, not `error`: the implementation behaved correctly, and the author is being told which of their choices did not travel, not that they made a mistake.
 
 ---
 

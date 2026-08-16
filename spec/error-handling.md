@@ -4,23 +4,15 @@
 
 Rea has two audiences and they never share a pipe.
 
-The **reader** gets prose. Every failure has a defined, silent fallback, and no
-error text ever reaches the page — not a message, not a placeholder token, not a
-bare identifier. This is a language guarantee, not a runtime detail.
+The **reader** gets prose. Every failure has a defined, silent fallback, and no error text ever reaches the page — not a message, not a placeholder token, not a bare identifier. This is a language guarantee, not a runtime detail.
 
-The **author** gets *records*: structured, code-identified, position-carrying
-data with no rendered form. A record is never shown to a reader at any severity.
-`reast validate` prints them; the editor underlines them; a host formats them
-from `code + args + locale`.
+The **author** gets *records*: structured, code-identified, position-carrying data with no rendered form. A record is never shown to a reader at any severity. `reast validate` prints them; the editor underlines them; a host formats them from `code + args + locale`.
 
-The two channels are the whole design. A failure produces a fallback **and** a
-record, and neither one substitutes for the other.
+The two channels are the whole design. A failure produces a fallback **and** a record, and neither one substitutes for the other.
 
 ### Severities
 
-Every code carries exactly one severity, fixed in the engine's registry. A call
-site never chooses one, so two places noticing the same condition cannot
-disagree about how bad it is.
+Every code carries exactly one severity, fixed in the engine's registry. A call site never chooses one, so two places noticing the same condition cannot disagree about how bad it is.
 
 | Severity   | What it means                                                                       | Fails CI          |
 | ---------- | ----------------------------------------------------------------------------------- | ----------------- |
@@ -30,18 +22,13 @@ disagree about how bad it is.
 | `degraded` | *Correct* behaviour under a reduced environment or conformance level.                | **never**         |
 | `info`     | Hygiene, style and authoring notes.                                                  | no                |
 
-`degraded` is never promoted, not even by `--strict`. Promoting it would defeat
-the reason it is a separate severity: an author has to be able to tell "my
-Platform feature did nothing here, and that is by design" from "I made a
-mistake".
+`degraded` is never promoted, not even by `--strict`. Promoting it would defeat the reason it is a separate severity: an author has to be able to tell "my Platform feature did nothing here, and that is by design" from "I made a mistake".
 
-Nothing in `parse/` is `fatal`. Any UTF-8 text is a valid Rea document — a
-`.rea` file never fails to parse.
+Nothing in `parse/` is `fatal`. Any UTF-8 text is a valid Rea document — a `.rea` file never fails to parse.
 
 ### Code partitions
 
-A code is a lowercase, slash-partitioned string; the prefix *is* the range, so
-codes sort, grep and glob.
+A code is a lowercase, slash-partitioned string; the prefix *is* the range, so codes sort, grep and glob.
 
 | Partition | Raised by                                                     |
 | --------- | ------------------------------------------------------------- |
@@ -303,21 +290,11 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 
 ### What a record may carry
 
-A record may name an identifier the author wrote, quote what the author
-literally typed, and describe the *type* of a runtime value. It may never carry
-a runtime value.
+A record may name an identifier the author wrote, quote what the author literally typed, and describe the *type* of a runtime value. It may never carry a runtime value.
 
-That rule is enforced by the shape of the API, not by review: there is no
-constructor that accepts a caller-supplied string. Quoted source is read back
-out of the file at a position. So a failed `{set story.gold = "abc"}` may report
-`"abc"`, because the author typed it into the file, while the same failure on a
-value that arrived through `{input}` can only report a type name.
+That rule is enforced by the shape of the API, not by review: there is no constructor that accepts a caller-supplied string. Quoted source is read back out of the file at a position. So a failed `{set story.gold = "abc"}` may report `"abc"`, because the author typed it into the file, while the same failure on a value that arrived through `{input}` can only report a type name.
 
-This binds the free-text and audio privacy guarantees of
-[Section 19](03-narrative-interaction.md#_19-input-interaction) and
-[Section 21](03-narrative-interaction.md#_21-real-world-interactions) to
-diagnostic records too, not only to story state. A `{listen}` that fails to
-match records that it failed to match — never what was said.
+This binds the free-text and audio privacy guarantees of [Section 19](03-narrative-interaction.md#_19-input-interaction) and [Section 21](03-narrative-interaction.md#_21-real-world-interactions) to diagnostic records too, not only to story state. A `{listen}` that fails to match records that it failed to match — never what was said.
 
 ### Reading the records
 
@@ -333,9 +310,7 @@ story/0001.rea:124:1 error link/undefined-anchor Divert to "the_vault" — no su
 
 The exit code is non-zero on any `fatal` or `error`, in every output mode.
 
-Rea does **not** have `try/catch`. All error handling is implicit — the runtime
-recovers, the reader's experience is never interrupted, and the author reads the
-record.
+Rea does **not** have `try/catch`. All error handling is implicit — the runtime recovers, the reader's experience is never interrupted, and the author reads the record.
 
 ### Fallback values
 

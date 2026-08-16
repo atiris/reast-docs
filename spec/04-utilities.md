@@ -36,8 +36,7 @@ For 0: "no coins", for 1: "1 coin", for 5: "5 coins". The `{}` placeholder inser
 
 For 1: "1 pero", for 3: "3 perá", for 5: "5 pier".
 
-::: warning Two limits to work around today
-`plural()` — like every built-in on this page — does not evaluate in prose ([print shorthand](02-logic-data#print-shorthand)); it has to run inside a `{set}`. And a `{}` placeholder cannot survive that, because the `{set}` block ends at the first `}` it meets, which is the one inside your template.
+::: warning Two limits to work around today `plural()` — like every built-in on this page — does not evaluate in prose ([print shorthand](02-logic-data#print-shorthand)); it has to run inside a `{set}`. And a `{}` placeholder cannot survive that, because the `{set}` block ends at the first `}` it meets, which is the one inside your template.
 
 So: templates without `{}`, and join the count yourself.
 
@@ -53,8 +52,7 @@ You have {plural(story.player.gold, one="{} coin", other="{} coins")}.
 You have {story.player.gold} {story.coin_word}.
 ```
 
-The Slovak form works the same way — `plural(story.pens, one="pero", few="perá", many="pier", other="pier")` — and the category still comes from CLDR for the host locale, which is the part that matters.
-:::
+The Slovak form works the same way — `plural(story.pens, one="pero", few="perá", many="pier", other="pier")` — and the category still comes from CLDR for the host locale, which is the part that matters. :::
 
 **CLDR plural categories:**
 
@@ -91,9 +89,7 @@ The `select()` function maps a string value to text variants. Use it for gender,
 
 <Feature id="format-number" />
 
-The `formatNumber()` function delegates to locale-aware number formatting
-(`Intl.NumberFormat`). It defaults to the **host-supplied engine locale**; an
-optional second positional argument overrides it with a specific BCP 47 tag:
+The `formatNumber()` function delegates to locale-aware number formatting (`Intl.NumberFormat`). It defaults to the **host-supplied engine locale**; an optional second positional argument overrides it with a specific BCP 47 tag:
 
 ```rea
 Score: {formatNumber(story.player.score)}
@@ -108,9 +104,7 @@ Localised: {formatNumber(1234567, "sk")}
 | `minimumFractionDigits`  | integer (minimum decimal digits)  | `Intl` default |
 | `maximumFractionDigits`  | integer (maximum decimal digits)  | `Intl` default |
 
-Grouping (thousands separators), decimal count and symbols follow the locale's
-CLDR data. On any `Intl` error (malformed tag, invalid option combination) the
-value falls back to its plain string form.
+Grouping (thousands separators), decimal count and symbols follow the locale's CLDR data. On any `Intl` error (malformed tag, invalid option combination) the value falls back to its plain string form.
 
 ```rea
 Price: {formatNumber(item.price, style="currency", currency="EUR")}
@@ -238,19 +232,9 @@ The encryption model ensures:
 
 ### Extension code is never encrypted
 
-Content protection covers **prose only**. The loader rejects an encrypted `.rext`
-extension outright. Encryption is content protection, not a security boundary —
-the sandbox constrains an extension identically whether or not its source is
-encrypted — so forbidding it costs nothing defensively and buys three things:
-code is validated **before** prose runs (an unlock code can arrive mid-story, and
-code that materialises after the reader is committed fails at the worst moment);
-code is **auditable without a key** (`reast validate`, the editor, platform
-moderation); and a third-party embedder without the key can still run the story's
-logic. See [Extensibility](05-reference.md#_31-extensibility) for the full rule.
+Content protection covers **prose only**. The loader rejects an encrypted `.rext` extension outright. Encryption is content protection, not a security boundary — the sandbox constrains an extension identically whether or not its source is encrypted — so forbidding it costs nothing defensively and buys three things: code is validated **before** prose runs (an unlock code can arrive mid-story, and code that materialises after the reader is committed fails at the worst moment); code is **auditable without a key** (`reast validate`, the editor, platform moderation); and a third-party embedder without the key can still run the story's logic. See [Extensibility](05-reference.md#_31-extensibility) for the full rule.
 
-To keep a secret out of an extension while still checking it, keep the function
-generic and plaintext and put the secret in an **encrypted `.rea` chapter** via
-`{set}`, then verify *against* that variable rather than embedding it:
+To keep a secret out of an extension while still checking it, keep the function generic and plaintext and put the secret in an **encrypted `.rea` chapter** via `{set}`, then verify *against* that variable rather than embedding it:
 
 ```rea
 {comment extensions/gate.rext — plaintext, generic, holds no secret}
@@ -264,13 +248,7 @@ generic and plaintext and put the secret in an **encrypted `.rea` chapter** via
 {set crypt.passphrase = "moonlit-antler"}
 ```
 
-The caveat, stated plainly: an encrypted `.rea` is **not** a secret from a
-determined reader. The key reaches their device in order to render the chapter,
-so `crypt.passphrase` is extractable. It protects against spoilers, casual
-peeking and grepping the archive — not against a motivated attacker. Anything
-that must be genuinely unforgeable (a competition answer, a paid unlock) has to
-be verified **server-side** (see [Hard lock](#hard-lock)), which is the
-platform's job, not the engine's.
+The caveat, stated plainly: an encrypted `.rea` is **not** a secret from a determined reader. The key reaches their device in order to render the chapter, so `crypt.passphrase` is extractable. It protects against spoilers, casual peeking and grepping the archive — not against a motivated attacker. Anything that must be genuinely unforgeable (a competition answer, a paid unlock) has to be verified **server-side** (see [Hard lock](#hard-lock)), which is the platform's job, not the engine's.
 
 ---
 
@@ -334,12 +312,9 @@ Content inside `{raw begin}` is rendered as-is with no processing:
 {end comment}
 ```
 
-A comment's content is bare prose up to the closing brace — no quotes. Only the
-exact `{comment begin}` opens a block, so the word `begin` inside a comment is
-just a word: `{comment fix this before we begin}` is a single-line comment.
+A comment's content is bare prose up to the closing brace — no quotes. Only the exact `{comment begin}` opens a block, so the word `begin` inside a comment is just a word: `{comment fix this before we begin}` is a single-line comment.
 
-Multi-line comments use the `{comment begin}...{end comment}` block syntax,
-consistent with all other paired commands.
+Multi-line comments use the `{comment begin}...{end comment}` block syntax, consistent with all other paired commands.
 
 ### TODO markers
 
@@ -354,17 +329,12 @@ consistent with all other paired commands.
 {end todo}
 ```
 
-A TODO is a comment that reports itself: it is hidden from the reader exactly
-like `{comment}`, and it raises `style/todo` on the author channel, so
-`reast validate` and the editor list every one of them. Like a comment, its
-content is bare prose and only `{todo begin}` opens a block.
+A TODO is a comment that reports itself: it is hidden from the reader exactly like `{comment}`, and it raises `style/todo` on the author channel, so `reast validate` and the editor list every one of them. Like a comment, its content is bare prose and only `{todo begin}` opens a block.
 
 ---
 
 ## 27. Error Handling
 
-The two-channel error model — reader-facing silent fallbacks versus author-facing diagnostic
-records, severities, code partitions, the generated fallback table, and external API access — now
-has its own page: see [Error Handling](/spec/error-handling).
+The two-channel error model — reader-facing silent fallbacks versus author-facing diagnostic records, severities, code partitions, the generated fallback table, and external API access — now has its own page: see [Error Handling](/spec/error-handling).
 
 ---

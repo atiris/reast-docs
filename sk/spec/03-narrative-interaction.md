@@ -32,8 +32,7 @@ Cesta sa pred tebou rozdvojuje.
   -> the_crossroads
 ```
 
-::: warning `{if}` vo vetve ukončí celú skupinu
-Blokový príkaz odsadený pod voľbou zavrie skupinu volieb, takže každá ďalšia možnosť zmizne a čitateľovi zostanú len tie nad ňou. Nastavte vo vetve príznak a podmienený text dajte až za gather:
+::: warning `{if}` vo vetve ukončí celú skupinu Blokový príkaz odsadený pod voľbou zavrie skupinu volieb, takže každá ďalšia možnosť zmizne a čitateľovi zostanú len tie nad ňou. Nastavte vo vetve príznak a podmienený text dajte až za gather:
 
 ```rea
 {comment ZLE — „Vydať sa doprava" sa nikdy nezobrazí}
@@ -57,8 +56,7 @@ Lampáš ti ukázal korene.
 {end if}
 ```
 
-`{set}`, `{give}`, `{take}`, `{earn}`, `{spend}` aj `{play}` sú vo vetve v poriadku — skupinu zatvárajú blokové príkazy.
-:::
+`{set}`, `{give}`, `{take}`, `{earn}`, `{spend}` aj `{play}` sú vo vetve v poriadku — skupinu zatvárajú blokové príkazy. :::
 
 **Pravidlá textu voľby:**
 
@@ -184,9 +182,7 @@ Voľba bez textu funguje ako záložná (vyberie sa automaticky, keď neostanú 
   Rozhovor vyšumel. -> leave_tavern
 ```
 
-::: warning Rozparsuje sa, ale zatiaľ sa nevyberá sama
-Záložná voľba sa rozpozná ako možnosť a nevykreslí žiadne tlačidlo, ale runtime ju zatiaľ nevyberie, keď ostatné dôjdu — `flow/fallback-choice-taken` nemá emitor. Skupina, ktorá sa na ňu spolieha, jednoducho skončí bez čohokoľvek, na čo sa dá kliknúť. Dovtedy nechajte čitateľovi viditeľnú cestu ďalej.
-:::
+::: warning Rozparsuje sa, ale zatiaľ sa nevyberá sama Záložná voľba sa rozpozná ako možnosť a nevykreslí žiadne tlačidlo, ale runtime ju zatiaľ nevyberie, keď ostatné dôjdu — `flow/fallback-choice-taken` nemá emitor. Skupina, ktorá sa na ňu spolieha, jednoducho skončí bez čohokoľvek, na čo sa dá kliknúť. Dovtedy nechajte čitateľovi viditeľnú cestu ďalej. :::
 
 ### Tunely (odboč a vráť sa) {#tunnels-divert-and-return}
 
@@ -372,10 +368,7 @@ V kooperatívnom čítaní môžu rôzni čitatelia sledovať rôzne vlákna sú
 
 <Feature id="storylets" />
 
-Modulárne bloky obsahu s podmienkami a účinkami — `require`, `priority`, `repeatable`,
-`cooldown`, `weight`, `tags` — ktoré vyberá jadro do `{deck}` alebo ktoré zobudí vstup z reálneho
-sveta cez `trigger:` ako vedľajšiu cestu, ktorá sa vráti presne tam, kde čitateľ prestal. Storylety
-majú teraz vlastnú stránku: pozri [Storylety a balíčky](/sk/spec/storylets).
+Modulárne bloky obsahu s podmienkami a účinkami — `require`, `priority`, `repeatable`, `cooldown`, `weight`, `tags` — ktoré vyberá jadro do `{deck}` alebo ktoré zobudí vstup z reálneho sveta cez `trigger:` ako vedľajšiu cestu, ktorá sa vráti presne tam, kde čitateľ prestal. Storylety majú teraz vlastnú stránku: pozri [Storylety a balíčky](/sk/spec/storylets).
 
 ### Menu objavovania {#exploration-menus}
 

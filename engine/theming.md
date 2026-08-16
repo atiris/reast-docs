@@ -1,8 +1,6 @@
 # Theming
 
-The Reast Engine is themed through CSS custom properties, all prefixed `--re-`.
-Override them on the `<reast-engine>` element or any ancestor — the values
-inherit through the Shadow DOM boundary.
+The Reast Engine is themed through CSS custom properties, all prefixed `--re-`. Override them on the `<reast-engine>` element or any ancestor — the values inherit through the Shadow DOM boundary.
 
 ## Two style sheets
 
@@ -17,13 +15,11 @@ The engine ships two adopted stylesheets:
   dark-mode and high-contrast remaps, and the default lightbox overlay). It is
   adopted **only by the standalone CDN build**, on top of `playerStyles`.
 
-So the CDN snippet looks designed out of the box, while an embedded element
-looks like part of your site until you theme it.
+So the CDN snippet looks designed out of the box, while an embedded element looks like part of your site until you theme it.
 
 ## Custom properties
 
-"Embedded" is what an unthemed embed gets from `playerStyles`; "Standalone" is
-what `standaloneStyles` assigns in the CDN build.
+"Embedded" is what an unthemed embed gets from `playerStyles`; "Standalone" is what `standaloneStyles` assigns in the CDN build.
 
 ### Layout
 
@@ -76,17 +72,11 @@ what `standaloneStyles` assigns in the CDN build.
 
 ### Standalone-only remaps
 
-The CDN build's `standaloneStyles` also defines `--re-dark-*` values applied
-under `@media (prefers-color-scheme: dark)` and `--re-hc-*` values applied under
-`@media (prefers-contrast: more)`. An embedded element does **not** ship these —
-a host that wants dark mode sets `--re-color-*` itself (typically inheriting
-from its own theme), which is usually what you want, since the embed already
-adopts the host's colours.
+The CDN build's `standaloneStyles` also defines `--re-dark-*` values applied under `@media (prefers-color-scheme: dark)` and `--re-hc-*` values applied under `@media (prefers-contrast: more)`. An embedded element does **not** ship these — a host that wants dark mode sets `--re-color-*` itself (typically inheriting from its own theme), which is usually what you want, since the embed already adopts the host's colours.
 
 ## Example: dark embed
 
-Because the embedded defaults inherit, the simplest dark theme is to let the
-element inherit a dark host, or set a few properties:
+Because the embedded defaults inherit, the simplest dark theme is to let the element inherit a dark host, or set a few properties:
 
 ```css
 reast-engine {
@@ -112,11 +102,7 @@ reast-engine {
 
 ## Escape hatch: `extraStyleSheets`
 
-For rules that CSS custom properties cannot express, push a `CSSStyleSheet`
-onto `ReastEngine.extraStyleSheets` **before** constructing any element — it is
-adopted into every element's shadow root after `playerStyles`. Already-created
-instances are not retrofitted. (This is exactly how the standalone build adds
-`standaloneStyles`.)
+For rules that CSS custom properties cannot express, push a `CSSStyleSheet` onto `ReastEngine.extraStyleSheets` **before** constructing any element — it is adopted into every element's shadow root after `playerStyles`. Already-created instances are not retrofitted. (This is exactly how the standalone build adds `standaloneStyles`.)
 
 ```ts
 import { ReastEngine, registerEngine } from '@reast/engine/player';
@@ -130,7 +116,4 @@ registerEngine();
 
 ## Shadow DOM boundary
 
-The player renders inside Shadow DOM, so host page styles do not leak in and
-story styles do not leak out. Custom properties and `extraStyleSheets` are the
-supported ways across the boundary; the element also exposes `part` attributes
-(`identity`, `identity-title`, `identity-authors`) for `::part()` styling.
+The player renders inside Shadow DOM, so host page styles do not leak in and story styles do not leak out. Custom properties and `extraStyleSheets` are the supported ways across the boundary; the element also exposes `part` attributes (`identity`, `identity-title`, `identity-authors`) for `::part()` styling.

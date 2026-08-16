@@ -6,9 +6,7 @@ Everything platform-specific about writing and publishing on Reast. For the Rea 
 
 Stories are written in Rea — a simple markup language designed for interactive narratives. If you can write a text message, you can write a Rea story. There are no programming concepts to learn upfront — just start typing.
 
-::: tip Try it live
-Open the Editor and write alongside this guide. The live preview updates as you type, so you see exactly what readers experience.
-:::
+::: tip Try it live Open the Editor and write alongside this guide. The live preview updates as you type, so you see exactly what readers experience. :::
 
 A valid story is just text. No special syntax required:
 

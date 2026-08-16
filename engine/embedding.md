@@ -1,12 +1,10 @@
 # Embedding
 
-The `<reast-engine>` web component works in any HTML page or JavaScript
-framework.
+The `<reast-engine>` web component works in any HTML page or JavaScript framework.
 
 ## Host responsibilities
 
-The engine emits semantics and requests capabilities; the host supplies the
-world around it. A platform integrating the engine is responsible for:
+The engine emits semantics and requests capabilities; the host supplies the world around it. A platform integrating the engine is responsible for:
 
 - **Permissions and capability events.** The engine never calls `navigator.*`.
   It emits runtime bus events (`vibrate`, `location-start`, `speak`, `notify`,
@@ -107,10 +105,7 @@ export class StoryComponent {
 
 ## Handing over a parsed document
 
-Binding the `content` attribute makes the element parse the text. A host that
-has *already* parsed the story (for a consent gate, SEO, or an offline cache)
-should hand the `ReaDocument` over directly — the element renders it without a
-second parse:
+Binding the `content` attribute makes the element parse the text. A host that has *already* parsed the story (for a consent gate, SEO, or an offline cache) should hand the `ReaDocument` over directly — the element renders it without a second parse:
 
 ```ts
 import { parseRea } from '@reast/engine/parser';
@@ -131,9 +126,7 @@ Use `content` only when the host has no parser of its own.
 
 ## Media
 
-Archive media is extracted to `blob:` object URLs by the loader, so a host that
-receives a `src` in `rea-media-activate` already holds the bytes — a download or
-a gallery costs **no network round-trip**:
+Archive media is extracted to `blob:` object URLs by the loader, so a host that receives a `src` in `rea-media-activate` already holds the bytes — a download or a gallery costs **no network round-trip**:
 
 ```ts
 engine.addEventListener('rea-media-activate', (e) => {
@@ -143,13 +136,9 @@ engine.addEventListener('rea-media-activate', (e) => {
 });
 ```
 
-Set `media-controls="none"` to suppress the engine's native `<video>`/`<audio>`
-controls so you can supply your own player; the default is `native`. Under
-`none`, video and audio become activation targets that report through
-`rea-media-activate` too.
+Set `media-controls="none"` to suppress the engine's native `<video>`/`<audio>` controls so you can supply your own player; the default is `native`. Under `none`, video and audio become activation targets that report through `rea-media-activate` too.
 
-To enumerate every media node up front — including ones nested in choice
-branches, state machines and card hooks — call `collectMedia(document)`:
+To enumerate every media node up front — including ones nested in choice branches, state machines and card hooks — call `collectMedia(document)`:
 
 ```ts
 import { collectMedia } from '@reast/engine';

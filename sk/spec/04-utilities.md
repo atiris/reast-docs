@@ -32,8 +32,7 @@ Pre 0: „žiadne mince", pre 1: „1 minca", pre 5: „5 mincí". Zástupný zn
 
 Pre 1: „1 pero", pre 3: „3 perá", pre 5: „5 pier".
 
-::: warning Dve obmedzenia, ktoré treba dnes obísť
-`plural()` — ako každá vstavaná funkcia na tejto stránke — sa nevyhodnotí v texte ([skrátená tlač](02-logic-data#print-shorthand)); musí bežať v `{set}`. A zástupný znak `{}` to neprežije, lebo blok `{set}` sa končí pri prvej `}`, na ktorú narazí — a to je práve tá vo vašej šablóne.
+::: warning Dve obmedzenia, ktoré treba dnes obísť `plural()` — ako každá vstavaná funkcia na tejto stránke — sa nevyhodnotí v texte ([skrátená tlač](02-logic-data#print-shorthand)); musí bežať v `{set}`. A zástupný znak `{}` to neprežije, lebo blok `{set}` sa končí pri prvej `}`, na ktorú narazí — a to je práve tá vo vašej šablóne.
 
 Čiže: šablóny bez `{}` a počet si pripojte sami.
 
@@ -49,8 +48,7 @@ Máš {plural(story.hrdina.mince, one="{} mincu", other="{} mincí")}.
 Máš {story.hrdina.mince} {story.slovo}.
 ```
 
-Kategóriu aj tak určí CLDR podľa jazyka hostiteľa — a to je tá časť, na ktorej záleží.
-:::
+Kategóriu aj tak určí CLDR podľa jazyka hostiteľa — a to je tá časť, na ktorej záleží. :::
 
 **Kategórie množného čísla CLDR:**
 
@@ -327,17 +325,12 @@ Viacriadkové komentáre používajú blokovú syntax `{comment begin}…{end co
 {end todo}
 ```
 
-TODO je komentár, ktorý sa sám ohlási: pred čitateľom je skrytý presne ako
-`{comment}` a na autorskom kanáli vyvolá `style/todo`, takže ho `reast validate`
-aj editor vypíšu. Rovnako ako komentár má čistý textový obsah a blok otvára len
-`{todo begin}`.
+TODO je komentár, ktorý sa sám ohlási: pred čitateľom je skrytý presne ako `{comment}` a na autorskom kanáli vyvolá `style/todo`, takže ho `reast validate` aj editor vypíšu. Rovnako ako komentár má čistý textový obsah a blok otvára len `{todo begin}`.
 
 ---
 
 ## 27. Spracovanie chýb {#_27-error-handling}
 
-Dvojkanálový model chýb — tiché náhradné správanie pre čitateľa oproti diagnostickým záznamom pre
-autora, závažnosti, oblasti kódov, ilustratívna tabuľka a prístup k externým API — má teraz vlastnú
-stránku: pozri [Spracovanie chýb](/sk/spec/error-handling).
+Dvojkanálový model chýb — tiché náhradné správanie pre čitateľa oproti diagnostickým záznamom pre autora, závažnosti, oblasti kódov, ilustratívna tabuľka a prístup k externým API — má teraz vlastnú stránku: pozri [Spracovanie chýb](/sk/spec/error-handling).
 
 ---

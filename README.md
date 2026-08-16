@@ -1,7 +1,6 @@
 # Rea Language Documentation
 
-Public documentation for the Rea interactive story language and the reast platform.
-Deployed to [docs.rea.st](https://docs.rea.st) via GitHub Pages.
+Public documentation for the Rea interactive story language and the reast platform. Deployed to [docs.rea.st](https://docs.rea.st) via GitHub Pages.
 
 ## Development
 
@@ -36,8 +35,7 @@ Add a CNAME record for `docs.rea.st` pointing to `atiris.github.io`:
 docs.rea.st.  CNAME  atiris.github.io.
 ```
 
-After DNS propagates (usually 1-30 minutes), the site will be live at
-`https://docs.rea.st`.
+After DNS propagates (usually 1-30 minutes), the site will be live at `https://docs.rea.st`.
 
 ## Structure
 
@@ -54,9 +52,7 @@ public/          — Static assets (CNAME, images)
 
 ## Feature status badges
 
-Every feature in the specification carries a maturity badge — `stable`,
-`experimental`, `development`, `draft` or `cancelled` — plus the spec version it
-became available in. All of it lives in one place:
+Every feature in the specification carries a maturity badge — `stable`, `experimental`, `development`, `draft` or `cancelled` — plus the spec version it became available in. All of it lives in one place:
 
 - **`.vitepress/data/features.ts`** is the single source of truth. Each entry
   has an `id`, a group, the syntax, a status, an optional `since` version, a
@@ -67,19 +63,11 @@ became available in. All of it lives in one place:
   needed. An unknown id renders a visible warning rather than nothing.
 - **`spec/features.md`** renders the whole registry, grouped and filterable.
 
-To change a status, edit the registry — never the page. To add a feature, add
-the entry and drop a `<Feature>` under its heading.
+To change a status, edit the registry — never the page. To add a feature, add the entry and drop a `<Feature>` under its heading.
 
-Every author-facing string is a `Localized` map — `{ en: '…', sk: '…' }` — and
-the type requires a key for every locale in `LOCALES`, so a feature cannot be
-added in one language only. `link` is stored once in its English form and the
-components prefix it per locale from `LOCALE_PATHS`, which is why the translated
-headings need the explicit anchors described under
-[Internationalization](#internationalization-i18n).
+Every author-facing string is a `Localized` map — `{ en: '…', sk: '…' }` — and the type requires a key for every locale in `LOCALES`, so a feature cannot be added in one language only. `link` is stored once in its English form and the components prefix it per locale from `LOCALE_PATHS`, which is why the translated headings need the explicit anchors described under [Internationalization](#internationalization-i18n).
 
-`npm run check:types` is what enforces all of that. The site build compiles
-through esbuild, which strips types without checking them, so the type-check is
-a separate step — the pre-commit hook runs it first.
+`npm run check:types` is what enforces all of that. The site build compiles through esbuild, which strips types without checking them, so the type-check is a separate step — the pre-commit hook runs it first.
 
 Two rules keep this honest:
 
@@ -91,25 +79,15 @@ Two rules keep this honest:
 
 ## Public documentation only
 
-Everything in this repository is published at docs.rea.st and is world-readable.
-Internal material — moderation and support runbooks, unreleased platform
-internals, anything only an admin, moderator or support agent should see — does
-not belong here in any form, including as a link to a private repository. That
-documentation lives behind login on rea.st.
+Everything in this repository is published at docs.rea.st and is world-readable. Internal material — moderation and support runbooks, unreleased platform internals, anything only an admin, moderator or support agent should see — does not belong here in any form, including as a link to a private repository. That documentation lives behind login on rea.st.
 
 ## Versioning (documentation snapshots)
 
-The documentation is versioned. The **live source tree is always the latest
-version** and is served from the site root (`/`). Older releases are kept as
-**frozen, read-only static snapshots** under `public/v<version>/`, reachable at
-`/v<version>/`. The footer "Documentation version" switcher lists every
-published version (configured in `docVersions` in `.vitepress/config.ts`) so
-readers can jump between them.
+The documentation is versioned. The **live source tree is always the latest version** and is served from the site root (`/`). Older releases are kept as **frozen, read-only static snapshots** under `public/v<version>/`, reachable at `/v<version>/`. The footer "Documentation version" switcher lists every published version (configured in `docVersions` in `.vitepress/config.ts`) so readers can jump between them.
 
 ### Why snapshots instead of git branches?
 
-A full copy of the _built_ site into a versioned folder is the correct,
-low-maintenance approach here:
+A full copy of the _built_ site into a versioned folder is the correct, low-maintenance approach here:
 
 - The reader gets the exact site as it was at that release — no risk of broken
   links or drift from later refactors.
@@ -119,9 +97,7 @@ low-maintenance approach here:
 - You never edit old versions; you only ever edit the live tree. That keeps the
   authoring workflow simple (one source of truth) while history stays available.
 
-Copying the raw _source_ (Markdown) per version would mean maintaining several
-parallel trees and re-building each on every change — more work and more ways to
-break. Snapshotting the built output avoids all of that.
+Copying the raw _source_ (Markdown) per version would mean maintaining several parallel trees and re-building each on every change — more work and more ways to break. Snapshotting the built output avoids all of that.
 
 ### How to release a new version
 
@@ -155,33 +131,21 @@ The documentation supports multiple languages using VitePress built-in i18n.
 - **`/sk/`** = Slovak translation
 - Future languages follow the same pattern: `/de/`, `/cs/`, etc.
 
-The language switcher appears automatically in the navigation bar. VitePress
-falls back to English when a translated page doesn't exist.
+The language switcher appears automatically in the navigation bar. VitePress falls back to English when a translated page doesn't exist.
 
 ### Anchors are English in every language
 
-A translated heading slugifies to a translated anchor, which would silently
-break every link written against the English one — including the links the
-feature registry builds by prefixing `/sk` to a stored English link. So a
-translated heading that anything links to carries an explicit English anchor:
+A translated heading slugifies to a translated anchor, which would silently break every link written against the English one — including the links the feature registry builds by prefixing `/sk` to a stored English link. So a translated heading that anything links to carries an explicit English anchor:
 
 ```md
 ## Skloňovanie podľa počtu a lokalizácia {#_22-pluralization-localization}
 ```
 
-The payoff beyond working links is that a reader who switches language keeps
-their position on the page. `npm run check:anchors` enforces this — it reads the
-ids out of `dist/` and checks every markdown link and every registry link, in
-every locale `LOCALE_PATHS` declares, against them. VitePress' own dead-link
-check only validates the page half of a link, so this is the half that would
-otherwise rot unnoticed.
+The payoff beyond working links is that a reader who switches language keeps their position on the page. `npm run check:anchors` enforces this — it reads the ids out of `dist/` and checks every markdown link and every registry link, in every locale `LOCALE_PATHS` declares, against them. VitePress' own dead-link check only validates the page half of a link, so this is the half that would otherwise rot unnoticed.
 
 ### Language persistence
 
-A cookie (`reast_docs_lang`) stores the user's language preference. The
-platform sets this cookie before redirecting users to docs, ensuring they
-see documentation in their platform language. The cookie persists across
-browsing sessions until the user switches language manually.
+A cookie (`reast_docs_lang`) stores the user's language preference. The platform sets this cookie before redirecting users to docs, ensuring they see documentation in their platform language. The cookie persists across browsing sessions until the user switches language manually.
 
 ### Adding a new language
 
@@ -263,11 +227,7 @@ git log --oneline --since="2026-05-01" -- spec/ engine/ platform/ docs/
 
 ### Platform integration
 
-The platform (`apps/web`) sets the `reast_docs_lang` cookie when linking to
-docs. The value matches the platform's active locale (e.g., `sk`, `en`).
-On arrival at docs.rea.st, the language picker reflects this choice. If the
-user navigates away from the platform-set language, their manual choice
-takes precedence until the next platform redirect.
+The platform (`apps/web`) sets the `reast_docs_lang` cookie when linking to docs. The value matches the platform's active locale (e.g., `sk`, `en`). On arrival at docs.rea.st, the language picker reflects this choice. If the user navigates away from the platform-set language, their manual choice takes precedence until the next platform redirect.
 
 ## License
 

@@ -51,8 +51,7 @@ The first character after `[` determines the type:
 | `#`      | Anchor (define) | `[#forest]`                                 |
 | `[[`     | Part gate       | `[[ story/0005-forest.rea ]]` (ends the part) |
 
-For a link (`[text > target]`), the first character of the **target** (after `>`)
-picks the destination:
+For a link (`[text > target]`), the first character of the **target** (after `>`) picks the destination:
 
 | Target prefix | Type     | Example                                    |
 | ------------- | -------- | ------------------------------------------ |
@@ -76,16 +75,14 @@ picks the destination:
 Hello, {story.player.name}! You have {story.player.gold} gold.
 ```
 
-**In prose, only a plain path prints.** An expression or a call must go through a
-`{set}` first — written straight into the text it reaches the reader verbatim:
+**In prose, only a plain path prints.** An expression or a call must go through a `{set}` first — written straight into the text it reaches the reader verbatim:
 
 ```rea
 {set story.mood = story.player.gold > 50 ? "rich" : "poor"}
 You look {story.mood}.
 ```
 
-**Every path starts with a domain** — there is no domain-free form. The domain
-alone decides how long the variable lives:
+**Every path starts with a domain** — there is no domain-free form. The domain alone decides how long the variable lives:
 
 | Domain     | Lives                                                              |
 | ---------- | ------------------------------------------------------------------ |
@@ -175,17 +172,13 @@ A manifest may rename all four (`"domains": {"story": "物語"}`).
 {dice.roll(2, 6)}                     std/dice: d(sides) roll(n,sides) advantage/disadvantage
 ```
 
-See [When rules differ in `.rext` files](rext-differences) for the language
-rules inside a `.rext`, and the engine's
-[`.reast` package format reference](/engine/package-format#packaged)
-for archive mechanics.
+See [When rules differ in `.rext` files](rext-differences) for the language rules inside a `.rext`, and the engine's [`.reast` package format reference](/engine/package-format#packaged) for archive mechanics.
 
 ---
 
 ## Localization & Dates
 
-All of these run inside `{set}`, never in prose, and `plural` templates take no
-`{}` placeholder ([why](02-logic-data#print-shorthand)):
+All of these run inside `{set}`, never in prose, and `plural` templates take no `{}` placeholder ([why](02-logic-data#print-shorthand)):
 
 ```rea
 {set story.word = plural(story.coins, one="coin", other="coins")}
@@ -198,8 +191,7 @@ All of these run inside `{set}`, never in prose, and `plural` templates take no
 You have {story.coins} {story.word}, counted on {story.day}.
 ```
 
-The host supplies locale and formatting policy. `calendar()` is still in
-development — see the [feature index](features#localization).
+The host supplies locale and formatting policy. `calendar()` is still in development — see the [feature index](features#localization).
 
 ---
 

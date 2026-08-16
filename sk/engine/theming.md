@@ -1,8 +1,6 @@
 # Témy
 
-Reast Engine sa témuje cez CSS custom properties, všetky s prefixom `--re-`.
-Prepíšte ich na elemente `<reast-engine>` alebo na ľubovoľnom predkovi — hodnoty
-sa dedia cez hranicu Shadow DOM.
+Reast Engine sa témuje cez CSS custom properties, všetky s prefixom `--re-`. Prepíšte ich na elemente `<reast-engine>` alebo na ľubovoľnom predkovi — hodnoty sa dedia cez hranicu Shadow DOM.
 
 ## Dva štýlové zošity
 
@@ -17,13 +15,11 @@ Engine dodáva dva adoptované stylesheety:
   dark mode a vysoký kontrast a predvolený lightbox overlay). Adoptuje ju
   **iba standalone CDN build**, navrch `playerStyles`.
 
-Takže CDN snippet vyzerá navrhnuto hneď po vybalení, kým embedovaný element
-vyzerá ako súčasť vášho webu, kým si ho nenaštýlujete.
+Takže CDN snippet vyzerá navrhnuto hneď po vybalení, kým embedovaný element vyzerá ako súčasť vášho webu, kým si ho nenaštýlujete.
 
 ## Custom properties
 
-„Embedded" je to, čo nenaštýlovaný embed dostane z `playerStyles`; „Standalone"
-je to, čo `standaloneStyles` priradí v CDN builde.
+„Embedded" je to, čo nenaštýlovaný embed dostane z `playerStyles`; „Standalone" je to, čo `standaloneStyles` priradí v CDN builde.
 
 ### Rozloženie
 
@@ -76,17 +72,11 @@ je to, čo `standaloneStyles` priradí v CDN builde.
 
 ### Remapy len pre standalone
 
-`standaloneStyles` CDN buildu tiež definuje hodnoty `--re-dark-*` aplikované pod
-`@media (prefers-color-scheme: dark)` a hodnoty `--re-hc-*` aplikované pod
-`@media (prefers-contrast: more)`. Embedovaný element ich **nedodáva** —
-hostiteľ, ktorý chce dark mode, nastaví `--re-color-*` sám (zvyčajne dedením z
-vlastnej témy), čo je aj tak zvyčajne to, čo chcete, keďže embed už prevzal
-farby hostiteľa.
+`standaloneStyles` CDN buildu tiež definuje hodnoty `--re-dark-*` aplikované pod `@media (prefers-color-scheme: dark)` a hodnoty `--re-hc-*` aplikované pod `@media (prefers-contrast: more)`. Embedovaný element ich **nedodáva** — hostiteľ, ktorý chce dark mode, nastaví `--re-color-*` sám (zvyčajne dedením z vlastnej témy), čo je aj tak zvyčajne to, čo chcete, keďže embed už prevzal farby hostiteľa.
 
 ## Príklad: tmavý embed
 
-Keďže embedované predvolené hodnoty dedia, najjednoduchšia tmavá téma je nechať
-element zdediť tmavého hostiteľa, alebo nastaviť pár vlastností:
+Keďže embedované predvolené hodnoty dedia, najjednoduchšia tmavá téma je nechať element zdediť tmavého hostiteľa, alebo nastaviť pár vlastností:
 
 ```css
 reast-engine {
@@ -112,10 +102,7 @@ reast-engine {
 
 ## Núdzový východ: `extraStyleSheets`
 
-Pre pravidlá, ktoré CSS custom properties nevyjadria, vložte `CSSStyleSheet` do
-`ReastEngine.extraStyleSheets` **pred** vytvorením akéhokoľvek elementu — adoptuje
-sa do shadow rootu každého elementu za `playerStyles`. Už vytvorené inštancie sa
-dodatočne neupravia. (Presne takto standalone build pridáva `standaloneStyles`.)
+Pre pravidlá, ktoré CSS custom properties nevyjadria, vložte `CSSStyleSheet` do `ReastEngine.extraStyleSheets` **pred** vytvorením akéhokoľvek elementu — adoptuje sa do shadow rootu každého elementu za `playerStyles`. Už vytvorené inštancie sa dodatočne neupravia. (Presne takto standalone build pridáva `standaloneStyles`.)
 
 ```ts
 import { ReastEngine, registerEngine } from '@reast/engine/player';
@@ -129,8 +116,4 @@ registerEngine();
 
 ## Hranica Shadow DOM
 
-Player vykresľuje obsah vnútri Shadow DOM, takže štýly hostiteľskej stránky doň
-nepreniknú a štýly príbehu von. Custom properties a `extraStyleSheets` sú
-podporované spôsoby cez hranicu; element navyše vystavuje atribúty `part`
-(`identity`, `identity-title`, `identity-authors`) pre štýlovanie cez
-`::part()`.
+Player vykresľuje obsah vnútri Shadow DOM, takže štýly hostiteľskej stránky doň nepreniknú a štýly príbehu von. Custom properties a `extraStyleSheets` sú podporované spôsoby cez hranicu; element navyše vystavuje atribúty `part` (`identity`, `identity-title`, `identity-authors`) pre štýlovanie cez `::part()`.

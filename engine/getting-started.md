@@ -2,10 +2,7 @@
 
 ## What the engine is
 
-`@reast/engine` is a framework-agnostic library plus a `<reast-engine>` custom
-element that loads, parses, evaluates and renders a Rea interactive story in a
-browser. The standalone build is roughly 57 KB gzipped and has zero runtime
-dependencies — one, `fflate`, is used only to unpack the `.reast` ZIP.
+`@reast/engine` is a framework-agnostic library plus a `<reast-engine>` custom element that loads, parses, evaluates and renders a Rea interactive story in a browser. The standalone build is roughly 57 KB gzipped and has zero runtime dependencies — one, `fflate`, is used only to unpack the `.reast` ZIP.
 
 ### What it does
 
@@ -20,20 +17,11 @@ The engine runs a four-stage pipeline:
 
 ### What it deliberately does not do
 
-This is the part embedders most need to know up front. The engine never touches
-a device, storage or network API outside the standalone build. It *requests* a
-capability by emitting an event and *receives* the answer as a variable —
-asking for the permission is always the host's job. It emits semantics, not
-looks: it decides that something *is* a level-2 heading; the host decides what
-that looks like. It ships no lightbox, no media-player chrome, no persistence,
-no auth. Those are the host's to supply — see [Embedding](embedding) and
-[Extending](extending).
+This is the part embedders most need to know up front. The engine never touches a device, storage or network API outside the standalone build. It *requests* a capability by emitting an event and *receives* the answer as a variable — asking for the permission is always the host's job. It emits semantics, not looks: it decides that something *is* a level-2 heading; the host decides what that looks like. It ships no lightbox, no media-player chrome, no persistence, no auth. Those are the host's to supply — see [Embedding](embedding) and [Extending](extending).
 
 ### Who this is for
 
-If you just want to publish a story, the [CDN snippet](#cdn-zero-setup) below is
-all you need. If you are a platform integrating the engine into a larger app,
-read [Embedding](embedding) and [Extending](extending).
+If you just want to publish a story, the [CDN snippet](#cdn-zero-setup) below is all you need. If you are a platform integrating the engine into a larger app, read [Embedding](embedding) and [Extending](extending).
 
 ## Requirements
 
