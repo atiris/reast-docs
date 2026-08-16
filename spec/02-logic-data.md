@@ -353,7 +353,7 @@ A `{set shared.x = undefined}` replicates like any other shared write, through t
 | `float`     | `3.14`           | Decimal number                   |
 | `boolean`   | `true`, `false`  | Logical value                    |
 | `array`     | `[1, 2, "adam"]` | Ordered collection               |
-| `regex`     | `/^[a-z]+$/i`    | Regular expression               |
+| `regex`     | `/^[a-z]+$/i`    | Regular expression — a literal on the right of [`matches`](#pattern-membership-tests). Not yet a value a variable can hold: a save is JSON, and a stored pattern would not survive it. |
 | `undefined` | `undefined`      | Null/empty value                 |
 
 **Strings always require double quotes** — there are no unquoted string literals. A bare word in an expression is always a variable reference, never a string. This eliminates ambiguity:

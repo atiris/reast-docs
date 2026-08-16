@@ -289,7 +289,7 @@ Každý identifikátor sa porovnáva a ukladá v **NFC (Normalization Form C)**,
 | `float`     | `3.14`           | Desatinné číslo                              |
 | `boolean`   | `true`, `false`  | Logická hodnota                              |
 | `array`     | `[1, 2, "adam"]` | Usporiadaná kolekcia                         |
-| `regex`     | `/^[a-z]+$/i`    | Regulárny výraz                              |
+| `regex`     | `/^[a-z]+$/i`    | Regulárny výraz — literál napravo od [`matches`](#pattern-membership-tests). Zatiaľ nie hodnota, ktorú by premenná mohla držať: uloženie je JSON a uložený vzor by ho neprežil. |
 | `undefined` | `undefined`      | Prázdna hodnota                              |
 
 **Reťazce vždy vyžadujú dvojité úvodzovky** — neexistujú reťazcové literály bez úvodzoviek. Holé slovo vo výraze je vždy odkaz na premennú, nikdy nie reťazec. Tým sa odstraňuje nejednoznačnosť:
