@@ -51,6 +51,23 @@ Ahoj, {story.player.name}! Máš {story.player.gold} zlata.
 
 Koncepčne je to rovnaké ako vytlačenie hodnoty výrazu.
 
+::: warning Dnes sa vytlačí iba obyčajná cesta
+Inline parser rozpozná **cestu s doménou** a nič iné. Literál, volanie funkcie, aritmetika či ternárny výraz napísaný priamo do textu sa nevyhodnotí — čitateľ ho uvidí presne tak, ako ste ho napísali, aj so zátvorkami.
+
+Vypočítajte to v `{set}` a vytlačte premennú:
+
+```rea
+{comment ZLE — čitateľ uvidí zátvorky aj celý výraz}
+Vyzeráš {story.hrdina.pokoj > 0 ? "pokojne" : "nervózne"}.
+
+{comment DOBRE — najprv vyhodnotiť, potom vytlačiť názov}
+{set story.hrdina.nalada = story.hrdina.pokoj > 0 ? "pokojne" : "nervózne"}
+Vyzeráš {story.hrdina.nalada}.
+```
+
+To isté platí pre všetky vstavané funkcie: `plural`, `select`, `ordinal`, `formatNumber` aj dátumové pomocníky fungujú v `{set}` a ani jedna z nich nefunguje v texte.
+:::
+
 ### Atribúty {#attributes}
 
 <Feature id="attributes" />
@@ -334,6 +351,19 @@ K pozičným položkám sa pristupuje **indexom od nuly** (prvá položka je `.0
 
 Pri miešaní pozičných a pomenovaných položiek musia pozičné predchádzať pomenované — v súlade s parametrami funkcií. Pomenované položky sa dajú preusporiadať voľne.
 
+::: warning Pomenované položky nie sú implementované
+`[strength=10, dexterity=8]` sa rozparsuje ako **test rovnosti**, takže pole vyjde ako `[false, false]` a `story.stats.strength` sa číta ako nenastavené. Dnes fungujú iba pozičné polia:
+
+```rea
+{comment ZLE — vyjde [false, false]}
+{set story.stats = [strength=10, dexterity=8]}
+
+{comment DOBRE}
+{set story.stats.strength = 10}
+{set story.stats.dexterity = 8}
+```
+:::
+
 ### Hodnoty dátumu, času a trvania {#date-time-duration-values}
 
 <Feature id="datetime-types" />
@@ -599,6 +629,19 @@ S počítadlom iterácií (definovaným za čiarkou pred `begin`):
 ```
 
 Premenná počítadla začína na 0 a s každou iteráciou sa zvyšuje.
+
+::: warning Počítadlo `{while}` nie je implementované
+Parser neoddelí `, part.pokus` od podmienky — pohltí ho, takže sa počítadlo nikdy nenaviaže a podmienka je pokazená. Indexová premenná v `{for}` funguje správne, počítadlo vo `{while}` nie. Dovtedy počítajte obyčajným `{set}`:
+
+```rea
+{set part.pokus = 0}
+{while story.zamok.pokusy > 0 begin}
+  Pokus {part.pokus + 1}: znova skúsiš zámok…
+  {set part.pokus = part.pokus + 1}
+  {set story.zamok.pokusy = story.zamok.pokusy - 1}
+{end while}
+```
+:::
 
 ### Break a continue {#break-continue}
 

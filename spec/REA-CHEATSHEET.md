@@ -74,7 +74,14 @@ picks the destination:
 {set story.stats = [hp=100, dex=8]}   Named items
 
 Hello, {story.player.name}! You have {story.player.gold} gold.
-{story.player.gold > 50 ? "rich" : "poor"}
+```
+
+**In prose, only a plain path prints.** An expression or a call must go through a
+`{set}` first — written straight into the text it reaches the reader verbatim:
+
+```rea
+{set story.mood = story.player.gold > 50 ? "rich" : "poor"}
+You look {story.mood}.
 ```
 
 **Every path starts with a domain** — there is no domain-free form. The domain
@@ -177,13 +184,18 @@ for archive mechanics.
 
 ## Localization & Dates
 
+All of these run inside `{set}`, never in prose, and `plural` templates take no
+`{}` placeholder ([why](02-logic-data#print-shorthand)):
+
 ```rea
-{plural(count, one="{} coin", other="{} coins")}   CLDR plural, host locale
-{select(pronoun, he="his", she="her", other="their")}
-{ordinal(3)}                          "3rd" (en only); other locales get "3"
-{formatNumber(1234567, "sk")}         Locale number format (2nd arg = locale)
-{formatDate(context.time.date, "long")}   style: iso | short | medium | long | full
-{formatTime(now(), "short")}   {formatDateTime(now(), "iso")}
+{set story.word = plural(story.coins, one="coin", other="coins")}
+{set story.his = select(story.pronoun, he="his", she="her", other="their")}
+{set story.rank = ordinal(3)}                        "3rd" (en); "3" elsewhere
+{set story.big = formatNumber(1234567, "sk")}        2nd arg = locale
+{set story.day = formatDate(context.time.date, "long")}
+{set story.at = formatTime(now(), "short")}          iso|short|medium|long|full
+
+You have {story.coins} {story.word}, counted on {story.day}.
 ```
 
 The host supplies locale and formatting policy. `calendar()` is still in
@@ -350,3 +362,4 @@ development — see the [feature index](features#localization).
 6. **`->` = jump**, **`->->` = tunnel (jump + automatic return)**
 7. **First char in `[ ]`** decides media/anchor: `!` image, `>` video, `?` audio, `#` anchor; in a link, the **target** prefix `^` = footnote, `*` = hint
 8. **Plain text is a valid story** — you add syntax only when you need it
+9. **Prose prints a path and nothing else** — compute in `{set}`, print the name; and never inside backticks, where everything is verbatim

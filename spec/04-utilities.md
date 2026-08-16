@@ -36,6 +36,26 @@ For 0: "no coins", for 1: "1 coin", for 5: "5 coins". The `{}` placeholder inser
 
 For 1: "1 pero", for 3: "3 perá", for 5: "5 pier".
 
+::: warning Two limits to work around today
+`plural()` — like every built-in on this page — does not evaluate in prose ([print shorthand](02-logic-data#print-shorthand)); it has to run inside a `{set}`. And a `{}` placeholder cannot survive that, because the `{set}` block ends at the first `}` it meets, which is the one inside your template.
+
+So: templates without `{}`, and join the count yourself.
+
+```rea
+{comment WRONG — the whole call prints to the reader}
+You have {plural(story.player.gold, one="{} coin", other="{} coins")}.
+
+{comment WRONG — the {set} ends inside the template, so the call gets no templates}
+{set story.coins = plural(story.player.gold, one="{} coin", other="{} coins")}
+
+{comment RIGHT}
+{set story.coin_word = plural(story.player.gold, one="coin", other="coins")}
+You have {story.player.gold} {story.coin_word}.
+```
+
+The Slovak form works the same way — `plural(story.pens, one="pero", few="perá", many="pier", other="pier")` — and the category still comes from CLDR for the host locale, which is the part that matters.
+:::
+
 **CLDR plural categories:**
 
 | Category | English example | Used by                           |

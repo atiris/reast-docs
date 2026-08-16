@@ -51,6 +51,25 @@ Hello, {story.player.name}! You have {story.player.gold} gold.
 
 This is conceptually equivalent to printing the expression's value.
 
+::: warning Today, only a plain path prints
+The engine's inline parser recognises a **bare domain-prefixed path** and nothing else. A literal, a call, an arithmetic expression or a ternary written straight into prose is not evaluated — it is printed to the reader exactly as you typed it, braces and all.
+
+Compute it in a `{set}` and print the variable:
+
+```rea
+{comment WRONG — the reader sees the braces and the whole expression}
+You look {story.player.calm > 0 ? "settled" : "restless"}.
+You have {upper(story.player.title)}.
+
+{comment RIGHT — evaluate first, then print the name}
+{set story.player.mood = story.player.calm > 0 ? "settled" : "restless"}
+{set story.player.shout = upper(story.player.title)}
+You look {story.player.mood}. You have {story.player.shout}.
+```
+
+The same applies to every built-in: `plural`, `select`, `ordinal`, `formatNumber` and the date helpers all work inside `{set}` and none of them work in prose. Tracked as a known gap; the table below is the intended behaviour, not the current one.
+:::
+
 **Every other first token is an error, not a print.** An unrecognized first token is never silently printed — that would put the author's markup on the reader's page, exactly what the reader channel exists to prevent. The diagnostic names what kind of mistake it is:
 
 | First token is...                                                                        | Code                                                                                |
@@ -398,6 +417,19 @@ Positional items are accessed by **0-based index** (the first item is `.0`, the 
 
 When mixing positional and named items, positional items must come before named items — consistent with function parameters. Named items can be reordered freely.
 
+::: warning Named items are not implemented
+`[strength=10, dexterity=8]` parses each item as an **equality test**, so the array comes out as `[false, false]` and `story.stats.strength` reads as unset. Only positional arrays work today. Keep named values in their own paths until this lands:
+
+```rea
+{comment WRONG — yields [false, false]}
+{set story.stats = [strength=10, dexterity=8]}
+
+{comment RIGHT}
+{set story.stats.strength = 10}
+{set story.stats.dexterity = 8}
+```
+:::
+
 ### Date, time & duration values
 
 <Feature id="datetime-types" />
@@ -667,6 +699,19 @@ With an iteration counter (defined after a comma before `begin`, domain-prefixed
 ```
 
 The counter variable starts at 0 and increments with each iteration.
+
+::: warning The `{while}` counter is not implemented
+The parser does not split `, part.tryNumber` off the condition — it swallows it, so the counter is never bound and the condition is malformed. `{for}`'s index variable works correctly; `{while}`'s counter does not. Count with an ordinary `{set}` until it lands:
+
+```rea
+{set part.tryNumber = 0}
+{while story.lock.attempts > 0 begin}
+  Attempt {part.tryNumber + 1}: you try the lock again...
+  {set part.tryNumber = part.tryNumber + 1}
+  {set story.lock.attempts = story.lock.attempts - 1}
+{end while}
+```
+:::
 
 ### Break & Continue
 

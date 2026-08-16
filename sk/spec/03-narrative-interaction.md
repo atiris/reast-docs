@@ -32,6 +32,34 @@ Cesta sa pred tebou rozdvojuje.
   -> the_crossroads
 ```
 
+::: warning `{if}` vo vetve ukončí celú skupinu
+Blokový príkaz odsadený pod voľbou zavrie skupinu volieb, takže každá ďalšia možnosť zmizne a čitateľovi zostanú len tie nad ňou. Nastavte vo vetve príznak a podmienený text dajte až za gather:
+
+```rea
+{comment ZLE — „Vydať sa doprava" sa nikdy nezobrazí}
+* [Vydať sa doľava]
+  {if story.hrdina.lampas begin}
+  Lampáš ti ukáže korene.
+  {end if}
+
+* [Vydať sa doprava]
+  Rieka je tu hlasnejšia.
+
+{comment DOBRE}
+* [Vydať sa doľava]
+  {set story.hrdina.smer = "vlavo"}
+
+* [Vydať sa doprava]
+  {set story.hrdina.smer = "vpravo"}
+
+- {if story.hrdina.smer = "vlavo" and story.hrdina.lampas begin}
+Lampáš ti ukázal korene.
+{end if}
+```
+
+`{set}`, `{give}`, `{take}`, `{earn}`, `{spend}` aj `{play}` sú vo vetve v poriadku — skupinu zatvárajú blokové príkazy.
+:::
+
 **Pravidlá textu voľby:**
 
 ```text
@@ -155,6 +183,10 @@ Voľba bez textu funguje ako záložná (vyberie sa automaticky, keď neostanú 
 * ->
   Rozhovor vyšumel. -> leave_tavern
 ```
+
+::: warning Rozparsuje sa, ale zatiaľ sa nevyberá sama
+Záložná voľba sa rozpozná ako možnosť a nevykreslí žiadne tlačidlo, ale runtime ju zatiaľ nevyberie, keď ostatné dôjdu — `flow/fallback-choice-taken` nemá emitor. Skupina, ktorá sa na ňu spolieha, jednoducho skončí bez čohokoľvek, na čo sa dá kliknúť. Dovtedy nechajte čitateľovi viditeľnú cestu ďalej.
+:::
 
 ### Tunely (odboč a vráť sa) {#tunnels-divert-and-return}
 
@@ -506,6 +538,14 @@ Predmety sa dajú pridať do inventára čitateľa:
 {if "golden_key" in story.reader.inventory begin}
   Kľúč ti vo vrecku hreje.
 {end if}
+```
+
+Viac kusov sa zadáva cez `count=`. Holé číslo nie je počet — ignoruje sa a nedá sa nič:
+
+```rea
+{give sip count=12}   {comment 12 šípov}
+{give sip}            {comment 1 šíp}
+{give sip 12}         {comment ZLE — nedá vôbec nič}
 ```
 
 ### Mince a peňaženka {#coins-wallet}

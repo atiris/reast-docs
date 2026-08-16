@@ -133,6 +133,16 @@ Tento text sa vykreslí presne tak, ako je napísaný.
 
 Inline kód používa spätné apostrofy v rámci riadku: `` `nazov_premennej` ``.
 
+**Kód je doslovný, vrátane `{ }`.** V spätných apostrofoch sa nič nedosadzuje, takže premenná napísaná tam sa k čitateľovi dostane presne ako text. `{mono}` sa správa rovnako. Ak potrebujete v prehľade vypísať hodnotu, postavte riadok mimo kódu — citát vyzerá ako panel a dosadzovanie v ňom funguje:
+
+```rea
+{comment ZLE — čitateľ uvidí zátvorky}
+`PALIVO ..... {story.lod.palivo} %`
+
+{comment DOBRE}
+| PALIVO — {story.lod.palivo} %
+```
+
 **Vnáranie:** Ak samotný surový text obsahuje riadok s osamoteným spätným apostrofom, ohraničte blok dvojicou spätných apostrofov. Trojica umožňuje dvojicu vnútri, a tak ďalej:
 
 ```rea

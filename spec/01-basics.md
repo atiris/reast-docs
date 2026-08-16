@@ -133,6 +133,16 @@ No formatting applies here.
 
 Inline code uses backticks within a line: `` `variable_name` ``.
 
+**Code is verbatim, including `{ }`.** Nothing is substituted inside a backtick span or block, so a variable written there reaches the reader as the text you typed. `{mono}` behaves the same way. To print a value in a readout, build the line outside the code — a blockquote reads as a panel and does interpolate:
+
+```rea
+{comment WRONG — the reader sees the braces}
+`FUEL ....... {story.ship.fuel}%`
+
+{comment RIGHT}
+| FUEL — {story.ship.fuel}%
+```
+
 **Nesting:** If the raw text itself contains a lone backtick line, use double backticks to delimit the block. Triple backticks allow double backticks inside, and so on:
 
 ```rea

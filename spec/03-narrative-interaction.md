@@ -32,6 +32,34 @@ The path splits before you.
   -> the_crossroads
 ```
 
+::: warning An `{if}` inside a branch ends the whole group
+A block command indented under a choice closes the choice group, so every option written after it disappears and the reader is left with the ones above. Set a flag in the branch and put the conditional prose after the gather:
+
+```rea
+{comment WRONG — "Take the right path" never appears}
+* [Take the left path]
+  {if story.player.lamp begin}
+  The lamp shows you the roots.
+  {end if}
+
+* [Take the right path]
+  The river is louder here.
+
+{comment RIGHT}
+* [Take the left path]
+  {set story.player.went = "left"}
+
+* [Take the right path]
+  {set story.player.went = "right"}
+
+- {if story.player.went = "left" and story.player.lamp begin}
+The lamp showed you the roots.
+{end if}
+```
+
+`{set}`, `{give}`, `{take}`, `{earn}`, `{spend}` and `{play}` are all fine inside a branch — it is the block commands that close the group.
+:::
+
 **Choice text rules:**
 
 ```text
@@ -155,6 +183,10 @@ A choice without text acts as a fallback (chosen automatically when no other opt
 * ->
   The conversation fizzled out. -> leave_tavern
 ```
+
+::: warning Parsed, but not yet auto-selected
+The fallback is recognised as an option and renders no button, but the runtime does not yet pick it when the others run out — `flow/fallback-choice-taken` has no emitter. A group that relies on it will simply end with nothing to click, so give the reader a visible way on until this lands.
+:::
 
 ### Tunnels (divert and return)
 
@@ -521,6 +553,14 @@ Items can be added to a reader's inventory:
 {if "golden_key" in story.reader.inventory begin}
   The key grows warm in your pocket.
 {end if}
+```
+
+More than one of something uses `count=`. A bare number is not a count — it is ignored, and nothing is given:
+
+```rea
+{give arrow count=12}   {comment 12 arrows}
+{give arrow}            {comment 1 arrow}
+{give arrow 12}         {comment WRONG — gives nothing at all}
 ```
 
 ### Coins & wallet
