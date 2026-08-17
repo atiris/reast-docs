@@ -714,6 +714,28 @@ The three built-in sets may be redefined to attach shared rules without changing
 
 When an author redefinition and the implicit built-in collide, the author's declaration wins.
 
+### Card property values
+
+A card's properties are **verbatim text**. Everything after `key:` is stored exactly as written, with one transformation: a `{variable}` placeholder is substituted with that variable's current value each time the card is queried, which is what lets a card show a live stat or an unlocked art tier.
+
+```rea
+{define character elena begin}
+  name: Elena Voss
+  level: {story.elena.level}
+  home: @(48.14, 17.10)
+{end define}
+```
+
+`level` is the *text* produced by substituting the variable, not a number. `home` is the text `@(48.14, 17.10)`, not a point — it resembles a coordinate literal without being one. A property is displayed, never computed with: a story that needs to compare or add a value keeps it in an ordinary variable and lets the card show it through a placeholder.
+
+### Typed card properties
+
+<Feature id="typed-card-properties" />
+
+A card property should be able to hold a **real value** — a number, a boolean, a point, an array — rather than only text that looks like one. A card is the story's single source of truth for a narrative entity, and today that truth stops at the display layer: an author who writes `weight: 3` on an item, `home: @(48.14, 17.10)` on a character or `traits: [brave, literate]` on a card has written something the story itself cannot read back. The value has to be duplicated into a variable to be used, and a duplicated value is one that drifts — the card and the logic disagree the moment one of them is edited.
+
+Typed properties would close that gap: a property's value is parsed as the language's own literal grammar, so it carries its type into comparisons and arithmetic the way any other value does, and a coordinate on a card is the same kind of thing as a coordinate anywhere else. The design has to settle two questions before it can be built — how a property is addressed from an expression (there is no path for reading card data today), and how a typed property coexists with the `{variable}` placeholder substitution that text properties rely on. Both are open; this section records the shape of the idea, not a commitment to a syntax.
+
 ### Dialogue attribution
 
 <Feature id="dialogue" />

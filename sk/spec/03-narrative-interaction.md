@@ -714,6 +714,28 @@ Tri vstavané sady sa dajú predefinovať a pripojiť im spoločné pravidlá be
 
 Keď sa autorská redefinícia zrazí s implicitnou vstavanou sadou, vyhráva deklarácia autora.
 
+### Hodnoty vlastností kariet {#card-property-values}
+
+Vlastnosti karty sú **doslovný text**. Všetko za `key:` sa uloží presne tak, ako je napísané, s jedinou úpravou: zástupný symbol `{premenná}` sa pri každom dopyte na kartu nahradí aktuálnou hodnotou tejto premennej — práve to umožňuje karte zobraziť živú štatistiku alebo odomknutú úroveň ilustrácie.
+
+```rea
+{define character elena begin}
+  name: Elena Voss
+  level: {story.elena.level}
+  home: @(48.14, 17.10)
+{end define}
+```
+
+`level` je *text* vzniknutý nahradením premennej, nie číslo. `home` je text `@(48.14, 17.10)`, nie bod — pripomína literál súradnice bez toho, aby ním bol. Vlastnosť sa zobrazuje, nikdy sa s ňou nepočíta: príbeh, ktorý potrebuje hodnotu porovnávať alebo sčítavať, si ju drží v bežnej premennej a karta ju ukáže cez zástupný symbol.
+
+### Typované vlastnosti kariet {#typed-card-properties}
+
+<Feature id="typed-card-properties" />
+
+Vlastnosť karty by mala vedieť niesť **skutočnú hodnotu** — číslo, pravdivostnú hodnotu, bod, pole — nielen text, ktorý tak vyzerá. Karta je pre príbeh jediným zdrojom pravdy o narratívnej entite, no dnes sa tá pravda končí pri zobrazení: autor, ktorý napíše `weight: 3` na predmet, `home: @(48.14, 17.10)` na postavu alebo `traits: [brave, literate]` na kartu, napísal niečo, čo si samotný príbeh nevie prečítať späť. Hodnotu treba zduplikovať do premennej, aby sa dala použiť — a zduplikovaná hodnota je hodnota, ktorá sa rozíde: karta a logika si prestanú odpovedať v momente, keď sa upraví jedna z nich.
+
+Typované vlastnosti by túto medzeru zavreli: hodnota vlastnosti sa spracuje gramatikou literálov samotného jazyka, takže si nesie svoj typ do porovnaní aj do aritmetiky rovnako ako každá iná hodnota, a súradnica na karte je tá istá vec ako súradnica kdekoľvek inde. Návrh musí pred implementáciou vyriešiť dve otázky — ako sa na vlastnosť odkazuje z výrazu (cesta na čítanie údajov karty dnes neexistuje) a ako typovaná vlastnosť spolunažíva s nahrádzaním zástupných symbolov `{premenná}`, na ktorom stoja textové vlastnosti. Obe sú otvorené; táto sekcia zaznamenáva tvar myšlienky, nie záväzok k syntaxi.
+
 ### Pripísanie repliky {#dialogue-attribution}
 
 <Feature id="dialogue" />

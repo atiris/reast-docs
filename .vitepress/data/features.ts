@@ -1524,6 +1524,21 @@ export const FEATURES: Feature[] = [
     link: '/spec/05-reference#custom-card-types',
   },
   {
+    id: 'typed-card-properties',
+    title: {
+      en: 'Typed card properties',
+      sk: 'Typované vlastnosti kariet',
+    },
+    group: 'cards',
+    syntax: 'weight: 3 · home: @(48.14, 17.10) · traits: [brave, literate]',
+    status: 'draft',
+    note: {
+      en: 'A card property that carries a real number, boolean, point or array into comparisons and arithmetic, instead of text that merely looks like one. Nothing is built: how a property is addressed from an expression is still open, and card values stay verbatim text today.',
+      sk: 'Vlastnosť karty, ktorá do porovnaní a aritmetiky nesie skutočné číslo, pravdivostnú hodnotu, bod alebo pole namiesto textu, ktorý tak iba vyzerá. Nič nie je postavené: ako sa na vlastnosť odkazuje z výrazu, je stále otvorené, a hodnoty kariet dnes zostávajú doslovným textom.',
+    },
+    link: '/spec/03-narrative-interaction#typed-card-properties',
+  },
+  {
     id: 'coins',
     title: {
       en: 'Coins & wallet',
