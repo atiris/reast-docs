@@ -113,6 +113,17 @@ This means non-English authors can use their native alphabet freely:
 | `sort(arr)`              | Sort ascending          |
 | `slice(arr, start, end)` | Extract sub-array       |
 
+### Geographic functions
+
+Points are written with the `@(lat, lng)` literal (see [Coordinate literals](02-logic-data.md#coordinate-literals)); everything with an extent is built from points by one of these. Every radius is in metres.
+
+| Function                 | Description                                                     |
+| ------------------------ | --------------------------------------------------------------- |
+| `path(p1, p2, ...)`      | Ordered chain of at least two points; no interior                |
+| `area(p1, p2, p3, ...)`  | Closed ring of at least three points; the ring closes itself     |
+| `circle(centre, metres)` | Everything within `metres` of a point                            |
+| `buffer(shape, metres)`  | Everything within `metres` of a path, area, circle or point      |
+
 ### Collection mutation
 
 Arrays support method-like calls:
@@ -161,7 +172,7 @@ Arrays support method-like calls:
 | `datetime("ISO-8601-string")`   | Create datetime from ISO 8601 string (supports `*` wildcards)           |
 | `duration("ISO-8601-duration")` | Create duration from ISO 8601 duration string                           |
 
-Coordinate types use `@` literal syntax instead of constructor functions (see [Section 11](02-logic-data.md#_11-variables-data-types)): `@lat;lng` for points, `@@lat;lng/radius` for circles, `@@p1@p2@p3` for polygons/routes. The separator is a semicolon, not a comma — a comma already separates the arguments a coordinate appears among.
+A geographic point has literal syntax — `@(lat, lng)`, latitude first (see [Section 11](02-logic-data.md#_11-variables-data-types)) — because a story set in a real place writes a great many of them. Everything with an extent is an ordinary call on points: `circle(p, metres)`, `area(p1, p2, p3, ...)`, `path(p1, p2, ...)`, `buffer(shape, metres)`.
 
 ### Text variation & localization functions
 
@@ -327,7 +338,7 @@ Custom card **sets** (`{define cardset …}`) are released and cover most of wha
   name: The Rusty Anchor
   description: A dimly lit tavern near the docks.
   image: assets/tavern.webp
-  coordinates: @48.1486;17.1077
+  coordinates: @(48.1486, 17.1077)
 {end define}
 
 You arrive at [📍tavern].
@@ -552,7 +563,7 @@ Each of these was considered and ruled out. They appear on the [feature index](f
 | Regex operator       | `matches` / `!matches` keyword                      | Self-documenting, `!` prefix for negation consistent with `!=`, `!in`             |
 | String concatenation | `+` operator (dual arithmetic/concat)               | If either operand is a string, `+` concatenates; otherwise numeric addition       |
 | Type conversion      | `number()`, `string()`, `boolean()`, `integer()`    | Explicit conversion functions; implicit coercion only in expressions              |
-| Domain types         | `@` / `@@` literals, `datetime()`, `duration()`     | `@` for points, `@@` for areas; compact literal syntax for coordinates            |
+| Domain types         | `@(lat, lng)`, `datetime()`, `duration()`           | A literal for points, ordinary constructors for everything with an extent         |
 | Select/plural args   | Named parameters `key="value"`                      | Unified with command attribute syntax, no special object pattern                  |
 | Save/progress        | `{checkpoint}` command                              | Explicit save points; platform auto-saves at chapter boundaries and choices       |
 | Array indexing       | 0-based                                             | Consistent with all mainstream languages (JS, Python, C). First item is index `0` |

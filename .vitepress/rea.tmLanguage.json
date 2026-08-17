@@ -305,6 +305,11 @@
           "name": "string.quoted.double.rea"
         },
         {
+          "comment": "The `@` that opens a point literal: `@(lat, lng)`. Only before a parenthesis \u2014 a bare `@` is not an operator.",
+          "match": "@(?=\\s*\\()",
+          "name": "constant.language.coordinate.rea"
+        },
+        {
           "match": "\\b\\d+(\\.\\d+)?\\b",
           "name": "constant.numeric.rea"
         },
@@ -339,6 +344,11 @@
           "name": "string.quoted.double.rea"
         },
         {
+          "comment": "The `@` that opens a point literal: `@(lat, lng)`. Only before a parenthesis \u2014 a bare `@` is not an operator.",
+          "match": "@(?=\\s*\\()",
+          "name": "constant.language.coordinate.rea"
+        },
+        {
           "match": "\\b\\d+(\\.\\d+)?\\b",
           "name": "constant.numeric.rea"
         },
@@ -351,7 +361,7 @@
           "name": "keyword.operator.logical.rea"
         },
         {
-          "match": "\\b(abs|min|max|round|random|clamp|length|upper|lower|trim|contains|replace|split|join|append|remove|shuffle|sort|plural|select|format|calendar|ordinal)\\b",
+          "match": "\\b(abs|min|max|round|random|clamp|length|upper|lower|trim|contains|replace|split|join|append|remove|shuffle|sort|plural|select|format|calendar|ordinal|path|area|circle|buffer)\\b",
           "name": "support.function.builtin.rea"
         },
         {

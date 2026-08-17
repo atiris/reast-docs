@@ -295,7 +295,7 @@ A manifest MAY remap the four domain names to author-chosen identifiers:
 | `context.temperature`                               | float    | Celsius.                                                                                    |
 | `context.wind`                                      | float    | m/s.                                                                                        |
 | `context.humidity`                                  | float    | Percentage, 0–100.                                                                          |
-| `context.location`                                  | point    | Draft coordinate-literal grammar still gates direct use in comparisons.                    |
+| `context.location`                                  | point    | Test it against an area with `matches` — see [Coordinate literals](#coordinate-literals).  |
 | `context.location.lat` / `.lng` / `.alt` / `.acc`   | float    |                                                                                             |
 | `context.heading`                                   | float    | Compass heading, 0–360.                                                                     |
 | `context.speed`                                     | float    | m/s.                                                                                        |
@@ -442,29 +442,46 @@ When mixing positional and named items, positional items must come before named 
 
 <Feature id="coordinate-literals" />
 
-Geographic values are written with `@` rather than a constructor function, because a story that leans on real places writes a great many of them:
-
-| Literal             | Description                                   |
-| ------------------- | --------------------------------------------- |
-| `@lat;lng`          | Geographic point                              |
-| `@p1@p2@p3`         | Route/line (chain of points)                  |
-| `@@lat;lng/radius`  | Circle (radius in meters)                     |
-| `@@p1@p2/radius`    | Corridor (line with radius buffer, meters)    |
-| `@@p1@p2@p3@p1`     | Polygon (closed chain of points)              |
-| `@@.../radius`      | Inflated polygon (polygon with radius buffer) |
-| `@@area1 + @@area2` | Union of areas                                |
-| `@@area1 - @@area2` | Difference of areas (donut, exclusion)        |
-
-Points use `@`, areas use `@@`. The separator inside a coordinate is a **semicolon**, never a comma — a comma already separates the arguments a coordinate sits among. Radius is always in meters. Examples:
+A geographic point is written `@(lat, lng)` — **latitude first, then longitude**, the order every mapping service and GPS reading uses. Both arguments are ordinary expressions, so a point can be built from variables as readily as from numbers:
 
 ```rea
-{set story.home = @48.14;17.10}
-{set story.park = @@48.14;17.10/500}
-{set story.forest = @@48.14;17.10@48.15;17.10@48.15;17.11@48.14;17.11}
-{set story.donut = @@48.14;17.10/1000 - @@48.14;17.10/200}
+{set story.home = @(48.14, 17.10)}
+{set story.here = @(story.lat, story.lng)}
 ```
 
-Today the only place the engine reads a coordinate is the [`{waypoint}`](03-narrative-interaction.md#waypoints) command, which parses its own. Assigning one to a variable, or testing `context.location` against an area, needs the expression grammar to learn `@` — that is what the `draft` badge above means.
+The point is the only literal. Everything with an extent is built from points by an ordinary function, so the shapes compose the way any other value does:
+
+| Constructor                 | Description                                                     |
+| --------------------------- | --------------------------------------------------------------- |
+| `path(p1, p2, …)`           | An ordered chain of at least two points. A path has no interior. |
+| `area(p1, p2, p3, …)`       | A closed ring of at least three points. The ring closes itself.  |
+| `circle(centre, metres)`    | Everything within `metres` of a point.                           |
+| `buffer(shape, metres)`     | Everything within `metres` of a path, area, circle or point.     |
+| `area1 + area2`             | Union — everything in either area.                               |
+| `area1 - area2`             | Difference — everything in the first that is not in the second.  |
+
+Every radius is in **metres**. `area()` closes its own ring, so repeating the first point at the end changes nothing: `area(p1, p2, p3)` and `area(p1, p2, p3, p1)` are the same triangle. `buffer()` is what gives a path an interior — a route only becomes somewhere a reader can *be* once it has a width:
+
+```rea
+{set story.park = circle(@(48.14, 17.10), 500)}
+{set story.forest = area(@(48.14, 17.10), @(48.15, 17.10), @(48.15, 17.11), @(48.14, 17.11))}
+{set story.corridor = buffer(path(@(48.14, 17.10), @(48.15, 17.11)), 50)}
+{set story.donut = circle(@(48.14, 17.10), 1000) - circle(@(48.14, 17.10), 200)}
+```
+
+Ask whether a point is inside an area with [`matches`](#_12-expressions-operators), the same operator that tests a string against a pattern:
+
+```rea
+{if context.location matches story.park begin}
+  You feel a strange resonance. This is the place from the story!
+{end if}
+```
+
+A point prints as `lat, lng` at six decimals — about 11 cm, finer than any GPS reading. The form is the same in every locale: a locale that renders the decimal separator as a comma would print a value nothing could read back.
+
+::: warning Built-in names
+`path`, `area`, `circle` and `buffer` are core built-ins, and a built-in cannot be redefined. A `{function area() begin}` of your own is reported as [`link/redefines-builtin`](error-handling.md) and the built-in keeps running — the alternative, letting the declaration win silently, would break every geographic call in the document with nothing said about it.
+:::
 
 ### DateTime wildcards
 

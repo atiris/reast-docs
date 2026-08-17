@@ -245,7 +245,7 @@ The host supplies locale and formatting policy. `calendar()` is still in develop
 {require gps}                        Require sensor
 {require nfc optional}               Optional sensor
 
-{waypoint bridge, @@48.14;17.10/50 begin}
+{waypoint bridge, circle(@(48.14, 17.10), 50) begin}
   You stand on the old bridge.
 {end waypoint}
 

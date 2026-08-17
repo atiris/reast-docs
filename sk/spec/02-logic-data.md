@@ -2,7 +2,7 @@
 
 > [Úvod](/sk/spec/) · [Index funkcií](features) · [Ťahák](REA-CHEATSHEET)
 >
-> Väčšina tejto stránky je **experimental**: vydané a v každodennom používaní, ale syntax sa v rámci 1.x ešte môže upraviť. Dve funkcie tu autorom zatiaľ dostupné nie sú — [literály súradníc](#coordinate-literals) (`draft`) a [stavové automaty](#state-machines) (`development`). Každá nesie vlastnú značku.
+> Väčšina tejto stránky je **experimental**: vydané a v každodennom používaní, ale syntax sa v rámci 1.x ešte môže upraviť. Jedna funkcia tu autorom zatiaľ dostupná nie je — [stavové automaty](#state-machines) (`development`). Nesie vlastnú značku.
 
 ---
 
@@ -234,7 +234,7 @@ Manifest MÔŽE premenovať štyri domény na identifikátory podľa voľby auto
 | `context.time.season`                             | string   | Podľa pologule.                                                        |
 | `context.weather`                                 | string   | `clear`, `rain`, `snow`, `fog`, `storm`.                               |
 | `context.temperature` / `.wind` / `.humidity`     | float    | Stupne Celzia, m/s, percentá.                                          |
-| `context.location`                                | point    | Návrh gramatiky súradnicových literálov zatiaľ obmedzuje priame porovnávanie. |
+| `context.location`                                | point    | Testujte proti oblasti operátorom `matches` — pozri [Literály súradníc](#coordinate-literals). |
 | `context.location.lat` / `.lng` / `.alt` / `.acc` | float    |                                                                        |
 | `context.heading` / `.speed`                      | float    | Kurz kompasu 0–360, rýchlosť v m/s.                                    |
 | `context.orientation`                             | float    | Otočenie zariadenia, 0–360.                                            |
@@ -376,29 +376,46 @@ Pri miešaní pozičných a pomenovaných položiek musia pozičné predchádza�
 
 <Feature id="coordinate-literals" />
 
-Geografické hodnoty sa zapisujú znakom `@`, nie konštruktorovou funkciou, pretože príbeh opretý o reálne miesta ich píše veľmi veľa:
-
-| Literál             | Popis                                              |
-| ------------------- | -------------------------------------------------- |
-| `@lat;lng`          | Geografický bod                                    |
-| `@p1@p2@p3`         | Trasa alebo čiara (reťaz bodov)                    |
-| `@@lat;lng/polomer` | Kruh (polomer v metroch)                           |
-| `@@p1@p2/polomer`   | Koridor (čiara s obalom daného polomeru, v metroch) |
-| `@@p1@p2@p3@p1`     | Mnohouholník (uzavretá reťaz bodov)                |
-| `@@.../polomer`     | Nafúknutý mnohouholník (mnohouholník s obalom)     |
-| `@@oblast1 + @@oblast2` | Zjednotenie oblastí                            |
-| `@@oblast1 - @@oblast2` | Rozdiel oblastí (šiška, vylúčenie)             |
-
-Body používajú `@`, oblasti `@@`. Oddeľovačom vnútri súradnice je **bodkočiarka**, nikdy nie čiarka — čiarka už oddeľuje argumenty, medzi ktorými súradnica stojí. Polomer je vždy v metroch. Príklady:
+Geografický bod sa zapisuje ako `@(lat, lng)` — **najprv zemepisná šírka, potom dĺžka**, v poradí, ktoré používa každá mapová služba aj každé meranie GPS. Oba argumenty sú bežné výrazy, takže bod vznikne z premenných rovnako ľahko ako z čísel:
 
 ```rea
-{set story.home = @48.14;17.10}
-{set story.park = @@48.14;17.10/500}
-{set story.forest = @@48.14;17.10@48.15;17.10@48.15;17.11@48.14;17.11}
-{set story.donut = @@48.14;17.10/1000 - @@48.14;17.10/200}
+{set story.home = @(48.14, 17.10)}
+{set story.here = @(story.lat, story.lng)}
 ```
 
-Jediné miesto, kde jadro dnes súradnicu číta, je príkaz [`{waypoint}`](03-narrative-interaction.md#waypoints), ktorý si ju parsuje sám. Priradenie súradnice do premennej alebo test `context.location` proti oblasti si vyžaduje, aby sa gramatika výrazov naučila `@` — presne to znamená značka `draft` vyššie.
+Bod je jediný literál. Všetko, čo má rozlohu, vzniká z bodov bežnou funkciou, takže sa tvary skladajú rovnako ako ktorákoľvek iná hodnota:
+
+| Konštruktor              | Popis                                                              |
+| ------------------------ | ------------------------------------------------------------------ |
+| `path(p1, p2, …)`        | Usporiadaná reťaz aspoň dvoch bodov. Trasa nemá vnútro.            |
+| `area(p1, p2, p3, …)`    | Uzavretý prstenec aspoň troch bodov. Prstenec sa uzatvára sám.     |
+| `circle(stred, metre)`   | Všetko do vzdialenosti `metre` od bodu.                            |
+| `buffer(tvar, metre)`    | Všetko do vzdialenosti `metre` od trasy, oblasti, kruhu alebo bodu. |
+| `oblast1 + oblast2`      | Zjednotenie — všetko v ktorejkoľvek z oblastí.                     |
+| `oblast1 - oblast2`      | Rozdiel — všetko v prvej, čo nie je v druhej.                      |
+
+Každý polomer je v **metroch**. `area()` si prstenec uzatvára sama, takže zopakovanie prvého bodu na konci nič nemení: `area(p1, p2, p3)` a `area(p1, p2, p3, p1)` je ten istý trojuholník. Vnútro dáva trase až `buffer()` — trasa sa stane miestom, kde čitateľ *môže byť*, až keď dostane šírku:
+
+```rea
+{set story.park = circle(@(48.14, 17.10), 500)}
+{set story.forest = area(@(48.14, 17.10), @(48.15, 17.10), @(48.15, 17.11), @(48.14, 17.11))}
+{set story.corridor = buffer(path(@(48.14, 17.10), @(48.15, 17.11)), 50)}
+{set story.donut = circle(@(48.14, 17.10), 1000) - circle(@(48.14, 17.10), 200)}
+```
+
+Či bod leží v oblasti, sa pýtame operátorom [`matches`](#_12-expressions-operators) — tým istým, ktorý testuje reťazec proti vzoru:
+
+```rea
+{if context.location matches story.park begin}
+  Cítiš zvláštnu rezonanciu. Toto je to miesto z príbehu!
+{end if}
+```
+
+Bod sa vypisuje ako `lat, lng` na šesť desatinných miest — asi 11 cm, jemnejšie než ktorékoľvek meranie GPS. Tvar je vo všetkých jazykoch rovnaký: jazyk, ktorý vykresľuje desatinný oddeľovač ako čiarku, by vypísal hodnotu, ktorú by nič neprečítalo späť.
+
+::: warning Mená vstavaných funkcií
+`path`, `area`, `circle` a `buffer` sú jadrové vstavané funkcie a vstavanú funkciu nemožno predefinovať. Vlastná `{function area() begin}` sa ohlási ako [`link/redefines-builtin`](error-handling.md) a naďalej beží vstavaná — alternatíva, teda tichá výhra deklarácie, by bez slova rozbila každé geografické volanie v dokumente.
+:::
 
 ### Zástupné znaky v dátume a čase {#datetime-wildcards}
 

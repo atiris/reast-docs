@@ -1262,10 +1262,10 @@ Adding `optional` means the feature enhances the story but isn't required. The `
 
 <Feature id="location" />
 
-GPS coordinates use the `@` point literal and `@@` area literal:
+A position is written with the [`@(lat, lng)` point literal](02-logic-data.md#coordinate-literals), and `matches` asks whether it is inside an area:
 
 ```rea
-{if context.location matches @@48.14;17.10/500 begin}
+{if context.location matches circle(@(48.14, 17.10), 500) begin}
   You feel a strange resonance. This is the place from the story!
 {end if}
 ```
@@ -1289,13 +1289,13 @@ GPS coordinates use the `@` point literal and `@@` area literal:
 Inspired by geocaching, waypoints define named locations that the reader must visit:
 
 ```rea
-{waypoint old_bridge, @@48.1432;17.1056/50 begin}
+{waypoint old_bridge, circle(@(48.1432, 17.1056), 50) begin}
   The old bridge creaks beneath your feet. Under the third plank,
   you find a leather pouch with a strange symbol.
   {set story.symbol_found = true}
 {end waypoint}
 
-{waypoint castle_ruins, @@48.1510;17.1120/100, require=story.symbol_found begin}
+{waypoint castle_ruins, circle(@(48.1510, 17.1120), 100), require=story.symbol_found begin}
   The symbol glows as you approach the ruins.
   A hidden passage reveals itself in the eastern wall.
 {end waypoint}
@@ -1323,20 +1323,20 @@ A story set in a real place can show its own map instead of a generic one: an au
 
 ```rea
 {map old_town begin}
-  image: assets/old-town.webp
-  bounds: @48.152;17.100 @48.140;17.120
+  image [!The old town < assets/old-town.webp]
+  bounds: @(48.152, 17.100), @(48.140, 17.120)
   {pin bridge begin}
-    at: @48.1432;17.1056
-    label: The old bridge
+    at: @(48.1432, 17.1056)
+    label "The old bridge"
   {end pin}
   {pin reader begin}
     at: context.location
-    label: You
+    label "You"
   {end pin}
 {end map}
 ```
 
-`bounds:` gives the north-west and south-east corners of the image, and the engine projects each pin onto it equirectangularly. A pin's `at:` takes a coordinate literal or a variable reference, so a pin can follow the reader or appear only once a variable is set (`visible:`).
+`bounds:` gives the north-west and south-east corners of the image as two point literals, and the engine projects each pin onto it equirectangularly. A pin's `at:` takes any point expression — a literal, or `context.location` for a pin that follows the reader — so a pin can move with the reading or appear only once a variable is set (`visible`).
 
 Nothing in this block renders yet — the parser understands it, the projection maths is written, and the reader-side canvas is the remaining piece.
 
@@ -1364,7 +1364,7 @@ Setting `sequential` forces visiting waypoints in order. Without it, readers can
 Define areas that trigger events when the reader enters or exits:
 
 ```rea
-{zone dark_forest @@48.14;17.10@48.15;17.10@48.15;17.11@48.14;17.11 begin}
+{zone dark_forest, area(@(48.14, 17.10), @(48.15, 17.10), @(48.15, 17.11)) begin}
   {on enter begin}
     The trees close in around you. The forest feels alive.
     {set story.ui.ambient = "forest"}
@@ -1613,7 +1613,7 @@ Combine multiple sensors into challenge-style interactions inspired by geocachin
 ```rea
 {challenge night_vigil begin}
   require: context.time.hour >= 23 and context.light < 20
-  require: context.location matches @@48.14;17.10/200
+  require: context.location matches circle(@(48.14, 17.10), 200)
   timeout: 30m
   hint: "Find the old chapel after midnight. Bring no light."
 
@@ -1651,7 +1651,7 @@ Rea stories can access GPS, camera, microphone, and motion sensors. The platform
 **Data handling rules:**
 
 1. **Ephemeral by default.** Sensor values exist only during the current reading session. No persistent location history, no sensor logs
-2. **No author access to raw data.** Authors receive boolean/event results (`context.location matches @@...` → `true`/`false`), not exact coordinates. Exception: `{capture}` gives photos for in-story display only
+2. **No author access to raw data.** Authors receive boolean/event results (`context.location matches circle(...)` → `true`/`false`), not exact coordinates. Exception: `{capture}` gives photos for in-story display only
 3. **No server transmission of precise location.** In cooperative mode, other readers see events ("Reader A reached waypoint_X"), never raw coordinates
 4. **Session-only microphone.** `{listen}` transcribes locally. Audio is never stored or transmitted — only recognized text is available as a variable
 5. **Weather via approximate geolocation.** Weather API calls use IP-based location, not GPS coordinates

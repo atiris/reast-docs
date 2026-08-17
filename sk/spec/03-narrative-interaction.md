@@ -1262,10 +1262,10 @@ Pridanie `optional` znamená, že funkcia príbeh obohatí, ale nie je nutná. F
 
 <Feature id="location" />
 
-Súradnice GPS používajú bodový literál `@` a oblastný literál `@@`:
+Poloha sa zapisuje [bodovým literálom `@(lat, lng)`](02-logic-data.md#coordinate-literals) a operátor `matches` sa pýta, či leží v oblasti:
 
 ```rea
-{if context.location matches @@48.14;17.10/500 begin}
+{if context.location matches circle(@(48.14, 17.10), 500) begin}
   Cítiš zvláštnu rezonanciu. Toto je to miesto z príbehu!
 {end if}
 ```
@@ -1289,13 +1289,13 @@ Súradnice GPS používajú bodový literál `@` a oblastný literál `@@`:
 Zastávky, inšpirované geocachingom, definujú pomenované miesta, ktoré musí čitateľ navštíviť:
 
 ```rea
-{waypoint old_bridge, @@48.1432;17.1056/50 begin}
+{waypoint old_bridge, circle(@(48.1432, 17.1056), 50) begin}
   Starý most ti pod nohami zavŕzga. Pod tretím doskou
   nájdeš koženú mešec so zvláštnym symbolom.
   {set story.symbol_found = true}
 {end waypoint}
 
-{waypoint castle_ruins, @@48.1510;17.1120/100, require=story.symbol_found begin}
+{waypoint castle_ruins, circle(@(48.1510, 17.1120), 100), require=story.symbol_found begin}
   Symbol sa pri približovaní k ruinám rozžiari.
   Vo východnej stene sa odhalí skrytá chodba.
 {end waypoint}
@@ -1319,20 +1319,20 @@ Príbeh zasadený do reálneho miesta môže ukázať vlastnú mapu namiesto vš
 
 ```rea
 {map old_town begin}
-  image: assets/old-town.webp
-  bounds: @48.152;17.100 @48.140;17.120
+  image [!Staré mesto < assets/old-town.webp]
+  bounds: @(48.152, 17.100), @(48.140, 17.120)
   {pin bridge begin}
-    at: @48.1432;17.1056
-    label: Starý most
+    at: @(48.1432, 17.1056)
+    label "Starý most"
   {end pin}
   {pin reader begin}
     at: context.location
-    label: Ty
+    label "Ty"
   {end pin}
 {end map}
 ```
 
-`bounds:` udáva severozápadný a juhovýchodný roh obrázka a jadro každý špendlík naň premietne ekvidištantne. `at:` špendlíka prijíma literál súradnice alebo odkaz na premennú, takže špendlík môže sledovať čitateľa alebo sa objaviť až po nastavení premennej (`visible:`).
+`bounds:` udáva severozápadný a juhovýchodný roh obrázka ako dva bodové literály a jadro každý špendlík naň premietne ekvidištantne. `at:` špendlíka prijíma ľubovoľný bodový výraz — literál alebo `context.location` pre špendlík, ktorý sleduje čitateľa — takže sa špendlík môže pohybovať s čítaním alebo sa objaviť až po nastavení premennej (`visible`).
 
 Nič z tohto bloku sa zatiaľ nevykresľuje — parser mu rozumie, výpočet projekcie je napísaný a zostávajúcim dielom je plátno na strane čitateľa.
 
@@ -1360,7 +1360,7 @@ Nastavenie `sequential` vynúti návštevu zastávok v poradí. Bez neho ich či
 Definujte oblasti, ktoré spúšťajú udalosti pri vstupe alebo odchode čitateľa:
 
 ```rea
-{zone dark_forest @@48.14;17.10@48.15;17.10@48.15;17.11@48.14;17.11 begin}
+{zone dark_forest, area(@(48.14, 17.10), @(48.15, 17.10), @(48.15, 17.11)) begin}
   {on enter begin}
     Stromy sa okolo teba zomknú. Les pôsobí živo.
     {set story.ui.ambient = "forest"}
@@ -1609,7 +1609,7 @@ Skombinujte viacero senzorov do interakcií v štýle výziev, inšpirovaných g
 ```rea
 {challenge night_vigil begin}
   require: context.time.hour >= 23 and context.light < 20
-  require: context.location matches @@48.14;17.10/200
+  require: context.location matches circle(@(48.14, 17.10), 200)
   timeout: 30m
   hint: "Nájdi starú kaplnku po polnoci. Neber si svetlo."
 
@@ -1647,7 +1647,7 @@ Príbehy Rea môžu pristupovať k GPS, fotoaparátu, mikrofónu a pohybovým se
 **Pravidlá nakladania s údajmi:**
 
 1. **Predvolene pominuteľné.** Hodnoty senzorov existujú len počas aktuálnej relácie čítania. Žiadna trvalá história polohy, žiadne záznamy senzorov
-2. **Autori nemajú prístup k surovým údajom.** Autori dostávajú logické výsledky a udalosti (`context.location matches @@…` → `true`/`false`), nie presné súradnice. Výnimka: `{capture}` poskytuje fotografie len na zobrazenie v príbehu
+2. **Autori nemajú prístup k surovým údajom.** Autori dostávajú logické výsledky a udalosti (`context.location matches circle(…)` → `true`/`false`), nie presné súradnice. Výnimka: `{capture}` poskytuje fotografie len na zobrazenie v príbehu
 3. **Presná poloha sa neprenáša na server.** V kooperatívnom režime vidia ostatní čitatelia udalosti („Čitateľ A dorazil na waypoint_X"), nikdy nie surové súradnice
 4. **Mikrofón len počas relácie.** `{listen}` prepisuje miestne. Zvuk sa nikdy neukladá ani neprenáša — ako premenná je dostupný len rozpoznaný text
 5. **Počasie cez približnú geolokáciu.** Volania rozhrania počasia používajú polohu podľa IP adresy, nie súradnice GPS

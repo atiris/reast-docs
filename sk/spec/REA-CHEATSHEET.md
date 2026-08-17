@@ -226,7 +226,7 @@ Lokál a politiku formátovania dodáva hostiteľ. `calendar()` je stále vo vý
 {require gps}                        Vyžadovaný senzor
 {require nfc optional}               Voliteľný senzor
 
-{waypoint bridge, @@48.14;17.10/50 begin}
+{waypoint bridge, circle(@(48.14, 17.10), 50) begin}
   Stojíš na starom moste.
 {end waypoint}
 

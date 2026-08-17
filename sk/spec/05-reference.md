@@ -112,6 +112,17 @@ To znamená, že neanglicky píšuci autori môžu voľne používať vlastnú a
 | `sort(arr)`              | Zoradí vzostupne            |
 | `slice(arr, start, end)` | Vyberie podpole             |
 
+### Geografické funkcie {#geographic-functions}
+
+Body sa zapisujú literálom `@(lat, lng)` (pozri [Literály súradníc](02-logic-data.md#coordinate-literals)); všetko, čo má rozlohu, z bodov vytvára jedna z týchto funkcií. Každý polomer je v metroch.
+
+| Funkcia                  | Popis                                                                    |
+| ------------------------ | ------------------------------------------------------------------------ |
+| `path(p1, p2, ...)`      | Usporiadaná reťaz aspoň dvoch bodov; bez vnútra                          |
+| `area(p1, p2, p3, ...)`  | Uzavretý prstenec aspoň troch bodov; prstenec sa uzatvára sám            |
+| `circle(stred, metre)`   | Všetko do vzdialenosti `metre` od bodu                                   |
+| `buffer(tvar, metre)`    | Všetko do vzdialenosti `metre` od trasy, oblasti, kruhu alebo bodu       |
+
 ### Zmena kolekcií {#collection-mutation}
 
 Polia podporujú volania v štýle metód:
@@ -160,7 +171,7 @@ Polia podporujú volania v štýle metód:
 | `datetime("ISO-8601-string")`   | Vytvorí datetime z reťazca ISO 8601 (podporuje zástupné `*`)                  |
 | `duration("ISO-8601-duration")` | Vytvorí trvanie z reťazca trvania ISO 8601                                    |
 
-Súradnicové typy používajú literálovú syntax `@` namiesto konštruktorových funkcií (pozri [Sekciu 11](02-logic-data.md#_11-variables-data-types)): `@lat;lng` pre body, `@@lat;lng/polomer` pre kruhy, `@@p1@p2@p3` pre mnohouholníky a trasy. Oddeľovačom je bodkočiarka, nie čiarka — čiarka už oddeľuje argumenty, medzi ktorými súradnica stojí.
+Geografický bod má literálovú syntax — `@(lat, lng)`, najprv zemepisná šírka (pozri [Sekciu 11](02-logic-data.md#_11-variables-data-types)) — pretože príbeh zasadený do reálneho miesta ich píše veľmi veľa. Všetko, čo má rozlohu, je bežné volanie nad bodmi: `circle(p, metre)`, `area(p1, p2, p3, ...)`, `path(p1, p2, ...)`, `buffer(tvar, metre)`.
 
 ### Funkcie variácie textu a lokalizácie {#text-variation-localization-functions}
 
@@ -319,7 +330,7 @@ Vlastné **sady** kariet (`{define cardset …}`) sú vydané a pokrývajú vä�
   name: Hrdzavá kotva
   description: Slabo osvetlená krčma neďaleko prístavu.
   image: assets/tavern.webp
-  coordinates: @48.1486;17.1077
+  coordinates: @(48.1486, 17.1077)
 {end define}
 
 Prichádzaš do [📍tavern].
@@ -539,7 +550,7 @@ Každá z týchto vecí bola zvážená a vylúčená. V [indexe funkcií](featu
 | Operátor regulárnych výrazov | Kľúčové slovo `matches` / `!matches`             | Sám o sebe zrozumiteľný, prefix `!` pre negáciu v súlade s `!=` a `!in`                      |
 | Spájanie reťazcov        | Operátor `+` (dvojaká aritmetika a spájanie)         | Ak je čo len jeden operand reťazec, `+` spája; inak číselné sčítanie                         |
 | Konverzia typov          | `number()`, `string()`, `boolean()`, `integer()`     | Výslovné konverzné funkcie; implicitné pretypovanie len vo výrazoch                          |
-| Doménové typy            | Literály `@` a `@@`, `datetime()`, `duration()`      | `@` pre body, `@@` pre oblasti; kompaktná literálová syntax pre súradnice                    |
+| Doménové typy            | `@(lat, lng)`, `datetime()`, `duration()`            | Literál pre body, bežné konštruktory pre všetko, čo má rozlohu                               |
 | Argumenty select a plural | Pomenované parametre `kľúč="hodnota"`               | Zjednotené so syntaxou atribútov príkazov, žiadny zvláštny vzor objektu                      |
 | Uloženie a postup        | Príkaz `{checkpoint}`                                | Výslovné body uloženia; platforma ukladá automaticky na hraniciach kapitol a pri voľbách     |
 | Indexovanie polí         | Od nuly                                              | V súlade so všetkými bežnými jazykmi (JS, Python, C). Prvá položka má index `0`              |

@@ -91,7 +91,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `ext/requires-missing` | `fatal` | load refused |
 | `ext/unbound-alias` | `error` | call yields `undefined` → empty |
 
-#### `parse/` — Reading one file (35)
+#### `parse/` — Reading one file (36)
 
 | Code | Severity | What the reader gets |
 | ---- | -------- | -------------------- |
@@ -108,6 +108,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `parse/malformed-blockquote` | `warning` | literal text |
 | `parse/malformed-dialogue` | `warning` | literal text |
 | `parse/malformed-pin` | `warning` | pin skipped |
+| `parse/malformed-bounds` | `warning` | the map draws unanchored |
 | `parse/invalid-mediasession` | `warning` | directive skipped |
 | `parse/invalid-vibrate` | `warning` | directive skipped |
 | `parse/empty-menu` | `warning` | menu not shown |
@@ -131,7 +132,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `parse/comma-on-no-attribute-command` | `error` | block skipped entirely |
 | `parse/bare-word-attribute-value` | `error` | block skipped entirely |
 
-#### `link/` — Resolving names across the package (35)
+#### `link/` — Resolving names across the package (36)
 
 | Code | Severity | What the reader gets |
 | ---- | -------- | -------------------- |
@@ -146,6 +147,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `link/variable-never-set` | `warning` | `undefined` → empty |
 | `link/undefined-function` | `error` | call yields `undefined` → empty |
 | `link/builtin-arity` | `error` | call yields `undefined` → empty |
+| `link/redefines-builtin` | `error` | the built-in runs; the declaration is ignored |
 | `link/story-scope-dotless-set` | `warning` | variable is heading-scoped, not story-scoped |
 | `link/missing-media` | `warning` | placeholder / skip / poster per §27 |
 | `link/media-missing-alt` | `warning` | image renders without alt |
@@ -193,7 +195,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `eval/string-truncated` | `error` | reader sees a cut string |
 | `eval/variable-limit-reached` | `error` | the write is dropped |
 | `eval/unsafe-variable-name` | `error` | the write is dropped |
-| `eval/coordinate-unsupported` | `error` | `undefined` → empty |
+| `eval/coordinate-out-of-range` | `error` | `undefined` → empty |
 | `eval/invalid-datetime` | `warning` | the empty string, per §30 |
 | `eval/invalid-duration` | `warning` | `0` per §30 |
 | `eval/format-fallback` | `degraded` | plain string form |
