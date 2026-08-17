@@ -75,11 +75,11 @@ For a link (`[text > target]`), the first character of the **target** (after `>`
 Hello, {story.player.name}! You have {story.player.gold} gold.
 ```
 
-**In prose, only a plain path prints.** An expression or a call must go through a `{set}` first — written straight into the text it reaches the reader verbatim:
+**Prose prints any expression** — a path, a literal, arithmetic, a call, a ternary. It only ever reads; `{set}` is the only way to write. Escape a literal brace with `\{`:
 
 ```rea
-{set story.mood = story.player.gold > 50 ? "rich" : "poor"}
-You look {story.mood}.
+You look {story.player.gold > 50 ? "rich" : "poor"}.
+You shout {upper(story.player.name)} and count {story.player.gold + 1} coins.
 ```
 
 **Every path starts with a domain** — there is no domain-free form. The domain alone decides how long the variable lives:
@@ -178,17 +178,15 @@ See [When rules differ in `.rext` files](rext-differences) for the language rule
 
 ## Localization & Dates
 
-All of these run inside `{set}`, never in prose, and `plural` templates take no `{}` placeholder ([why](02-logic-data#print-shorthand)):
+Call these straight from prose ([print shorthand](02-logic-data#print-shorthand)); a `{set}` works too, but cannot hold a `{}` placeholder:
 
 ```rea
-{set story.word = plural(story.coins, one="coin", other="coins")}
-{set story.his = select(story.pronoun, he="his", she="her", other="their")}
-{set story.rank = ordinal(3)}                        "3rd" (en); "3" elsewhere
-{set story.big = formatNumber(1234567, "sk")}        2nd arg = locale
-{set story.day = formatDate(context.time.date, "long")}
-{set story.at = formatTime(now(), "short")}          iso|short|medium|long|full
-
-You have {story.coins} {story.word}, counted on {story.day}.
+You have {plural(story.coins, one="{} coin", other="{} coins")}.
+{select(story.pronoun, he="His", she="Her", other="Their")} lamp is lit.
+{ordinal(3)}                                         "3rd" (en); "3" elsewhere
+{formatNumber(1234567, "sk")}                        2nd arg = locale
+{formatDate(context.time.date, "long")}
+{formatTime(now(), "short")}                         iso|short|medium|long|full
 ```
 
 The host supplies locale and formatting policy. `calendar()` is still in development — see the [feature index](features#localization).

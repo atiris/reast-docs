@@ -49,24 +49,17 @@ Both forms produce identical results. The `content` attribute is set by the pars
 Hello, {story.player.name}! You have {story.player.gold} gold.
 ```
 
-This is conceptually equivalent to printing the expression's value.
-
-::: warning Today, only a plain path prints The engine's inline parser recognises a **bare domain-prefixed path** and nothing else. A literal, a call, an arithmetic expression or a ternary written straight into prose is not evaluated — it is printed to the reader exactly as you typed it, braces and all.
-
-Compute it in a `{set}` and print the variable:
+Prose evaluates the **whole expression grammar** — a call, arithmetic, a ternary, an index, all of it:
 
 ```rea
-{comment WRONG — the reader sees the braces and the whole expression}
 You look {story.player.calm > 0 ? "settled" : "restless"}.
-You have {upper(story.player.title)}.
-
-{comment RIGHT — evaluate first, then print the name}
-{set story.player.mood = story.player.calm > 0 ? "settled" : "restless"}
-{set story.player.shout = upper(story.player.title)}
-You look {story.player.mood}. You have {story.player.shout}.
+You have {upper(story.player.title)}, and {story.player.gold + 1} coins after the tip.
+You have {plural(story.player.gold, one="{} coin", other="{} coins")}.
 ```
 
-The same applies to every built-in: `plural`, `select`, `ordinal`, `formatNumber` and the date helpers all work inside `{set}` and none of them work in prose. Tracked as a known gap; the table below is the intended behaviour, not the current one. :::
+Prose **reads**; it never writes. `{set}` remains the only way to change state — an expression in prose that could write would make the rendered page a place where story state changes, which breaks replay, revert and cooperative sync at once. An assignment written into prose is reported (`eval/invalid-expression`) and prints nothing.
+
+A brace you mean literally is escaped: `\{not a command\}` (see [Escaping & raw text](04-utilities#escaping-special-characters)).
 
 **Every other first token is an error, not a print.** An unrecognized first token is never silently printed — that would put the author's markup on the reader's page, exactly what the reader channel exists to prevent. The diagnostic names what kind of mistake it is:
 
@@ -74,7 +67,7 @@ The same applies to every built-in: `plural`, `select`, `ordinal`, `formatNumber
 | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
 | A bare reserved word ([below](#reserved-bare-words)) outside a valid keyword position          | `parse/reserved-word-misuse`                                                         |
 | A domain-shaped path whose domain segment doesn't match any of the four (or a rename)      | `link/unknown-domain`                                                                |
-| A bare, undotted identifier that is neither a literal nor a known function/command name    | `parse/unknown-command` (block skipped entirely)                                     |
+| A bare, undotted identifier that is not a function parameter in scope                      | `link/unknown-domain` — every read carries a domain, so a dotless name names nothing |
 | A malformed/incomplete expression (unbalanced parens, trailing operator)                  | `eval/invalid-expression`                                                            |
 
 `undefined` — whether from a never-set variable, a deleted one ([below](#deletion-via-undefined)), or a failed operation — always prints as **nothing**, never the literal text "undefined".

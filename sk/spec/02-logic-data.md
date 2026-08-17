@@ -51,20 +51,17 @@ Ahoj, {story.player.name}! Máš {story.player.gold} zlata.
 
 Koncepčne je to rovnaké ako vytlačenie hodnoty výrazu.
 
-::: warning Dnes sa vytlačí iba obyčajná cesta Inline parser rozpozná **cestu s doménou** a nič iné. Literál, volanie funkcie, aritmetika či ternárny výraz napísaný priamo do textu sa nevyhodnotí — čitateľ ho uvidí presne tak, ako ste ho napísali, aj so zátvorkami.
-
-Vypočítajte to v `{set}` a vytlačte premennú:
+V texte sa vyhodnotí **celá gramatika výrazov** — volanie funkcie, aritmetika, ternárny výraz aj indexovanie:
 
 ```rea
-{comment ZLE — čitateľ uvidí zátvorky aj celý výraz}
 Vyzeráš {story.hrdina.pokoj > 0 ? "pokojne" : "nervózne"}.
-
-{comment DOBRE — najprv vyhodnotiť, potom vytlačiť názov}
-{set story.hrdina.nalada = story.hrdina.pokoj > 0 ? "pokojne" : "nervózne"}
-Vyzeráš {story.hrdina.nalada}.
+Máš {upper(story.hrdina.titul)} a {story.hrdina.zlato + 1} zlatiek po sprepitnom.
+Máš {plural(story.hrdina.mince, one="{} mincu", other="{} mincí")}.
 ```
 
-To isté platí pre všetky vstavané funkcie: `plural`, `select`, `ordinal`, `formatNumber` aj dátumové pomocníky fungujú v `{set}` a ani jedna z nich nefunguje v texte. :::
+Text iba **číta**; nikdy nezapisuje. Jediný spôsob, ako zmeniť stav, ostáva `{set}` — výraz v texte, ktorý by mohol zapisovať, by z vykreslenej strany urobil miesto, kde sa mení stav príbehu, a tým by naraz rozbil prehrávanie, návrat aj spoločnú synchronizáciu. Priradenie napísané do textu je chyba (`eval/invalid-expression`) a nevytlačí sa nič.
+
+Zátvorku, ktorú myslíte doslovne, napíšte s `\`: `\{toto nie je príkaz\}` (pozri [Escapovanie a doslovný text](04-utilities#escaping-special-characters)).
 
 #### Čo vidí čitateľ {#what-the-reader-sees}
 

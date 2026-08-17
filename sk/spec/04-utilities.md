@@ -32,23 +32,20 @@ Pre 0: „žiadne mince", pre 1: „1 minca", pre 5: „5 mincí". Zástupný zn
 
 Pre 1: „1 pero", pre 3: „3 perá", pre 5: „5 pier".
 
-::: warning Dve obmedzenia, ktoré treba dnes obísť `plural()` — ako každá vstavaná funkcia na tejto stránke — sa nevyhodnotí v texte ([skrátená tlač](02-logic-data#print-shorthand)); musí bežať v `{set}`. A zástupný znak `{}` to neprežije, lebo blok `{set}` sa končí pri prvej `}`, na ktorú narazí — a to je práve tá vo vašej šablóne.
-
-Čiže: šablóny bez `{}` a počet si pripojte sami.
+::: warning Šablóna s `{}` patrí do textu, nie do `{set}` Volanie napíšte tam, kde chcete jeho text ([skrátená tlač](02-logic-data#print-shorthand)):
 
 ```rea
-{comment ZLE — celé volanie sa vytlačí čitateľovi}
 Máš {plural(story.hrdina.mince, one="{} mincu", other="{} mincí")}.
+```
 
-{comment ZLE — {set} sa ukončí vnútri šablóny, volanie nedostane žiadne šablóny}
-{set story.text = plural(story.hrdina.mince, one="{} mincu", other="{} mincí")}
+`{set}` zástupný znak `{}` neunesie: blok `{set}` sa končí pri prvej `}`, na ktorú narazí — a to je práve tá vo vašej šablóne. Ak slovo naozaj potrebujete v premennej, vynechajte zástupný znak a počet si pripojte sami:
 
-{comment DOBRE}
+```rea
 {set story.slovo = plural(story.hrdina.mince, one="mincu", few="mince", many="mincí", other="mincí")}
 Máš {story.hrdina.mince} {story.slovo}.
 ```
 
-Kategóriu aj tak určí CLDR podľa jazyka hostiteľa — a to je tá časť, na ktorej záleží. :::
+:::
 
 **Kategórie množného čísla CLDR:**
 
