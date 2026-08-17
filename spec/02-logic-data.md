@@ -79,6 +79,34 @@ The same applies to every built-in: `plural`, `select`, `ordinal`, `formatNumber
 
 `undefined` — whether from a never-set variable, a deleted one ([below](#deletion-via-undefined)), or a failed operation — always prints as **nothing**, never the literal text "undefined".
 
+#### What the reader sees
+
+Every printable value has a defined rendered form, so a reader never meets a debug shape. Values print in their **canonical, locale-independent** form; locale-dependent presentation is always an explicit call — `formatNumber()`, `formatDate()`, `plural()`, `select()`.
+
+| Value                                             | Prints as                                              | Notes                                                                                        |
+| ------------------------------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| `undefined`, a deleted variable, a failed operation | *nothing*                                              | Never the text `undefined`                                                                    |
+| `true` / `false`                                  | `true` / `false`                                       | Lowercase, never a translated word — translation is `select()`                                 |
+| An integer                                        | `11`                                                   | No thousands separator; that is `formatNumber()`                                               |
+| A float                                           | `0.3`                                                  | 15 significant digits, trailing zeros dropped, `.` as the decimal mark — `{0.1 + 0.2}` prints `0.3` |
+| A long float                                      | `0.333333333333333`                                    | The same cap; shorten it yourself with `round(x, n)`                                            |
+| `NaN`, `±Infinity`                                | *nothing*                                              | A non-finite result is as unprintable as `undefined`                                            |
+| `-0`                                              | `0`                                                    |                                                                                                |
+| A string                                          | its text, unquoted                                     | Printed verbatim and never re-parsed — `{…}` inside a value is text, not a command               |
+| An empty array                                    | *nothing*                                              |                                                                                                |
+| An array                                          | `sword, rope`                                          | Elements joined with `, `, each printed by this table; strings lose their quotes                 |
+| A nested array                                    | `1, [2, 3]`                                            | Brackets on the inner level only, so element boundaries survive                                  |
+| A point                                           | `48.148600, 17.107700`                                 | Six decimals (~11 cm); a comma decimal mark could not be read back                               |
+| A path                                            | `path((48.148600, 17.107700), (48.150000, 17.110000))` | Composite geographic values print as valid Rea source                                            |
+| An area                                           | `area((48.148600, 17.107700), …)`                      |                                                                                                |
+| A circle                                          | `circle((48.148600, 17.107700), 250)`                  |                                                                                                |
+| A buffer                                          | `buffer(path(…), 50)`                                  | A bare point argument takes parentheses                                                          |
+| A union / a difference                            | `area(…) + circle(…)` / `area(…) - circle(…)`          |                                                                                                |
+| A datetime                                        | `2026-08-17T20:15:00Z`                                 | The ISO source form; the reader's locale comes from `formatDateTime()`                           |
+| A duration                                        | `PT90M`                                                | The ISO source form; a human phrase is a built-in's job                                          |
+| A date held as a string or a millisecond number   | per the string / integer row                           | Date built-ins operate on ISO strings and timestamps                                             |
+| Anything else — a regex, a host-supplied object   | *nothing*, plus `eval/invalid-expression`              | The backstop: an engine-authored shape never reaches a page                                      |
+
 ### Attributes
 
 <Feature id="attributes" />

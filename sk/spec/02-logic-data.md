@@ -66,6 +66,34 @@ Vyzeráš {story.hrdina.nalada}.
 
 To isté platí pre všetky vstavané funkcie: `plural`, `select`, `ordinal`, `formatNumber` aj dátumové pomocníky fungujú v `{set}` a ani jedna z nich nefunguje v texte. :::
 
+#### Čo vidí čitateľ {#what-the-reader-sees}
+
+Každá tlačiteľná hodnota má definovaný vykreslený tvar, takže čitateľ nikdy neuvidí ladiaci výpis. Hodnoty sa tlačia v **kanonickom tvare nezávislom od jazyka**; formát závislý od jazyka je vždy explicitné volanie — `formatNumber()`, `formatDate()`, `plural()`, `select()`.
+
+| Hodnota                                          | Vytlačí sa ako                                         | Poznámka                                                                                     |
+| ------------------------------------------------ | ------------------------------------------------------ | ---------------------------------------------------------------------------------------------- |
+| `undefined`, zmazaná premenná, neúspešná operácia | *nič*                                                  | Nikdy nie text `undefined`                                                                      |
+| `true` / `false`                                 | `true` / `false`                                       | Malými písmenami, nikdy nie preložené slovo — preklad je `select()`                              |
+| Celé číslo                                       | `11`                                                   | Bez oddeľovača tisícov; ten dáva `formatNumber()`                                                |
+| Desatinné číslo                                  | `0.3`                                                  | 15 platných číslic, koncové nuly odrezané, desatinná bodka — `{0.1 + 0.2}` vytlačí `0.3`         |
+| Dlhé desatinné číslo                             | `0.333333333333333`                                    | Ten istý strop; skrátiť si ho viete cez `round(x, n)`                                            |
+| `NaN`, `±Infinity`                               | *nič*                                                  | Nekonečný výsledok je rovnako netlačiteľný ako `undefined`                                       |
+| `-0`                                             | `0`                                                    |                                                                                                 |
+| Reťazec                                          | jeho text, bez úvodzoviek                              | Vytlačí sa doslovne a nikdy sa znova neparsuje — `{…}` vnútri hodnoty je text, nie príkaz         |
+| Prázdne pole                                     | *nič*                                                  |                                                                                                 |
+| Pole                                             | `meč, lano`                                            | Prvky spojené cez `, `, každý podľa tejto tabuľky; reťazce strácajú úvodzovky                    |
+| Vnorené pole                                     | `1, [2, 3]`                                            | Zátvorky len na vnútornej úrovni, aby hranice prvkov zostali čitateľné                            |
+| Bod                                              | `48.148600, 17.107700`                                 | Šesť desatinných miest (~11 cm); desatinná čiarka by sa nedala načítať späť                       |
+| Trasa                                            | `path((48.148600, 17.107700), (48.150000, 17.110000))` | Zložené geografické hodnoty sa tlačia ako platný zdrojový kód Rea                                 |
+| Oblasť                                           | `area((48.148600, 17.107700), …)`                      |                                                                                                 |
+| Kruh                                             | `circle((48.148600, 17.107700), 250)`                  |                                                                                                 |
+| Obalová zóna                                     | `buffer(path(…), 50)`                                  | Samotný bod ako argument dostane zátvorky                                                        |
+| Zjednotenie / rozdiel                            | `area(…) + circle(…)` / `area(…) - circle(…)`          |                                                                                                 |
+| Dátum a čas                                      | `2026-08-17T20:15:00Z`                                 | Zdrojový tvar ISO; jazyk čitateľa dáva `formatDateTime()`                                        |
+| Trvanie                                          | `PT90M`                                                | Zdrojový tvar ISO; ľudská formulácia je práca vstavanej funkcie                                   |
+| Dátum držaný ako reťazec alebo milisekundy       | podľa riadka reťazec / celé číslo                      | Dátumové funkcie pracujú s reťazcami ISO a časovými pečiatkami                                    |
+| Čokoľvek iné — regex, objekt od hostiteľa        | *nič* a k tomu `eval/invalid-expression`               | Poistka: tvar vytvorený enginom sa na stránku nikdy nedostane                                     |
+
 ### Atribúty {#attributes}
 
 <Feature id="attributes" />
