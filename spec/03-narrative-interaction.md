@@ -1315,6 +1315,14 @@ Waypoints have optional attributes:
 
 A waypoint whose passage condition depends on `context.*` (device, location, or time state outside the author's control) MUST declare `escape=` or `escape_to=` — an author who omits both gets `link/waypoint-no-escape` (warning, not error: a deliberate hard physical gate with no digital bypass is a valid design choice). A [`{route}`](#multi-stage-routes)'s constituent waypoints need the same when they depend on `context.*`.
 
+```rea
+{waypoint museum_door, circle(@(48.1486, 17.1077), 30), require=context.device.gps, escape=duration("PT2H") begin}
+  The door gives. Inside, the exhibition is exactly as the letter described.
+{end waypoint}
+```
+
+The condition this asks about is the one the *author* wrote. Every waypoint is compared against the reader's position by the runtime, so that comparison alone is not what triggers the warning — `require=context.…`, or an area built from a live read such as `circle(context.location, 50)`, is. `escape_to=` names an anchor like a divert does: one that no `[#anchor]` or `{label}` defines is reported as `link/undefined-anchor`, and defining one that only an `escape_to=` reaches does not make it unused.
+
 ### Map images & pins
 
 <Feature id="maps" />
