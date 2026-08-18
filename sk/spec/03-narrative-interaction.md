@@ -1310,6 +1310,18 @@ Zastávky majú voliteľné atribúty:
 | `proximity` | Vzdialenosť v km, pri ktorej sa nápoveda zobrazí           |
 | `icon`      | Ikona značky na mape                                       |
 | `hidden`    | Zastávka je na mape neviditeľná, kým nie je splnené require |
+| `escape`    | Časový limit (napr. `duration("PT30M")`), po ktorom sa zastávka preskočí |
+| `escape_to` | Náhradná kotva, kam sa čitateľ pošle namiesto nekonečného čakania |
+
+Zastávka, ktorej podmienka prechodu závisí od `context.*` (stav zariadenia, polohy alebo času mimo kontroly autora), MUSÍ deklarovať `escape=` alebo `escape_to=` — autor, ktorý vynechá oboje, dostane `link/waypoint-no-escape` (varovanie, nie chyba: zámerná tvrdá fyzická brána bez digitálneho obchádzania je legitímny návrh). To isté platí pre zastávky, z ktorých sa skladá [`{route}`](#multi-stage-routes), keď závisia od `context.*`.
+
+```rea
+{waypoint museum_door, circle(@(48.1486, 17.1077), 30), require=context.device.gps, escape=duration("PT2H") begin}
+  Dvere povolia. Vnútri je výstava presne taká, ako ju opísal ten list.
+{end waypoint}
+```
+
+Ide o podmienku, ktorú napísal *autor*. Každú zastávku beh programu porovnáva s polohou čitateľa, takže samotné toto porovnanie varovanie nespustí — spustí ho až `require=context.…` alebo oblasť postavená zo živého čítania, napríklad `circle(context.location, 50)`. `escape_to=` pomenúva kotvu rovnako ako odbočka: tú, ktorú nedefinuje žiadne `[#kotva]` ani `{label}`, hlási `link/undefined-anchor`, a kotva, ku ktorej vedie len `escape_to=`, sa nepovažuje za nepoužitú.
 
 ### Obrázky máp a špendlíky {#map-images-pins}
 
