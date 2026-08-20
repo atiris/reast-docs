@@ -132,7 +132,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `parse/comma-on-no-attribute-command` | `error` | block skipped entirely |
 | `parse/bare-word-attribute-value` | `error` | block skipped entirely |
 
-#### `link/` — Resolving names across the package (36)
+#### `link/` — Resolving names across the package (39)
 
 | Code | Severity | What the reader gets |
 | ---- | -------- | -------------------- |
@@ -172,6 +172,9 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `link/unwritten-variable` | `error` | `undefined` → empty |
 | `link/possibly-unwritten-variable` | `warning` | `undefined` → empty |
 | `link/waypoint-no-escape` | `warning` | none — gate behaves as authored |
+| `link/wait-no-escape` | `warning` | none — the wait behaves as authored |
+| `link/unknown-context-source` | `warning` | reads `unknown`; an `until` keeps waiting |
+| `link/context-no-fallback` | `warning` | block skipped when the source is unavailable |
 
 #### `eval/` — Evaluating an expression (30)
 
