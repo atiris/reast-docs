@@ -1434,13 +1434,19 @@ Chain waypoints into sequential or non-sequential routes:
 {end route}
 ```
 
-Setting `sequential` forces visiting waypoints in order. Without it, readers can visit in any order.
+A route names waypoints declared elsewhere; it does not contain them, so a waypoint stays one thing in one place and a route is the trail through them. Its `complete:` line renders where the `{route}` block itself stands, and only once every stage is done — so an author puts the block where the payoff belongs, usually after the trail. Until then the block shows nothing.
+
+`sequential` records that the stages are meant to be visited in order. Because each `{waypoint}` stops the story where it stands, that order is already the reading order; the attribute is what tells a map, a progress indicator or a host UI that skipping ahead is not intended.
+
+The reader's progress is readable as `story.<route>.done`, `.total` and `.complete`, and it is derived from the waypoints rather than tracked separately — a route holds no state a save could disagree with.
+
+A stage naming a waypoint no part of the story declares is `link/unknown-route-waypoint`: the trail could never be finished.
 
 ### Geo-fencing zones
 
 <Feature id="zones" />
 
-Define areas that trigger events when the reader enters or exits:
+A zone is the **whenever** form of a [`{wait}`](#waiting-for-a-condition) — the same expression language over the same area value, decided on every edge rather than once. It never stops the story: the reader walks past the block, and it speaks when they cross into or out of the area.
 
 ```rea
 {zone dark_forest, area(@(48.14, 17.10), @(48.15, 17.10), @(48.15, 17.11)) begin}
@@ -1454,6 +1460,12 @@ Define areas that trigger events when the reader enters or exits:
   {end on}
 {end zone}
 ```
+
+A zone renders the content of the edge the reader **last crossed**, at the block's own position: the enter content while they are inside, the exit content once they have left. One bounded answer rather than a log — a reader who walks back through the wood sees the trees close in again, not a growing transcript of every crossing. Before they cross either edge the block shows nothing.
+
+An edge's commands run at the moment it fires, exactly as a chosen option's consequences do, so a `{set}` inside `{on enter}` takes effect on entry rather than when its text renders. An edge may carry a guard like any other `whenever` — `{on enter when story.has_key begin}` — and `story.<zone>.inside` is readable anywhere in the story, so a zone can gate content far from where it is declared without repeating its area.
+
+Like every condition watching the reader's position, a zone starts the position source when the story reaches it and releases it when nothing needs it any more.
 
 ### Time of day
 

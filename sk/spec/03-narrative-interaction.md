@@ -1434,13 +1434,19 @@ Zreťazte zastávky do postupných alebo voľných trás:
 {end route}
 ```
 
-Nastavenie `sequential` vynúti návštevu zastávok v poradí. Bez neho ich čitatelia môžu navštíviť v ľubovoľnom poradí.
+Trasa pomenúva zastávky deklarované inde; neobsahuje ich, takže zastávka ostáva jednou vecou na jednom mieste a trasa je chodník cez ne. Jej riadok `complete:` sa vykreslí tam, kde stojí samotný blok `{route}`, a až keď sú hotové všetky etapy — autor teda blok umiestni tam, kam patrí odmena, spravidla za chodník. Dovtedy blok neukazuje nič.
+
+`sequential` zaznamenáva, že etapy sa majú navštíviť v poradí. Keďže každá `{waypoint}` zastaví príbeh tam, kde stojí, je toto poradie zároveň poradím čítania; atribút hovorí mape, ukazovateľu postupu či rozhraniu hostiteľa, že preskakovanie nie je zámerom.
+
+Postup čitateľa sa dá čítať ako `story.<trasa>.done`, `.total` a `.complete` a odvodzuje sa zo samotných zastávok, nie z osobitnej evidencie — trasa nedrží stav, s ktorým by uloženie mohlo nesúhlasiť.
+
+Etapa pomenúvajúca zastávku, akú nedeklaruje žiadna časť príbehu, je `link/unknown-route-waypoint`: chodník by sa nikdy nedal dokončiť.
 
 ### Geografické zóny {#geo-fencing-zones}
 
 <Feature id="zones" />
 
-Definujte oblasti, ktoré spúšťajú udalosti pri vstupe alebo odchode čitateľa:
+Zóna je forma **kedykoľvek** bloku [`{wait}`](#waiting-for-a-condition) — ten istý jazyk výrazov nad tou istou hodnotou oblasti, len sa rozhoduje na každej hrane, nie raz. Príbeh nikdy nezastaví: čitateľ prejde okolo bloku a ten prehovorí, keď vstúpi do oblasti alebo z nej vyjde.
 
 ```rea
 {zone dark_forest, area(@(48.14, 17.10), @(48.15, 17.10), @(48.15, 17.11)) begin}
@@ -1454,6 +1460,12 @@ Definujte oblasti, ktoré spúšťajú udalosti pri vstupe alebo odchode čitate
   {end on}
 {end zone}
 ```
+
+Zóna vykreslí obsah tej hrany, ktorú čitateľ **naposledy prekročil**, a to na mieste samotného bloku: obsah vstupu, kým je vnútri, a obsah odchodu, keď odíde. Jedna ohraničená odpoveď namiesto záznamu — čitateľ, ktorý sa vráti späť do lesa, uvidí, ako sa stromy zase zovrú, nie rastúci prepis každého prechodu. Kým neprekročí ani jednu hranu, blok neukazuje nič.
+
+Príkazy hrany sa vykonajú vo chvíli, keď sa spustí, presne ako dôsledky zvolenej možnosti — `{set}` vnútri `{on enter}` teda zaberie pri vstupe, nie vtedy, keď sa vykreslí jeho text. Hrana môže niesť stráž ako každé iné **kedykoľvek** — `{on enter when story.has_key begin}` — a `story.<zóna>.inside` sa dá čítať kdekoľvek v príbehu, takže zóna môže podmieniť obsah ďaleko od miesta, kde je deklarovaná, bez opakovania svojej oblasti.
+
+Ako každá podmienka sledujúca polohu čitateľa aj zóna spustí zdroj polohy, keď k nej príbeh dôjde, a uvoľní ho, keď ho už nič nepotrebuje.
 
 ### Denná doba {#time-of-day}
 

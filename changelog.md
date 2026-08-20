@@ -11,6 +11,11 @@
 - **Deadlines are absolute, and a missed window still counts.** A story closed on a bench and reopened three hours later resumes with the right answer, and the pending set travels in the reading state (schema v3; older saves resume with nothing pending). A resume also replays the instants the story slept through, so `{wait context.time.hour = 22}` fires for a reader who was away from nine until half past eleven instead of waiting another day.
 - **A reading depends on no server.** A wait is decided on the device, from its own clock and the state it already holds; nothing about what a reader is waiting for is stored or evaluated anywhere else. The cost is stated rather than hidden: a reader is not notified while the story is closed, and `escape=` is the mitigation for one who never returns.
 
+### `{zone}` and `{route}` arrive
+
+- **`{zone ID, AREA begin}`** is the `whenever` form of a wait, and now runs. `{on enter}` / `{on exit}` are ordinary transitions — they take a guard like any other edge — and the block renders the content of the edge the reader last crossed, at the block's own position. An edge's commands run as it fires, and `story.<zone>.inside` is readable anywhere.
+- **`{route ID[, sequential] begin}`** names waypoints declared elsewhere and shows its `complete:` line where the block stands, once every stage is done. Its progress (`story.<route>.done` / `.total` / `.complete`) is derived from those waypoints rather than tracked separately, so a save can never disagree with it. A stage naming no waypoint is `link/unknown-route-waypoint`.
+
 ### New functions
 
 - `duration("PT30M")` — an ISO 8601 duration as milliseconds

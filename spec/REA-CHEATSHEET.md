@@ -248,6 +248,19 @@ One expression language; the block decides *when* the engine looks.
 | **whenever** | `{on EVENT when GUARD}`, a storylet's `require:`, `{zone}`     | not applicable                     |
 
 ```rea
+{zone forest, circle(@(48.14, 17.10), 100) begin}
+  {on enter begin} The trees close in. {end on}     Renders while inside
+  {on exit begin} You emerge, blinking. {end on}    Replaces it once outside
+{end zone}
+
+{route hunt, sequential begin}                      Trail through waypoints
+  waypoint: old_bridge
+  waypoint: castle_ruins
+  complete: "The hunt is done."                     Shows here, when all are
+{end route}
+```
+
+```rea
 {wait story.lamp_lit begin}          Pause until true
   You wait in the dark.
 {end wait}

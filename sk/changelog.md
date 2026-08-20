@@ -11,6 +11,11 @@
 - **Termíny sú absolútne a zmeškané okno sa ráta.** Príbeh zavretý na lavičke a otvorený o tri hodiny neskôr sa obnoví so správnou odpoveďou a množina čakajúcich podmienok cestuje v stave čítania (schéma v3; staršie uloženia sa obnovia bez čakajúcich podmienok). Obnovenie navýše prehrá okamihy, ktoré príbeh prespal, takže `{wait context.time.hour = 22}` sa spustí čitateľovi, ktorý bol preč od deviatej do pol dvanástej, namiesto čakania ďalší deň.
 - **Čítanie nezávisí od žiadneho servera.** O čakaní rozhoduje zariadenie, podľa vlastných hodín a stavu, ktorý už drží; o tom, na čo ktorý čitateľ čaká, sa nikde inde nič neukladá ani nevyhodnocuje. Cena je povedená nahlas, nie zamlčaná: čitateľ nedostane upozornenie, kým je príbeh zatvorený, a `escape=` je poistkou pre toho, kto sa už nevráti.
 
+### Prichádzajú `{zone}` a `{route}`
+
+- **`{zone ID, AREA begin}`** je forma `kedykoľvek` bloku wait a odteraz beží. `{on enter}` / `{on exit}` sú bežné prechody — nesú stráž ako každá iná hrana — a blok vykreslí obsah hrany, ktorú čitateľ naposledy prekročil, na mieste samotného bloku. Príkazy hrany sa vykonajú pri jej spustení a `story.<zóna>.inside` sa dá čítať kdekoľvek.
+- **`{route ID[, sequential] begin}`** pomenúva zastávky deklarované inde a ukáže svoj riadok `complete:` tam, kde stojí blok, keď sú hotové všetky etapy. Postup (`story.<trasa>.done` / `.total` / `.complete`) sa odvodzuje z týchto zastávok, nevedie sa osobitne, takže uloženie s ním nikdy nemôže nesúhlasiť. Etapa bez zastávky je `link/unknown-route-waypoint`.
+
 ### Nové funkcie
 
 - `duration("PT30M")` — trvanie ISO 8601 v milisekundách

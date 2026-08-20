@@ -231,6 +231,19 @@ Jeden jazyk výrazov; blok rozhoduje, *kedy* sa naň engine pozrie.
 | **kedykoľvek** | `{on EVENT when GUARD}`, `require:` storyletu, `{zone}`     | neaplikuje sa                   |
 
 ```rea
+{zone forest, circle(@(48.14, 17.10), 100) begin}
+  {on enter begin} Stromy sa zovrú. {end on}        Vykreslí sa vnútri
+  {on exit begin} Vyjdeš a žmurkáš. {end on}        Nahradí to po odchode
+{end zone}
+
+{route hunt, sequential begin}                      Chodník cez zastávky
+  waypoint: old_bridge
+  waypoint: castle_ruins
+  complete: "Hon sa skončil."                       Ukáže sa tu, keď sú všetky
+{end route}
+```
+
+```rea
 {wait story.lamp_lit begin}          Pauza, kým nie je pravda
   Čakáš v tme.
 {end wait}

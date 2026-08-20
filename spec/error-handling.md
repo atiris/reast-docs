@@ -138,7 +138,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `parse/comma-on-no-attribute-command` | `error` | block skipped entirely |
 | `parse/bare-word-attribute-value` | `error` | block skipped entirely |
 
-#### `link/` — Resolving names across the package (39)
+#### `link/` — Resolving names across the package (40)
 
 | Code | Severity | What the reader gets |
 | ---- | -------- | -------------------- |
@@ -181,6 +181,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `link/wait-no-escape` | `warning` | none — the wait behaves as authored |
 | `link/unknown-context-source` | `warning` | reads `unknown`; an `until` keeps waiting |
 | `link/context-no-fallback` | `warning` | block skipped when the source is unavailable |
+| `link/unknown-route-waypoint` | `error` | the stage is skipped; the route can never complete |
 
 #### `eval/` — Evaluating an expression (30)
 
