@@ -1,6 +1,35 @@
 # Changelog
 
-## v1.0.0 (aktuálna)
+## v1.1.0 (aktuálna)
+
+### Podmienky: jeden jazyk, tri režimy
+
+- **`{wait EXPR begin} … {end wait}` teraz blokuje.** Príbeh sa zastaví, kým sa výraz nestane pravdivým; telo je to, čo čitateľ vidí počas čakania, a príbeh pokračuje za `{end wait}`. `escape=` sa po uplynutí trvania vzdá a `escape_to=` pošle čitateľa na kotvu. Holé `{wait begin}` ostáva nezmenené — je to pauza, nie brána.
+- **`{waypoint}` je podobou `{wait}`.** `{waypoint name, AREA, require=EXPR}` je `{wait context.location matches AREA and EXPR}` plus metaúdaje mapy, takže `hint=` je jej text počas čakania a telo je obsah po príchode. Po prvý raz má behové prostredie na strane čitateľa.
+- **Podstromy `context.` sú zdroje s vlastnou kadenciou.** Čas je odvodený a zobudí sa presne raz na najbližšej hranici, ktorú podmienka vie zbadať; poloha je prúd s doručovaním; počasie je jedno zdieľané dopytovanie s obmedzenou frekvenciou. Zdroj sa spustí, keď naň začne čakať prvá podmienka, a zastaví sa, keď odíde posledná — obrazovka súhlasu sa preto počíta z príbehu, nie sa preberá z jeho manifestu.
+- **Podmienka môže byť `unknown`**, keď je zdroj, ktorý číta, zamietnutý alebo nedostupný. Čakanie čaká ďalej; `{if}` ho berie ako nepravdu, a práve preto `link/context-no-fallback` pýta od autora `{else}`.
+- **Termíny sú absolútne.** Príbeh zavretý na lavičke a otvorený o tri hodiny neskôr sa obnoví so správnou odpoveďou a množina čakajúcich podmienok cestuje v stave čítania (schéma v3; staršie uloženia sa obnovia bez čakajúcich podmienok).
+
+### Nové funkcie
+
+- `duration("PT30M")` — trvanie ISO 8601 v milisekundách
+- `between(time, from, to)` — rozsah denného času vrátane rozsahu cez polnoc
+- `elapsed(timestamp)` — milisekundy od okamihu, podľa hodín hostiteľa
+- `within(point, area)` / `within(point, "nazov_zastavky")` — obsiahnutie, s opätovným použitím vlastnej oblasti pomenovanej zastávky
+
+### Nové diagnostiky
+
+- `link/wait-no-escape` — pravidlo úniku, rozšírené zo zastávok na každú čakajúcu podmienku
+- `link/unknown-context-source` — podmienka čítajúca podstrom `context.`, aký neposkytuje žiadna platforma
+- `link/context-no-fallback` — brána v režime **teraz** nad zdrojom reálneho sveta bez `{else}`
+
+### Opravy
+
+- Uložený výsledok podmienky prežil cestu výsledkov zo senzora, takže poloha, ktorá dorazila po prvom vyhodnotení brány, nechala tú bránu po zvyšok čítania čítať `false`.
+- `context.location` sa nikdy nezapisovala ako bod, iba ako jej zložky — takže `context.location matches circle(…)`, porovnanie, ktoré robí každá zastávka, testovalo nedefinovanú ľavú stranu.
+- Stráž `when` stavového automatu bola neviditeľná pre každý statický prechod: premenná, ktorú stráž zjavne čítala, sa hlásila ako nepoužitá.
+
+## v1.0.0
 
 Prvé vydanie jazyka Rea a `@reast/engine`.
 

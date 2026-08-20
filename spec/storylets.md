@@ -49,6 +49,8 @@ Storylets are modular content blocks with prerequisites and effects — the buil
 | `trigger`    | Real-world input kind that can wake this storylet (see [Triggered storylets](#triggered-storylets)) |
 | `match`      | Optional case-insensitive regex the input value must match |
 
+`require:` is a **`whenever`** condition, evaluated at *selection* time — every time the engine picks a storylet, and never in between. A deck therefore never starts a sensor: a `require:` reading `context.location` is answered from whatever position the platform last delivered, and if nothing is watching the position, that answer is `unknown` and the storylet is simply not eligible. A story that wants the engine to keep looking writes a [`{wait}`](03-narrative-interaction.md#waiting-for-a-condition), which is the `until` verb and does start what it needs.
+
 <Feature id="storylet-deck" />
 
 **Storylet deck** — present available storylets as a hand of cards the reader can choose from:

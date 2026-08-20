@@ -1233,7 +1233,7 @@ Authors who want single-role solo play (reader picks one role, replays for other
 
 ## 21. Real-World Interactions
 
-Rea integrates with real-world sensors and APIs through the `world.*` namespace, making stories that respond to the reader's physical context. All sensor access requires reader permission and degrades gracefully — if a sensor is unavailable, the story continues without it.
+Rea integrates with real-world sensors and APIs through the `context.*` namespace, making stories that respond to the reader's physical context. All sensor access requires reader permission and degrades gracefully — if a sensor is unavailable, the story continues without it.
 
 ### Capability requirements
 
@@ -1257,6 +1257,77 @@ Adding `optional` means the feature enhances the story but isn't required. The `
   Type the code printed on the bench: {input type="text", name=part.bench_code}
 {end if}
 ```
+
+### Three verbs, one language
+
+<Feature id="conditional-wait" />
+
+Every gate in a story — an `{if}`, a choice's `condition`, a storylet's `require:`, a state machine's `when` guard, a map pin's `visible:`, a waypoint's area — is written in **one** expression language and decided by **one** subsystem. What differs is not the condition, it is *when the engine looks at it*, and that is expressed by the block the author chooses rather than by a second syntax:
+
+| Mode         | Written as                                                                        | Semantics                                                            | Escape required                                    |
+| ------------ | --------------------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------- |
+| **now**      | `{if}`, a choice's `condition`, a pin's `visible:`                                | evaluated at the moment the reader reaches it                        | no                                                 |
+| **until**    | `{wait EXPR begin} … {end wait}`, `{waypoint}`                                    | the story pauses here and continues when the expression turns true   | yes, when the expression reads `context.*`         |
+| **whenever** | `{on EVENT when GUARD}`, a storylet's `require:`, `{zone}` `on enter` / `on exit` | edge-triggered, may fire repeatedly                                  | not applicable                                     |
+
+The author picks a verb by asking one question — *does the story stop here?* — and writes the same expression language in all three. New capabilities therefore arrive as new `context.` subtrees and new functions, never as new grammar.
+
+### Waiting for a condition
+
+<Feature id="conditional-wait" />
+
+`{wait EXPR begin} … {end wait}` pauses the story until `EXPR` becomes true. Its body is what the reader sees **while** waiting; once the gate opens the body is replaced and the story continues after `{end wait}`.
+
+```rea
+{wait context.weather = "rain" and context.time.hour >= 20, escape=duration("PT3H"), escape_to=dry_night begin}
+  You take the bench under the arcade and watch the sky.
+{end wait}
+
+The first drops hit the pavement. Under the arcade, someone is already waiting.
+```
+
+| Attribute   | Description                                                                     |
+| ----------- | ------------------------------------------------------------------------------- |
+| `escape`    | Duration after which the wait gives up on its own (`escape=duration("PT3H")`)    |
+| `escape_to` | Anchor the reader is sent to instead of waiting indefinitely                     |
+
+A wait whose expression reads `context.*` — device, location or weather state outside the author's control — MUST declare `escape=` or `escape_to=`; an author who omits both gets `link/wait-no-escape` (a warning, not an error: a deliberate hard gate is a valid design). This is the same rule `{waypoint}` has always had, stated once for every waiting condition.
+
+Three things follow from the semantics, and authors need all three:
+
+- **A condition can be `unknown`.** When a source it reads is denied, unavailable or stale, the expression is neither true nor false. A wait treats `unknown` as *keep waiting* and lets the escape decide — a denied sensor must never silently answer "no" and close a gate the reader was never told about. An `{if}` treats it as false, which is why `link/context-no-fallback` asks for an `{else}`.
+- **Deadlines are absolute.** A story is closed on a bench and reopened three hours later; `escape=duration("PT3H")` has expired by then, whether or not the app was running.
+- **A location wait fires only while the app is open.** The web platform has no background geolocation, and no service worker changes that. Time, weather and `shared.*` waits can continue on the server and reach the reader by notification, because nothing in their expression is device-bound. This is exactly what `escape=` mitigates.
+
+Three functions exist for the conditions a wait is usually written with:
+
+```rea
+{wait between(context.time, "22:00", "06:00") begin}    {comment after ten in the evening, including past midnight}
+{wait elapsed(story.started) >= duration("PT30M") begin} {comment half an hour of reading later}
+{wait within(context.location, "old_bridge") begin}      {comment inside a named waypoint's own area}
+```
+
+A bare `{wait begin} … {end wait}` with no expression is unchanged: it is a pause beat, not a gate.
+
+### Context sources
+
+<Feature id="context-sources" />
+
+Each `context.` subtree is a **source**, and sources are not uniform in cost: GPS is a stream that drains a battery, weather is a rate-limited network call, wall-clock time is free and exactly predictable. The engine works out from a condition's expression which sources it needs — a story never declares this, and the consent screen is computed from it rather than from the manifest.
+
+| Source                                                  | Kind      | Cadence                                                                                   |
+| ------------------------------------------------------- | --------- | ----------------------------------------------------------------------------------------- |
+| `context.time.*`                                        | derived   | never polled — the engine wakes exactly once, at the next second, minute, hour or midnight the condition can notice |
+| `context.location`, `context.heading`, `context.speed`  | push      | delivered by the device while some condition is waiting on it                              |
+| `context.weather`, `.temperature`, `.wind`, `.humidity` | poll      | one shared request per interval, however many conditions read it                           |
+| `context.ext.<ns>.*`                                    | host      | whatever the host extension that registered it provides                                    |
+| `{scan}`, `{listen}`, `{capture}`, NFC                  | manual    | reader-initiated only                                                                      |
+
+A source starts when the first condition that watches it begins waiting and stops when the last one leaves, so a story asks for a permission exactly when it needs it and never holds a sensor open across a chapter that does not use one.
+
+The **manual** row is a rule, not an omission: a condition may *read* a variable that `{scan}` or `{listen}` produced, but the engine will never start a camera or a microphone because an expression mentioned one. A passive wait on an action the reader was never asked to perform is an invisible gate.
+
+A condition reading a `context.` subtree no platform provides gets `link/unknown-context-source` at link time — it could never become true.
 
 ### Location
 
@@ -1286,7 +1357,7 @@ A position is written with the [`@(lat, lng)` point literal](02-logic-data.md#co
 
 <Feature id="waypoints" />
 
-Inspired by geocaching, waypoints define named locations that the reader must visit:
+Inspired by geocaching, waypoints define named locations that the reader must visit. A waypoint is a [`{wait}`](#waiting-for-a-condition) plus a place on the map — `{waypoint name, AREA, require=EXPR}` is `{wait context.location matches AREA and EXPR}` with map metadata — so `hint=` is its waiting text, its body is arrival content, and the same scheduler and the same escape rule decide both:
 
 ```rea
 {waypoint old_bridge, circle(@(48.1432, 17.1056), 50) begin}

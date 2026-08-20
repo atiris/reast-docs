@@ -1,6 +1,35 @@
 # Changelog
 
-## v1.0.0 (Current)
+## v1.1.0 (Current)
+
+### Conditions: one language, three modes
+
+- **`{wait EXPR begin} … {end wait}` now blocks.** The story pauses until the expression turns true; the body is what the reader sees while waiting, and the story continues after `{end wait}`. `escape=` gives up after a duration and `escape_to=` sends the reader to an anchor instead. A bare `{wait begin}` is unchanged — it is a pause beat, not a gate.
+- **`{waypoint}` is a form of `{wait}`.** `{waypoint name, AREA, require=EXPR}` is `{wait context.location matches AREA and EXPR}` plus map metadata, so `hint=` is its waiting text and its body is arrival content. It has a reader-side runtime for the first time.
+- **`context.` subtrees are sources with a cadence.** Time is derived and wakes exactly once at the next boundary a condition can notice; location is a push stream; weather is one shared rate-limited poll. A source starts when the first condition waits on it and stops when the last one leaves, so the consent screen is computed from the story rather than trusted from its manifest.
+- **A condition can be `unknown`** when a source it reads is denied or unavailable. A wait keeps waiting; an `{if}` treats it as false, which is what `link/context-no-fallback` asks the author to write an `{else}` for.
+- **Deadlines are absolute.** A story closed on a bench and reopened three hours later resumes with the right answer, and the pending set travels in the reading state (schema v3; older saves resume with nothing pending).
+
+### New functions
+
+- `duration("PT30M")` — an ISO 8601 duration as milliseconds
+- `between(time, from, to)` — a time-of-day range, including one that crosses midnight
+- `elapsed(timestamp)` — milliseconds since an instant, from the host clock
+- `within(point, area)` / `within(point, "waypoint_name")` — containment, reusing a named waypoint's own area
+
+### New diagnostics
+
+- `link/wait-no-escape` — the escape rule, generalized past waypoints to every waiting condition
+- `link/unknown-context-source` — a condition reading a `context.` subtree no platform provides
+- `link/context-no-fallback` — a `now`-mode gate on a real-world source with no `{else}`
+
+### Fixes
+
+- A cached condition result survived the sensor-result path, so a position that arrived after a gate was first evaluated left that gate reading `false` for the rest of the reading.
+- `context.location` was never written as a point, only as its components — so `context.location matches circle(…)`, the comparison every waypoint makes, tested an undefined left side.
+- A state machine's `when` guard was invisible to every static pass: a variable a guard plainly read was reported as unused.
+
+## v1.0.0
 
 The first release of the Rea language and `@reast/engine`.
 

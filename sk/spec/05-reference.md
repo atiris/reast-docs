@@ -171,7 +171,7 @@ Polia podporujú volania v štýle metód:
 | `datetime("ISO-8601-string")`   | Vytvorí datetime z reťazca ISO 8601 (podporuje zástupné `*`)                  |
 | `duration("ISO-8601-duration")` | Vytvorí trvanie z reťazca trvania ISO 8601                                    |
 
-Geografický bod má literálovú syntax — `@(lat, lng)`, najprv zemepisná šírka (pozri [Sekciu 11](02-logic-data.md#_11-variables-data-types)) — pretože príbeh zasadený do reálneho miesta ich píše veľmi veľa. Všetko, čo má rozlohu, je bežné volanie nad bodmi: `circle(p, metre)`, `area(p1, p2, p3, ...)`, `path(p1, p2, ...)`, `buffer(tvar, metre)`.
+Geografický bod má literálovú syntax — `@(lat, lng)`, najprv zemepisná šírka (pozri [Sekciu 11](02-logic-data.md#_11-variables-data-types)) — pretože príbeh zasadený do reálneho miesta ich píše veľmi veľa. Všetko, čo má rozlohu, je bežné volanie nad bodmi: `circle(p, metre)`, `area(p1, p2, p3, ...)`, `path(p1, p2, ...)`, `buffer(tvar, metre)`. `within(bod, oblasť)` je funkcionálna podoba `bod matches oblasť` a `within(bod, "nazov_zastavky")` opätovne použije vlastnú oblasť pomenovanej zastávky namiesto toho, aby autor prepísal jej súradnice.
 
 ### Funkcie variácie textu a lokalizácie {#text-variation-localization-functions}
 
@@ -202,6 +202,9 @@ Vstavané funkcie dátumu a času pracujú s reťazcami ISO 8601 a časovými zn
 | `dateDiff(a, b, unit?)`         | Rozdiel `a − b`; `unit ∈ ms \| s \| m \| h \| d` (predvolene `ms`)                 |
 | `dayOfWeek(value)`              | Deň v týždni v časovom pásme hostiteľa (`0` = nedeľa, `6` = sobota)                |
 | `dateAdd(value, amount, unit?)` | Pripočíta trvanie (`unit ∈ ms \| s \| m \| h \| d \| M \| y`); vráti reťazec ISO   |
+| `duration(value)`               | Trvanie ISO 8601 v milisekundách — `duration("PT30M")` je `1800000`             |
+| `between(time, from, to)`       | Je denný čas vnútri rozsahu; rozsah cez polnoc je bežný prípad              |
+| `elapsed(value)`                | Milisekundy od okamihu, podľa hodin hostiteľa                                   |
 
 Štýl `iso` dáva `YYYY-MM-DD` (dátum), `HH:mm:ss` (čas) alebo úplný reťazec ISO 8601 (dátum a čas). Neexistuje formátovací reťazec s tokenmi dátumu (`YYYY-MM-DD`) dostupný autorovi — celým rozhraním je enum `style`.
 

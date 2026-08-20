@@ -42,6 +42,12 @@ A code is a lowercase, slash-partitioned string; the prefix *is* the range, so c
 | `style/`  | Hygiene and authoring notes                                   |
 | `meta/`   | The record stream itself                                      |
 
+### The escape rule
+
+A gate that depends on state neither the author nor the reader controls needs a way out, and that rule belongs to every waiting condition rather than to one block. A `{wait}` or `{waypoint}` whose expression reads `context.*` and declares neither `escape=` nor `escape_to=` gets `link/wait-no-escape` or `link/waypoint-no-escape` — a warning, not an error, because a deliberate hard physical gate with no digital bypass is a legitimate design.
+
+Its `now`-mode counterpart is `link/context-no-fallback`: an `{if}` on a real-world source with no `{else}` renders nothing at all when the source is denied or has not delivered yet, which is a blank page where the author expected one of two scenes. And a condition reading a `context.` subtree no platform provides gets `link/unknown-context-source` — it could never become true, so the story would stop there for good.
+
 ### What the reader gets
 
 <Feature id="error-handling" />

@@ -42,6 +42,12 @@ Kód je reťazec malými písmenami rozdelený lomkou; predpona *je* oblasť, ta
 | `style/`  | Hygiena a autorské poznámky                                     |
 | `meta/`   | Samotný prúd záznamov                                           |
 
+### Pravidlo úniku {#the-escape-rule}
+
+Brána, ktorá závisí od stavu mimo kontroly autora aj čitateľa, potrebuje cestu von, a toto pravidlo patrí každej čakajúcej podmienke, nie jednému bloku. `{wait}` alebo `{waypoint}`, ktorého výraz číta `context.*` a nedeklaruje ani `escape=`, ani `escape_to=`, dostane `link/wait-no-escape`, resp. `link/waypoint-no-escape` — varovanie, nie chybu, lebo zámerná tvrdá fyzická brána bez digitálneho obchádzania je legitímny návrh.
+
+Jej protipol v režime **teraz** je `link/context-no-fallback`: `{if}` nad zdrojom reálneho sveta bez `{else}` nevykreslí vôbec nič, keď je zdroj zamietnutý alebo ešte nič nedoručil — prázdna strana tam, kde autor čakal jednu z dvoch scén. A podmienka, ktorá číta podstrom `context.`, aký neposkytuje žiadna platforma, dostane `link/unknown-context-source` — nikdy by sa nemohla stať pravdivou, takže príbeh by sa tam natrvalo zastavil.
+
 ### Čo dostane čitateľ {#what-the-reader-gets}
 
 <Feature id="error-handling" />

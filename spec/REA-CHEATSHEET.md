@@ -237,14 +237,40 @@ The host supplies locale and formatting policy. `calendar()` is still in develop
 
 ---
 
+## Conditions: now, until, whenever
+
+One expression language; the block decides *when* the engine looks.
+
+| Mode         | Written as                                                     | Escape required                    |
+| ------------ | -------------------------------------------------------------- | ---------------------------------- |
+| **now**      | `{if}`, a choice's `condition`, a pin's `visible:`             | no                                 |
+| **until**    | `{wait EXPR begin} … {end wait}`, `{waypoint}`                 | yes, when the expression reads `context.*` |
+| **whenever** | `{on EVENT when GUARD}`, a storylet's `require:`, `{zone}`     | not applicable                     |
+
+```rea
+{wait story.lamp_lit begin}          Pause until true
+  You wait in the dark.
+{end wait}
+
+{wait context.weather = "rain", escape=duration("PT3H"), escape_to=dry_night begin}
+  You watch the sky.                 Body = the waiting state
+{end wait}
+
+between(context.time, "22:00", "06:00")   Time range, crosses midnight
+elapsed(story.started) >= duration("PT30M")
+within(context.location, "old_bridge")    Reuse a waypoint's area
+```
+
+---
+
 ## Real-World Interactions
 
 ```rea
 {require gps}                        Require sensor
 {require nfc optional}               Optional sensor
 
-{waypoint bridge, circle(@(48.14, 17.10), 50) begin}
-  You stand on the old bridge.
+{waypoint bridge, circle(@(48.14, 17.10), 50), hint="Find the bridge." begin}
+  You stand on the old bridge.       Body = arrival; hint = waiting text
 {end waypoint}
 
 {timer duration=30, on_expire="-> timeout" begin}

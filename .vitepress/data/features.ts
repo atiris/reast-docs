@@ -1742,6 +1742,38 @@ export const FEATURES: Feature[] = [
     link: '/spec/03-narrative-interaction#reader-to-reader-communication',
   },
   {
+    id: 'conditional-wait',
+    title: {
+      en: 'Waiting for a condition',
+      sk: 'Čakanie na podmienku',
+    },
+    group: 'control-flow',
+    syntax: '{wait EXPR, escape=…, escape_to=… begin} … {end wait}',
+    status: 'experimental',
+    since: '1.1',
+    note: {
+      en: 'The story pauses until the expression turns true. The body is what the reader sees while waiting; `escape=` gives up after a duration and `escape_to=` sends them somewhere else. Required whenever the expression reads `context.*`.',
+      sk: 'Príbeh sa zastaví, kým výraz nezmení hodnotu na pravdivú. Telo je to, čo čitateľ vidí počas čakania; `escape=` sa po uplynutí trvania vzdá a `escape_to=` ho pošle inam. Povinné vždy, keď výraz číta `context.*`.',
+    },
+    link: '/spec/03-narrative-interaction#waiting-for-a-condition',
+  },
+  {
+    id: 'context-sources',
+    title: {
+      en: 'Context sources',
+      sk: 'Zdroje kontextu',
+    },
+    group: 'world',
+    syntax: 'context.time · context.location · context.weather · context.ext.<ns>',
+    status: 'experimental',
+    since: '1.1',
+    note: {
+      en: 'Each `context.` subtree is a source with a cadence of its own: time is derived and answers exactly when it next changes, location is a push stream, weather is a shared rate-limited poll. A source starts when the first condition waits on it and stops when the last one leaves.',
+      sk: 'Každý podstrom `context.` je zdroj s vlastnou kadenciou: čas je odvodený a presne povie, kedy sa nabudúce zmení, poloha je prúd s doručovaním a počasie je zdieľané dopytovanie s obmedzenou frekvenciou. Zdroj sa spustí, keď naň začne čakať prvá podmienka, a zastaví sa, keď odíde posledná.',
+    },
+    link: '/spec/03-narrative-interaction#context-sources',
+  },
+  {
     id: 'wait',
     title: {
       en: 'Waiting for readers',
@@ -1858,10 +1890,11 @@ export const FEATURES: Feature[] = [
     },
     group: 'world',
     syntax: '{waypoint old_bridge, circle(@(48.14, 17.10), 50) begin}',
-    status: 'development',
+    status: 'experimental',
+    since: '1.1',
     note: {
-      en: 'Geocaching-style named places gated on arrival. The command takes any area expression and the distance maths is done; the reader-side gate and permission flow are being built.',
-      sk: 'Pomenované miesta v štýle geocachingu podmienené príchodom. Príkaz prijíma ľubovoľný výraz oblasti a výpočet vzdialenosti je hotový; brána na strane čitateľa a tok povolení sa stavajú.',
+      en: 'Geocaching-style named places gated on arrival. A waypoint is a `{wait}` plus a place on the map: `hint=` is its waiting text, its body is arrival content, and the same scheduler decides both.',
+      sk: 'Pomenované miesta v štýle geocachingu podmienené príchodom. Zastávka je `{wait}` plus miesto na mape: `hint=` je jej text počas čakania, telo je obsah po príchode a o oboch rozhoduje ten istý plánovač.',
     },
     link: '/spec/03-narrative-interaction#waypoints',
   },

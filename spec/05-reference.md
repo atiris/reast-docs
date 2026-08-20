@@ -172,7 +172,7 @@ Arrays support method-like calls:
 | `datetime("ISO-8601-string")`   | Create datetime from ISO 8601 string (supports `*` wildcards)           |
 | `duration("ISO-8601-duration")` | Create duration from ISO 8601 duration string                           |
 
-A geographic point has literal syntax — `@(lat, lng)`, latitude first (see [Section 11](02-logic-data.md#_11-variables-data-types)) — because a story set in a real place writes a great many of them. Everything with an extent is an ordinary call on points: `circle(p, metres)`, `area(p1, p2, p3, ...)`, `path(p1, p2, ...)`, `buffer(shape, metres)`.
+A geographic point has literal syntax — `@(lat, lng)`, latitude first (see [Section 11](02-logic-data.md#_11-variables-data-types)) — because a story set in a real place writes a great many of them. Everything with an extent is an ordinary call on points: `circle(p, metres)`, `area(p1, p2, p3, ...)`, `path(p1, p2, ...)`, `buffer(shape, metres)`. `within(point, area)` is the function form of `point matches area`, and `within(point, "waypoint_name")` reuses a named waypoint's own area rather than making the author repeat its coordinates.
 
 ### Text variation & localization functions
 
@@ -206,6 +206,9 @@ Date/time built-ins operate on ISO 8601 strings and millisecond timestamps. The 
 | `dateDiff(a, b, unit?)`         | Difference `a − b`; `unit ∈ ms \| s \| m \| h \| d` (default `ms`)              |
 | `dayOfWeek(value)`              | Day of week in the host time zone (`0` = Sunday, `6` = Saturday)                |
 | `dateAdd(value, amount, unit?)` | Add a duration (`unit ∈ ms \| s \| m \| h \| d \| M \| y`); returns an ISO string |
+| `duration(value)`               | ISO 8601 duration as milliseconds — `duration("PT30M")` is `1800000`            |
+| `between(time, from, to)`       | Is a time of day inside a range; a range crossing midnight is the normal case  |
+| `elapsed(value)`                | Milliseconds since an instant, from the host clock                              |
 
 The `iso` style yields `YYYY-MM-DD` (date), `HH:mm:ss` (time) or a full ISO 8601 string (date-time). There is no author-facing date-token (`YYYY-MM-DD`) format string — the `style` enum is the whole surface.
 

@@ -49,6 +49,8 @@ Storylety sú modulárne bloky obsahu s podmienkami a účinkami — stavebné k
 | `trigger`    | Druh vstupu z reálneho sveta, ktorý môže tento storylet zobudiť (pozri [Spúšťané storylety](#triggered-storylets)) |
 | `match`      | Voliteľný regulárny výraz bez ohľadu na veľkosť písmen, ktorému musí hodnota vstupu vyhovieť |
 
+`require:` je podmienka režimu **kedykoľvek**, vyhodnocovaná pri *výbere* — vždy, keď engine vyberá storylet, a nikdy medzi tým. Balíček preto nikdy nespustí senzor: `require:`, ktorý číta `context.location`, sa zodpovie z poslednej polohy, akú platforma doručila, a ak polohu nič nesleduje, tou odpoveďou je `unknown` a storylet jednoducho nie je spôsobilý. Príbeh, ktorý chce, aby sa engine pozeral ďalej, napíše [`{wait}`](03-narrative-interaction.md#waiting-for-a-condition) — sloveso režimu **kým**, ktoré spustí, čo potrebuje.
+
 <Feature id="storylet-deck" />
 
 **Balíček storyletov** — predloží dostupné storylety ako ruku kariet, z ktorej si čitateľ vyberá:

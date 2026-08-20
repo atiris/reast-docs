@@ -1233,7 +1233,7 @@ Autori, ktorí chcú sólo hru s jednou rolou (čitateľ si vyberie jednu rolu a
 
 ## 21. Interakcie s reálnym svetom {#_21-real-world-interactions}
 
-Rea sa cez menný priestor `world.*` prepája so senzormi a rozhraniami reálneho sveta, čím umožňuje príbehy reagujúce na fyzický kontext čitateľa. Každý prístup k senzoru vyžaduje povolenie čitateľa a elegantne degraduje — ak senzor nie je dostupný, príbeh pokračuje aj bez neho.
+Rea sa cez menný priestor `context.*` prepája so senzormi a rozhraniami reálneho sveta, čím umožňuje príbehy reagujúce na fyzický kontext čitateľa. Každý prístup k senzoru vyžaduje povolenie čitateľa a elegantne degraduje — ak senzor nie je dostupný, príbeh pokračuje aj bez neho.
 
 ### Požiadavky na schopnosti {#capability-requirements}
 
@@ -1257,6 +1257,77 @@ Pridanie `optional` znamená, že funkcia príbeh obohatí, ale nie je nutná. F
   Napíš kód vytlačený na lavičke: {input type="text", name=bench_code}
 {end if}
 ```
+
+### Tri slovesá, jeden jazyk {#three-verbs-one-language}
+
+<Feature id="conditional-wait" />
+
+Každá brána v príbehu — `{if}`, `condition` voľby, `require:` storyletu, stráž `when` stavového automatu, `visible:` špendlíka na mape, oblasť zastávky — sa píše v **jednom** jazyku výrazov a rozhoduje o nej **jeden** podsystém. Nelíši sa podmienka, ale *kedy sa na ňu engine pozrie*, a to vyjadruje blok, ktorý autor zvolí, nie druhá syntax:
+
+| Režim          | Zápis                                                                          | Význam                                                            | Vyžaduje únik                   |
+| -------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------ | ------------------------------- |
+| **teraz**      | `{if}`, `condition` voľby, `visible:` špendlíka                                | vyhodnotí sa vo chvíli, keď k nej čitateľ dôjde                    | nie                             |
+| **kým**        | `{wait EXPR begin} … {end wait}`, `{waypoint}`                                 | príbeh sa tu zastaví a pokračuje, keď sa výraz stane pravdivým      | áno, keď výraz číta `context.*` |
+| **kedykoľvek** | `{on EVENT when GUARD}`, `require:` storyletu, `{zone}` `on enter` / `on exit` | spúšťa sa na hrane, môže sa spustiť opakovane                       | neaplikuje sa                   |
+
+Autor volí sloveso jedinou otázkou — *zastaví sa tu príbeh?* — a vo všetkých troch prípadoch píše ten istý jazyk výrazov. Nové schopnosti preto prichádzajú ako nové podstromy `context.` a nové funkcie, nikdy nie ako nová gramatika.
+
+### Čakanie na podmienku {#waiting-for-a-condition}
+
+<Feature id="conditional-wait" />
+
+`{wait EXPR begin} … {end wait}` zastaví príbeh, kým sa `EXPR` nestane pravdivým. Telo je to, čo čitateľ vidí **počas** čakania; keď sa brána otvorí, telo sa nahradí a príbeh pokračuje za `{end wait}`.
+
+```rea
+{wait context.weather = "rain" and context.time.hour >= 20, escape=duration("PT3H"), escape_to=dry_night begin}
+  Sadneš si na lavičku pod podlubím a pozeráš na oblohu.
+{end wait}
+
+Prvé kvapky dopadajú na dlažbu. Pod podlubím už niekto čaká.
+```
+
+| Atribút     | Popis                                                              |
+| ----------- | ------------------------------------------------------------------ |
+| `escape`    | Trvanie, po ktorom sa čakanie samo vzdá (`escape=duration("PT3H")`) |
+| `escape_to` | Kotva, na ktorú sa čitateľ presunie namiesto nekonečného čakania    |
+
+Čakanie, ktorého výraz číta `context.*` — stav zariadenia, polohy alebo počasia mimo kontroly autora — MUSÍ deklarovať `escape=` alebo `escape_to=`; autor, ktorý vynechá oboje, dostane `link/wait-no-escape` (varovanie, nie chyba: zámerná tvrdá brána je legitímny návrh). Je to to isté pravidlo, aké `{waypoint}` mal vždy, vyslovené raz pre každú čakajúcu podmienku.
+
+Zo sémantiky vyplývajú tri veci a autor potrebuje všetky tri:
+
+- **Podmienka môže byť `unknown`.** Keď je zdroj, ktorý číta, zamietnutý, nedostupný alebo zastaraný, výraz nie je ani pravdivý, ani nepravdivý. Čakanie berie `unknown` ako *čakaj ďalej* a nechá rozhodnúť únik — zamietnutý senzor nesmie potichu odpovedať „nie“ a zavrieť bránu, o ktorej sa čitateľ nikdy nedozvedel. `{if}` ho berie ako nepravdu, a preto `link/context-no-fallback` pýta `{else}`.
+- **Termíny sú absolútne.** Príbeh sa zavrie na lavičke a otvorí o tri hodiny neskôr; `escape=duration("PT3H")` je dovtedy vyčerpaný bez ohľadu na to, či aplikácia bežala.
+- **Čakanie na polohu sa spustí len pri otvorenej aplikácii.** Web nemá určovanie polohy na pozadí a žiadny service worker to nemení. Čakania na čas, počasie a `shared.*` môžu pokračovať na serveri a doraziť k čitateľovi ako upozornenie, lebo nič v ich výraze nie je viazané na zariadenie. Presne toto `escape=` zmierňuje.
+
+Pre podmienky, s ktorými sa čakanie zvyčajne píše, existujú tri funkcie:
+
+```rea
+{wait between(context.time, "22:00", "06:00") begin}     {comment po desiatej večer, vrátane po polnoci}
+{wait elapsed(story.started) >= duration("PT30M") begin} {comment o pol hodinu čítania neskôr}
+{wait within(context.location, "old_bridge") begin}      {comment vnútri oblasti pomenovanej zastávky}
+```
+
+Holé `{wait begin} … {end wait}` bez výrazu ostáva nezmenené: je to pauza, nie brána.
+
+### Zdroje kontextu {#context-sources}
+
+<Feature id="context-sources" />
+
+Každý podstrom `context.` je **zdroj** a zdroje nemajú rovnakú cenu: GPS je prúd, ktorý vyčerpáva batériu, počasie je sieťové volanie s obmedzenou frekvenciou, hodinový čas je zadarmo a presne predvídateľný. Engine si z výrazu podmienky sám odvodí, ktoré zdroje potrebuje — príbeh to nikdy nedeklaruje a obrazovka súhlasu sa počíta z toho, nie z manifestu.
+
+| Zdroj                                                   | Druh       | Kadencia                                                                                                                            |
+| ------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `context.time.*`                                        | odvodený   | nikdy sa nedopytuje — engine sa zobudí presne raz, v najbližšej sekunde, minúte, hodine alebo o polnoci, ktorú podmienka vie zbadať |
+| `context.location`, `context.heading`, `context.speed`  | doručovaný | zariadenie ho doručuje, kým naň nejaká podmienka čaká                                                                               |
+| `context.weather`, `.temperature`, `.wind`, `.humidity` | dopytovaný | jedna zdieľaná požiadavka za interval, nech ho číta koľkokoľvek podmienok                                                           |
+| `context.ext.<ns>.*`                                    | hostiteľ   | čokoľvek poskytuje rozšírenie hostiteľa, ktoré ho zaregistrovalo                                                                    |
+| `{scan}`, `{listen}`, `{capture}`, NFC                  | ručný      | iba z podnetu čitateľa                                                                                                              |
+
+Zdroj sa spustí, keď začne čakať prvá podmienka, ktorá ho sleduje, a zastaví sa, keď odíde posledná — príbeh si teda pýta povolenie presne vtedy, keď ho potrebuje, a nikdy nedrží senzor otvorený počas kapitoly, ktorá ho nepoužíva.
+
+Riadok **ručný** je pravidlo, nie opomenutie: podmienka smie *čítať* premennú, ktorú vytvoril `{scan}` alebo `{listen}`, ale engine nikdy nespustí fotoaparát ani mikrofón preto, že ich výraz spomenul. Pasívne čakanie na úkon, o ktorý nikto čitateľa nepožiadal, je neviditeľná brána.
+
+Podmienka, ktorá číta podstrom `context.`, aký neposkytuje žiadna platforma, dostane pri linkovaní `link/unknown-context-source` — nikdy by sa nemohla stať pravdivou.
 
 ### Poloha {#location}
 
@@ -1286,7 +1357,7 @@ Poloha sa zapisuje [bodovým literálom `@(lat, lng)`](02-logic-data.md#coordina
 
 <Feature id="waypoints" />
 
-Zastávky, inšpirované geocachingom, definujú pomenované miesta, ktoré musí čitateľ navštíviť:
+Zastávky, inšpirované geocachingom, definujú pomenované miesta, ktoré musí čitateľ navštíviť. Zastávka je [`{wait}`](#waiting-for-a-condition) plus miesto na mape — `{waypoint name, AREA, require=EXPR}` je `{wait context.location matches AREA and EXPR}` s metaúdajmi mapy — takže `hint=` je jej text počas čakania, telo je obsah po príchode a o oboch rozhoduje ten istý plánovač a to isté pravidlo úniku:
 
 ```rea
 {waypoint old_bridge, circle(@(48.1432, 17.1056), 50) begin}

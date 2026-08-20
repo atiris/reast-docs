@@ -220,14 +220,40 @@ Lokál a politiku formátovania dodáva hostiteľ. `calendar()` je stále vo vý
 
 ---
 
+## Podmienky: teraz, kým, kedykoľvek
+
+Jeden jazyk výrazov; blok rozhoduje, *kedy* sa naň engine pozrie.
+
+| Režim          | Zápis                                                       | Vyžaduje únik                   |
+| -------------- | ----------------------------------------------------------- | ------------------------------- |
+| **teraz**      | `{if}`, `condition` voľby, `visible:` špendlíka             | nie                             |
+| **kým**        | `{wait EXPR begin} … {end wait}`, `{waypoint}`              | áno, keď výraz číta `context.*` |
+| **kedykoľvek** | `{on EVENT when GUARD}`, `require:` storyletu, `{zone}`     | neaplikuje sa                   |
+
+```rea
+{wait story.lamp_lit begin}          Pauza, kým nie je pravda
+  Čakáš v tme.
+{end wait}
+
+{wait context.weather = "rain", escape=duration("PT3H"), escape_to=dry_night begin}
+  Pozeráš na oblohu.                 Telo = stav počas čakania
+{end wait}
+
+between(context.time, "22:00", "06:00")   Časový rozsah, aj cez polnoc
+elapsed(story.started) >= duration("PT30M")
+within(context.location, "old_bridge")    Oblasť pomenovanej zastávky
+```
+
+---
+
 ## Interakcie s reálnym svetom
 
 ```rea
 {require gps}                        Vyžadovaný senzor
 {require nfc optional}               Voliteľný senzor
 
-{waypoint bridge, circle(@(48.14, 17.10), 50) begin}
-  Stojíš na starom moste.
+{waypoint bridge, circle(@(48.14, 17.10), 50), hint="Nájdi most." begin}
+  Stojíš na starom moste.            Telo = príchod; hint = text čakania
 {end waypoint}
 
 {timer duration=30, on_expire="-> timeout" begin}
