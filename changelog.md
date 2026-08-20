@@ -8,7 +8,8 @@
 - **`{waypoint}` is a form of `{wait}`.** `{waypoint name, AREA, require=EXPR}` is `{wait context.location matches AREA and EXPR}` plus map metadata, so `hint=` is its waiting text and its body is arrival content. It has a reader-side runtime for the first time.
 - **`context.` subtrees are sources with a cadence.** Time is derived and wakes exactly once at the next boundary a condition can notice; location is a push stream; weather is one shared rate-limited poll. A source starts when the first condition waits on it and stops when the last one leaves, so the consent screen is computed from the story rather than trusted from its manifest.
 - **A condition can be `unknown`** when a source it reads is denied or unavailable. A wait keeps waiting; an `{if}` treats it as false, which is what `link/context-no-fallback` asks the author to write an `{else}` for.
-- **Deadlines are absolute.** A story closed on a bench and reopened three hours later resumes with the right answer, and the pending set travels in the reading state (schema v3; older saves resume with nothing pending).
+- **Deadlines are absolute, and a missed window still counts.** A story closed on a bench and reopened three hours later resumes with the right answer, and the pending set travels in the reading state (schema v3; older saves resume with nothing pending). A resume also replays the instants the story slept through, so `{wait context.time.hour = 22}` fires for a reader who was away from nine until half past eleven instead of waiting another day.
+- **A reading depends on no server.** A wait is decided on the device, from its own clock and the state it already holds; nothing about what a reader is waiting for is stored or evaluated anywhere else. The cost is stated rather than hidden: a reader is not notified while the story is closed, and `escape=` is the mitigation for one who never returns.
 
 ### New functions
 

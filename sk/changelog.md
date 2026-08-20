@@ -8,7 +8,8 @@
 - **`{waypoint}` je podobou `{wait}`.** `{waypoint name, AREA, require=EXPR}` je `{wait context.location matches AREA and EXPR}` plus metaúdaje mapy, takže `hint=` je jej text počas čakania a telo je obsah po príchode. Po prvý raz má behové prostredie na strane čitateľa.
 - **Podstromy `context.` sú zdroje s vlastnou kadenciou.** Čas je odvodený a zobudí sa presne raz na najbližšej hranici, ktorú podmienka vie zbadať; poloha je prúd s doručovaním; počasie je jedno zdieľané dopytovanie s obmedzenou frekvenciou. Zdroj sa spustí, keď naň začne čakať prvá podmienka, a zastaví sa, keď odíde posledná — obrazovka súhlasu sa preto počíta z príbehu, nie sa preberá z jeho manifestu.
 - **Podmienka môže byť `unknown`**, keď je zdroj, ktorý číta, zamietnutý alebo nedostupný. Čakanie čaká ďalej; `{if}` ho berie ako nepravdu, a práve preto `link/context-no-fallback` pýta od autora `{else}`.
-- **Termíny sú absolútne.** Príbeh zavretý na lavičke a otvorený o tri hodiny neskôr sa obnoví so správnou odpoveďou a množina čakajúcich podmienok cestuje v stave čítania (schéma v3; staršie uloženia sa obnovia bez čakajúcich podmienok).
+- **Termíny sú absolútne a zmeškané okno sa ráta.** Príbeh zavretý na lavičke a otvorený o tri hodiny neskôr sa obnoví so správnou odpoveďou a množina čakajúcich podmienok cestuje v stave čítania (schéma v3; staršie uloženia sa obnovia bez čakajúcich podmienok). Obnovenie navýše prehrá okamihy, ktoré príbeh prespal, takže `{wait context.time.hour = 22}` sa spustí čitateľovi, ktorý bol preč od deviatej do pol dvanástej, namiesto čakania ďalší deň.
+- **Čítanie nezávisí od žiadneho servera.** O čakaní rozhoduje zariadenie, podľa vlastných hodín a stavu, ktorý už drží; o tom, na čo ktorý čitateľ čaká, sa nikde inde nič neukladá ani nevyhodnocuje. Cena je povedená nahlas, nie zamlčaná: čitateľ nedostane upozornenie, kým je príbeh zatvorený, a `escape=` je poistkou pre toho, kto sa už nevráti.
 
 ### Nové funkcie
 
