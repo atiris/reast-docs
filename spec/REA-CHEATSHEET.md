@@ -252,7 +252,7 @@ One expression language; the block decides *when* the engine looks.
   You wait in the dark.
 {end wait}
 
-{wait context.weather = "rain", escape=duration("PT3H"), escape_to=dry_night begin}
+{wait context.weather = "rain", escape=duration("PT3H"), escape_to="dry_night" begin}
   You watch the sky.                 Body = the waiting state
 {end wait}
 

@@ -235,7 +235,7 @@ Jeden jazyk výrazov; blok rozhoduje, *kedy* sa naň engine pozrie.
   Čakáš v tme.
 {end wait}
 
-{wait context.weather = "rain", escape=duration("PT3H"), escape_to=dry_night begin}
+{wait context.weather = "rain", escape=duration("PT3H"), escape_to="dry_night" begin}
   Pozeráš na oblohu.                 Telo = stav počas čakania
 {end wait}
 

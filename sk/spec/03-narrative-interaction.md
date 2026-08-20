@@ -1279,7 +1279,7 @@ Autor volí sloveso jedinou otázkou — *zastaví sa tu príbeh?* — a vo vše
 `{wait EXPR begin} … {end wait}` zastaví príbeh, kým sa `EXPR` nestane pravdivým. Telo je to, čo čitateľ vidí **počas** čakania; keď sa brána otvorí, telo sa nahradí a príbeh pokračuje za `{end wait}`.
 
 ```rea
-{wait context.weather = "rain" and context.time.hour >= 20, escape=duration("PT3H"), escape_to=dry_night begin}
+{wait context.weather = "rain" and context.time.hour >= 20, escape=duration("PT3H"), escape_to="dry_night" begin}
   Sadneš si na lavičku pod podlubím a pozeráš na oblohu.
 {end wait}
 

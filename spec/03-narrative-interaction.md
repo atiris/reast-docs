@@ -1279,7 +1279,7 @@ The author picks a verb by asking one question — *does the story stop here?* �
 `{wait EXPR begin} … {end wait}` pauses the story until `EXPR` becomes true. Its body is what the reader sees **while** waiting; once the gate opens the body is replaced and the story continues after `{end wait}`.
 
 ```rea
-{wait context.weather = "rain" and context.time.hour >= 20, escape=duration("PT3H"), escape_to=dry_night begin}
+{wait context.weather = "rain" and context.time.hour >= 20, escape=duration("PT3H"), escape_to="dry_night" begin}
   You take the bench under the arcade and watch the sky.
 {end wait}
 
