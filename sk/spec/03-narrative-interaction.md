@@ -623,42 +623,53 @@ Karta do sady vstúpi tým, že sa použije id sady tam, kde by inak stálo `cha
 {define ability spinach name=Špenát, strength=+2}
 ```
 
-#### Háčiky pravidiel {#rule-hooks}
+#### Obsluhy udalostí {#event-handlers}
 
-Sada môže pripojiť spustiteľné háčiky, ktoré sa vykonajú pri **každej** karte danej sady. Sú to `{on_acquire}`, `{on_lose}` a `{on_use}`:
+To, čo karta *robí*, sa píše ako vrcholový blok `{on <udalosť> <predmet> begin} ... {end on}`. Predmet je jediný atribút — `card=`, `item=`, `deck=` alebo `set=` — takže pravidlo pre jednu kartu, pre celý balíček aj pre celú sadu sa píše rovnako a obsluha sa dá prečítať bez toho, aby čitateľ vedel, v ktorom bloku leží. Karta, balíček a sada rozumejú udalostiam `acquire`, `lose`, `use` a `missed`.
 
-```rea
-{define cardset ability name="Karty schopností" begin}
-  {on_acquire begin}
-    {set story.ability_count = story.ability_count + 1}
-  {end on_acquire}
-  {on_use begin}
-    {set story.last_ability_used = event.card_id}
-  {end on_use}
-{end define}
-```
-
-Jednotlivá karta môže ktorýkoľvek háčik **prekryť** a zároveň zdediť ostatné pravidlá sady. Tu `ginko` predefinuje `on_use`, ale ponechá si `on_acquire` sady:
+Obsluha na sade sa vykoná pri **každej** karte danej sady:
 
 ```rea
-{define ability ginko name=Ginko, intelligence=+2 begin}
-  {on_use begin}
-    {set story.player.intelligence = story.player.intelligence + 2}
-  {end on_use}
-{end define}
+{define cardset ability name="Karty schopností"}
+
+{on acquire set="ability" begin}
+  {set story.ability_count = story.ability_count + 1}
+{end on}
+
+{on use set="ability" begin}
+  {set story.last_ability_used = event.card_id}
+{end on}
 ```
 
-> **Poradie rozlíšenia:** pri každom háčiku má definícia na úrovni karty prednosť pred definíciou na úrovni sady; háčiky, ktoré karta nepredefinuje, prepadnú na sadu. Karta `{on_give}` / `{on_take}` (životný cyklus predmetu) a `{on_use}` sa zodpovedajúco zlučujú s `{on_acquire}` / `{on_lose}` / `{on_use}` vlastniacej sady.
+Karta pridáva svoje pravidlo vedľa pravidla svojej sady, nenahrádza ho:
+
+```rea
+{define ability ginko name=Ginko, intelligence=+2}
+
+{on use card="ginko" begin}
+  {set story.player.intelligence = story.player.intelligence + 2}
+{end on}
+```
+
+Obsluha môže niesť klauzulu `when`, ktorá beží až po `begin}`, takže podmienka si ponechá vlastné čiarky a úvodzovky:
+
+```rea
+{on lose set="ability" when story.act >= 3 begin}
+  Vedomosť sa nadobro stratí.
+{end on}
+```
+
+> **Poradie rozlíšenia:** vykoná sa každá zodpovedajúca obsluha, od najmenej konkrétnej — najprv sada, potom balíček, nakoniec samotná karta. Prekrytie sa píše ako stráž `when`, nie ako predefinícia.
 
 #### Zahranie karty {#playing-a-card}
 
 <Feature id="play-card" />
 
-`{play <card_id>}` spustí použitie karty. Vykoná háčik `{on_use}` karty (a keď ho karta nepredefinuje, siahne po `{on_use}` vlastniacej sady), takže karta vlastnosti uplatní svoju vlastnosť a karta akcie spustí svoj účinok tým istým príkazom:
+`{play <card_id>}` spustí použitie karty. Vykoná každú obsluhu `{on use}`, ktorá karte zodpovedá — najprv obsluhu jej sady, potom jej vlastnú — takže karta vlastnosti uplatní svoju vlastnosť a karta akcie spustí svoj účinok tým istým príkazom:
 
 ```rea
-{play ginko}        Spustí on_use karty ginko → intelligence + 2
-{play spinach}      Spustí on_use sady ability pre spinach
+{play ginko}        Spustí obsluhu sady ability, potom vlastnú obsluhu karty ginko
+{play spinach}      Spustí samotnú obsluhu sady ability
 ```
 
 Identifikátory kariet môžu obsahovať písmená, číslice, spojovníky a podčiarkovníky. Zahranie neznámej karty nespraví nič. Každé úspešné zahranie vyšle behovú udalosť `card-played` nesúcu id karty a druh jej sady, ktorú môžu hostitelia sledovať a aktualizovať podľa nej rozhranie.
@@ -668,11 +679,11 @@ Identifikátory kariet môžu obsahovať písmená, číslice, spojovníky a pod
 Tri vstavané sady sa dajú predefinovať a pripojiť im spoločné pravidlá bez zmeny toho, ako sa ich karty píšu. Predefinovanie `action` s pridaním ceny za použitie platí pre každú kartu akcie `[&]`:
 
 ```rea
-{define cardset action name="Bojové akcie", use="Na zahranie minie akčný bod." begin}
-  {on_use begin}
-    {set story.actions_played = story.actions_played + 1}
-  {end on_use}
-{end define}
+{define cardset action name="Bojové akcie", use="Na zahranie minie akčný bod."}
+
+{on use set="action" begin}
+  {set story.actions_played = story.actions_played + 1}
+{end on}
 ```
 
 Keď sa autorská redefinícia zrazí s implicitnou vstavanou sadou, vyhráva deklarácia autora.
@@ -1390,21 +1401,24 @@ Etapa pomenúvajúca zastávku, akú nedeklaruje žiadna časť príbehu, je `li
 Zóna je forma **kedykoľvek** bloku [`{wait}`](#waiting-for-a-condition) — ten istý jazyk výrazov nad tou istou hodnotou oblasti, len sa rozhoduje na každej hrane, nie raz. Príbeh nikdy nezastaví: čitateľ prejde okolo bloku a ten prehovorí, keď vstúpi do oblasti alebo z nej vyjde.
 
 ```rea
-{zone dark_forest, area(@(48.14, 17.10), @(48.15, 17.10), @(48.15, 17.11)) begin}
-  {on enter begin}
-    Stromy sa okolo teba zomknú. Les pôsobí živo.
-    {set story.ui.ambient = "forest"}
-  {end on}
-  {on exit begin}
-    Vynoríš sa z lesa a žmúriš do slnka.
-    {set story.ui.ambient = "default"}
-  {end on}
-{end zone}
+{zone dark_forest, area(@(48.14, 17.10), @(48.15, 17.10), @(48.15, 17.11))}
+
+{on enter zone="dark_forest" begin}
+  Stromy sa okolo teba zomknú. Les pôsobí živo.
+  {set story.ui.ambient = "forest"}
+{end on}
+
+{on exit zone="dark_forest" begin}
+  Vynoríš sa z lesa a žmúriš do slnka.
+  {set story.ui.ambient = "default"}
+{end on}
 ```
 
 Zóna vykreslí obsah tej hrany, ktorú čitateľ **naposledy prekročil**, a to na mieste samotného bloku: obsah vstupu, kým je vnútri, a obsah odchodu, keď odíde. Jedna ohraničená odpoveď namiesto záznamu — čitateľ, ktorý sa vráti späť do lesa, uvidí, ako sa stromy zase zovrú, nie rastúci prepis každého prechodu. Kým neprekročí ani jednu hranu, blok neukazuje nič.
 
-Príkazy hrany sa vykonajú vo chvíli, keď sa spustí, presne ako dôsledky zvolenej možnosti — `{set}` vnútri `{on enter}` teda zaberie pri vstupe, nie vtedy, keď sa vykreslí jeho text. Hrana môže niesť stráž ako každé iné **kedykoľvek** — `{on enter when story.has_key begin}` — a `story.<zóna>.inside` sa dá čítať kdekoľvek v príbehu, takže zóna môže podmieniť obsah ďaleko od miesta, kde je deklarovaná, bez opakovania svojej oblasti.
+Samotná zóna je jediný nepárový príkaz: deklaruje oblasť a označuje miesto, kde sa vykreslí prekročená hrana. Každá hrana je vrcholový blok `{on enter zone="..."}` alebo `{on exit zone="..."}` — tá istá plochá forma, akú má každá iná udalosť v jazyku — takže hrana sa dá prečítať aj bez zóny nad ňou.
+
+Príkazy hrany sa vykonajú vo chvíli, keď sa spustí, presne ako dôsledky zvolenej možnosti — `{set}` vnútri `{on enter}` teda zaberie pri vstupe, nie vtedy, keď sa vykreslí jeho text. Hrana môže niesť stráž ako každé iné **kedykoľvek** — `{on enter zone="dark_forest" when story.has_key begin}` — a `story.<zóna>.inside` sa dá čítať kdekoľvek v príbehu, takže zóna môže podmieniť obsah ďaleko od miesta, kde je deklarovaná, bez opakovania svojej oblasti.
 
 Ako každá podmienka sledujúca polohu čitateľa aj zóna spustí zdroj polohy, keď k nej príbeh dôjde, a uvoľní ho, keď ho už nič nepotrebuje.
 

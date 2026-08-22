@@ -773,33 +773,39 @@ Formal state machines model entities that transition between named states based 
 {state_machine door, initial="locked" begin}
   {state locked begin}
     The door is locked tight.
-    {on unlock when story.quest.has_key begin}
-      You turn the key. Click!
-      {-> closed}
-    {end on}
   {end state}
 
   {state closed begin}
     The door is closed but unlocked.
-    {on open begin}
-      The door swings open.
-      {-> open}
-    {end on}
-    {on lock begin}
-      You lock the door behind you.
-      {-> locked}
-    {end on}
   {end state}
 
   {state open begin}
     The doorway stands open before you.
-    {on close begin}
-      You pull the door shut.
-      {-> closed}
-    {end on}
   {end state}
 {end state_machine}
+
+{on unlock machine="door", state="locked" when story.quest.has_key begin}
+  You turn the key. Click!
+  {-> closed}
+{end on}
+
+{on open machine="door", state="closed" begin}
+  The door swings open.
+  {-> open}
+{end on}
+
+{on lock machine="door", state="closed" begin}
+  You lock the door behind you.
+  {-> locked}
+{end on}
+
+{on close machine="door", state="open" begin}
+  You pull the door shut.
+  {-> closed}
+{end on}
 ```
+
+A `{state}` block holds what the reader sees while the machine is in it. Each transition is a top-level `{on <event> machine="...", state="..." begin}` handler — the same flat form every other event in the language takes — carrying its guard, its content, and the `{-> target}` divert that moves the machine on. A handler with no `machine=` applies to every machine that declares the state.
 
 **State machine attributes:**
 

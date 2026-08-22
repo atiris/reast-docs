@@ -707,33 +707,39 @@ Formálne stavové automaty modelujú entity, ktoré prechádzajú medzi pomenov
 {state_machine door, initial="locked" begin}
   {state locked begin}
     Dvere sú pevne zamknuté.
-    {on unlock when has_key begin}
-      Otočíš kľúčom. Cvak!
-      {-> closed}
-    {end on}
   {end state}
 
   {state closed begin}
     Dvere sú zatvorené, ale odomknuté.
-    {on open begin}
-      Dvere sa rozletia.
-      {-> open}
-    {end on}
-    {on lock begin}
-      Zamkneš za sebou.
-      {-> locked}
-    {end on}
   {end state}
 
   {state open begin}
     Dverný otvor stojí pred tebou dokorán.
-    {on close begin}
-      Pritiahneš dvere.
-      {-> closed}
-    {end on}
   {end state}
 {end state_machine}
+
+{on unlock machine="door", state="locked" when has_key begin}
+  Otočíš kľúčom. Cvak!
+  {-> closed}
+{end on}
+
+{on open machine="door", state="closed" begin}
+  Dvere sa rozletia.
+  {-> open}
+{end on}
+
+{on lock machine="door", state="closed" begin}
+  Zamkneš za sebou.
+  {-> locked}
+{end on}
+
+{on close machine="door", state="open" begin}
+  Pritiahneš dvere.
+  {-> closed}
+{end on}
 ```
+
+Blok `{state}` nesie to, čo čitateľ vidí, kým je automat v danom stave. Každý prechod je vrcholový blok `{on <udalosť> machine="...", state="..." begin}` — tá istá plochá forma, akú má každá iná udalosť v jazyku — a nesie svoju stráž, svoj obsah aj odbočku `{-> cieľ}`, ktorá automat posunie ďalej. Blok bez `machine=` platí pre každý automat, ktorý daný stav deklaruje.
 
 **Atribúty stavového automatu:**
 

@@ -1027,6 +1027,23 @@ export const FEATURES: Feature[] = [
     link: '/spec/02-logic-data#state-machines',
   },
 
+  {
+    id: 'flat-events',
+    title: {
+      en: 'Event handlers',
+      sk: 'Obsluhy udalostí',
+    },
+    group: 'control-flow',
+    syntax: '{on acquire card="king" begin}',
+    status: 'experimental',
+    since: '1.3',
+    note: {
+      en: 'One flat form for every event in the language. The subject is one attribute — `card=`, `deck=`, `set=`, `zone=`, `state=` — and every matching handler runs, least specific first.',
+      sk: 'Jedna plochá forma pre každú udalosť v jazyku. Predmet je jediný atribút — `card=`, `deck=`, `set=`, `zone=`, `state=` — a vykoná sa každá zodpovedajúca obsluha, od najmenej konkrétnej.',
+    },
+    link: '/spec/03-narrative-interaction#event-handlers',
+  },
+
   // ── Functions & extensibility ─────────────────────────────────────────────
   {
     id: 'functions',
@@ -1440,8 +1457,8 @@ export const FEATURES: Feature[] = [
     status: 'experimental',
     since: '1.0',
     note: {
-      en: 'Items, the reader’s pocket, and the `{on_give}` / `{on_take}` lifecycle hooks.',
-      sk: 'Predmety, čitateľovo vrecko a háčiky životného cyklu `{on_give}` / `{on_take}`.',
+      en: 'Items, the reader’s pocket, and the `{on acquire item=…}` / `{on lose item=…}` handlers.',
+      sk: 'Predmety, čitateľovo vrecko a obsluhy `{on acquire item=…}` / `{on lose item=…}`.',
     },
     link: '/spec/03-narrative-interaction#item-cards',
   },
@@ -1503,8 +1520,8 @@ export const FEATURES: Feature[] = [
     status: 'experimental',
     since: '1.0',
     note: {
-      en: 'Runs a card’s `{on_use}` hook, falling back to its set’s, and emits a `card-played` event hosts can observe.',
-      sk: 'Spustí háčik `{on_use}` karty, so záložným háčikom jej sady, a vyšle udalosť `card-played`, ktorú môžu hostitelia sledovať.',
+      en: 'Runs every `{on use}` handler that matches the card, its set’s before its own, and emits a `card-played` event hosts can observe.',
+      sk: 'Vykoná každú obsluhu `{on use}`, ktorá karte zodpovedá — obsluhu sady pred vlastnou — a vyšle udalosť `card-played`, ktorú môžu hostitelia sledovať.',
     },
     link: '/spec/03-narrative-interaction#playing-a-card',
   },
@@ -1936,7 +1953,7 @@ export const FEATURES: Feature[] = [
       sk: 'Geografické zóny',
     },
     group: 'world',
-    syntax: '{zone dark_forest, area(…) begin} {on enter begin}',
+    syntax: '{zone dark_forest, area(…)} · {on enter zone="dark_forest" begin}',
     status: 'experimental',
     since: '1.1',
     note: {

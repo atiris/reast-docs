@@ -228,10 +228,13 @@ Jeden jazyk výrazov; blok rozhoduje, *kedy* sa naň engine pozrie.
 | **kedykoľvek** | `{on EVENT when GUARD}`, `when` storyletu, `{zone}`     | neaplikuje sa                   |
 
 ```rea
-{zone forest, circle(@(48.14, 17.10), 100) begin}
-  {on enter begin} Stromy sa zovrú. {end on}        Vykreslí sa vnútri
-  {on exit begin} Vyjdeš a žmurkáš. {end on}        Nahradí to po odchode
-{end zone}
+{zone forest, circle(@(48.14, 17.10), 100)}       Deklaruje oblasť a označí miesto
+{on enter zone="forest" begin}                    Vykreslí sa vnútri
+  Stromy sa zovrú.
+{end on}
+{on exit zone="forest" begin}                     Nahradí to po odchode
+  Vyjdeš a žmurkáš.
+{end on}
 
 {route hunt, waypoints="old_bridge, castle_ruins",  Chodník cez zastávky
        complete="Hon sa skončil.", sequential begin}
@@ -292,7 +295,7 @@ within(context.location, "old_bridge")    Oblasť pomenovanej zastávky
 [$golden_key]               Odkaz na predmet
 {give golden_key}           Daj predmet čitateľovi
 {take golden_key}           Odober predmet čitateľovi
-{play ability_card}         Zahraj kartu → spustí sa jej háčik on_use
+{play ability_card}         Zahraj kartu → spustia sa jej obsluhy {on use}
 ```
 
 ```rea
@@ -305,11 +308,15 @@ within(context.location, "old_bridge")    Oblasť pomenovanej zastávky
 
 ```rea
 {define cardset ability name="Karty schopností",   Deklarácia vlastnej sady kariet
-        use="Zahraním sa uplatní bonus." begin}
-  {on_use begin}                 Háčik sa spustí pri každej karte sady
-    {set story.ability_count = story.ability_count + 1}
-  {end on_use}
-{end define}
+        use="Zahraním sa uplatní bonus."}
+
+{on use set="ability" begin}     Vykoná sa pri každej karte sady
+  {set story.ability_count = story.ability_count + 1}
+{end on}
+
+{on use card="spinach" begin}    Vykoná sa pri jednej karte, po obsluhe sady
+  {set story.player.strength = story.player.strength + 2}
+{end on}
 
 {define ability spinach name=Špenát, strength="+2"}   Karta patriaca do sady
 ```

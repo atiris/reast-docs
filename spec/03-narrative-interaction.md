@@ -623,43 +623,53 @@ A card joins a set by using the set id where `character`/`item`/`action` would o
 {define ability spinach name=Spinach, strength=+2}
 ```
 
-#### Rule hooks
+#### Event handlers
 
-A set may attach executable hooks that run for **every** card of that set. The hooks are `{on_acquire}`, `{on_lose}` and `{on_use}`:
+What a card *does* is written as a top-level `{on <event> <subject> begin} ... {end on}` handler. The subject is one attribute — `card=`, `item=`, `deck=` or `set=` — so a rule for one card, a whole deck or a whole set is written the same way, and a handler can be read without knowing which block it fell inside. The events a card, deck or set understands are `acquire`, `lose`, `use` and `missed`.
 
-```rea
-{define cardset ability name="Ability Cards" begin}
-  {on_acquire begin}
-    {set story.ability_count = story.ability_count + 1}
-  {end on_acquire}
-  {on_use begin}
-    {set story.last_ability_used = event.card_id}
-  {end on_use}
-{end define}
-```
-
-An individual card may **override** any hook while still inheriting the set's other rules. Here `ginko` redefines `on_use` but keeps the set's `on_acquire`:
+A handler on a set runs for **every** card of that set:
 
 ```rea
-{define ability ginko name=Ginko begin}
-  story.player.intelligence: +2
-  {on_use begin}
-    {set story.player.intelligence = story.player.intelligence + 2}
-  {end on_use}
-{end define}
+{define cardset ability name="Ability Cards"}
+
+{on acquire set="ability" begin}
+  {set story.ability_count = story.ability_count + 1}
+{end on}
+
+{on use set="ability" begin}
+  {set story.last_ability_used = event.card_id}
+{end on}
 ```
 
-> **Resolution order:** for each hook, a card-level definition takes precedence over the set-level definition; hooks the card does not redefine fall through to the set. Card `{on_give}`/`{on_take}` (item lifecycle) and `{on_use}` are merged with the owning set's `{on_acquire}`/`{on_lose}`/`{on_use}` accordingly.
+A card adds its own rule beside its set's, rather than replacing it:
+
+```rea
+{define ability ginko name=Ginko, intelligence=+2}
+
+{on use card="ginko" begin}
+  {set story.player.intelligence = story.player.intelligence + 2}
+{end on}
+```
+
+A handler may carry a `when` clause, which runs to `begin}` so the condition keeps its own commas and quotes:
+
+```rea
+{on lose set="ability" when story.act >= 3 begin}
+  The knowledge slips away for good.
+{end on}
+```
+
+> **Resolution order:** every matching handler runs, least specific first — the set's, then the deck's, then the card's own. An override is written as a `when` guard rather than as a redefinition.
 
 #### Playing a card
 
 <Feature id="play-card" />
 
-`{play <card_id>}` triggers a card's usage. It runs the card's `{on_use}` hook (falling back to the owning set's `{on_use}` when the card does not redefine it), so an attribute card applies its attribute and an action card runs its effect through the same command:
+`{play <card_id>}` triggers a card's usage. It runs every `{on use}` handler that matches the card — its set's, then its own — so an attribute card applies its attribute and an action card runs its effect through the same command:
 
 ```rea
-{play ginko}        Runs ginko's on_use → story.player.intelligence + 2
-{play spinach}      Runs the ability set's on_use for spinach
+{play ginko}        Runs the ability set's handler, then ginko's own
+{play spinach}      Runs the ability set's handler alone
 ```
 
 Card ids follow the same [identifier rules](05-reference#identifier-rules) as any other simple identifier — any Unicode character except space and dot, with at least one non-digit character. Playing an unknown card is a no-op. Each successful play emits a `card-played` runtime event carrying the card id and its set kind, which hosts can observe to update the UI.
@@ -669,11 +679,11 @@ Card ids follow the same [identifier rules](05-reference#identifier-rules) as an
 The three built-in sets may be redefined to attach shared rules without changing how their cards are written. Redefining `action` to add a usage cost applies to every `[&]` action card:
 
 ```rea
-{define cardset action name="Combat Actions", use="Spend an action point to play." begin}
-  {on_use begin}
-    {set story.actions_played = story.actions_played + 1}
-  {end on_use}
-{end define}
+{define cardset action name="Combat Actions", use="Spend an action point to play."}
+
+{on use set="action" begin}
+  {set story.actions_played = story.actions_played + 1}
+{end on}
 ```
 
 When an author redefinition and the implicit built-in collide, the author's declaration wins.
@@ -1391,21 +1401,24 @@ A stage naming a waypoint no part of the story declares is `link/unknown-route-w
 A zone is the **whenever** form of a [`{wait}`](#waiting-for-a-condition) — the same expression language over the same area value, decided on every edge rather than once. It never stops the story: the reader walks past the block, and it speaks when they cross into or out of the area.
 
 ```rea
-{zone dark_forest, area(@(48.14, 17.10), @(48.15, 17.10), @(48.15, 17.11)) begin}
-  {on enter begin}
-    The trees close in around you. The forest feels alive.
-    {set story.ui.ambient = "forest"}
-  {end on}
-  {on exit begin}
-    You emerge from the forest, blinking in the sunlight.
-    {set story.ui.ambient = "default"}
-  {end on}
-{end zone}
+{zone dark_forest, area(@(48.14, 17.10), @(48.15, 17.10), @(48.15, 17.11))}
+
+{on enter zone="dark_forest" begin}
+  The trees close in around you. The forest feels alive.
+  {set story.ui.ambient = "forest"}
+{end on}
+
+{on exit zone="dark_forest" begin}
+  You emerge from the forest, blinking in the sunlight.
+  {set story.ui.ambient = "default"}
+{end on}
 ```
 
 A zone renders the content of the edge the reader **last crossed**, at the block's own position: the enter content while they are inside, the exit content once they have left. One bounded answer rather than a log — a reader who walks back through the wood sees the trees close in again, not a growing transcript of every crossing. Before they cross either edge the block shows nothing.
 
-An edge's commands run at the moment it fires, exactly as a chosen option's consequences do, so a `{set}` inside `{on enter}` takes effect on entry rather than when its text renders. An edge may carry a guard like any other `whenever` — `{on enter when story.has_key begin}` — and `story.<zone>.inside` is readable anywhere in the story, so a zone can gate content far from where it is declared without repeating its area.
+The zone itself is a single unpaired command: it declares the area and marks the place the crossed edge renders. Each edge is a top-level `{on enter zone="..."}` or `{on exit zone="..."}` handler, the same flat form every other event in the language takes, so an edge can be read without its zone above it.
+
+An edge's commands run at the moment it fires, exactly as a chosen option's consequences do, so a `{set}` inside `{on enter}` takes effect on entry rather than when its text renders. An edge may carry a guard like any other `whenever` — `{on enter zone="dark_forest" when story.has_key begin}` — and `story.<zone>.inside` is readable anywhere in the story, so a zone can gate content far from where it is declared without repeating its area.
 
 Like every condition watching the reader's position, a zone starts the position source when the story reaches it and releases it when nothing needs it any more.
 

@@ -245,10 +245,13 @@ One expression language; the block decides *when* the engine looks.
 | **whenever** | `{on EVENT when GUARD}`, a storylet's `when`, `{zone}`     | not applicable                     |
 
 ```rea
-{zone forest, circle(@(48.14, 17.10), 100) begin}
-  {on enter begin} The trees close in. {end on}     Renders while inside
-  {on exit begin} You emerge, blinking. {end on}    Replaces it once outside
-{end zone}
+{zone forest, circle(@(48.14, 17.10), 100)}       Declares the area, marks the spot
+{on enter zone="forest" begin}                    Renders while inside
+  The trees close in.
+{end on}
+{on exit zone="forest" begin}                     Replaces it once outside
+  You emerge, blinking.
+{end on}
 
 {route hunt, waypoints="old_bridge, castle_ruins",  Trail through waypoints
        complete="The hunt is done.", sequential begin}
@@ -309,7 +312,7 @@ within(context.location, "old_bridge")    Reuse a waypoint's area
 [$golden_key]               Item reference
 {give golden_key}           Give item to reader
 {take golden_key}           Remove item from reader
-{play ability_card}         Play a card → runs its on_use hook
+{play ability_card}         Play a card → runs its {on use} handlers
 ```
 
 ```rea
@@ -322,11 +325,15 @@ within(context.location, "old_bridge")    Reuse a waypoint's area
 
 ```rea
 {define cardset ability name="Ability Cards",   Declare a custom card set/category
-        use="Play to apply the bonus." begin}
-  {on_use begin}                 Hook runs for every card of the set
-    {set story.ability_count = story.ability_count + 1}
-  {end on_use}
-{end define}
+        use="Play to apply the bonus."}
+
+{on use set="ability" begin}     Runs for every card of the set
+  {set story.ability_count = story.ability_count + 1}
+{end on}
+
+{on use card="spinach" begin}    Runs for one card, after its set's
+  {set story.player.strength = story.player.strength + 2}
+{end on}
 
 {define ability spinach name=Spinach, strength="+2"}   A card belonging to the set
 ```
