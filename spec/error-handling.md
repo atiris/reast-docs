@@ -97,7 +97,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `ext/requires-missing` | `fatal` | load refused |
 | `ext/unbound-alias` | `error` | call yields `undefined` → empty |
 
-#### `parse/` — Reading one file (42)
+#### `parse/` — Reading one file (43)
 
 | Code | Severity | What the reader gets |
 | ---- | -------- | -------------------- |
@@ -127,6 +127,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `parse/missing-event-subject` | `error` | the handler never runs |
 | `parse/ambiguous-event-subject` | `warning` | only the first subject is used |
 | `parse/unknown-event` | `warning` | the handler never runs |
+| `parse/missing-deck-subject` | `error` | the command does nothing |
 | `parse/invalid-storylet-match` | `error` | storylet never eligible |
 | `parse/inline-depth-exceeded` | `warning` | deeper inlines flatten to text |
 | `parse/document-truncated` | `error` | content after the limit is lost |
