@@ -124,10 +124,29 @@ Ahoj, {story.player.name}! Máš {story.player.gold} zlata.
 * hidden [&qr_door] …                Skrytá možnosť — bez tlačidla, zobudí ju len aktivácia
 {end menu}
 
-{storylet bench_secret trigger=scan, match="^REAST-BENCH-.*" begin}
-  …                                  Spúšťaný storylet — kartu rozdáva svet, prehrá sa
+{define card bench_secret trigger=scan, match="^REAST-BENCH-.*" begin}
+  …                                  Spúšťaná karta — rozdáva ju svet, prehrá sa
                                      ako vedľajšia cesta a vráti sa do hlavného príbehu
-{end storylet}
+{end card}
+```
+
+```rea
+{define deck basic name="Zásoby",                   Pomenovaná zásoba kariet
+        back="assets/back.webp", play=reusable}
+{define card coin deck="basic", name="Minca" begin} Karta vstupuje pomenovaním balíčka
+  {earn silver 3}                                   Telo je to, čo sa zahrá
+{end card}
+
+{draw deck="basic"}                  Vezmi kartu do Vaku
+{play deck="basic", deal=3 begin}    Rozdaj tri, zahraj tú, ktorú si čitateľ vyberie
+  Čo si vezmeš?
+  {empty begin} Stánky sú prázdne. {end empty}      Nič použiteľné
+{end play}
+{play card="coin"}                   Príbeh vynúti jednu kartu
+{return card="coin"}                 Vráť ju do balíčka
+
+{if drawn("coin") begin} … {end if}                 Potiahol ju tento čitateľ
+{story.deck.basic.remaining} zo {story.deck.basic.size}   Zostávajú 4 zo 6
 ```
 
 ---
@@ -225,7 +244,7 @@ Jeden jazyk výrazov; blok rozhoduje, *kedy* sa naň engine pozrie.
 | -------------- | ----------------------------------------------------------- | ------------------------------- |
 | **teraz**      | `{if}`, `condition` voľby, `visible:` špendlíka             | nie                             |
 | **kým**        | `{wait when EXPR begin} … {end wait}`, `{waypoint}`         | áno, keď výraz číta `context.*` |
-| **kedykoľvek** | `{on EVENT when GUARD}`, `when` storyletu, `{zone}`     | neaplikuje sa                   |
+| **kedykoľvek** | `{on EVENT when GUARD}`, `when` karty, `{zone}`         | neaplikuje sa                   |
 
 ```rea
 {zone forest, circle(@(48.14, 17.10), 100)}       Deklaruje oblasť a označí miesto

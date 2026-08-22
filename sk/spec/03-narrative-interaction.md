@@ -364,11 +364,11 @@ Viaceré dejové línie, ktoré napredujú nezávisle a v kľúčových chvíľa
 
 V kooperatívnom čítaní môžu rôzni čitatelia sledovať rôzne vlákna súčasne a zažívať príbeh z pohľadu rôznych postáv.
 
-### Storylety (naratív riadený kvalitami) {#storylets-quality-based-narrative}
+### Karty a balíčky (naratív riadený kvalitami) {#storylets-quality-based-narrative}
 
 <Feature id="storylets" />
 
-Modulárne bloky obsahu s podmienkami a účinkami — `require`, `priority`, `repeatable`, `cooldown`, `weight`, `tags` — ktoré vyberá jadro do `{deck}` alebo ktoré zobudí vstup z reálneho sveta cez `trigger=` ako vedľajšiu cestu, ktorá sa vráti presne tam, kde čitateľ prestal. Storylety majú teraz vlastnú stránku: pozri [Storylety a balíčky](/sk/spec/storylets).
+Karta je líce plus telo a balíček je ich pomenovaná zásoba. Výber beží na `when`, `priority`, `repeatable`, `cooldown`, `weight` a `tags`; `{draw}` alebo `{play}` rozdá ruku a kartu bez balíčka môže zobudiť vstup z reálneho sveta cez `trigger=` ako vedľajšiu cestu, ktorá sa vráti presne tam, kde čitateľ prestal. Karty majú vlastnú stránku: pozri [Karty a balíčky](/sk/spec/storylets).
 
 ### Menu objavovania {#exploration-menus}
 
@@ -671,6 +671,16 @@ Obsluha môže niesť klauzulu `when`, ktorá beží až po `begin}`, takže pod
 {play ginko}        Spustí obsluhu sady ability, potom vlastnú obsluhu karty ginko
 {play spinach}      Spustí samotnú obsluhu sady ability
 ```
+
+**`play=` rozhoduje, či sa karta dá zahrať znovu.** Karta, jej balíček aj jej sada môžu deklarovať jeden z troch životných cyklov a vyhráva vlastný cyklus karty, potom balíčka, potom sady:
+
+| Hodnota     | Čo sa stane po zahraní                                                            |
+| ----------- | ----------------------------------------------------------------------------------- |
+| `reusable`  | Karta sa vráti a dá sa zahrať ľubovoľne veľakrát (predvolené)                       |
+| `exhausted` | Karta je odložená, kým ju niečo nevráti — nové kolo, nová scéna                     |
+| `consumed`  | Karta je pre toto čítanie preč                                                      |
+
+Opakované zahranie spotrebovanej alebo odloženej karty nespraví nič a udalosť `card-played` nesie životný cyklus, takže hostiteľ môže kartu ukázať ako minutú. `consumed` znamená preč *pre toto čítanie*, nikdy nie navždy: príbeh, ktorý schová obsah za neopakovateľné ťahanie, je vzorec, ktorý čitatelia neznášajú najviac, a preto prehľad zbierky ukazuje, čo existuje, vedľa toho, s čím sa tento čitateľ stretol.
 
 Identifikátory kariet môžu obsahovať písmená, číslice, spojovníky a podčiarkovníky. Zahranie neznámej karty nespraví nič. Každé úspešné zahranie vyšle behovú udalosť `card-played` nesúcu id karty a druh jej sady, ktorú môžu hostitelia sledovať a aktualizovať podľa nej rozhranie.
 

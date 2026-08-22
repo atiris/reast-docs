@@ -1,93 +1,176 @@
-# Storylety a balíčky
+# Karty a balíčky
 
 > [Úvod](/sk/spec/) · [Index funkcií](features) · [Ťahák](REA-CHEATSHEET)
 
-### Storylety (naratív riadený kvalitami) {#storylets-quality-based-narrative}
+**Balíček** je pomenovaná zásoba **kariet**. Karta je kus príbehu — text, `{set}`, volania, možnosti — s lícom (meno, ilustrácia, popis) a s podmienkou. Na mieste, ktoré si autor zvolí, príbeh rozdá z balíčka ruku; čitateľ si jednu alebo viac vyberie; každá vybraná karta sa zahrá presne ako tunel a príbeh pokračuje tam, kde bol.
 
-<Feature id="storylets" />
+Karta bez balíčka je staršia predstava *storyletu*: obsah, ktorý zobudí svet, nie obsah, ktorý rozdá balíček. Je to tá istá deklarácia, a preto majú obe jednu stránku.
 
-Storylety sú modulárne bloky obsahu s podmienkami a účinkami — stavebné kamene nelineárnych rozprávaní poháňaných objavovaním. Namiesto pevného vetvenia platforma vyberá použiteľné storylety a predkladá ich ako dostupné možnosti.
+### Deklarácia balíčka {#declaring-a-deck}
 
-```rea
-{storylet the_merchants_plea priority=5, repeatable=false when gold > 20 and visited("market") begin}
-  Pristúpi k tebe kupec so zúfalým pohľadom.
-  „Prosím, potrebujem niekoho, kto doručí tento balík do severnej veže."
+<Feature id="define-deck" />
 
-  * [Prijmi úlohu]
-    {set story.quest.has_merchant_quest = true}
-    {set story.player.gold = story.player.gold + 10}
-    „Nech ti je odplatou! Tu máš zálohu."
-  * [Odmietni]
-    Kupcovi klesnú plecia.
-{end storylet}
-
-{storylet the_hidden_path priority=10, repeatable=false when story.quest.has_merchant_quest and context.time.hour >= 20 begin}
-  Keď padne noc, zbadáš medzi stromami slabú žiaru.
-  Odhalí sa cesta, akú si predtým nikdy nevidel.
-  -> hidden_path_adventure
-{end storylet}
-```
-
-**Hlavička storyletu:** každé nastavenie je atribút v otváracom riadku a podmienka spôsobilosti je koncová klauzula `when`.
-
-| Atribút       | Popis                                                                                   |
-| ------------- | --------------------------------------------------------------------------------------- |
-| `when …`      | Podmienka, ktorá musí platiť, aby sa storylet objavil                                   |
-| `priority=`   | Storylety s vyššou prioritou sa objavia skôr (predvolene `0`)                           |
-| `repeatable=` | `true` povolí opakované prehratie, `false` znamená jednorazový (predvolené)             |
-| `cooldown=`   | Minimálny počet návštev alebo čas, kým sa môže objaviť znovu                            |
-| `weight=`     | Relatívna pravdepodobnosť, keď je použiteľných viac storyletov                          |
-| `tags=`       | Kategorizácia na filtrovanie (`tags="tavern, social"`)                                  |
-| `trigger=`    | Druh vstupu z reálneho sveta, ktorý môže tento storylet zobudiť (pozri [Spúšťané storylety](#triggered-storylets)) |
-| `match=`      | Voliteľný regulárny výraz bez ohľadu na veľkosť písmen, ktorému musí hodnota vstupu vyhovieť |
-
-`when` je podmienka režimu **kedykoľvek**, vyhodnocovaná pri *výbere* — vždy, keď engine vyberá storylet, a nikdy medzi tým. Balíček preto nikdy nespustí senzor: `when`, ktorý číta `context.location`, sa zodpovie z poslednej polohy, akú platforma doručila, a ak polohu nič nesleduje, tou odpoveďou je `unknown` a storylet jednoducho nie je spôsobilý. Príbeh, ktorý chce, aby sa engine pozeral ďalej, napíše [`{wait}`](03-narrative-interaction.md#waiting-for-a-condition) — sloveso režimu **kým**, ktoré spustí, čo potrebuje.
-
-<Feature id="storylet-deck" />
-
-**Balíček storyletov** — predloží dostupné storylety ako ruku kariet, z ktorej si čitateľ vyberá:
+Balíček je líce a súbor predvolieb, takže je nepárový — jeden príkaz, žiadne `begin`:
 
 ```rea
-{deck from="tavern_stories", max=3, shuffle begin}
-  Vyber si, čo ťa zaujme:
-{end deck}
+{define deck roles name="Karty rolí", back="assets/cards/card-role-background.webp",
+                   scope="group", play="consumed", face="down"}
 ```
 
-Predloží až 3 použiteľné storylety označené štítkom `tavern_stories`, premiešané.
+| Atribút balíčka                    | Význam                                                                                                                                    | Predvolené |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ---------- |
+| `name`, `back`, `description`      | Líce samotného balíčka (názov, rub)                                                                                                       | —          |
+| `scope`                            | `reader` (kópia pre každého) alebo `group` (jeden balíček pre celú kooperatívnu reláciu)                                                   | `reader`   |
+| `play`                             | Čo sa stane so zahranou kartou: `reusable` (späť do balíčka), `exhausted` (odložená, kým ju niekto nevráti), `consumed` (preč pre toto čítanie) | `reusable` |
+| `deal`, `pick`, `face`, `optional` | Predvolby pre príkazy `{draw}` / `{play}`, ktoré tento balíček používajú                                                                   | `all`, `1`, `up`, `false` |
+| `reclaim`                          | Sekundy po odpojení držiteľa, kým sa jeho karta vráti do balíčka; `never` ju necháva držanú (len `scope="group"`)                          | odkladová lehota platformy |
 
-Storylety umožňujú organické, nelineárne rozprávanie, kde sa príbeh prispôsobuje stavu čitateľa a povzbudzuje k objavovaniu aj opätovnému prehratiu.
+### Deklarácia karty {#declaring-a-card}
 
-### Spúšťané storylety {#triggered-storylets}
+<Feature id="define-card" />
+
+Karta má telo — to, čo sa zahrá, keď je aktivovaná — takže je párová a zatvára sa vlastným druhom:
+
+```rea
+{define card king deck="roles", name="Kráľ", image="assets/cards/card-role-king.webp",
+                  role="king" begin}
+  Zobudíš sa v kráľovskej spálni. Okenice už niekto otvoril.
+  * [Zvolaj radu] -> council_chamber
+  * [Prejdi sa po hradbách sám]
+    Kameň je studený a stráže predstierajú, že ťa nevidia.
+{end card}
+```
+
+Karta vstupuje do balíčka tým, že ho **pomenuje**, nie tým, že v ňom sedí — rovnako ako vstupuje do sady kariet. Hierarchia žije v dátach, takže karta otvorená uprostred súboru stále hovorí, kam patrí.
+
+Karta berie `deck=`, atribúty líca, ktoré berie každá definícia karty (`name`, `image`, `description` a vlastnosti zvolené autorom), vlastné `play=` prekrývajúce balíček a výberové atribúty nižšie. Jej použiteľnosť je koncová klauzula `when` v hlavičke.
+
+| Atribút       | Popis                                                                                    |
+| ------------- | ------------------------------------------------------------------------------------------ |
+| `when …`      | Podmienka, ktorá musí platiť, aby bola karta použiteľná                                   |
+| `priority=`   | Karty s vyššou prioritou sa rozdávajú skôr (predvolene `0`)                               |
+| `repeatable=` | `true` povoľuje opakované ťahanie, `false` je jednorazová karta (predvolené)              |
+| `cooldown=`   | Najmenší počet ťahov, kým sa karta môže znovu objaviť                                     |
+| `weight=`     | Relatívna pravdepodobnosť, keď je použiteľných viac kariet                                |
+| `tags=`       | Kategorizácia na filtrovanie                                                              |
+| `trigger=`    | Druh vstupu z reálneho sveta, ktorý kartu zobudí (pozri [Spúšťané karty](#triggered-storylets)) |
+| `match=`      | Nepovinný regulárny výraz (bez ohľadu na veľkosť písmen), ktorému musí hodnota vstupu vyhovieť |
+
+Tri atribúty niečo **robia**, nie opisujú:
+
+| Atribút správania | Účinok                                                                                     |
+| ----------------- | -------------------------------------------------------------------------------------------- |
+| `role="king"`     | Ťahanie karty postaví čitateľa do tejto roly — takto sa priraďuje `context.group.role`      |
+| `mandatory=true`  | Rozdá sa vždy, keď je použiteľná, bez ohľadu na strop `deal`                                 |
+| `alone=true`      | Keď je použiteľná, rozdá sa sama a vytlačí z ruky všetky ostatné karty                       |
+
+`when` je podmienka typu **kedykoľvek**, vyhodnocovaná v čase *výberu* — vždy, keď engine rozdáva, a nikdy medzitým. Balíček preto nikdy nespustí senzor: `when` čítajúce `context.location` sa zodpovie z polohy, ktorú platforma naposledy dodala, a ak polohu nikto nesleduje, odpoveď je `unknown` a karta jednoducho nie je použiteľná. Príbeh, ktorý chce, aby engine ďalej sledoval, píše [`{wait}`](03-narrative-interaction.md#waiting-for-a-condition) — to je sloveso *until* a spustí, čo potrebuje.
+
+### Ťahanie a zahranie {#drawing-and-playing}
+
+<Feature id="draw-play" />
+
+`{draw}` získava, `{play}` aktivuje.
+
+```rea
+{draw deck="basic"}               {comment vezmi kartu do Vaku; zahrá sa neskôr}
+{play deck="basic"}               {comment vyber kartu z balíčka a zahraj ju hneď}
+{play card="king"}                {comment príbeh vynúti jednu konkrétnu kartu}
+{return card="king"}              {comment vráť kartu do jej balíčka}
+```
+
+Oba príkazy majú blokovú formu pre chvíľu, ktorá potrebuje výzvu alebo náhradu:
+
+```rea
+{play deck="basic", deal=3, pick=1 begin}
+  Trh sa rozprestrie. Čo si vezmeš?
+  {empty begin}
+    Stánky sú prázdne; sezóna sa skončila.
+  {end empty}
+{end play}
+```
+
+| Atribút príkazu | Význam                                     | Predvolené                      |
+| --------------- | -------------------------------------------- | ------------------------------- |
+| `deck` / `card` | Z čoho ťahať alebo ktorú kartu zahrať        | —                               |
+| `count`         | Koľko kariet                                 | `1`                             |
+| `deal`          | Koľko sa vyloží na výber                     | z balíčka, inak všetky použiteľné |
+| `pick`          | Koľko si čitateľ vezme                       | `1`                             |
+| `face`          | `up` (vyberá čitateľ) alebo `down` (náhodne) | z balíčka, inak `up`            |
+| `optional`      | Smie si čitateľ nevziať nič                  | z balíčka, inak `false`         |
+
+Ruka s `face="down"` sa zamieša a berie sa zvrchu: rozdanie, ktoré čitateľ nevidí, nie je voľba, takže sa nič nepredkladá. `{empty}` sa spustí, keď v balíčku nie je nič použiteľné — balíček sa musí dať vyčerpať a vyčerpaný balíček musí mať kam ísť.
+
+`{return card="…"}` sa píše s atribútom, pretože `{return VÝRAZ}` sa už vracia z funkcie. Jedno sloveso, dve úlohy, a kartová forma je tá, ktorá pomenúva svoj predmet — presne ako `{draw}` a `{play}`.
+
+### Čítanie stavu balíčka {#reading-deck-state}
+
+```rea
+{if drawn("king") begin}          {comment potiahol ju tento čitateľ}
+  Stále cítiš ťarchu koruny.
+{end if}
+
+{if held("king") begin}           {comment má ju práve teraz v ruke}
+  Karta je ešte teplá.
+{end if}
+
+Zostáva {story.deck.basic.remaining} zo {story.deck.basic.size} kariet.
+
+{for part.card in eligible("basic") begin}   {comment ruka ako dáta, vyložená ručne}
+  - {part.card}
+{end for}
+```
+
+Počítadlo sa predvolene ukazuje, lebo skrytá veľkosť balíčka je práve to, čo čitatelia čítajú ako podvod. `eligible()` vráti zásobu bez rozdania, takže autor, ktorý chce rozloženie, aké vstavaná ruka nedáva, si karty vykreslí sám — výber zostáva engine, prezentácia zostáva autorovi.
+
+### Karty v balíku {#cards-in-the-package}
+
+Karta je text v Rea a súbor je len jedno z miest, kde môže žiť. Balík môže niesť adresár `deck/`, ktorého podadresáre sú balíčky a súbory `.rea` v nich sú karty:
+
+```
+project.reast
+├── manifest.json
+├── story/0001-the-silence.rea      ← usporiadané časti, bez zmeny
+├── deck/roles/deck.rea             ← {define deck roles …}
+├── deck/roles/king.rea             ← jedna karta na súbor
+└── deck/basic/coin.rea
+```
+
+Manifest uvádza **adresáre na načítanie**, nie balíčky — `"decks": ["deck/roles", "deck/basic"]` — pretože čo balíček *je*, hovorí `{define deck}`, a balíček pomenovaný na oboch miestach by bol jednou vecou s dvoma zdrojmi pravdy. Súbor karty, ktorý nedeklaruje `deck=`, vstupuje do balíčka pomenovaného podľa svojho adresára, takže pridať kartu znamená pridať súbor a nikdy nie upraviť manifest. Karty napísané priamo v časti fungujú ďalej a jednoducho deklarujú `deck=`.
+
+### Spúšťané karty {#triggered-storylets}
 
 <Feature id="triggered-storylets" />
 
-Storylet s riadkom `trigger=` zobúdza svet namiesto balíčka: takmer v ktorejkoľvek chvíli čítania môže vstup z reálneho sveta — naskenovanie QR nálepky na lavičke, vyslovenie frázy nahlas, priloženie NFC štítku — prerušiť hlavný príbeh, prehrať storylet ako vedľajšiu cestu a vrátiť sa presne tam, kde čitateľ prestal:
+Kartu s `trigger=` a bez balíčka zobudí svet namiesto rozdania: takmer v ktorejkoľvek chvíli čítania môže vstup z reálneho sveta — naskenovanie QR nálepky na lavičke, vyslovená fráza, priloženie NFC štítka — prerušiť hlavný príbeh, zahrať kartu ako vedľajšiu cestu a vrátiť čitateľa presne tam, kde skončil:
 
 ```rea
-{storylet bench_secret trigger=scan, match="^REAST-BENCH-.*", weight=2, repeatable=false when story.act >= 2 begin}
-  Kód na lavičke ožije. Hlas šepká: „Našiel si ma."
+{define card bench_secret trigger=scan, match="^REAST-BENCH-.*", weight=2 when story.act >= 2 begin}
+  Kód na lavičke ožije. Hlas zašepká: „Našiel si ma."
   * [Nasleduj šepot]
     -> bench_alley
-  * [Ignoruj ho]
-{end storylet}
+  * [Nevšímaj si to]
+{end card}
 
-{storylet magic_word trigger=listen, match=abrakadabra begin}
-  Slovo visí vo vzduchu — a stena odpovie.
-{end storylet}
+{define card magic_word trigger=listen, match=abracadabra begin}
+  Slovo zostane visieť vo vzduchu — a stena odpovie.
+{end card}
 ```
 
-- **`trigger=`** pomenúva druh vstupu. Množina je otvorená — čitateľská aplikácia rozhoduje, ktoré druhy dokáže fyzicky zachytiť. Bežné druhy: `scan` (obsah QR alebo čiarového kódu), `listen` (prepis rozpoznanej reči), `text`, `vision`, `nfc`, `shake`, `location`. Storylet bez `trigger=` sa správa presne ako doteraz (len z balíčka); storylet môže niesť `trigger=` aj `tags=` a objavovať sa aj v balíčkoch
-- **`match=`** je regulárny výraz bez ohľadu na veľkosť písmen, testovaný proti hodnote vstupu (obsah QR kódu, prepis reči). Vynechajte ho, ak má prijať akýkoľvek vstup daného druhu
-- **Výber** sa riadi bežnými pravidlami storyletov: spomedzi storyletov, ktorým sedí druh aj `match=`, sa rešpektujú podmienky `when`, stav vytiahnutia, `cooldown=` a `priority=`, a potom sa jeden vyberie váženým náhodným výberom. Jeden vstup zobudí presne jeden storylet
-- **Vnútri tela** sprístupňujú `event.kind` a `event.value` spúšťací vstup podmienkam aj textu (sú viditeľné aj pre `when` počas výberu), takže naskenovaný obsah alebo vyslovené slová možno čitateľovi zopakovať: `Na štítku stojí {event.value}.`
+- **`trigger=`** pomenúva druh vstupu. Množina je otvorená — čitateľská aplikácia rozhoduje, ktoré druhy fyzicky zachytí. Bežné druhy: `scan` (obsah QR/čiarového kódu), `listen` (rozpoznaný prepis reči), `text`, `vision`, `nfc`, `shake`, `location`
+- **`match=`** je regulárny výraz bez ohľadu na veľkosť písmen, testovaný proti hodnote vstupu (obsah QR kódu, prepis). Vynechaj ho, ak stačí ľubovoľný vstup daného druhu
+- **Karta v balíčku sa rozdáva, nikdy nezobúdza.** Balíček rozhoduje, kedy jeho karty vyjdú, takže `trigger=` patrí karte bez `deck=`
+- **Výber** sa riadi bežnými pravidlami kariet: medzi kartami, ktorým sedí druh a `match=`, sa rešpektujú podmienky `when`, stav potiahnutia, `cooldown=` a `priority=`, a potom sa jedna vyberie váženým náhodným výberom. Jeden vstup zobudí presne jednu kartu
+- **Vnútri tela** sprístupňujú `event.kind` a `event.value` spúšťací vstup podmienkam aj textu (sú viditeľné aj pre `when` počas výberu), takže naskenovaný obsah alebo vyslovené slová sa dajú citovať späť: `Na štítku stojí {event.value}.`
 
 #### Prerušenie a návrat {#interruption-and-return}
 
-Spúšťaný storylet sa prehráva ako autorom napísaný tunel (`->->`): jadro si zapamätá pozíciu v hlavnom príbehu — vrátane čakajúcej, ešte nezodpovedanej skupiny volieb — prehrá storylet a po jeho skončení (posledný riadok alebo výslovná odbočka von) pokračuje v hlavnom príbehu presne tam, kde bol. Zmeny stavu urobené vnútri (`{set}`, `{give}`, mince) pretrvávajú do hlavného príbehu. Uloženia vytvorené uprostred storyletu sa obnovia do storyletu s nedotknutou pozíciou návratu. Kým beží spúšťaný storylet, nový spúšťač sa ignoruje — vedľajšie cesty sa nikdy nevnárajú.
+Spúšťaná karta sa zahrá ako autorský tunel (`->->`): engine si zapamätá pozíciu v hlavnom príbehu — vrátane čakajúcej, nezodpovedanej skupiny možností — zahrá kartu a obnoví hlavný príbeh presne tam, kde bol, keď karta skončí (posledným riadkom alebo výslovnou odbočkou von). Zmeny stavu vnútri (`{set}`, `{give}`, mince) pretrvajú do hlavného príbehu. Uloženie počas karty sa obnoví do karty aj s návratovou pozíciou. Nový spúšťač sa ignoruje, kým beží iná spúšťaná karta — vedľajšie cesty sa nikdy nevnárajú.
 
-Keď vstupu nič nesedí — žiadny použiteľný storylet, žiadna čakajúca možnosť [menu objavovania](/sk/spec/03-narrative-interaction#exploration-menus) — čitateľská aplikácia dá jemnú spätnú väzbu („to zatiaľ nič neurobilo") namiesto chyby, takže skenovať náhodné kódy je vždy bezpečné. Keď by na ten istý vstup mohlo odpovedať čakajúce menu objavovania aj spúšťaný storylet, vyhráva menu — pozri [Priorita pri spúšťačoch storyletov](/sk/spec/03-narrative-interaction#priority-with-storylet-triggers).
+Keď vstup nezodpovedá ničomu — žiadna použiteľná karta, žiadna čakajúca možnosť [prieskumnej ponuky](/sk/spec/03-narrative-interaction#exploration-menus) — čitateľská aplikácia dá jemnú spätnú väzbu („to zatiaľ nič neurobilo") namiesto chyby, takže skenovať náhodné kódy je vždy bezpečné. Keď na ten istý vstup môže odpovedať aj čakajúca prieskumná ponuka aj spúšťaná karta, vyhráva ponuka — pozri [Priorita pri spúšťačoch storyletov](/sk/spec/03-narrative-interaction#priority-with-storylet-triggers).
 
-## Pozri tiež
+## Pozri aj {#see-also}
 
-- [Priorita pri spúšťačoch storyletov](/sk/spec/03-narrative-interaction#priority-with-storylet-triggers) — rozhodovanie medzi čakajúcim menu objavovania a spúšťačom storyletu pre ten istý vstup, v časti Menu objavovania.
-- [Priorita: menu objavovania verzus spúšťače storyletov](/sk/spec/03-narrative-interaction#priority-exploration-menus-vs-storylet-triggers) — to isté pravidlo, zopakované v časti Interakcie s reálnym svetom.
+- [Udalosti kariet](/sk/spec/03-narrative-interaction#event-handlers) — čo karta robí, keď je získaná, stratená alebo použitá, napísané ako plochá obsluha `{on}`.
+- [Priorita pri spúšťačoch storyletov](/sk/spec/03-narrative-interaction#priority-with-storylet-triggers) — arbitráž medzi čakajúcou prieskumnou ponukou a spúšťačom karty pre ten istý vstup, v časti Prieskumné ponuky.
+- [Priorita: prieskumné ponuky vs. spúšťače storyletov](/sk/spec/03-narrative-interaction#priority-exploration-menus-vs-storylet-triggers) — to isté pravidlo arbitráže, zopakované v časti Interakcie s reálnym svetom.

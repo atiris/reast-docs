@@ -273,12 +273,12 @@ export const GROUPS: FeatureGroup[] = [
   {
     id: 'storylets',
     title: {
-      en: 'Storylets & exploration',
-      sk: 'Storylety a objavovanie',
+      en: 'Cards, decks & exploration',
+      sk: 'Karty, balíčky a objavovanie',
     },
     summary: {
-      en: 'Non-linear, quality-based narrative: content the story deals out instead of routing to.',
-      sk: 'Nelineárny naratív riadený kvalitami: obsah, ktorý príbeh rozdáva namiesto toho, aby naň smeroval.',
+      en: 'Cards and decks: non-linear, quality-based narrative the story deals out instead of routing to.',
+      sk: 'Karty a balíčky: nelineárny naratív riadený kvalitami, ktorý príbeh rozdáva namiesto toho, aby naň smeroval.',
     },
     link: '/spec/storylets',
   },
@@ -1365,34 +1365,50 @@ export const FEATURES: Feature[] = [
 
   // ── Storylets & exploration ───────────────────────────────────────────────
   {
-    id: 'storylets',
+    id: 'define-card',
     title: {
-      en: 'Storylets',
-      sk: 'Storylety',
+      en: 'Cards',
+      sk: 'Karty',
     },
     group: 'storylets',
-    syntax: '{storylet id when … begin} … {end storylet}',
+    syntax: '{define card king deck="roles" when … begin} … {end card}',
     status: 'experimental',
     since: '1.0',
     note: {
-      en: 'Requirements, priority, weight, cooldown and tags all drive selection; the attribute set is still open to additions.',
-      sk: 'Požiadavky, priorita, váha, ochladenie aj štítky riadia výber; množina atribútov je stále otvorená doplneniam.',
+      en: 'A card is a face plus a body. Priority, weight, cooldown, tags and the `when` clause drive selection; `deck=` is what puts it in a deck, and a card with no deck is what used to be called a storylet.',
+      sk: 'Karta je líce plus telo. Priorita, váha, ochladenie, štítky a klauzula `when` riadia výber; `deck=` ju zaraďuje do balíčka a karta bez balíčka je to, čomu sa kedysi hovorilo storylet.',
     },
     link: '/spec/storylets',
   },
   {
-    id: 'storylet-deck',
+    id: 'define-deck',
     title: {
-      en: 'Storylet decks',
-      sk: 'Balíčky storyletov',
+      en: 'Decks',
+      sk: 'Balíčky',
     },
     group: 'storylets',
-    syntax: '{deck from="tavern_stories", max=3, shuffle begin}',
+    syntax: '{define deck roles play="consumed", face="down"}',
     status: 'experimental',
-    since: '1.0',
+    since: '1.3',
     note: {
-      en: 'Presents eligible storylets as a hand of cards the reader picks from.',
-      sk: 'Predkladá použiteľné storylety ako ruku kariet, z ktorej si čitateľ vyberá.',
+      en: 'A named pool of cards with the defaults its cards and its draw sites inherit: scope, return policy, how many are dealt and whether the reader sees the faces.',
+      sk: 'Pomenovaná zásoba kariet s predvolbami, ktoré dedia jej karty aj miesta ťahania: rozsah, politika návratu, koľko sa rozdáva a či čitateľ vidí líca.',
+    },
+    link: '/spec/storylets',
+  },
+  {
+    id: 'draw-play',
+    title: {
+      en: 'Drawing and playing',
+      sk: 'Ťahanie a zahranie',
+    },
+    group: 'storylets',
+    syntax: '{draw deck="basic"} · {play deck="basic", deal=3 begin}',
+    status: 'experimental',
+    since: '1.3',
+    note: {
+      en: '`{draw}` takes a card into the Bag, `{play}` activates one now, `{return card=…}` puts one back. Both take a block form carrying a prompt and an `{empty}` fallback.',
+      sk: '`{draw}` vezme kartu do Vaku, `{play}` jednu hneď aktivuje a `{return card=…}` ju vráti späť. Oba majú blokovú formu s výzvou a náhradou `{empty}`.',
     },
     link: '/spec/storylets',
   },

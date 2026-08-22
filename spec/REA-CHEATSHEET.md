@@ -139,10 +139,29 @@ A manifest may rename all four (`"domains": {"story": "物語"}`).
 * hidden [&qr_door] ...              Hidden option — no button, wakes only by activation
 {end menu}
 
-{storylet bench_secret trigger=scan, match="^REAST-BENCH-.*" begin}
-  ...                                Triggered storylet — the world deals the card,
-                                     plays as a side path, returns to the main story
-{end storylet}
+{define card bench_secret trigger=scan, match="^REAST-BENCH-.*" begin}
+  ...                                Triggered card — the world deals it, it plays
+                                     as a side path and returns to the main story
+{end card}
+```
+
+```rea
+{define deck basic name="Supply cards",             A named pool of cards
+        back="assets/back.webp", play=reusable}
+{define card coin deck="basic", name="Coin" begin}  A card joins by naming its deck
+  {earn silver 3}                                   The body is what plays
+{end card}
+
+{draw deck="basic"}                  Take a card into the Bag
+{play deck="basic", deal=3 begin}    Deal three, play the one the reader picks
+  What do you take?
+  {empty begin} The stalls are bare. {end empty}    Nothing eligible
+{end play}
+{play card="coin"}                   The story forces one card
+{return card="coin"}                 Put it back in its deck
+
+{if drawn("coin") begin} ... {end if}               Did this reader draw it
+{story.deck.basic.remaining} of {story.deck.basic.size}   4 of 6 remain
 ```
 
 ---
@@ -242,7 +261,7 @@ One expression language; the block decides *when* the engine looks.
 | ------------ | -------------------------------------------------------------- | ---------------------------------- |
 | **now**      | `{if}`, a choice's `condition`, a pin's `visible:`             | no                                 |
 | **until**    | `{wait when EXPR begin} … {end wait}`, `{waypoint}`            | yes, when the expression reads `context.*` |
-| **whenever** | `{on EVENT when GUARD}`, a storylet's `when`, `{zone}`     | not applicable                     |
+| **whenever** | `{on EVENT when GUARD}`, a card's `when`, `{zone}`         | not applicable                     |
 
 ```rea
 {zone forest, circle(@(48.14, 17.10), 100)}       Declares the area, marks the spot

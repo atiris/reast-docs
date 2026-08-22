@@ -364,11 +364,11 @@ Multiple storylines that advance independently and converge at key moments:
 
 In cooperative reading, different readers can follow different threads simultaneously, experiencing the story from different character perspectives.
 
-### Storylets (quality-based narrative)
+### Cards and decks (quality-based narrative)
 
 <Feature id="storylets" />
 
-Modular content blocks with prerequisites and effects — `require`, `priority`, `repeatable`, `cooldown`, `weight`, `tags` — selected by the engine into a `{deck}` or woken by a real-world `trigger=` as a side path that returns exactly where the reader left off. Storylets now have their own page: see [Storylets & Decks](/spec/storylets).
+A card is a face plus a body, and a deck is a named pool of them. Selection runs on `when`, `priority`, `repeatable`, `cooldown`, `weight` and `tags`; a `{draw}` or `{play}` deals a hand, and a card with no deck may be woken by a real-world `trigger=` as a side path that returns exactly where the reader left off. Cards have their own page: see [Cards & Decks](/spec/storylets).
 
 ### Exploration menus
 
@@ -671,6 +671,16 @@ A handler may carry a `when` clause, which runs to `begin}` so the condition kee
 {play ginko}        Runs the ability set's handler, then ginko's own
 {play spinach}      Runs the ability set's handler alone
 ```
+
+**`play=` decides whether a card can be played again.** A card, its deck and its set may each declare one of three lifecycles, and the card's own wins, then its deck's, then its set's:
+
+| Value       | What happens after a play                                                        |
+| ----------- | ---------------------------------------------------------------------------------- |
+| `reusable`  | The card goes back and may be played any number of times (the default)            |
+| `exhausted` | The card is set aside until something restores it — a new turn, a new scene       |
+| `consumed`  | The card is gone for this reading                                                 |
+
+Replaying a consumed or exhausted card is a silent no-op, and the `card-played` event carries the disposition so a host can show a card as spent. `consumed` means gone *for this reading*, never gone forever: a story that hides content behind an unrepeatable draw is the pattern readers hate most, so the collection view shows what exists beside what this reader has met.
 
 Card ids follow the same [identifier rules](05-reference#identifier-rules) as any other simple identifier — any Unicode character except space and dot, with at least one non-digit character. Playing an unknown card is a no-op. Each successful play emits a `card-played` runtime event carrying the card id and its set kind, which hosts can observe to update the UI.
 
