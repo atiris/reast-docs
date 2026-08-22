@@ -97,7 +97,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `ext/requires-missing` | `fatal` | load refused |
 | `ext/unbound-alias` | `error` | call yields `undefined` → empty |
 
-#### `parse/` — Reading one file (43)
+#### `parse/` — Reading one file (45)
 
 | Code | Severity | What the reader gets |
 | ---- | -------- | -------------------- |
@@ -128,6 +128,8 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `parse/ambiguous-event-subject` | `warning` | only the first subject is used |
 | `parse/unknown-event` | `warning` | the handler never runs |
 | `parse/missing-deck-subject` | `error` | the command does nothing |
+| `parse/manifest-not-first` | `warning` | the metadata is ignored |
+| `parse/duplicate-embedded-file` | `error` | the first declaration is used |
 | `parse/invalid-storylet-match` | `error` | storylet never eligible |
 | `parse/inline-depth-exceeded` | `warning` | deeper inlines flatten to text |
 | `parse/document-truncated` | `error` | content after the limit is lost |

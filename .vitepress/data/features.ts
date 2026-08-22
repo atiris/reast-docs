@@ -1044,6 +1044,55 @@ export const FEATURES: Feature[] = [
     link: '/spec/03-narrative-interaction#event-handlers',
   },
 
+  {
+    id: 'single-file',
+    title: {
+      en: 'Single-file stories',
+      sk: 'Príbehy v jednom súbore',
+    },
+    group: 'control-flow',
+    syntax: '{define manifest …} · {define file "assets/x.webp" begin}',
+    status: 'experimental',
+    since: '1.3',
+    note: {
+      en: 'Everything a .reast holds, expressed in one text file: its own metadata and its own assets, addressed by the same archive-relative paths.',
+      sk: 'Všetko, čo drží .reast, vyjadrené v jednom textovom súbore: vlastné metadáta aj vlastné prílohy, adresované tými istými cestami relatívnymi k archívu.',
+    },
+    link: '/spec/04-utilities#the-single-file-story',
+  },
+  {
+    id: 'define-manifest',
+    title: {
+      en: 'Manifest in a bare .rea',
+      sk: 'Manifest v holom .rea',
+    },
+    group: 'control-flow',
+    syntax: '{define manifest title="…", language="sk"}',
+    status: 'experimental',
+    since: '1.3',
+    note: {
+      en: 'Read only as the file’s first command, so a tool can decide whether a .rea carries metadata by reading one line. Forbidden inside a .reast, where manifest.json is sole.',
+      sk: 'Číta sa len ako prvý príkaz súboru, takže nástroj zistí jedným riadkom, či `.rea` nesie metadáta. V `.reast` je zakázaný, tam je manifest.json jediný.',
+    },
+    link: '/spec/04-utilities#define-manifest-first-command-or-nothing',
+  },
+  {
+    id: 'define-file',
+    title: {
+      en: 'Embedded files',
+      sk: 'Vložené súbory',
+    },
+    group: 'control-flow',
+    syntax: '{define file "assets/x.webp" mime="image/webp" begin}',
+    status: 'experimental',
+    since: '1.3',
+    note: {
+      en: 'The identifier is the path, so [!alt < assets/x.webp] works unchanged in both shapes and converting between them is pure inline / write-out.',
+      sk: 'Identifikátorom je cesta, takže [!alt < assets/x.webp] funguje v oboch tvaroch bez zmeny a prevod medzi nimi je čisté vloženie a vypísanie.',
+    },
+    link: '/spec/04-utilities#define-file-carrying-assets-inline',
+  },
+
   // ── Functions & extensibility ─────────────────────────────────────────────
   {
     id: 'functions',

@@ -331,3 +331,62 @@ TODO je komentár, ktorý sa sám ohlási: pred čitateľom je skrytý presne ak
 Dvojkanálový model chýb — tiché náhradné správanie pre čitateľa oproti diagnostickým záznamom pre autora, závažnosti, oblasti kódov, ilustratívna tabuľka a prístup k externým API — má teraz vlastnú stránku: pozri [Spracovanie chýb](/sk/spec/error-handling).
 
 ---
+
+## 28. Príbeh v jednom súbore {#the-single-file-story}
+
+<Feature id="single-file" />
+
+Príbeh prichádza presne v jednom z dvoch tvarov a každý má vlastné pravidlo, kde žijú metadáta a prílohy:
+
+- **Archív `.reast`.** `manifest.json` je povinný a je jediným miestom metadát; prílohy žijú pod `assets/`. Žiadny súbor `.rea` vnútri archívu nesmie deklarovať manifest
+- **Jediný súbor `.rea`** odovzdaný priamo jadru — napísaný v inom editore, poslaný mailom, uložený v repozitári — smie deklarovať vlastné metadáta a niesť vlastné obrázky, zvuk a fonty priamo v sebe. Všetko, čo drží `.reast`, sa dá vyjadriť v jednom textovom súbore
+
+### `{define manifest}` — prvý príkaz alebo nič {#define-manifest-first-command-or-nothing}
+
+<Feature id="define-manifest" />
+
+```rea
+{define manifest type="story", title="Posledný lampáš", language="sk", genre="mystery",
+                 audience_min=12, audience_max=99, version="1.0.0"}
+
+# Prvá kapitola
+
+Príbeh začína tu.
+```
+
+Blok sa číta **len ako prvý príkaz súboru**. Kdekoľvek inde sa ignoruje — útržok `.rea` vložený do iného súboru má radšej neniesť metadáta než zlyhať — a autor sa dozvie prečo. Práve toto pravidlo robí ústupok bezpečným: nástroj zistí, či súbor nesie metadáta, tak, že prečíta jeho úvodný príkaz a skončí, takže `.rea` zostáva triviálne skenovateľný a nikdy nie je o tri obrazovky nižšie druhý manifest, ktorý si s prvým protirečí.
+
+Atribúty sú polia `manifest.json` sploštené na skaláre. Zoznamy oddelené čiarkou (`tags`, `author`, `sensors`) sa stanú zoznamami; vekové rozpätie sa splošťuje na `audience_min` / `audience_max`; pole `parts` neexistuje, pretože súbor *je* tá časť. Jediný súbor bez manifestu zostáva platný — nemá názov, čo je presne to, čo má dnes.
+
+### `{define file}` — prílohy priamo v texte {#define-file-carrying-assets-inline}
+
+<Feature id="define-file" />
+
+```rea
+{define file "assets/cards/card-role-king.webp" mime="image/webp", encoding="base64" begin}
+UklGRuYAAABXRUJQVlA4IN...
+{end file}
+```
+
+**Identifikátorom je cesta.** `{define file}` deklaruje cestu relatívnu k archívu, ktorú by súbor mal vnútri `.reast`, takže každý existujúci odkaz funguje v oboch tvaroch bez zmeny:
+
+```rea
+[!Kráľ < assets/cards/card-role-king.webp]
+{define card king image="assets/cards/card-role-king.webp" begin} … {end card}
+```
+
+Žiadna druhá syntax odkazov, žiadna schéma `file://`, žiadne prepisovanie príbehu, keď sa presúva medzi tvarmi. Prevod `.reast` do jedného súboru je vloženie každej prílohy; prevod späť je zapísanie každej na jej cestu.
+
+| Atribút        | Význam                                                                                                                     | Predvolené                  |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| *(pozičný)*    | Cesta relatívna k archívu, ktorú by tento súbor zaberal, v úvodzovkách                                                      | povinné                     |
+| `mime`         | Typ obsahu, aby ho hostiteľ nemusel hádať z prípony                                                                        | odvodený z prípony          |
+| `encoding`     | `base64` pre binárne dáta, `text` pre všetko, čo má zostať čitateľné a porovnateľné (SVG, JSON, `.rext`, vložený `.rea`)   | `base64`                    |
+
+- **Telo je doslovné**, lexované ako [`{raw}`](#raw-blocks): nikdy sa neprehľadáva na príkazy, nikdy sa v ňom nenahrádzajú `{premenné}`, nie je čo escapovať. Base64 nenesie zložené zátvorky, ale vložené SVG či `.rext` áno
+- **Deklarovaná cesta nič netieni.** Dve deklarácie jednej cesty sú dva zdroje pravdy pre jednu prílohu a hlásia sa, namiesto tichého vyriešenia
+- **Pozícia je voľná, zvyk je na konci.** Parser preskočí telo súboru bez interpretácie, takže veľký blok uprostred príbehu nezablokuje streamovanie; dávať ich na koniec je zvyk, nie pravidlo
+- **Jeden rozpočet pre celý dokument, 50 MB.** Neexistuje limit na súbor — vložená príloha môže mať ľubovoľnú veľkosť, kým sa dokument zmestí. Base64 stojí o tretinu viac než bajty, ktoré nesie; dokument nad rozpočet sa odmietne, namiesto toho, aby vyčerpal pamäť telefónu
+- **Vložené médium je médium.** Vypisuje ho výpis médií a počíta sa do odtlačku obsahu, takže offline predsťahovanie ani deduplikácia nikdy nedospejú k záveru, že príbeh s prílohami vnútri žiadne nemá
+
+---

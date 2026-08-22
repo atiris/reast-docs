@@ -335,3 +335,62 @@ A TODO is a comment that reports itself: it is hidden from the reader exactly li
 The two-channel error model — reader-facing silent fallbacks versus author-facing diagnostic records, severities, code partitions, the generated fallback table, and external API access — now has its own page: see [Error Handling](/spec/error-handling).
 
 ---
+
+## 28. The single-file story {#the-single-file-story}
+
+<Feature id="single-file" />
+
+A story arrives in exactly one of two shapes, and each has its own rule for where metadata and assets live:
+
+- **A `.reast` archive.** `manifest.json` is mandatory and is the only place metadata lives; assets live under `assets/`. No `.rea` file inside an archive may declare a manifest
+- **A single `.rea` file** handed straight to the engine — written in another editor, mailed, committed to a repository — may declare its own metadata and carry its own images, audio and fonts inline. Everything a `.reast` holds can be expressed in one text file
+
+### `{define manifest}` — first command or nothing {#define-manifest-first-command-or-nothing}
+
+<Feature id="define-manifest" />
+
+```rea
+{define manifest type="story", title="The Last Lantern", language="sk", genre="mystery",
+                 audience_min=12, audience_max=99, version="1.0.0"}
+
+# The first chapter
+
+The story begins here.
+```
+
+The block is read **only as the first command of the file**. Anywhere else it is ignored — a `.rea` fragment pasted into another file should carry no metadata rather than fail — and the author is told why. That rule is what keeps the concession safe: a tool decides whether a file has metadata by reading its opening command and stopping, so `.rea` stays trivially scannable, and there is never a second manifest three screens down to disagree with the first.
+
+The attributes are the `manifest.json` fields flattened to scalars. Comma lists (`tags`, `author`, `sensors`) become lists; the age range flattens to `audience_min` / `audience_max`; there is no `parts` array, because the file *is* the part. A single file with no manifest stays valid — it has no title, which is what it has today.
+
+### `{define file}` — carrying assets inline {#define-file-carrying-assets-inline}
+
+<Feature id="define-file" />
+
+```rea
+{define file "assets/cards/card-role-king.webp" mime="image/webp", encoding="base64" begin}
+UklGRuYAAABXRUJQVlA4IN...
+{end file}
+```
+
+**The identifier is the path.** A `{define file}` declares the archive-relative path the file would occupy inside a `.reast`, so every existing reference works unchanged in both shapes:
+
+```rea
+[!The King < assets/cards/card-role-king.webp]
+{define card king image="assets/cards/card-role-king.webp" begin} … {end card}
+```
+
+No second reference syntax, no `file://` scheme, no rewriting a story when it moves between shapes. Converting a `.reast` into one file is inlining every asset; converting back is writing each one out to its path.
+
+| Attribute      | Meaning                                                                                                                  | Default                     |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------- |
+| *(positional)* | The archive-relative path this file would occupy, quoted                                                                 | required                    |
+| `mime`         | Content type, so the host does not guess from the extension                                                              | inferred from the extension |
+| `encoding`     | `base64` for binary, `text` for anything that should stay readable and diffable (SVG, JSON, `.rext`, an embedded `.rea`) | `base64`                    |
+
+- **The body is verbatim**, lexed the way [`{raw}`](#raw-blocks) is: never scanned for commands, never `{variable}`-substituted, nothing to escape. Base64 carries no braces, but an embedded SVG or `.rext` does
+- **A declared path shadows nothing.** Two declarations of one path is two sources of truth for one asset, and it is reported rather than silently resolved
+- **Position is free, convention is last.** A parser skips a file body without interpreting it, so a large blob in the middle of a story does not stall the streaming path; putting them at the end is a convention, not a rule
+- **One budget for the whole document, 50 MB.** There is no per-file limit — an embedded asset may be any size while the document fits. Base64 costs a third more than the bytes it carries; a document over the budget is refused rather than left to exhaust a phone
+- **Embedded media is media.** It is listed by the media enumeration and counted in the content fingerprint, so offline prefetch and dedup never conclude that a story with its assets inside it has none
+
+---
