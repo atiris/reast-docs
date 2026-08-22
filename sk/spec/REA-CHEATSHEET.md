@@ -124,10 +124,9 @@ Ahoj, {story.player.name}! Máš {story.player.gold} zlata.
 * hidden [&qr_door] …                Skrytá možnosť — bez tlačidla, zobudí ju len aktivácia
 {end menu}
 
-{storylet bench_secret begin}        Spúšťaný storylet — kartu rozdáva svet
-  trigger: scan                        Druh vstupu: scan, listen, text, nfc, … (otvorená množina)
-  match: "^REAST-BENCH-.*"             Voliteľný regulárny výraz na hodnotu vstupu
-  …                                    Prehrá sa ako vedľajšia cesta a vráti sa do hlavného príbehu
+{storylet bench_secret trigger=scan, match="^REAST-BENCH-.*" begin}
+  …                                  Spúšťaný storylet — kartu rozdáva svet, prehrá sa
+                                     ako vedľajšia cesta a vráti sa do hlavného príbehu
 {end storylet}
 ```
 
@@ -201,9 +200,7 @@ Lokál a politiku formátovania dodáva hostiteľ. `calendar()` je stále vo vý
 ## Kooperatívne čítanie
 
 ```rea
-{define role scout begin}            Definícia roly
-  max: 1
-{end define}
+{define role scout max=1}            Definícia roly — bez tela, teda bez `begin`
 
 {vote timeout=60 begin}              Skupinové hlasovanie
   * [Doľava]   * [Doprava]
@@ -227,8 +224,8 @@ Jeden jazyk výrazov; blok rozhoduje, *kedy* sa naň engine pozrie.
 | Režim          | Zápis                                                       | Vyžaduje únik                   |
 | -------------- | ----------------------------------------------------------- | ------------------------------- |
 | **teraz**      | `{if}`, `condition` voľby, `visible:` špendlíka             | nie                             |
-| **kým**        | `{wait EXPR begin} … {end wait}`, `{waypoint}`              | áno, keď výraz číta `context.*` |
-| **kedykoľvek** | `{on EVENT when GUARD}`, `require:` storyletu, `{zone}`     | neaplikuje sa                   |
+| **kým**        | `{wait when EXPR begin} … {end wait}`, `{waypoint}`         | áno, keď výraz číta `context.*` |
+| **kedykoľvek** | `{on EVENT when GUARD}`, `when` storyletu, `{zone}`     | neaplikuje sa                   |
 
 ```rea
 {zone forest, circle(@(48.14, 17.10), 100) begin}
@@ -236,19 +233,17 @@ Jeden jazyk výrazov; blok rozhoduje, *kedy* sa naň engine pozrie.
   {on exit begin} Vyjdeš a žmurkáš. {end on}        Nahradí to po odchode
 {end zone}
 
-{route hunt, sequential begin}                      Chodník cez zastávky
-  waypoint: old_bridge
-  waypoint: castle_ruins
-  complete: "Hon sa skončil."                       Ukáže sa tu, keď sú všetky
-{end route}
+{route hunt, waypoints="old_bridge, castle_ruins",  Chodník cez zastávky
+       complete="Hon sa skončil.", sequential begin}
+{end route}                                         `complete` sa ukáže tu, keď sú všetky
 ```
 
 ```rea
-{wait story.lamp_lit begin}          Pauza, kým nie je pravda
+{wait when story.lamp_lit begin}     Pauza, kým nie je pravda
   Čakáš v tme.
 {end wait}
 
-{wait context.weather = "rain", escape=duration("PT3H"), escape_to="dry_night" begin}
+{wait escape=duration("PT3H"), escape_to="dry_night" when context.weather = "rain" begin}
   Pozeráš na oblohu.                 Telo = stav počas čakania
 {end wait}
 
@@ -291,10 +286,7 @@ within(context.location, "old_bridge")    Oblasť pomenovanej zastávky
 ## Karty (postavy, predmety)
 
 ```rea
-{define character elena begin}
-  name: Elena Vossová
-  image: media/elena.png
-{end define}
+{define character elena name="Elena Vossová", image="media/elena.png"}
 
 [@elena]                    Odkaz na postavu
 [$golden_key]               Odkaz na predmet
@@ -312,26 +304,20 @@ within(context.location, "old_bridge")    Oblasť pomenovanej zastávky
 ```
 
 ```rea
-{define cardset ability begin}   Deklarácia vlastnej sady či kategórie kariet
-  name: Karty schopností
-  use: Zahraním sa uplatní bonus.
+{define cardset ability name="Karty schopností",   Deklarácia vlastnej sady kariet
+        use="Zahraním sa uplatní bonus." begin}
   {on_use begin}                 Háčik sa spustí pri každej karte sady
     {set story.ability_count = story.ability_count + 1}
   {end on_use}
 {end define}
 
-{define ability spinach begin}   Karta patriaca do sady
-  name: Špenát
-  strength: +2
-{end define}
+{define ability spinach name=Špenát, strength="+2"}   Karta patriaca do sady
 ```
 
 ```rea
-{define action door begin}       Polia aktivácie v reálnom svete
-  scan: ^REAST-DOOR-.*             Obsah QR alebo čiarového kódu (regulárny výraz)
-  mark: emb1:Zk3q…                 Podpis kreslenej značky (nepriehľadný — nikdy neupravovať ručne)
-  listen: otvor dvere              Prepis reči (regulárny výraz)
-{end define}
+{define action door scan="^REAST-DOOR-.*",   Polia aktivácie v reálnom svete: obsah QR
+        mark="emb1:Zk3q…",                  kódu (regulárny výraz), podpis kreslenej
+        listen="otvor dvere"}               značky (nepriehľadný), prepis reči
 ```
 
 ---

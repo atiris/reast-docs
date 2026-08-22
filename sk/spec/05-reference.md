@@ -324,17 +324,9 @@ Rozšírenia hostiteľa stoja mimo samotného jazyka Rea a dosiahnuteľné sú l
 Vlastné **sady** kariet (`{define cardset …}`) sú vydané a pokrývajú väčšinu toho, po čom autori siahajú — pozri [Sekciu 17](03-narrative-interaction.md#card-sets-categories). Nad ich rámec môžu rozšírenia v budúcnosti definovať nové *typy* kariet s vlastným prefixom v hranatých zátvorkách, nad rámec vstavaných `@`, `$` a `&`:
 
 ```rea
-{define card_type location, prefix="📍" begin}
-  name: Miesto
-  fields: [name, description, image, coordinates]
-{end define}
+{define card_type location, prefix="📍", name="Miesto", fields="name, description, image, coordinates"}
 
-{define location tavern begin}
-  name: Hrdzavá kotva
-  description: Slabo osvetlená krčma neďaleko prístavu.
-  image: assets/tavern.webp
-  coordinates: @(48.1486, 17.1077)
-{end define}
+{define location tavern name="Hrdzavá kotva", description="Slabo osvetlená krčma neďaleko prístavu.", image="assets/tavern.webp", coordinates="@(48.1486, 17.1077)"}
 
 Prichádzaš do [📍tavern].
 ```

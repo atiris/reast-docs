@@ -1354,7 +1354,7 @@ export const FEATURES: Feature[] = [
       sk: 'Storylety',
     },
     group: 'storylets',
-    syntax: '{storylet id begin} require: … {end storylet}',
+    syntax: '{storylet id when … begin} … {end storylet}',
     status: 'experimental',
     since: '1.0',
     note: {
@@ -1386,7 +1386,7 @@ export const FEATURES: Feature[] = [
       sk: 'Spúšťané storylety',
     },
     group: 'storylets',
-    syntax: 'trigger: scan · match: "^REAST-.*"',
+    syntax: 'trigger=scan · match="^REAST-.*"',
     status: 'experimental',
     since: '1.0',
     note: {
@@ -1420,7 +1420,7 @@ export const FEATURES: Feature[] = [
       sk: 'Karty postáv',
     },
     group: 'cards',
-    syntax: '[@elena] · {define character elena begin}',
+    syntax: '[@elena] · {define character elena name="Elena Voss"}',
     status: 'experimental',
     since: '1.0',
     note: {
@@ -1468,7 +1468,7 @@ export const FEATURES: Feature[] = [
       sk: 'Aktivácia karty v reálnom svete',
     },
     group: 'cards',
-    syntax: 'scan: · mark: · listen:',
+    syntax: 'scan= · mark= · listen=',
     status: 'development',
     note: {
       en: 'The card fields parse and match, but the capture side depends on the reader app: scanning and speech are being built, and `mark:` signatures need the editor’s drawing tool, which is not shipped yet.',
@@ -1483,7 +1483,7 @@ export const FEATURES: Feature[] = [
       sk: 'Vlastné sady kariet',
     },
     group: 'cards',
-    syntax: '{define cardset ability begin}',
+    syntax: '{define cardset ability name="Ability Cards"}',
     status: 'experimental',
     since: '1.0',
     note: {
@@ -1515,7 +1515,7 @@ export const FEATURES: Feature[] = [
       sk: 'Vlastné typy kariet',
     },
     group: 'cards',
-    syntax: '{define card_type location, prefix="📍" begin}',
+    syntax: '{define card_type location, prefix="📍"}',
     status: 'draft',
     note: {
       en: 'New bracket prefixes beyond `@`, `$` and `&`. Specified as a future extension point; custom card *sets* cover most of the need today, so no implementation has started.',
@@ -1688,7 +1688,7 @@ export const FEATURES: Feature[] = [
       sk: 'Roly čitateľov',
     },
     group: 'cooperative',
-    syntax: '{define role captain begin} max: 1 {end define}',
+    syntax: '{define role captain max=1}',
     status: 'development',
     note: {
       en: 'Roles and role-gated content parse and evaluate; assignment and reassignment need the group session service, which is being built.',
@@ -1748,7 +1748,7 @@ export const FEATURES: Feature[] = [
       sk: 'Čakanie na podmienku',
     },
     group: 'control-flow',
-    syntax: '{wait EXPR, escape=…, escape_to=… begin} … {end wait}',
+    syntax: '{wait escape=…, escape_to=… when EXPR begin} … {end wait}',
     status: 'experimental',
     since: '1.1',
     note: {
@@ -1905,7 +1905,7 @@ export const FEATURES: Feature[] = [
       sk: 'Obrázky máp a špendlíky',
     },
     group: 'world',
-    syntax: '{map begin} … {pin begin} … {end map}',
+    syntax: '{map id bounds="…" begin} … {pin id at=… begin} … {end map}',
     status: 'development',
     note: {
       en: 'An author-supplied image anchored to real GPS bounds by two point literals, with each pin positioned by an `at:` point expression. Parsed into structured nodes; the projection renderer in the reader is the remaining piece.',
@@ -1920,7 +1920,7 @@ export const FEATURES: Feature[] = [
       sk: 'Viacetapové trasy',
     },
     group: 'world',
-    syntax: '{route treasure_hunt, sequential begin}',
+    syntax: '{route treasure_hunt, waypoints="a, b", sequential begin}',
     status: 'experimental',
     since: '1.1',
     note: {

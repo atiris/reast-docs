@@ -114,7 +114,7 @@ The `hidden` keyword comes first on the choice line; a condition can follow it:
 * hidden {story.player.curious} [&look_under_sofa] …
 ```
 
-Hidden choices are usually bound to an action card with `[&card_id]` — the card's `description:` is what free-text matching compares against, and its `scan:`/`mark:`/`listen:` fields are what real-world inputs match. Because the label only appears after the choice fires, hint at hidden content in the surrounding prose; the label and narration are the reward, not the invitation. Groups built mostly from hidden choices are covered in [Exploration menus](#exploration-menus).
+Hidden choices are usually bound to an action card with `[&card_id]` — the card's `description=` is what free-text matching compares against, and its `scan=`/`mark=`/`listen=` fields are what real-world inputs match. Because the label only appears after the choice fires, hint at hidden content in the surrounding prose; the label and narration are the reward, not the invitation. Groups built mostly from hidden choices are covered in [Exploration menus](#exploration-menus).
 
 ### Diverts
 
@@ -221,7 +221,7 @@ You pull out your tools and get to work.
 
 Tunnels are useful for reusable passages (e.g., recurring inspections, shared dialogue sequences) without manually routing back.
 
-A tunnel and a storylet solve different problems, and reach for one on purpose: a tunnel is a reusable content block scoped to the current chapter — the author writes the call site (`->->`) explicitly, and it always returns to exactly that point. A [storylet](/spec/storylets) is engine-selected, not author-called: it is drawn from a story-wide pool via `{deck}` or woken by a real-world `trigger:`, based on `require`/`priority`/`cooldown` rather than a fixed call site in the text.
+A tunnel and a storylet solve different problems, and reach for one on purpose: a tunnel is a reusable content block scoped to the current chapter — the author writes the call site (`->->`) explicitly, and it always returns to exactly that point. A [storylet](/spec/storylets) is engine-selected, not author-called: it is drawn from a story-wide pool via `{deck}` or woken by a real-world `trigger=`, based on `require`/`priority`/`cooldown` rather than a fixed call site in the text.
 
 ### First-visit content
 
@@ -368,7 +368,7 @@ In cooperative reading, different readers can follow different threads simultane
 
 <Feature id="storylets" />
 
-Modular content blocks with prerequisites and effects — `require`, `priority`, `repeatable`, `cooldown`, `weight`, `tags` — selected by the engine into a `{deck}` or woken by a real-world `trigger:` as a side path that returns exactly where the reader left off. Storylets now have their own page: see [Storylets & Decks](/spec/storylets).
+Modular content blocks with prerequisites and effects — `require`, `priority`, `repeatable`, `cooldown`, `weight`, `tags` — selected by the engine into a `{deck}` or woken by a real-world `trigger=` as a side path that returns exactly where the reader left off. Storylets now have their own page: see [Storylets & Decks](/spec/storylets).
 
 ### Exploration menus
 
@@ -395,7 +395,7 @@ Wrapping a choice group in `{menu select=N begin} … {end menu}` changes how ma
 
 Each activation plays that option's narration and effects exactly like a tapped choice — `{set}`, `{give}`, diverts, all run through the same path. A one-time (`*`) option leaves the pool once chosen; a repeatable (`+`) option stays available. A visible option can end the menu early by diverting elsewhere, or simply counts toward `N` like any other pick.
 
-Activation channels — `scan:`, `mark:`, `listen:` — are declared on the referenced card (see [Real-world activation](#real-world-activation) in Cards), not on the choice line itself. The same `[&card_id]` reference and `hidden` flag work whether the card wakes from a tap, a scan, a mark, or a voice line.
+Activation channels — `scan=`, `mark=`, `listen=` — are declared on the referenced card (see [Real-world activation](#real-world-activation) in Cards), not on the choice line itself. The same `[&card_id]` reference and `hidden` flag work whether the card wakes from a tap, a scan, a mark, or a voice line.
 
 #### Undo and saves inside a menu
 
@@ -498,12 +498,7 @@ You see [@elena] standing by the fountain.
 Character cards are defined in metadata or a dedicated block:
 
 ```rea
-{define character elena begin}
-  name: Elena Voss
-  title: The Wandering Scholar
-  image: media/elena.png
-  description: A tall woman with silver-streaked hair and ink-stained fingers.
-{end define}
+{define character elena name="Elena Voss", title="The Wandering Scholar", image="media/elena.png", description="A tall woman with silver-streaked hair and ink-stained fingers."}
 ```
 
 When a reader taps `[@elena]`, they see the character's card with portrait, name, title, and description.
@@ -515,12 +510,7 @@ When a reader taps `[@elena]`, they see the character's card with portrait, name
 ```rea
 You find a [$golden_key] on the ground.
 
-{define item golden_key begin}
-  name: Golden Key
-  image: media/golden_key.png
-  description: An ornate key, warm to the touch. It seems to hum faintly.
-  rarity: rare
-{end define}
+{define item golden_key name="Golden Key", image="media/golden_key.png", description="An ornate key, warm to the touch. It seems to hum faintly.", rarity=rare}
 ```
 
 Items can be added to a reader's inventory:
@@ -584,47 +574,34 @@ Action cards represent story branching points with visual emphasis:
 Like character and item cards, an action can carry a `{define action}` block with a name and description:
 
 ```rea
-{define action open_the_gate begin}
-  name: The Ancient Gate
-  description: Push open the rusted gate; force the old gate; shove past the entrance
-{end define}
+{define action open_the_gate name="The Ancient Gate", description="Push open the rusted gate; force the old gate; shove past the entrance"}
 ```
 
-`description:` is shown on the card and doubles as the semantic target for [free-text action input](#free-text-action-input) — what a reader can type to name the action.
+`description=` is shown on the card and doubles as the semantic target for [free-text action input](#free-text-action-input) — what a reader can type to name the action.
 
 #### Real-world activation
 
 <Feature id="real-world-activation" />
 
-An action card can also wake from a real-world input instead of — or alongside — a tap. Three optional fields sit next to `description:`:
+An action card can also wake from a real-world input instead of — or alongside — a tap. Three optional fields sit next to `description=`:
 
 ```rea
-{define action qr_door begin}
-  name: The service door
-  scan: ^REAST-DOOR-.*
-{end define}
+{define action qr_door name="The service door", scan="^REAST-DOOR-.*"}
 
-{define action painted_tree begin}
-  name: The painted tree
-  mark: emb1:Zk3q…                      // signature computed by the editor from the drawing
-{end define}
+{define action painted_tree name="The painted tree", mark="emb1:Zk3q…                      // signature computed by the editor from the drawing"}
 
-{define action couch_secret begin}
-  name: Under the couch
-  description: look under the couch; lift the sofa; search beneath the seat
-  listen: under the couch
-{end define}
+{define action couch_secret name="Under the couch", description="look under the couch; lift the sofa; search beneath the seat", listen="under the couch"}
 ```
 
 | Field     | Matches against                | Comparison                          |
 | --------- | ------------------------------- | ------------------------------------ |
-| `scan:`   | A scanned QR/barcode payload    | Case-insensitive regular expression |
-| `listen:` | A speech transcript             | Case-insensitive regular expression |
-| `mark:`   | A photographed hand-drawn mark  | Exact signature match                |
+| `scan=`   | A scanned QR/barcode payload    | Case-insensitive regular expression |
+| `listen=` | A speech transcript             | Case-insensitive regular expression |
+| `mark=`   | A photographed hand-drawn mark  | Exact signature match                |
 
 A card can combine any number of these fields — `couch_secret` above answers to both a typed description and a spoken phrase.
 
-> **`mark:` is opaque.** Its value is a signature the editor's "Draw a mark" tool computes from a drawing or photo — never write or edit it by hand. To create or change a mark, redraw it in the editor; see [Real-world exploration menus](/platform/design/real-world-exploration-menus) for the authoring workflow.
+> **`mark=` is opaque.** Its value is a signature the editor's "Draw a mark" tool computes from a drawing or photo — never write or edit it by hand. To create or change a mark, redraw it in the editor; see [Real-world exploration menus](/platform/design/real-world-exploration-menus) for the authoring workflow.
 
 These fields shine when the option playing the card is `hidden` — see [Exploration menus](#exploration-menus) in Choices & Branching. A visible option with activation fields answers to both: the reader can tap its button or produce the matching real-world input.
 
@@ -635,13 +612,7 @@ These fields shine when the option playing the card is `hidden` — see [Explora
 `character`, `item` and `action` are the three **built-in card sets**. Authors can declare additional sets to group cards that share the same acquisition, loss and usage rules — for example an `ability` set, an `attribute` set, or a themed `relic` set. A set is declared with a `{define cardset <id> begin}` block:
 
 ```rea
-{define cardset ability begin}
-  name: Ability Cards
-  description: Stat-granting cards a hero can equip.
-  acquire: Earned by completing quests.
-  lose: Lost when the character is defeated.
-  use: Play to apply the listed attribute bonus.
-{end define}
+{define cardset ability name="Ability Cards", description="Stat-granting cards a hero can equip.", acquire="Earned by completing quests.", lose="Lost when the character is defeated.", use="Play to apply the listed attribute bonus."}
 ```
 
 A set may carry the human-readable rule fields `acquire`, `lose` and `use`, plus any additional `key: value` properties. The set `id` becomes the **kind** of every card that belongs to it.
@@ -649,10 +620,7 @@ A set may carry the human-readable rule fields `acquire`, `lose` and `use`, plus
 A card joins a set by using the set id where `character`/`item`/`action` would otherwise appear:
 
 ```rea
-{define ability spinach begin}
-  name: Spinach
-  strength: +2
-{end define}
+{define ability spinach name=Spinach, strength=+2}
 ```
 
 #### Rule hooks
@@ -660,8 +628,7 @@ A card joins a set by using the set id where `character`/`item`/`action` would o
 A set may attach executable hooks that run for **every** card of that set. The hooks are `{on_acquire}`, `{on_lose}` and `{on_use}`:
 
 ```rea
-{define cardset ability begin}
-  name: Ability Cards
+{define cardset ability name="Ability Cards" begin}
   {on_acquire begin}
     {set story.ability_count = story.ability_count + 1}
   {end on_acquire}
@@ -674,8 +641,7 @@ A set may attach executable hooks that run for **every** card of that set. The h
 An individual card may **override** any hook while still inheriting the set's other rules. Here `ginko` redefines `on_use` but keeps the set's `on_acquire`:
 
 ```rea
-{define ability ginko begin}
-  name: Ginko
+{define ability ginko name=Ginko begin}
   story.player.intelligence: +2
   {on_use begin}
     {set story.player.intelligence = story.player.intelligence + 2}
@@ -703,9 +669,7 @@ Card ids follow the same [identifier rules](05-reference#identifier-rules) as an
 The three built-in sets may be redefined to attach shared rules without changing how their cards are written. Redefining `action` to add a usage cost applies to every `[&]` action card:
 
 ```rea
-{define cardset action begin}
-  name: Combat Actions
-  use: Spend an action point to play.
+{define cardset action name="Combat Actions", use="Spend an action point to play." begin}
   {on_use begin}
     {set story.actions_played = story.actions_played + 1}
   {end on_use}
@@ -719,11 +683,7 @@ When an author redefinition and the implicit built-in collide, the author's decl
 A card's properties are **verbatim text**. Everything after `key:` is stored exactly as written, with one transformation: a `{variable}` placeholder is substituted with that variable's current value each time the card is queried, which is what lets a card show a live stat or an unlocked art tier.
 
 ```rea
-{define character elena begin}
-  name: Elena Voss
-  level: {story.elena.level}
-  home: @(48.14, 17.10)
-{end define}
+{define character elena name="Elena Voss", level="{story.elena.level}", home="@(48.14, 17.10)"}
 ```
 
 `level` is the *text* produced by substituting the variable, not a number. `home` is the text `@(48.14, 17.10)`, not a point — it resembles a coordinate literal without being one. A property is displayed, never computed with: a story that needs to compare or add a value keeps it in an ordinary variable and lets the card show it through a placeholder.
@@ -847,13 +807,10 @@ The room is small and dusty. An old couch sags in the corner.
   Fresh air streams in.
 * hidden [&look_under_sofa] Jozef bent down and looked under the old sofa, where he found a mysterious envelope marked _Secret!_
 
-{define action look_under_sofa begin}
-  name: Look under the sofa
-  description: lift or look under the old couch in the corner; check beneath the sofa; search under the seat
-{end define}
+{define action look_under_sofa name="Look under the sofa", description="lift or look under the old couch in the corner; check beneath the sofa; search under the seat"}
 ```
 
-Unlike a plain text input, the submission is not stored in a variable — it is matched against the eligible options of the pending choice group, visible and [hidden](#hidden-choices) alike, with conditions already applied and consumed one-time options excluded. For options bound to an action card, the card's `description:` is the semantic target — write it as a compact list of intents, synonyms welcome, in the language of the story; the card's `name:` and the option label are considered as well.
+Unlike a plain text input, the submission is not stored in a variable — it is matched against the eligible options of the pending choice group, visible and [hidden](#hidden-choices) alike, with conditions already applied and consumed one-time options excluded. For options bound to an action card, the card's `description=` is the semantic target — write it as a compact list of intents, synonyms welcome, in the language of the story; the card's `name=` and the option label are considered as well.
 
 A match activates the option through the exact same path as a tap — narration, effects, undo, saves and analytics behave identically. A submission that matches nothing shows a gentle non-match message in the field and the group stays open, so guessing is always safe.
 
@@ -950,17 +907,9 @@ Rea natively supports **multi-reader experiences** where multiple people read th
 <Feature id="roles" />
 
 ```rea
-{define role captain begin}
-  name: The Captain
-  description: Leader of the expedition. Makes final decisions.
-  max: 1
-{end define}
+{define role captain name="The Captain", description="Leader of the expedition. Makes final decisions.", max=1}
 
-{define role crew begin}
-  name: Crew Member
-  description: Follows orders. Has unique skills.
-  max: 4
-{end define}
+{define role crew name="Crew Member", description="Follows orders. Has unique skills.", max=4}
 ```
 
 ### Role-specific content
@@ -1262,13 +1211,13 @@ Adding `optional` means the feature enhances the story but isn't required. The `
 
 <Feature id="conditional-wait" />
 
-Every gate in a story — an `{if}`, a choice's `condition`, a storylet's `require:`, a state machine's `when` guard, a map pin's `visible:`, a waypoint's area — is written in **one** expression language and decided by **one** subsystem. What differs is not the condition, it is *when the engine looks at it*, and that is expressed by the block the author chooses rather than by a second syntax:
+Every gate in a story — an `{if}`, a choice's `condition`, a storylet's `when`, a state machine's `when` guard, a map pin's `visible:`, a waypoint's area — is written in **one** expression language and decided by **one** subsystem. What differs is not the condition, it is *when the engine looks at it*, and that is expressed by the block the author chooses rather than by a second syntax:
 
 | Mode         | Written as                                                                        | Semantics                                                            | Escape required                                    |
 | ------------ | --------------------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------- |
 | **now**      | `{if}`, a choice's `condition`, a pin's `visible:`                                | evaluated at the moment the reader reaches it                        | no                                                 |
 | **until**    | `{wait EXPR begin} … {end wait}`, `{waypoint}`                                    | the story pauses here and continues when the expression turns true   | yes, when the expression reads `context.*`         |
-| **whenever** | `{on EVENT when GUARD}`, a storylet's `require:`, `{zone}` `on enter` / `on exit` | edge-triggered, may fire repeatedly                                  | not applicable                                     |
+| **whenever** | `{on EVENT when GUARD}`, a storylet's `when`, `{zone}` `on enter` / `on exit` | edge-triggered, may fire repeatedly                                  | not applicable                                     |
 
 The author picks a verb by asking one question — *does the story stop here?* — and writes the same expression language in all three. New capabilities therefore arrive as new `context.` subtrees and new functions, never as new grammar.
 
@@ -1279,7 +1228,7 @@ The author picks a verb by asking one question — *does the story stop here?* �
 `{wait EXPR begin} … {end wait}` pauses the story until `EXPR` becomes true. Its body is what the reader sees **while** waiting; once the gate opens the body is replaced and the story continues after `{end wait}`.
 
 ```rea
-{wait context.weather = "rain" and context.time.hour >= 20, escape=duration("PT3H"), escape_to="dry_night" begin}
+{wait escape=duration("PT3H"), escape_to="dry_night" when context.weather = "rain" and context.time.hour >= 20 begin}
   You take the bench under the arcade and watch the sky.
 {end wait}
 
@@ -1401,21 +1350,18 @@ The condition this asks about is the one the *author* wrote. Every waypoint is c
 A story set in a real place can show its own map instead of a generic one: an author-supplied image anchored to real-world GPS bounds, with pins placed at coordinates.
 
 ```rea
-{map old_town begin}
+{map old_town bounds="@(48.152, 17.100), @(48.140, 17.120)" begin}
   image [!The old town < assets/old-town.webp]
-  bounds: @(48.152, 17.100), @(48.140, 17.120)
-  {pin bridge begin}
-    at: @(48.1432, 17.1056)
+  {pin bridge at="@(48.1432, 17.1056)" begin}
     label "The old bridge"
   {end pin}
-  {pin reader begin}
-    at: context.location
+  {pin reader at=context.location begin}
     label "You"
   {end pin}
 {end map}
 ```
 
-`bounds:` gives the north-west and south-east corners of the image as two point literals, and the engine projects each pin onto it equirectangularly. A pin's `at:` takes any point expression — a literal, or `context.location` for a pin that follows the reader — so a pin can move with the reading or appear only once a variable is set (`visible`).
+`bounds=` gives the north-west and south-east corners of the image as two point literals, and the engine projects each pin onto it equirectangularly. A pin's `at:` takes any point expression — a literal, or `context.location` for a pin that follows the reader — so a pin can move with the reading or appear only once a variable is set (`visible`).
 
 Nothing in this block renders yet — the parser understands it, the projection maths is written, and the reader-side canvas is the remaining piece.
 
@@ -1426,15 +1372,11 @@ Nothing in this block renders yet — the parser understands it, the projection 
 Chain waypoints into sequential or non-sequential routes:
 
 ```rea
-{route treasure_hunt, sequential begin}
-  waypoint: old_bridge
-  waypoint: castle_ruins
-  waypoint: hidden_cave
-  complete: "You've completed the treasure hunt!"
+{route treasure_hunt, waypoints="old_bridge, castle_ruins, hidden_cave", complete="You've completed the treasure hunt!", sequential begin}
 {end route}
 ```
 
-A route names waypoints declared elsewhere; it does not contain them, so a waypoint stays one thing in one place and a route is the trail through them. Its `complete:` line renders where the `{route}` block itself stands, and only once every stage is done — so an author puts the block where the payoff belongs, usually after the trail. Until then the block shows nothing.
+A route names waypoints declared elsewhere; it does not contain them, so a waypoint stays one thing in one place and a route is the trail through them. Its `complete=` line renders where the `{route}` block itself stands, and only once every stage is done — so an author puts the block where the payoff belongs, usually after the trail. Until then the block shows nothing.
 
 `sequential` records that the stages are meant to be visited in order. Because each `{waypoint}` stops the story where it stands, that order is already the reading order; the attribute is what tells a map, a progress indicator or a host UI that skipping ahead is not intended.
 
@@ -1546,7 +1488,7 @@ The `target` attribute matches the scanned value. Use `pattern` for regex matchi
 {end scan}
 ```
 
-A `{scan}` block is *blocking* — the story stops at that point and waits for the code. For codes the reader may encounter anywhere along the way, use [triggered storylets](/spec/storylets#triggered-storylets) (`trigger: scan`) or an [exploration menu](#exploration-menus) option with a `scan:` card field instead: those are opt-in interruptions that fire whenever the input arrives.
+A `{scan}` block is *blocking* — the story stops at that point and waits for the code. For codes the reader may encounter anywhere along the way, use [triggered storylets](/spec/storylets#triggered-storylets) (`trigger: scan`) or an [exploration menu](#exploration-menus) option with a `scan=` card field instead: those are opt-in interruptions that fire whenever the input arrives.
 
 ### NFC tags
 
@@ -1656,11 +1598,11 @@ Pattern: array of alternating vibrate/pause durations in milliseconds.
 {end if}
 ```
 
-Like `{scan}`, a `{listen}` block stops and waits at one point. For phrases the reader can say at any moment, use [triggered storylets](/spec/storylets#triggered-storylets) (`trigger: listen`) or an exploration-menu option with a `listen:` card field.
+Like `{scan}`, a `{listen}` block stops and waits at one point. For phrases the reader can say at any moment, use [triggered storylets](/spec/storylets#triggered-storylets) (`trigger: listen`) or an exploration-menu option with a `listen=` card field.
 
 ### Priority: exploration menus vs. storylet triggers
 
-A scan, spoken phrase, or photographed mark is a single physical event — it cannot mean two things at once. If the reader has a pending [exploration menu](#exploration-menus) open when they produce that input, the engine checks the menu's `scan:`/`mark:`/`listen:` options first. Only when nothing in the menu matches does the same input fall through to wake a storylet trigger.
+A scan, spoken phrase, or photographed mark is a single physical event — it cannot mean two things at once. If the reader has a pending [exploration menu](#exploration-menus) open when they produce that input, the engine checks the menu's `scan=`/`mark=`/`listen=` options first. Only when nothing in the menu matches does the same input fall through to wake a storylet trigger.
 
 See [Storylets & Decks](/spec/storylets) for storylet selection, triggers, and priority/weight.
 
@@ -1702,12 +1644,9 @@ You rolled {story.combat.roll}!
 Combine multiple sensors into challenge-style interactions inspired by geocaching and adventure games:
 
 ```rea
-{challenge night_vigil begin}
-  require: context.time.hour >= 23 and context.light < 20
-  require: context.location matches circle(@(48.14, 17.10), 200)
-  timeout: 30m
-  hint: "Find the old chapel after midnight. Bring no light."
-
+{challenge night_vigil timeout=30m, hint="Find the old chapel after midnight. Bring no light."
+            when context.time.hour >= 23 and context.light < 20
+                 and context.location matches circle(@(48.14, 17.10), 200) begin}
   You stand in darkness before the ancient chapel.
   The stars above spell out a message only visible at this hour.
   {set story.star_message = "VERITAS"}
@@ -1718,7 +1657,7 @@ Challenge attributes:
 
 | Attribute | Description                                      |
 | --------- | ------------------------------------------------ |
-| `require` | One or more conditions (all must be true)        |
+| `when …`  | One or more conditions, joined with `and`        |
 | `timeout` | Time limit (e.g. `30m`, `2h`)                    |
 | `hint`    | Guidance shown when conditions are partially met |
 | `retry`   | Allow retry after failure (default: true)        |

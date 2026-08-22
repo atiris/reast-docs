@@ -332,17 +332,9 @@ Host extensions are outside the Rea language proper and are reachable only when 
 Custom card **sets** (`{define cardset …}`) are released and cover most of what authors reach for — see [Section 17](03-narrative-interaction.md#card-sets-categories). Beyond them, extensions may in future define new card *types* with their own bracket prefix, past the built-in `@`, `$` and `&`:
 
 ```rea
-{define card_type location, prefix="📍" begin}
-  name: Location
-  fields: [name, description, image, coordinates]
-{end define}
+{define card_type location, prefix="📍", name="Location", fields="name, description, image, coordinates"}
 
-{define location tavern begin}
-  name: The Rusty Anchor
-  description: A dimly lit tavern near the docks.
-  image: assets/tavern.webp
-  coordinates: @(48.1486, 17.1077)
-{end define}
+{define location tavern name="The Rusty Anchor", description="A dimly lit tavern near the docks.", image="assets/tavern.webp", coordinates="@(48.1486, 17.1077)"}
 
 You arrive at [📍tavern].
 ```

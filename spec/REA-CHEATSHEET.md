@@ -139,10 +139,9 @@ A manifest may rename all four (`"domains": {"story": "物語"}`).
 * hidden [&qr_door] ...              Hidden option — no button, wakes only by activation
 {end menu}
 
-{storylet bench_secret begin}        Triggered storylet — the world deals the card
-  trigger: scan                        Input kind: scan, listen, text, nfc, ... (open set)
-  match: "^REAST-BENCH-.*"             Optional regex on the input value
-  ...                                  Plays as a side path, returns to the main story
+{storylet bench_secret trigger=scan, match="^REAST-BENCH-.*" begin}
+  ...                                Triggered storylet — the world deals the card,
+                                     plays as a side path, returns to the main story
 {end storylet}
 ```
 
@@ -218,9 +217,7 @@ The host supplies locale and formatting policy. `calendar()` is still in develop
 ## Cooperative Reading
 
 ```rea
-{define role scout begin}            Role definition
-  max: 1
-{end define}
+{define role scout max=1}            Role definition — no body, so no `begin`
 
 {vote timeout=60 begin}              Group voting
   * [Go left]   * [Go right]
@@ -244,8 +241,8 @@ One expression language; the block decides *when* the engine looks.
 | Mode         | Written as                                                     | Escape required                    |
 | ------------ | -------------------------------------------------------------- | ---------------------------------- |
 | **now**      | `{if}`, a choice's `condition`, a pin's `visible:`             | no                                 |
-| **until**    | `{wait EXPR begin} … {end wait}`, `{waypoint}`                 | yes, when the expression reads `context.*` |
-| **whenever** | `{on EVENT when GUARD}`, a storylet's `require:`, `{zone}`     | not applicable                     |
+| **until**    | `{wait when EXPR begin} … {end wait}`, `{waypoint}`            | yes, when the expression reads `context.*` |
+| **whenever** | `{on EVENT when GUARD}`, a storylet's `when`, `{zone}`     | not applicable                     |
 
 ```rea
 {zone forest, circle(@(48.14, 17.10), 100) begin}
@@ -253,19 +250,17 @@ One expression language; the block decides *when* the engine looks.
   {on exit begin} You emerge, blinking. {end on}    Replaces it once outside
 {end zone}
 
-{route hunt, sequential begin}                      Trail through waypoints
-  waypoint: old_bridge
-  waypoint: castle_ruins
-  complete: "The hunt is done."                     Shows here, when all are
-{end route}
+{route hunt, waypoints="old_bridge, castle_ruins",  Trail through waypoints
+       complete="The hunt is done.", sequential begin}
+{end route}                                         `complete` shows here, when all are
 ```
 
 ```rea
-{wait story.lamp_lit begin}          Pause until true
+{wait when story.lamp_lit begin}     Pause until true
   You wait in the dark.
 {end wait}
 
-{wait context.weather = "rain", escape=duration("PT3H"), escape_to="dry_night" begin}
+{wait escape=duration("PT3H"), escape_to="dry_night" when context.weather = "rain" begin}
   You watch the sky.                 Body = the waiting state
 {end wait}
 
@@ -308,10 +303,7 @@ within(context.location, "old_bridge")    Reuse a waypoint's area
 ## Cards (Characters, Items)
 
 ```rea
-{define character elena begin}
-  name: Elena Voss
-  image: media/elena.png
-{end define}
+{define character elena name="Elena Voss", image="media/elena.png"}
 
 [@elena]                    Character reference
 [$golden_key]               Item reference
@@ -329,26 +321,20 @@ within(context.location, "old_bridge")    Reuse a waypoint's area
 ```
 
 ```rea
-{define cardset ability begin}   Declare a custom card set/category
-  name: Ability Cards
-  use: Play to apply the bonus.
+{define cardset ability name="Ability Cards",   Declare a custom card set/category
+        use="Play to apply the bonus." begin}
   {on_use begin}                 Hook runs for every card of the set
     {set story.ability_count = story.ability_count + 1}
   {end on_use}
 {end define}
 
-{define ability spinach begin}   A card belonging to the set
-  name: Spinach
-  strength: +2
-{end define}
+{define ability spinach name=Spinach, strength="+2"}   A card belonging to the set
 ```
 
 ```rea
-{define action door begin}       Real-world activation fields
-  scan: ^REAST-DOOR-.*             QR/barcode payload (regex)
-  mark: emb1:Zk3q…                 Drawn mark signature (opaque — never hand-edit)
-  listen: open the door            Speech transcript (regex)
-{end define}
+{define action door scan="^REAST-DOOR-.*",   Real-world activation fields:
+        mark="emb1:Zk3q…",                  QR/barcode payload (regex), drawn mark
+        listen="open the door"}              signature (opaque), speech transcript
 ```
 
 ---

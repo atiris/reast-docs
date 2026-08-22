@@ -9,11 +9,7 @@
 Storylety sú modulárne bloky obsahu s podmienkami a účinkami — stavebné kamene nelineárnych rozprávaní poháňaných objavovaním. Namiesto pevného vetvenia platforma vyberá použiteľné storylety a predkladá ich ako dostupné možnosti.
 
 ```rea
-{storylet the_merchants_plea begin}
-  require: gold > 20 and visited("market")
-  priority: 5
-  repeatable: false
-
+{storylet the_merchants_plea priority=5, repeatable=false when gold > 20 and visited("market") begin}
   Pristúpi k tebe kupec so zúfalým pohľadom.
   „Prosím, potrebujem niekoho, kto doručí tento balík do severnej veže."
 
@@ -25,31 +21,27 @@ Storylety sú modulárne bloky obsahu s podmienkami a účinkami — stavebné k
     Kupcovi klesnú plecia.
 {end storylet}
 
-{storylet the_hidden_path begin}
-  require: story.quest.has_merchant_quest and context.time.hour >= 20
-  priority: 10
-  repeatable: false
-
+{storylet the_hidden_path priority=10, repeatable=false when story.quest.has_merchant_quest and context.time.hour >= 20 begin}
   Keď padne noc, zbadáš medzi stromami slabú žiaru.
   Odhalí sa cesta, akú si predtým nikdy nevidel.
   -> hidden_path_adventure
 {end storylet}
 ```
 
-**Atribúty storyletu:**
+**Hlavička storyletu:** každé nastavenie je atribút v otváracom riadku a podmienka spôsobilosti je koncová klauzula `when`.
 
-| Atribút      | Popis                                                                                   |
-| ------------ | --------------------------------------------------------------------------------------- |
-| `require`    | Podmienka, ktorá musí platiť, aby sa storylet objavil                                   |
-| `priority`   | Storylety s vyššou prioritou sa objavia skôr (predvolene `0`)                           |
-| `repeatable` | `true` povolí opakované prehratie, `false` znamená jednorazový (predvolené)             |
-| `cooldown`   | Minimálny počet návštev alebo čas, kým sa môže objaviť znovu                            |
-| `weight`     | Relatívna pravdepodobnosť, keď je použiteľných viac storyletov                          |
-| `tags`       | Kategorizácia na filtrovanie (`tags: tavern, social`)                                   |
-| `trigger`    | Druh vstupu z reálneho sveta, ktorý môže tento storylet zobudiť (pozri [Spúšťané storylety](#triggered-storylets)) |
-| `match`      | Voliteľný regulárny výraz bez ohľadu na veľkosť písmen, ktorému musí hodnota vstupu vyhovieť |
+| Atribút       | Popis                                                                                   |
+| ------------- | --------------------------------------------------------------------------------------- |
+| `when …`      | Podmienka, ktorá musí platiť, aby sa storylet objavil                                   |
+| `priority=`   | Storylety s vyššou prioritou sa objavia skôr (predvolene `0`)                           |
+| `repeatable=` | `true` povolí opakované prehratie, `false` znamená jednorazový (predvolené)             |
+| `cooldown=`   | Minimálny počet návštev alebo čas, kým sa môže objaviť znovu                            |
+| `weight=`     | Relatívna pravdepodobnosť, keď je použiteľných viac storyletov                          |
+| `tags=`       | Kategorizácia na filtrovanie (`tags="tavern, social"`)                                  |
+| `trigger=`    | Druh vstupu z reálneho sveta, ktorý môže tento storylet zobudiť (pozri [Spúšťané storylety](#triggered-storylets)) |
+| `match=`      | Voliteľný regulárny výraz bez ohľadu na veľkosť písmen, ktorému musí hodnota vstupu vyhovieť |
 
-`require:` je podmienka režimu **kedykoľvek**, vyhodnocovaná pri *výbere* — vždy, keď engine vyberá storylet, a nikdy medzi tým. Balíček preto nikdy nespustí senzor: `require:`, ktorý číta `context.location`, sa zodpovie z poslednej polohy, akú platforma doručila, a ak polohu nič nesleduje, tou odpoveďou je `unknown` a storylet jednoducho nie je spôsobilý. Príbeh, ktorý chce, aby sa engine pozeral ďalej, napíše [`{wait}`](03-narrative-interaction.md#waiting-for-a-condition) — sloveso režimu **kým**, ktoré spustí, čo potrebuje.
+`when` je podmienka režimu **kedykoľvek**, vyhodnocovaná pri *výbere* — vždy, keď engine vyberá storylet, a nikdy medzi tým. Balíček preto nikdy nespustí senzor: `when`, ktorý číta `context.location`, sa zodpovie z poslednej polohy, akú platforma doručila, a ak polohu nič nesleduje, tou odpoveďou je `unknown` a storylet jednoducho nie je spôsobilý. Príbeh, ktorý chce, aby sa engine pozeral ďalej, napíše [`{wait}`](03-narrative-interaction.md#waiting-for-a-condition) — sloveso režimu **kým**, ktoré spustí, čo potrebuje.
 
 <Feature id="storylet-deck" />
 
@@ -69,34 +61,25 @@ Storylety umožňujú organické, nelineárne rozprávanie, kde sa príbeh prisp
 
 <Feature id="triggered-storylets" />
 
-Storylet s riadkom `trigger:` zobúdza svet namiesto balíčka: takmer v ktorejkoľvek chvíli čítania môže vstup z reálneho sveta — naskenovanie QR nálepky na lavičke, vyslovenie frázy nahlas, priloženie NFC štítku — prerušiť hlavný príbeh, prehrať storylet ako vedľajšiu cestu a vrátiť sa presne tam, kde čitateľ prestal:
+Storylet s riadkom `trigger=` zobúdza svet namiesto balíčka: takmer v ktorejkoľvek chvíli čítania môže vstup z reálneho sveta — naskenovanie QR nálepky na lavičke, vyslovenie frázy nahlas, priloženie NFC štítku — prerušiť hlavný príbeh, prehrať storylet ako vedľajšiu cestu a vrátiť sa presne tam, kde čitateľ prestal:
 
 ```rea
-{storylet bench_secret begin}
-  trigger: scan
-  match: "^REAST-BENCH-.*"
-  require: story.act >= 2
-  weight: 2
-  repeatable: false
-
+{storylet bench_secret trigger=scan, match="^REAST-BENCH-.*", weight=2, repeatable=false when story.act >= 2 begin}
   Kód na lavičke ožije. Hlas šepká: „Našiel si ma."
   * [Nasleduj šepot]
     -> bench_alley
   * [Ignoruj ho]
 {end storylet}
 
-{storylet magic_word begin}
-  trigger: listen
-  match: "abrakadabra"
-
+{storylet magic_word trigger=listen, match=abrakadabra begin}
   Slovo visí vo vzduchu — a stena odpovie.
 {end storylet}
 ```
 
-- **`trigger:`** pomenúva druh vstupu. Množina je otvorená — čitateľská aplikácia rozhoduje, ktoré druhy dokáže fyzicky zachytiť. Bežné druhy: `scan` (obsah QR alebo čiarového kódu), `listen` (prepis rozpoznanej reči), `text`, `vision`, `nfc`, `shake`, `location`. Storylet bez `trigger:` sa správa presne ako doteraz (len z balíčka); storylet môže niesť `trigger:` aj `tags:` a objavovať sa aj v balíčkoch
-- **`match:`** je regulárny výraz bez ohľadu na veľkosť písmen, testovaný proti hodnote vstupu (obsah QR kódu, prepis reči). Vynechajte ho, ak má prijať akýkoľvek vstup daného druhu
-- **Výber** sa riadi bežnými pravidlami storyletov: spomedzi storyletov, ktorým sedí druh aj `match:`, sa rešpektujú podmienky `require:`, stav vytiahnutia, `cooldown:` a `priority:`, a potom sa jeden vyberie váženým náhodným výberom. Jeden vstup zobudí presne jeden storylet
-- **Vnútri tela** sprístupňujú `event.kind` a `event.value` spúšťací vstup podmienkam aj textu (sú viditeľné aj pre `require:` počas výberu), takže naskenovaný obsah alebo vyslovené slová možno čitateľovi zopakovať: `Na štítku stojí {event.value}.`
+- **`trigger=`** pomenúva druh vstupu. Množina je otvorená — čitateľská aplikácia rozhoduje, ktoré druhy dokáže fyzicky zachytiť. Bežné druhy: `scan` (obsah QR alebo čiarového kódu), `listen` (prepis rozpoznanej reči), `text`, `vision`, `nfc`, `shake`, `location`. Storylet bez `trigger=` sa správa presne ako doteraz (len z balíčka); storylet môže niesť `trigger=` aj `tags=` a objavovať sa aj v balíčkoch
+- **`match=`** je regulárny výraz bez ohľadu na veľkosť písmen, testovaný proti hodnote vstupu (obsah QR kódu, prepis reči). Vynechajte ho, ak má prijať akýkoľvek vstup daného druhu
+- **Výber** sa riadi bežnými pravidlami storyletov: spomedzi storyletov, ktorým sedí druh aj `match=`, sa rešpektujú podmienky `when`, stav vytiahnutia, `cooldown=` a `priority=`, a potom sa jeden vyberie váženým náhodným výberom. Jeden vstup zobudí presne jeden storylet
+- **Vnútri tela** sprístupňujú `event.kind` a `event.value` spúšťací vstup podmienkam aj textu (sú viditeľné aj pre `when` počas výberu), takže naskenovaný obsah alebo vyslovené slová možno čitateľovi zopakovať: `Na štítku stojí {event.value}.`
 
 #### Prerušenie a návrat {#interruption-and-return}
 

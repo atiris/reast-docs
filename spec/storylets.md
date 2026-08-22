@@ -9,11 +9,7 @@
 Storylets are modular content blocks with prerequisites and effects — the building blocks for non-linear, discovery-driven narratives. Instead of rigid branching, the platform selects eligible storylets and presents them as available options.
 
 ```rea
-{storylet the_merchants_plea begin}
-  require: gold > 20 and visited("market")
-  priority: 5
-  repeatable: false
-
+{storylet the_merchants_plea priority=5, repeatable=false when gold > 20 and visited("market") begin}
   A merchant approaches you with a desperate look.
   "Please, I need someone to deliver this package to the northern tower."
 
@@ -25,31 +21,27 @@ Storylets are modular content blocks with prerequisites and effects — the buil
     The merchant's shoulders slump.
 {end storylet}
 
-{storylet the_hidden_path begin}
-  require: story.quest.has_merchant_quest and context.time.hour >= 20
-  priority: 10
-  repeatable: false
-
+{storylet the_hidden_path priority=10, repeatable=false when story.quest.has_merchant_quest and context.time.hour >= 20 begin}
   As night falls, you notice a faint glow among the trees.
   A path you've never seen before reveals itself.
   -> hidden_path_adventure
 {end storylet}
 ```
 
-**Storylet attributes:**
+**Storylet head:** every setting is an attribute in the opening line, and the eligibility condition is the trailing `when` clause.
 
-| Attribute    | Description                                               |
-| ------------ | --------------------------------------------------------- |
-| `require`    | Condition that must be true for this storylet to appear   |
-| `priority`   | Higher priority storylets appear first (default: `0`)     |
-| `repeatable` | `true` to allow replaying, `false` for one-time (default) |
-| `cooldown`   | Minimum visits/time before reappearing                    |
-| `weight`     | Relative probability when multiple storylets are eligible |
-| `tags`       | Categorization for filtering (`tags: tavern, social`)     |
-| `trigger`    | Real-world input kind that can wake this storylet (see [Triggered storylets](#triggered-storylets)) |
-| `match`      | Optional case-insensitive regex the input value must match |
+| Attribute    | Description                                                     |
+| ------------ | --------------------------------------------------------------- |
+| `when …`     | Condition that must be true for this storylet to appear         |
+| `priority=`   | Higher priority storylets appear first (default: `0`)          |
+| `repeatable=` | `true` to allow replaying, `false` for one-time (default)      |
+| `cooldown=`   | Minimum visits/time before reappearing                         |
+| `weight=`     | Relative probability when multiple storylets are eligible      |
+| `tags=`       | Categorization for filtering (`tags="tavern, social"`)          |
+| `trigger=`    | Real-world input kind that can wake this storylet (see [Triggered storylets](#triggered-storylets)) |
+| `match=`      | Optional case-insensitive regex the input value must match     |
 
-`require:` is a **`whenever`** condition, evaluated at *selection* time — every time the engine picks a storylet, and never in between. A deck therefore never starts a sensor: a `require:` reading `context.location` is answered from whatever position the platform last delivered, and if nothing is watching the position, that answer is `unknown` and the storylet is simply not eligible. A story that wants the engine to keep looking writes a [`{wait}`](03-narrative-interaction.md#waiting-for-a-condition), which is the `until` verb and does start what it needs.
+`when` is a **`whenever`** condition, evaluated at *selection* time — every time the engine picks a storylet, and never in between. A deck therefore never starts a sensor: a `when` reading `context.location` is answered from whatever position the platform last delivered, and if nothing is watching the position, that answer is `unknown` and the storylet is simply not eligible. A story that wants the engine to keep looking writes a [`{wait}`](03-narrative-interaction.md#waiting-for-a-condition), which is the `until` verb and does start what it needs.
 
 <Feature id="storylet-deck" />
 
@@ -69,34 +61,25 @@ Storylets enable organic, non-linear narratives where the story adapts to the re
 
 <Feature id="triggered-storylets" />
 
-A storylet with a `trigger:` line is woken by the world instead of a deck: at almost any moment while reading, a real-world input — scanning a QR sticker on a bench, saying a phrase aloud, tapping an NFC tag — can interrupt the main story, play the storylet as a side path, and return exactly where the reader left off:
+A storylet with a `trigger=` line is woken by the world instead of a deck: at almost any moment while reading, a real-world input — scanning a QR sticker on a bench, saying a phrase aloud, tapping an NFC tag — can interrupt the main story, play the storylet as a side path, and return exactly where the reader left off:
 
 ```rea
-{storylet bench_secret begin}
-  trigger: scan
-  match: "^REAST-BENCH-.*"
-  require: story.act >= 2
-  weight: 2
-  repeatable: false
-
+{storylet bench_secret trigger=scan, match="^REAST-BENCH-.*", weight=2, repeatable=false when story.act >= 2 begin}
   The code on the bench flickers to life. A voice whispers: "You found me."
   * [Follow the whisper]
     -> bench_alley
   * [Ignore it]
 {end storylet}
 
-{storylet magic_word begin}
-  trigger: listen
-  match: "abracadabra"
-
+{storylet magic_word trigger=listen, match=abracadabra begin}
   The word hangs in the air — and the wall answers.
 {end storylet}
 ```
 
-- **`trigger:`** names the input kind. The set is open — the reader app decides which kinds it can physically capture. Common kinds: `scan` (QR/barcode payload), `listen` (recognized speech transcript), `text`, `vision`, `nfc`, `shake`, `location`. A storylet without `trigger:` behaves exactly as before (deck-only); a storylet may carry both `trigger:` and `tags:` and appear in decks too
-- **`match:`** is a case-insensitive regular expression tested against the input's value (the QR payload, the transcript). Omit it to accept any input of that kind
-- **Selection** follows normal storylet rules: among storylets whose kind and `match:` fit, `require:` conditions, drawn-state, `cooldown:` and `priority:` are respected, then one is picked by weighted random. One input wakes exactly one storylet
-- **Inside the body**, `event.kind` and `event.value` expose the triggering input to conditions and text (they are also visible to `require:` during selection), so the scanned payload or the spoken words can be quoted back to the reader: `Its tag reads {event.value}.`
+- **`trigger=`** names the input kind. The set is open — the reader app decides which kinds it can physically capture. Common kinds: `scan` (QR/barcode payload), `listen` (recognized speech transcript), `text`, `vision`, `nfc`, `shake`, `location`. A storylet without `trigger=` behaves exactly as before (deck-only); a storylet may carry both `trigger=` and `tags=` and appear in decks too
+- **`match=`** is a case-insensitive regular expression tested against the input's value (the QR payload, the transcript). Omit it to accept any input of that kind
+- **Selection** follows normal storylet rules: among storylets whose kind and `match=` fit, `when` conditions, drawn-state, `cooldown=` and `priority=` are respected, then one is picked by weighted random. One input wakes exactly one storylet
+- **Inside the body**, `event.kind` and `event.value` expose the triggering input to conditions and text (they are also visible to `when` during selection), so the scanned payload or the spoken words can be quoted back to the reader: `Its tag reads {event.value}.`
 
 #### Interruption and return
 

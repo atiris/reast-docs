@@ -97,7 +97,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `ext/requires-missing` | `fatal` | load refused |
 | `ext/unbound-alias` | `error` | call yields `undefined` → empty |
 
-#### `parse/` — Reading one file (36)
+#### `parse/` — Reading one file (39)
 
 | Code | Severity | What the reader gets |
 | ---- | -------- | -------------------- |
@@ -121,6 +121,9 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `parse/empty-choice-group` | `warning` | group not shown |
 | `parse/choice-options-capped` | `error` | options past the cap are not offered |
 | `parse/single-option-choice-group` | `info` | the one option is shown |
+| `parse/unknown-attribute` | `warning` | the attribute is ignored |
+| `parse/body-property` | `error` | the line renders as prose; the setting is lost |
+| `parse/unexpected-when` | `warning` | the condition is ignored |
 | `parse/invalid-storylet-match` | `error` | storylet never eligible |
 | `parse/inline-depth-exceeded` | `warning` | deeper inlines flatten to text |
 | `parse/document-truncated` | `error` | content after the limit is lost |

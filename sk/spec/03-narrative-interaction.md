@@ -114,7 +114,7 @@ Kľúčové slovo `hidden` stojí na riadku voľby ako prvé; podmienka môže n
 * hidden {story.player.curious} [&look_under_sofa] …
 ```
 
-Skryté voľby sa zvyčajne viažu na kartu akcie cez `[&card_id]` — pole `description:` karty je to, s čím sa porovnáva voľný text, a jej polia `scan:`, `mark:` a `listen:` sú to, na čo sedia vstupy z reálneho sveta. Keďže sa návestie objaví až po spustení voľby, na skrytý obsah naznačte v okolitej próze; návestie a rozprávanie sú odmena, nie pozvánka. Skupiny zložené prevažne zo skrytých volieb popisujú [Menu objavovania](#exploration-menus).
+Skryté voľby sa zvyčajne viažu na kartu akcie cez `[&card_id]` — pole `description=` karty je to, s čím sa porovnáva voľný text, a jej polia `scan=`, `mark=` a `listen=` sú to, na čo sedia vstupy z reálneho sveta. Keďže sa návestie objaví až po spustení voľby, na skrytý obsah naznačte v okolitej próze; návestie a rozprávanie sú odmena, nie pozvánka. Skupiny zložené prevažne zo skrytých volieb popisujú [Menu objavovania](#exploration-menus).
 
 ### Odbočky {#diverts}
 
@@ -221,7 +221,7 @@ Vytiahneš náradie a pustíš sa do práce.
 
 Tunely sa hodia na znovupoužiteľné pasáže (napr. opakované obhliadky, spoločné dialógové sekvencie) bez ručného smerovania späť.
 
-Tunel a storylet riešia odlišné problémy a siahnite po každom zámerne: tunel je znovupoužiteľný blok obsahu viazaný na aktuálnu kapitolu — autor explicitne píše miesto volania (`->->`) a tunel sa vždy vráti presne na to miesto. [Storylet](/sk/spec/storylets) vyberá jadro, autor ho nevolá: ťahá sa z celopríbehového zásobníka cez `{deck}` alebo ho zobudí vstup z reálneho sveta cez `trigger:`, na základe `require`/`priority`/`cooldown`, nie pevného miesta volania v texte.
+Tunel a storylet riešia odlišné problémy a siahnite po každom zámerne: tunel je znovupoužiteľný blok obsahu viazaný na aktuálnu kapitolu — autor explicitne píše miesto volania (`->->`) a tunel sa vždy vráti presne na to miesto. [Storylet](/sk/spec/storylets) vyberá jadro, autor ho nevolá: ťahá sa z celopríbehového zásobníka cez `{deck}` alebo ho zobudí vstup z reálneho sveta cez `trigger=`, na základe `require`/`priority`/`cooldown`, nie pevného miesta volania v texte.
 
 ### Obsah pri prvej návšteve {#first-visit-content}
 
@@ -368,7 +368,7 @@ V kooperatívnom čítaní môžu rôzni čitatelia sledovať rôzne vlákna sú
 
 <Feature id="storylets" />
 
-Modulárne bloky obsahu s podmienkami a účinkami — `require`, `priority`, `repeatable`, `cooldown`, `weight`, `tags` — ktoré vyberá jadro do `{deck}` alebo ktoré zobudí vstup z reálneho sveta cez `trigger:` ako vedľajšiu cestu, ktorá sa vráti presne tam, kde čitateľ prestal. Storylety majú teraz vlastnú stránku: pozri [Storylety a balíčky](/sk/spec/storylets).
+Modulárne bloky obsahu s podmienkami a účinkami — `require`, `priority`, `repeatable`, `cooldown`, `weight`, `tags` — ktoré vyberá jadro do `{deck}` alebo ktoré zobudí vstup z reálneho sveta cez `trigger=` ako vedľajšiu cestu, ktorá sa vráti presne tam, kde čitateľ prestal. Storylety majú teraz vlastnú stránku: pozri [Storylety a balíčky](/sk/spec/storylets).
 
 ### Menu objavovania {#exploration-menus}
 
@@ -395,7 +395,7 @@ Obalenie skupiny volieb do `{menu select=N begin} … {end menu}` mení, na koľ
 
 Každá aktivácia prehrá rozprávanie a účinky danej možnosti presne ako klepnutá voľba — `{set}`, `{give}`, odbočky, všetko ide tou istou cestou. Jednorazová možnosť (`*`) po výbere z výberu odchádza; opakovateľná (`+`) zostáva dostupná. Viditeľná možnosť môže menu ukončiť skôr odbočením inam, alebo sa jednoducho počíta do `N` ako každý iný výber.
 
-Aktivačné kanály — `scan:`, `mark:`, `listen:` — sa deklarujú na odkazovanej karte (pozri [Aktiváciu v reálnom svete](#real-world-activation) v kapitole Karty), nie na samotnom riadku voľby. Ten istý odkaz `[&card_id]` aj príznak `hidden` fungujú, či sa karta zobudí klepnutím, naskenovaním, značkou alebo hlasom.
+Aktivačné kanály — `scan=`, `mark=`, `listen=` — sa deklarujú na odkazovanej karte (pozri [Aktiváciu v reálnom svete](#real-world-activation) v kapitole Karty), nie na samotnom riadku voľby. Ten istý odkaz `[&card_id]` aj príznak `hidden` fungujú, či sa karta zobudí klepnutím, naskenovaním, značkou alebo hlasom.
 
 #### Krok späť a uloženia vnútri menu {#undo-and-saves-inside-a-menu}
 
@@ -498,12 +498,7 @@ Pri fontáne vidíš stáť [@elena].
 Karty postáv sa definujú v metadátach alebo vo vyhradenom bloku:
 
 ```rea
-{define character elena begin}
-  name: Elena Vossová
-  title: Potulná učenkyňa
-  image: media/elena.png
-  description: Vysoká žena so striebrom pretkanými vlasmi a od atramentu zafarbenými prstami.
-{end define}
+{define character elena name="Elena Vossová", title="Potulná učenkyňa", image="media/elena.png", description="Vysoká žena so striebrom pretkanými vlasmi a od atramentu zafarbenými prstami."}
 ```
 
 Keď čitateľ klepne na `[@elena]`, uvidí kartu postavy s portrétom, menom, titulom a popisom.
@@ -515,12 +510,7 @@ Keď čitateľ klepne na `[@elena]`, uvidí kartu postavy s portrétom, menom, t
 ```rea
 Na zemi nájdeš [$golden_key].
 
-{define item golden_key begin}
-  name: Zlatý kľúč
-  image: media/golden_key.png
-  description: Zdobený kľúč, na dotyk teplý. Zdá sa, akoby ticho hučal.
-  rarity: rare
-{end define}
+{define item golden_key name="Zlatý kľúč", image="media/golden_key.png", description="Zdobený kľúč, na dotyk teplý. Zdá sa, akoby ticho hučal.", rarity=rare}
 ```
 
 Predmety sa dajú pridať do inventára čitateľa:
@@ -584,47 +574,34 @@ Karty akcií predstavujú body vetvenia príbehu s vizuálnym dôrazom:
 Podobne ako karty postáv a predmetov môže aj akcia niesť blok `{define action}` s názvom a popisom:
 
 ```rea
-{define action open_the_gate begin}
-  name: Starodávna brána
-  description: otvor hrdzavú bránu; násilím otvor starú bránu; pretlač sa cez vchod
-{end define}
+{define action open_the_gate name="Starodávna brána", description="otvor hrdzavú bránu; násilím otvor starú bránu; pretlač sa cez vchod"}
 ```
 
-`description:` sa zobrazí na karte a zároveň slúži ako sémantický cieľ pre [voľný textový vstup akcie](#free-text-action-input) — teda to, čo môže čitateľ napísať, aby akciu pomenoval.
+`description=` sa zobrazí na karte a zároveň slúži ako sémantický cieľ pre [voľný textový vstup akcie](#free-text-action-input) — teda to, čo môže čitateľ napísať, aby akciu pomenoval.
 
 #### Aktivácia v reálnom svete {#real-world-activation}
 
 <Feature id="real-world-activation" />
 
-Karta akcie sa môže zobudiť aj vstupom z reálneho sveta namiesto klepnutia — alebo popri ňom. Vedľa `description:` stoja tri voliteľné polia:
+Karta akcie sa môže zobudiť aj vstupom z reálneho sveta namiesto klepnutia — alebo popri ňom. Vedľa `description=` stoja tri voliteľné polia:
 
 ```rea
-{define action qr_door begin}
-  name: Služobné dvere
-  scan: ^REAST-DOOR-.*
-{end define}
+{define action qr_door name="Služobné dvere", scan="^REAST-DOOR-.*"}
 
-{define action painted_tree begin}
-  name: Namaľovaný strom
-  mark: emb1:Zk3q…                      // podpis vypočítaný editorom z kresby
-{end define}
+{define action painted_tree name="Namaľovaný strom", mark="emb1:Zk3q…                      // podpis vypočítaný editorom z kresby"}
 
-{define action couch_secret begin}
-  name: Pod gaučom
-  description: pozri sa pod starý gauč; nadvihni pohovku; prehľadaj priestor pod sedadlom
-  listen: pod gaučom
-{end define}
+{define action couch_secret name="Pod gaučom", description="pozri sa pod starý gauč; nadvihni pohovku; prehľadaj priestor pod sedadlom", listen="pod gaučom"}
 ```
 
 | Pole      | Porovnáva sa s                        | Porovnanie                                     |
 | --------- | ------------------------------------- | ---------------------------------------------- |
-| `scan:`   | Obsahom naskenovaného QR alebo kódu   | Regulárny výraz bez ohľadu na veľkosť písmen   |
-| `listen:` | Prepisom reči                         | Regulárny výraz bez ohľadu na veľkosť písmen   |
-| `mark:`   | Odfotenou ručne kreslenou značkou     | Presná zhoda podpisu                           |
+| `scan=`   | Obsahom naskenovaného QR alebo kódu   | Regulárny výraz bez ohľadu na veľkosť písmen   |
+| `listen=` | Prepisom reči                         | Regulárny výraz bez ohľadu na veľkosť písmen   |
+| `mark=`   | Odfotenou ručne kreslenou značkou     | Presná zhoda podpisu                           |
 
 Karta môže tieto polia ľubovoľne kombinovať — `couch_secret` vyššie odpovedá na napísaný opis aj na vyslovenú frázu.
 
-> **`mark:` je nepriehľadné.** Jeho hodnota je podpis, ktorý nástroj editora „Nakresli značku" vypočíta z kresby alebo fotografie — nikdy ho nepíšte ani neupravujte ručne. Ak chcete značku vytvoriť alebo zmeniť, prekreslite ju v editore; pracovný postup nájdete v [Menu objavovania v reálnom svete](/sk/platform/design/real-world-exploration-menus).
+> **`mark=` je nepriehľadné.** Jeho hodnota je podpis, ktorý nástroj editora „Nakresli značku" vypočíta z kresby alebo fotografie — nikdy ho nepíšte ani neupravujte ručne. Ak chcete značku vytvoriť alebo zmeniť, prekreslite ju v editore; pracovný postup nájdete v [Menu objavovania v reálnom svete](/sk/platform/design/real-world-exploration-menus).
 
 Tieto polia vyniknú, keď je možnosť prehrávajúca kartu `hidden` — pozri [Menu objavovania](#exploration-menus) v kapitole Voľby a vetvenie. Viditeľná možnosť s aktivačnými poľami odpovedá na oboje: čitateľ môže klepnúť na jej tlačidlo alebo vytvoriť zodpovedajúci vstup z reálneho sveta.
 
@@ -635,13 +612,7 @@ Tieto polia vyniknú, keď je možnosť prehrávajúca kartu `hidden` — pozri 
 `character`, `item` a `action` sú tri **vstavané sady kariet**. Autori môžu deklarovať ďalšie sady a zoskupiť tak karty, ktoré zdieľajú rovnaké pravidlá získania, straty a použitia — napríklad sadu `ability`, sadu `attribute` alebo tematickú sadu `relic`. Sada sa deklaruje blokom `{define cardset <id> begin}`:
 
 ```rea
-{define cardset ability begin}
-  name: Karty schopností
-  description: Karty udeľujúce vlastnosti, ktoré si hrdina môže vybaviť.
-  acquire: Získavajú sa dokončením úloh.
-  lose: Strácajú sa, keď je postava porazená.
-  use: Zahraním sa uplatní uvedený bonus k vlastnosti.
-{end define}
+{define cardset ability name="Karty schopností", description="Karty udeľujúce vlastnosti, ktoré si hrdina môže vybaviť.", acquire="Získavajú sa dokončením úloh.", lose="Strácajú sa, keď je postava porazená.", use="Zahraním sa uplatní uvedený bonus k vlastnosti."}
 ```
 
 Sada môže niesť ľudsky čitateľné polia pravidiel `acquire`, `lose` a `use` plus ľubovoľné ďalšie vlastnosti `kľúč: hodnota`. `id` sady sa stáva **druhom** každej karty, ktorá do nej patrí.
@@ -649,10 +620,7 @@ Sada môže niesť ľudsky čitateľné polia pravidiel `acquire`, `lose` a `use
 Karta do sady vstúpi tým, že sa použije id sady tam, kde by inak stálo `character`, `item` alebo `action`:
 
 ```rea
-{define ability spinach begin}
-  name: Špenát
-  strength: +2
-{end define}
+{define ability spinach name=Špenát, strength=+2}
 ```
 
 #### Háčiky pravidiel {#rule-hooks}
@@ -660,8 +628,7 @@ Karta do sady vstúpi tým, že sa použije id sady tam, kde by inak stálo `cha
 Sada môže pripojiť spustiteľné háčiky, ktoré sa vykonajú pri **každej** karte danej sady. Sú to `{on_acquire}`, `{on_lose}` a `{on_use}`:
 
 ```rea
-{define cardset ability begin}
-  name: Karty schopností
+{define cardset ability name="Karty schopností" begin}
   {on_acquire begin}
     {set story.ability_count = story.ability_count + 1}
   {end on_acquire}
@@ -674,9 +641,7 @@ Sada môže pripojiť spustiteľné háčiky, ktoré sa vykonajú pri **každej*
 Jednotlivá karta môže ktorýkoľvek háčik **prekryť** a zároveň zdediť ostatné pravidlá sady. Tu `ginko` predefinuje `on_use`, ale ponechá si `on_acquire` sady:
 
 ```rea
-{define ability ginko begin}
-  name: Ginko
-  intelligence: +2
+{define ability ginko name=Ginko, intelligence=+2 begin}
   {on_use begin}
     {set story.player.intelligence = story.player.intelligence + 2}
   {end on_use}
@@ -703,9 +668,7 @@ Identifikátory kariet môžu obsahovať písmená, číslice, spojovníky a pod
 Tri vstavané sady sa dajú predefinovať a pripojiť im spoločné pravidlá bez zmeny toho, ako sa ich karty píšu. Predefinovanie `action` s pridaním ceny za použitie platí pre každú kartu akcie `[&]`:
 
 ```rea
-{define cardset action begin}
-  name: Bojové akcie
-  use: Na zahranie minie akčný bod.
+{define cardset action name="Bojové akcie", use="Na zahranie minie akčný bod." begin}
   {on_use begin}
     {set story.actions_played = story.actions_played + 1}
   {end on_use}
@@ -719,11 +682,7 @@ Keď sa autorská redefinícia zrazí s implicitnou vstavanou sadou, vyhráva de
 Vlastnosti karty sú **doslovný text**. Všetko za `key:` sa uloží presne tak, ako je napísané, s jedinou úpravou: zástupný symbol `{premenná}` sa pri každom dopyte na kartu nahradí aktuálnou hodnotou tejto premennej — práve to umožňuje karte zobraziť živú štatistiku alebo odomknutú úroveň ilustrácie.
 
 ```rea
-{define character elena begin}
-  name: Elena Voss
-  level: {story.elena.level}
-  home: @(48.14, 17.10)
-{end define}
+{define character elena name="Elena Voss", level="{story.elena.level}", home="@(48.14, 17.10)"}
 ```
 
 `level` je *text* vzniknutý nahradením premennej, nie číslo. `home` je text `@(48.14, 17.10)`, nie bod — pripomína literál súradnice bez toho, aby ním bol. Vlastnosť sa zobrazuje, nikdy sa s ňou nepočíta: príbeh, ktorý potrebuje hodnotu porovnávať alebo sčítavať, si ju drží v bežnej premennej a karta ju ukáže cez zástupný symbol.
@@ -847,13 +806,10 @@ Izba je malá a zaprášená. V rohu sa prehýba starý gauč.
   Dnu prúdi čerstvý vzduch.
 * hidden [&look_under_sofa] Jozef sa zohol a pozrel pod starú pohovku, kde našiel záhadnú obálku s nápisom _Tajné!_
 
-{define action look_under_sofa begin}
-  name: Pozri sa pod pohovku
-  description: nadvihni alebo sa pozri pod starý gauč v rohu; skontroluj priestor pod pohovkou; prehľadaj pod sedadlom
-{end define}
+{define action look_under_sofa name="Pozri sa pod pohovku", description="nadvihni alebo sa pozri pod starý gauč v rohu; skontroluj priestor pod pohovkou; prehľadaj pod sedadlom"}
 ```
 
-Na rozdiel od obyčajného textového vstupu sa odoslaný text neuloží do premennej — porovná sa s použiteľnými možnosťami čakajúcej skupiny volieb, viditeľnými aj [skrytými](#hidden-choices), s už uplatnenými podmienkami a bez spotrebovaných jednorazových možností. Pri možnostiach viazaných na kartu akcie je sémantickým cieľom `description:` karty — píšte ju ako stručný zoznam zámerov, synonymá vítané, v jazyku príbehu; do úvahy sa berie aj `name:` karty a návestie možnosti.
+Na rozdiel od obyčajného textového vstupu sa odoslaný text neuloží do premennej — porovná sa s použiteľnými možnosťami čakajúcej skupiny volieb, viditeľnými aj [skrytými](#hidden-choices), s už uplatnenými podmienkami a bez spotrebovaných jednorazových možností. Pri možnostiach viazaných na kartu akcie je sémantickým cieľom `description=` karty — píšte ju ako stručný zoznam zámerov, synonymá vítané, v jazyku príbehu; do úvahy sa berie aj `name=` karty a návestie možnosti.
 
 Zhoda aktivuje možnosť presne tou istou cestou ako klepnutie — rozprávanie, účinky, krok späť, uloženia aj analytika sa správajú rovnako. Odoslanie, ktorému nič nesedí, zobrazí v poli jemnú správu o nezhode a skupina zostane otvorená, takže hádať je vždy bezpečné.
 
@@ -950,17 +906,9 @@ Rea natívne podporuje **zážitky pre viacerých čitateľov**, kde ten istý p
 <Feature id="roles" />
 
 ```rea
-{define role captain begin}
-  name: Kapitán
-  description: Vodca výpravy. Robí konečné rozhodnutia.
-  max: 1
-{end define}
+{define role captain name=Kapitán, description="Vodca výpravy. Robí konečné rozhodnutia.", max=1}
 
-{define role crew begin}
-  name: Člen posádky
-  description: Plní rozkazy. Má jedinečné zručnosti.
-  max: 4
-{end define}
+{define role crew name="Člen posádky", description="Plní rozkazy. Má jedinečné zručnosti.", max=4}
 ```
 
 ### Obsah pre konkrétnu rolu {#role-specific-content}
@@ -1262,13 +1210,13 @@ Pridanie `optional` znamená, že funkcia príbeh obohatí, ale nie je nutná. F
 
 <Feature id="conditional-wait" />
 
-Každá brána v príbehu — `{if}`, `condition` voľby, `require:` storyletu, stráž `when` stavového automatu, `visible:` špendlíka na mape, oblasť zastávky — sa píše v **jednom** jazyku výrazov a rozhoduje o nej **jeden** podsystém. Nelíši sa podmienka, ale *kedy sa na ňu engine pozrie*, a to vyjadruje blok, ktorý autor zvolí, nie druhá syntax:
+Každá brána v príbehu — `{if}`, `condition` voľby, `when` storyletu, stráž `when` stavového automatu, `visible:` špendlíka na mape, oblasť zastávky — sa píše v **jednom** jazyku výrazov a rozhoduje o nej **jeden** podsystém. Nelíši sa podmienka, ale *kedy sa na ňu engine pozrie*, a to vyjadruje blok, ktorý autor zvolí, nie druhá syntax:
 
 | Režim          | Zápis                                                                          | Význam                                                            | Vyžaduje únik                   |
 | -------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------ | ------------------------------- |
 | **teraz**      | `{if}`, `condition` voľby, `visible:` špendlíka                                | vyhodnotí sa vo chvíli, keď k nej čitateľ dôjde                    | nie                             |
 | **kým**        | `{wait EXPR begin} … {end wait}`, `{waypoint}`                                 | príbeh sa tu zastaví a pokračuje, keď sa výraz stane pravdivým      | áno, keď výraz číta `context.*` |
-| **kedykoľvek** | `{on EVENT when GUARD}`, `require:` storyletu, `{zone}` `on enter` / `on exit` | spúšťa sa na hrane, môže sa spustiť opakovane                       | neaplikuje sa                   |
+| **kedykoľvek** | `{on EVENT when GUARD}`, `when` storyletu, `{zone}` `on enter` / `on exit` | spúšťa sa na hrane, môže sa spustiť opakovane                       | neaplikuje sa                   |
 
 Autor volí sloveso jedinou otázkou — *zastaví sa tu príbeh?* — a vo všetkých troch prípadoch píše ten istý jazyk výrazov. Nové schopnosti preto prichádzajú ako nové podstromy `context.` a nové funkcie, nikdy nie ako nová gramatika.
 
@@ -1279,7 +1227,7 @@ Autor volí sloveso jedinou otázkou — *zastaví sa tu príbeh?* — a vo vše
 `{wait EXPR begin} … {end wait}` zastaví príbeh, kým sa `EXPR` nestane pravdivým. Telo je to, čo čitateľ vidí **počas** čakania; keď sa brána otvorí, telo sa nahradí a príbeh pokračuje za `{end wait}`.
 
 ```rea
-{wait context.weather = "rain" and context.time.hour >= 20, escape=duration("PT3H"), escape_to="dry_night" begin}
+{wait escape=duration("PT3H"), escape_to="dry_night" when context.weather = "rain" and context.time.hour >= 20 begin}
   Sadneš si na lavičku pod podlubím a pozeráš na oblohu.
 {end wait}
 
@@ -1401,21 +1349,18 @@ Ide o podmienku, ktorú napísal *autor*. Každú zastávku beh programu porovn�
 Príbeh zasadený do reálneho miesta môže ukázať vlastnú mapu namiesto všeobecnej: obrázok dodaný autorom ukotvený na reálne hranice GPS, so špendlíkmi umiestnenými na súradniciach.
 
 ```rea
-{map old_town begin}
+{map old_town bounds="@(48.152, 17.100), @(48.140, 17.120)" begin}
   image [!Staré mesto < assets/old-town.webp]
-  bounds: @(48.152, 17.100), @(48.140, 17.120)
-  {pin bridge begin}
-    at: @(48.1432, 17.1056)
+  {pin bridge at="@(48.1432, 17.1056)" begin}
     label "Starý most"
   {end pin}
-  {pin reader begin}
-    at: context.location
+  {pin reader at=context.location begin}
     label "Ty"
   {end pin}
 {end map}
 ```
 
-`bounds:` udáva severozápadný a juhovýchodný roh obrázka ako dva bodové literály a jadro každý špendlík naň premietne ekvidištantne. `at:` špendlíka prijíma ľubovoľný bodový výraz — literál alebo `context.location` pre špendlík, ktorý sleduje čitateľa — takže sa špendlík môže pohybovať s čítaním alebo sa objaviť až po nastavení premennej (`visible`).
+`bounds=` udáva severozápadný a juhovýchodný roh obrázka ako dva bodové literály a jadro každý špendlík naň premietne ekvidištantne. `at:` špendlíka prijíma ľubovoľný bodový výraz — literál alebo `context.location` pre špendlík, ktorý sleduje čitateľa — takže sa špendlík môže pohybovať s čítaním alebo sa objaviť až po nastavení premennej (`visible`).
 
 Nič z tohto bloku sa zatiaľ nevykresľuje — parser mu rozumie, výpočet projekcie je napísaný a zostávajúcim dielom je plátno na strane čitateľa.
 
@@ -1426,15 +1371,11 @@ Nič z tohto bloku sa zatiaľ nevykresľuje — parser mu rozumie, výpočet pro
 Zreťazte zastávky do postupných alebo voľných trás:
 
 ```rea
-{route treasure_hunt, sequential begin}
-  waypoint: old_bridge
-  waypoint: castle_ruins
-  waypoint: hidden_cave
-  complete: "Dokončil si hľadanie pokladu!"
+{route treasure_hunt, waypoints="old_bridge, castle_ruins, hidden_cave", complete="Dokončil si hľadanie pokladu!", sequential begin}
 {end route}
 ```
 
-Trasa pomenúva zastávky deklarované inde; neobsahuje ich, takže zastávka ostáva jednou vecou na jednom mieste a trasa je chodník cez ne. Jej riadok `complete:` sa vykreslí tam, kde stojí samotný blok `{route}`, a až keď sú hotové všetky etapy — autor teda blok umiestni tam, kam patrí odmena, spravidla za chodník. Dovtedy blok neukazuje nič.
+Trasa pomenúva zastávky deklarované inde; neobsahuje ich, takže zastávka ostáva jednou vecou na jednom mieste a trasa je chodník cez ne. Jej riadok `complete=` sa vykreslí tam, kde stojí samotný blok `{route}`, a až keď sú hotové všetky etapy — autor teda blok umiestni tam, kam patrí odmena, spravidla za chodník. Dovtedy blok neukazuje nič.
 
 `sequential` zaznamenáva, že etapy sa majú navštíviť v poradí. Keďže každá `{waypoint}` zastaví príbeh tam, kde stojí, je toto poradie zároveň poradím čítania; atribút hovorí mape, ukazovateľu postupu či rozhraniu hostiteľa, že preskakovanie nie je zámerom.
 
@@ -1546,7 +1487,7 @@ Atribút `target` sa porovnáva s naskenovanou hodnotou. Na zhodu regulárnym v�
 {end scan}
 ```
 
-Blok `{scan}` je *blokujúci* — príbeh sa na tom mieste zastaví a čaká na kód. Pre kódy, na ktoré čitateľ môže naraziť kdekoľvek cestou, radšej použite [spúšťané storylety](/sk/spec/storylets#triggered-storylets) (`trigger: scan`) alebo možnosť [menu objavovania](#exploration-menus) s poľom karty `scan:`: tie sú dobrovoľnými prerušeniami, ktoré sa spustia vtedy, keď vstup dorazí.
+Blok `{scan}` je *blokujúci* — príbeh sa na tom mieste zastaví a čaká na kód. Pre kódy, na ktoré čitateľ môže naraziť kdekoľvek cestou, radšej použite [spúšťané storylety](/sk/spec/storylets#triggered-storylets) (`trigger: scan`) alebo možnosť [menu objavovania](#exploration-menus) s poľom karty `scan=`: tie sú dobrovoľnými prerušeniami, ktoré sa spustia vtedy, keď vstup dorazí.
 
 ### NFC štítky {#nfc-tags}
 
@@ -1656,11 +1597,11 @@ Vzor: pole striedajúcich sa dĺžok vibrácie a pauzy v milisekundách.
 {end if}
 ```
 
-Rovnako ako `{scan}` aj blok `{listen}` zastaví a čaká na jednom mieste. Pre frázy, ktoré čitateľ môže vysloviť kedykoľvek, použite [spúšťané storylety](/sk/spec/storylets#triggered-storylets) (`trigger: listen`) alebo možnosť menu objavovania s poľom karty `listen:`.
+Rovnako ako `{scan}` aj blok `{listen}` zastaví a čaká na jednom mieste. Pre frázy, ktoré čitateľ môže vysloviť kedykoľvek, použite [spúšťané storylety](/sk/spec/storylets#triggered-storylets) (`trigger: listen`) alebo možnosť menu objavovania s poľom karty `listen=`.
 
 ### Priorita: menu objavovania verzus spúšťače storyletov {#priority-exploration-menus-vs-storylet-triggers}
 
-Naskenovanie, vyslovená fráza či odfotená značka je jediná fyzická udalosť — nemôže znamenať dve veci naraz. Ak má čitateľ vo chvíli, keď taký vstup vytvorí, otvorené čakajúce [menu objavovania](#exploration-menus), jadro najprv skontroluje možnosti menu s poľami `scan:`, `mark:` a `listen:`. Len keď v menu nič nesedí, ten istý vstup prepadne ďalej a zobudí spúšťač storyletu.
+Naskenovanie, vyslovená fráza či odfotená značka je jediná fyzická udalosť — nemôže znamenať dve veci naraz. Ak má čitateľ vo chvíli, keď taký vstup vytvorí, otvorené čakajúce [menu objavovania](#exploration-menus), jadro najprv skontroluje možnosti menu s poľami `scan=`, `mark=` a `listen=`. Len keď v menu nič nesedí, ten istý vstup prepadne ďalej a zobudí spúšťač storyletu.
 
 Pozri [Storylety a balíčky](/sk/spec/storylets) pre výber storyletov, spúšťače a prioritu/váhu.
 
@@ -1702,12 +1643,9 @@ Hodil si {story.combat.roll}!
 Skombinujte viacero senzorov do interakcií v štýle výziev, inšpirovaných geocachingom a dobrodružnými hrami:
 
 ```rea
-{challenge night_vigil begin}
-  require: context.time.hour >= 23 and context.light < 20
-  require: context.location matches circle(@(48.14, 17.10), 200)
-  timeout: 30m
-  hint: "Nájdi starú kaplnku po polnoci. Neber si svetlo."
-
+{challenge night_vigil timeout=30m, hint="Nájdi starú kaplnku po polnoci. Neber si svetlo."
+            when context.time.hour >= 23 and context.light < 20
+                 and context.location matches circle(@(48.14, 17.10), 200) begin}
   Stojíš v tme pred starodávnou kaplnkou.
   Hviezdy nad tebou skladajú odkaz viditeľný len v túto hodinu.
   {set story.star_message = "VERITAS"}
@@ -1718,7 +1656,7 @@ Atribúty výzvy:
 
 | Atribút   | Popis                                                  |
 | --------- | ------------------------------------------------------ |
-| `require` | Jedna alebo viac podmienok (všetky musia platiť)       |
+| `when …`  | Jedna alebo viac podmienok, spojených cez `and`        |
 | `timeout` | Časový limit (napr. `30m`, `2h`)                       |
 | `hint`    | Usmernenie zobrazené pri čiastočnom splnení podmienok  |
 | `retry`   | Povolí opakovanie po neúspechu (predvolene true)       |
