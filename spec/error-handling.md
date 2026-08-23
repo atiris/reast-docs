@@ -97,7 +97,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `ext/requires-missing` | `fatal` | load refused |
 | `ext/unbound-alias` | `error` | call yields `undefined` → empty |
 
-#### `parse/` — Reading one file (45)
+#### `parse/` — Reading one file (47)
 
 | Code | Severity | What the reader gets |
 | ---- | -------- | -------------------- |
@@ -128,6 +128,8 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `parse/ambiguous-event-subject` | `warning` | only the first subject is used |
 | `parse/unknown-event` | `warning` | the handler never runs |
 | `parse/missing-deck-subject` | `error` | the command does nothing |
+| `parse/face-outside-card` | `warning` | the face text is dropped |
+| `parse/invalid-face-position` | `warning` | the face sits in the default band |
 | `parse/manifest-not-first` | `warning` | the metadata is ignored |
 | `parse/duplicate-embedded-file` | `error` | the first declaration is used |
 | `parse/invalid-storylet-match` | `error` | storylet never eligible |

@@ -134,10 +134,11 @@ Ahoj, {story.player.name}! Máš {story.player.gold} zlata.
 {define deck basic name="Zásoby",                   Pomenovaná zásoba kariet
         back="assets/back.webp", play=reusable}
 {define card coin deck="basic", name="Minca" begin} Karta vstupuje pomenovaním balíčka
+  {face at="60%" begin}**3 strieborné**{end face}   Líce je to, čo je na nej vytlačené
   {earn silver 3}                                   Telo je to, čo sa zahrá
 {end card}
 
-{draw deck="basic"}                  Vezmi kartu do Vaku
+{draw deck="basic"}                  Vezmi kartu do Kapsy
 {play deck="basic", deal=3 begin}    Rozdaj tri, zahraj tú, ktorú si čitateľ vyberie
   Čo si vezmeš?
   {empty begin} Stánky sú prázdne. {end empty}      Nič použiteľné

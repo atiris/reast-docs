@@ -1430,6 +1430,22 @@ export const FEATURES: Feature[] = [
     link: '/spec/storylets',
   },
   {
+    id: 'card-face',
+    title: {
+      en: 'Card face',
+      sk: 'Líce karty',
+    },
+    group: 'storylets',
+    syntax: '{face at="60%" begin} **1 gold** {end face}',
+    status: 'experimental',
+    since: '1.4',
+    note: {
+      en: 'What is printed on the card, as against the body, which is what plays. A block rather than an attribute, so it carries bold, italic, links and hints; `at=` places it as a percentage of the card height. Three coins that look alike and are worth 1, 2 and 5 differ only here.',
+      sk: 'To, čo je na karte vytlačené — na rozdiel od tela, ktoré sa prehrá. Blok, nie atribút, takže unesie tučné písmo, kurzívu, odkazy aj nápovedy; `at=` ho umiestni ako percento výšky karty. Tri mince, ktoré vyzerajú rovnako a majú hodnotu 1, 2 a 5, sa líšia iba tu.',
+    },
+    link: '/spec/storylets',
+  },
+  {
     id: 'define-deck',
     title: {
       en: 'Decks',

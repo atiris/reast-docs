@@ -66,6 +66,31 @@ Three attributes **do** something rather than describe something:
 
 `when` is a **`whenever`** condition, evaluated at *selection* time — every time the engine deals, and never in between. A deck therefore never starts a sensor: a `when` reading `context.location` is answered from whatever position the platform last delivered, and if nothing is watching, that answer is `unknown` and the card is simply not eligible. A story that wants the engine to keep looking writes a [`{wait}`](03-narrative-interaction.md#waiting-for-a-condition), which is the `until` verb and does start what it needs.
 
+### What is printed on the card {#card-face}
+
+<Feature id="card-face" />
+
+A card's **face** is what is printed on the card; its **body** is what plays when the card is played. Three coins that look alike and are worth 1, 2 and 5 differ only in their face.
+
+```rea
+{define card coin_gold deck="purse", image="assets/cards/coin.webp" begin}
+  {face at="15%" begin}**Gold**{end face}
+  {face at="60%" begin}worth **5**{end face}
+  {earn gold=5}
+  You slip the coin into your palm.
+{end card}
+```
+
+`{face}` is a block rather than an attribute because its content is rich: bold, italic, links and hints all work, through the same inline parser prose uses. An attribute value carrying markdown is a quoting trap.
+
+| Attribute | Description                                                                                                    |
+| --------- | ---------------------------------------------------------------------------------------------------------------- |
+| `at=`     | Where the text sits, as a percentage of the card's **height** from the top, clamped to `0%`–`100%`. Absent leaves it in the renderer's default band, under the art |
+
+A card may declare several faces, each with its own `at=`, because a title at 15% and a value at 60% are one card and not two. `{variable}` placeholders inside a face resolve against live story state, exactly as they do in `name` and `description`, so `{face begin}{story.purse} gold{end face}` is live.
+
+A `{face}` outside a card definition is reported and dropped, and an `at=` that is not a percentage is reported and ignored — the text still prints, in the default band.
+
 ### Drawing and playing
 
 <Feature id="draw-play" />

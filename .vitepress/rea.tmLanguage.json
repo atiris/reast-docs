@@ -326,7 +326,7 @@
       ]
     },
     "command-block-begin": {
-      "match": "\\{(if|else\\s*if|for|while|switch|once|function|cycle|parallel|thread|timer|voice|broadcast|whisper|wait|vote|lock|underline|strike|mono|draw|play|empty|menu|map|pin|zone|route|state_machine|state|on)\\b([^}]*)\\}",
+      "match": "\\{(if|else\\s*if|for|while|switch|once|function|cycle|parallel|thread|timer|voice|broadcast|whisper|wait|vote|lock|underline|strike|mono|draw|play|empty|face|menu|map|pin|zone|route|state_machine|state|on)\\b([^}]*)\\}",
       "captures": {
         "1": {
           "name": "keyword.control.rea"
@@ -341,7 +341,7 @@
       }
     },
     "command-block-end": {
-      "match": "\\{(end\\s+(?:if|for|while|switch|once|function|cycle|replace|parallel|thread|timer|voice|broadcast|whisper|wait|vote|lock|underline|strike|mono|draw|play|empty|card|file|menu|map|pin|zone|route|state_machine|state|on)|else|then|default|return)\\b([^}]*)\\}",
+      "match": "\\{(end\\s+(?:if|for|while|switch|once|function|cycle|replace|parallel|thread|timer|voice|broadcast|whisper|wait|vote|lock|underline|strike|mono|draw|play|empty|face|card|file|menu|map|pin|zone|route|state_machine|state|on)|else|then|default|return)\\b([^}]*)\\}",
       "captures": {
         "1": {
           "name": "keyword.control.rea"

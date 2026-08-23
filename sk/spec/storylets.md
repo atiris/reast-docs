@@ -66,6 +66,31 @@ Tri atribúty niečo **robia**, nie opisujú:
 
 `when` je podmienka typu **kedykoľvek**, vyhodnocovaná v čase *výberu* — vždy, keď engine rozdáva, a nikdy medzitým. Balíček preto nikdy nespustí senzor: `when` čítajúce `context.location` sa zodpovie z polohy, ktorú platforma naposledy dodala, a ak polohu nikto nesleduje, odpoveď je `unknown` a karta jednoducho nie je použiteľná. Príbeh, ktorý chce, aby engine ďalej sledoval, píše [`{wait}`](03-narrative-interaction.md#waiting-for-a-condition) — to je sloveso *until* a spustí, čo potrebuje.
 
+### Čo je na karte vytlačené {#card-face}
+
+<Feature id="card-face" />
+
+**Líce** karty je to, čo je na karte vytlačené; jej **telo** je to, čo sa zahrá, keď sa karta zahrá. Tri mince, ktoré vyzerajú rovnako a majú hodnotu 1, 2 a 5, sa líšia iba lícom.
+
+```rea
+{define card coin_gold deck="purse", image="assets/cards/coin.webp" begin}
+  {face at="15%" begin}**Zlatá**{end face}
+  {face at="60%" begin}hodnota **5**{end face}
+  {earn gold=5}
+  Vsunieš si mincu do dlane.
+{end card}
+```
+
+`{face}` je blok, nie atribút, pretože jeho obsah je bohatý: tučné písmo, kurzíva, odkazy aj nápovedy fungujú cez ten istý riadkový parser ako próza. Hodnota atribútu nesúca markdown je pasca na úvodzovky.
+
+| Atribút | Popis                                                                                                          |
+| ------- | ------------------------------------------------------------------------------------------------------------- |
+| `at=`   | Kde text sedí, ako percento **výšky** karty zhora, orezané na `0 %`–`100 %`. Ak chýba, zostane v predvolenom páse vykresľovača, pod obrázkom |
+
+Karta môže deklarovať viac líc, každé s vlastným `at=`, pretože nadpis na 15 % a hodnota na 60 % sú jedna karta, nie dve. Zástupné symboly `{variable}` v líci sa vyhodnocujú voči živému stavu príbehu presne ako v `name` a `description`, takže `{face begin}{story.purse} zlata{end face}` je živé.
+
+`{face}` mimo definície karty sa nahlási a zahodí a `at=`, ktoré nie je percento, sa nahlási a ignoruje — text sa aj tak vytlačí, v predvolenom páse.
+
 ### Ťahanie a zahranie {#drawing-and-playing}
 
 <Feature id="draw-play" />
@@ -73,7 +98,7 @@ Tri atribúty niečo **robia**, nie opisujú:
 `{draw}` získava, `{play}` aktivuje.
 
 ```rea
-{draw deck="basic"}               {comment vezmi kartu do Vaku; zahrá sa neskôr}
+{draw deck="basic"}               {comment vezmi kartu do Kapsy; zahrá sa neskôr}
 {play deck="basic"}               {comment vyber kartu z balíčka a zahraj ju hneď}
 {play card="king"}                {comment príbeh vynúti jednu konkrétnu kartu}
 {return card="king"}              {comment vráť kartu do jej balíčka}
