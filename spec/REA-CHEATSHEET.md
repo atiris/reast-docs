@@ -162,6 +162,10 @@ A manifest may rename all four (`"domains": {"story": "物語"}`).
 
 {if drawn("coin") begin} ... {end if}               Did this reader draw it
 {story.deck.basic.remaining} of {story.deck.basic.size}   4 of 6 remain
+
+{triggers off}                       Fence the story: no real-world trigger,
+                                     no card played out of the Bag
+{triggers on}                        Open it again
 ```
 
 ---

@@ -147,6 +147,10 @@ Ahoj, {story.player.name}! Máš {story.player.gold} zlata.
 
 {if drawn("coin") begin} … {end if}                 Potiahol ju tento čitateľ
 {story.deck.basic.remaining} zo {story.deck.basic.size}   Zostávajú 4 zo 6
+
+{triggers off}                       Ohraď príbeh: žiadny spúšťač z reálneho
+                                     sveta, žiadna karta zahraná z tašky
+{triggers on}                        Znova ju otvor
 ```
 
 ---
