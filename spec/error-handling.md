@@ -147,7 +147,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `parse/comma-on-no-attribute-command` | `error` | block skipped entirely |
 | `parse/bare-word-attribute-value` | `error` | block skipped entirely |
 
-#### `link/` — Resolving names across the package (40)
+#### `link/` — Resolving names across the package (45)
 
 | Code | Severity | What the reader gets |
 | ---- | -------- | -------------------- |
@@ -175,6 +175,11 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `link/unreachable-choice` | `warning` | authored content the reader cannot reach |
 | `link/undefined-replace-target` | `error` | `{replace}` is a no-op |
 | `link/unknown-card` | `warning` | `{play}` is a no-op (specified) |
+| `link/unknown-deck` | `warning` | the command deals nothing |
+| `link/undealt-deck` | `info` | none — the deck is never dealt |
+| `link/unreachable-card` | `warning` | authored content the reader cannot reach |
+| `link/deck-short-of-deal` | `warning` | a smaller hand than the deck asks for |
+| `link/group-deck-without-readers` | `warning` | the deck degrades to reader scope |
 | `link/undefined-item` | `info` | item stacks without a definition |
 | `link/unknown-machine-event` | `error` | `{trigger}` is a no-op |
 | `link/undefined-initial-state` | `error` | machine has no valid state |
