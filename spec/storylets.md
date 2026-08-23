@@ -169,6 +169,26 @@ A triggered card plays like an author-written tunnel (`->->`): the engine rememb
 
 When an input matches nothing — no eligible card, no pending [exploration menu](/spec/03-narrative-interaction#exploration-menus) option — the reader app gives gentle feedback ("that did nothing… yet") rather than an error, so scanning stray codes is always safe. When both a pending exploration menu and a triggered card could answer the same input, the menu wins — see [Priority with storylet triggers](/spec/03-narrative-interaction#priority-with-storylet-triggers).
 
+#### Fencing interruptions {#fencing-interruptions}
+
+Some stretches of a story must not be interrupted — a cutscene, a countdown, a scene whose timing is the point. `{triggers off}` closes the fence and `{triggers on}` opens it again:
+
+```rea
+* [Open the door]
+  {triggers off}
+  The corridor swallows the sound behind you. Nothing you do now will be heard.
+
+- The corridor ends.
+
+* [Step out]
+  {triggers on}
+  The city noise comes back all at once.
+```
+
+While the fence is closed, a real-world input wakes nothing and a card the reader plays out of their Bag is refused. That is one rule rather than two on purpose: a triggered card and a card played from the Bag are the same act — something entering the story between two of its own steps — so an author fences both with one line. A running interruption is part of the same rule: side paths never nest, whatever the fence says.
+
+The fence travels with a save. A save taken inside a fenced stretch resumes inside it, and a save taken before one never resumes into it.
+
 ## See also
 
 - [Card events](/spec/03-narrative-interaction#event-handlers) — what a card does when it is acquired, lost or used, written as a flat `{on}` handler.

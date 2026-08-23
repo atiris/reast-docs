@@ -1478,6 +1478,22 @@ export const FEATURES: Feature[] = [
     link: '/spec/storylets#triggered-storylets',
   },
   {
+    id: 'trigger-fence',
+    title: {
+      en: 'Interruption fence',
+      sk: 'Ohrada prerušení',
+    },
+    group: 'storylets',
+    syntax: '{triggers off} … {triggers on}',
+    status: 'stable',
+    since: '1.3',
+    note: {
+      en: 'One fence for every interruption: while it is closed a real-world trigger wakes nothing and a card played from the Bag is refused. It travels with a save.',
+      sk: 'Jedna ohrada pre každé prerušenie: kým je zatvorená, spúšťač z reálneho sveta nezobudí nič a karta zahraná z tašky je odmietnutá. Putuje s uložením.',
+    },
+    link: '/spec/storylets#fencing-interruptions',
+  },
+  {
     id: 'exploration-menus',
     title: {
       en: 'Exploration menus',

@@ -197,7 +197,7 @@ Mobile readers can show a thumb-reachable bottom tab bar with up to five section
       "priorityHand": "reader",
       "help": { "enabled": true },
       "map": { "enabled": true, "image": "assets/map.webp" },
-      "pocket": { "enabled": true },
+      "bag": { "enabled": true },
       "character": { "enabled": true },
       "actions": { "enabled": true, "qrScan": true, "photo": true, "audio": true }
     }
@@ -211,7 +211,7 @@ Sections, in semantic thumb-distance order (`actions` closest to the priority th
 | ----------- | ---------------------------------------------------------------------------------------- |
 | `actions`   | Dynamic interaction hub — play an action card, scan a QR code, capture a photo or audio |
 | `character` | Reader vitals (HP/energy), RPG stats, and trait cards                                   |
-| `pocket`    | Inventory — coins, items, and ability cards                                             |
+| `bag`       | The Bag — coins, items and the cards the reader holds                                             |
 | `map`       | Map (image or live map) with the reader's location, navigation, and running time        |
 | `help`      | In-story help and hints                                                                 |
 

@@ -450,7 +450,7 @@
       }
     },
     "command-card-action": {
-      "match": "\\{(give|take|stop|input|button|replace)\\b([^}]*)\\}",
+      "match": "\\{(give|take|stop|input|button|replace|triggers)\\b([^}]*)\\}",
       "captures": {
         "1": {
           "name": "support.function.builtin.rea"

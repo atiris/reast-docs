@@ -190,7 +190,7 @@ Mobilní čitatelia môžu zobraziť palcom dosiahnuteľnú spodnú lištu zálo
       "priorityHand": "reader",
       "help": { "enabled": true },
       "map": { "enabled": true, "image": "assets/map.webp" },
-      "pocket": { "enabled": true },
+      "bag": { "enabled": true },
       "character": { "enabled": true },
       "actions": { "enabled": true, "qrScan": true, "photo": true, "audio": true }
     }
@@ -204,7 +204,7 @@ Sekcie, v sémantickom poradí podľa vzdialenosti od palca (`actions` najbliž�
 | ----------- | ----------------------------------------------------------------------------------------- |
 | `actions`   | Dynamický interakčný hub — zahrať akčnú kartu, naskenovať QR kód, zachytiť fotku či zvuk |
 | `character` | Životné funkcie čitateľa (HP/energia), RPG štatistiky a karty vlastností                  |
-| `pocket`    | Inventár — mince, predmety a karty schopností                                             |
+| `bag`       | Taška — mince, predmety a karty, ktoré čitateľ nesie                                             |
 | `map`       | Mapa (obrázok alebo živá mapa) s polohou čitateľa, navigáciou a časom hry                 |
 | `help`      | Pomoc a nápovedy v rámci príbehu                                                           |
 

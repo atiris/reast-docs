@@ -169,6 +169,26 @@ Spúšťaná karta sa zahrá ako autorský tunel (`->->`): engine si zapamätá 
 
 Keď vstup nezodpovedá ničomu — žiadna použiteľná karta, žiadna čakajúca možnosť [prieskumnej ponuky](/sk/spec/03-narrative-interaction#exploration-menus) — čitateľská aplikácia dá jemnú spätnú väzbu („to zatiaľ nič neurobilo") namiesto chyby, takže skenovať náhodné kódy je vždy bezpečné. Keď na ten istý vstup môže odpovedať aj čakajúca prieskumná ponuka aj spúšťaná karta, vyhráva ponuka — pozri [Priorita pri spúšťačoch storyletov](/sk/spec/03-narrative-interaction#priority-with-storylet-triggers).
 
+#### Ohradenie prerušení {#fencing-interruptions}
+
+Niektoré úseky príbehu sa nesmú prerušiť — filmová scéna, odpočítavanie, výjav, ktorého podstatou je načasovanie. `{triggers off}` ohradu zatvorí, `{triggers on}` ju znova otvorí:
+
+```rea
+* [Otvor dvere]
+  {triggers off}
+  Chodba pohltí zvuk za tebou. Nič, čo teraz urobíš, nikto nepočuje.
+
+- Chodba sa končí.
+
+* [Vyjdi von]
+  {triggers on}
+  Hluk mesta sa vráti naraz.
+```
+
+Kým je ohrada zatvorená, vstup z reálneho sveta nezobudí nič a karta, ktorú čitateľ zahrá z tašky, je odmietnutá. Je to zámerne jedno pravidlo, nie dve: spúšťaná karta a karta zahraná z tašky sú ten istý čin — niečo vstupuje do príbehu medzi dvoma jeho vlastnými krokmi — takže autor ohradí oboje jedným riadkom. Súčasťou toho istého pravidla je aj bežiace prerušenie: vedľajšie cesty sa nikdy nevnárajú, nech ohrada hovorí čokoľvek.
+
+Ohrada putuje s uložením. Uloženie spravené v ohradenom úseku sa v ňom aj obnoví a uloženie spravené pred ním sa doň nikdy nevráti.
+
 ## Pozri aj {#see-also}
 
 - [Udalosti kariet](/sk/spec/03-narrative-interaction#event-handlers) — čo karta robí, keď je získaná, stratená alebo použitá, napísané ako plochá obsluha `{on}`.
