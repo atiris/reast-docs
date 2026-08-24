@@ -123,6 +123,8 @@ Points are written with the `@(lat, lng)` literal (see [Coordinate literals](02-
 | `area(p1, p2, p3, ...)`  | Closed ring of at least three points; the ring closes itself     |
 | `circle(centre, metres)` | Everything within `metres` of a point                            |
 | `buffer(shape, metres)`  | Everything within `metres` of a path, area, circle or point      |
+| `distance(a, b)`         | Great-circle metres between two points                           |
+| `bearing(a, b)`          | Heading from `a` to `b`, degrees clockwise from north            |
 
 ### Collection mutation
 
@@ -172,7 +174,7 @@ Arrays support method-like calls:
 | `datetime("ISO-8601-string")`   | Create datetime from ISO 8601 string (supports `*` wildcards)           |
 | `duration("ISO-8601-duration")` | Create duration from ISO 8601 duration string                           |
 
-A geographic point has literal syntax — `@(lat, lng)`, latitude first (see [Section 11](02-logic-data.md#_11-variables-data-types)) — because a story set in a real place writes a great many of them. Everything with an extent is an ordinary call on points: `circle(p, metres)`, `area(p1, p2, p3, ...)`, `path(p1, p2, ...)`, `buffer(shape, metres)`. `within(point, area)` is the function form of `point matches area`, and `within(point, "waypoint_name")` reuses a named waypoint's own area rather than making the author repeat its coordinates.
+A geographic point has literal syntax — `@(lat, lng)`, latitude first (see [Section 11](02-logic-data.md#_11-variables-data-types)) — because a story set in a real place writes a great many of them. Everything with an extent is an ordinary call on points: `circle(p, metres)`, `area(p1, p2, p3, ...)`, `path(p1, p2, ...)`, `buffer(shape, metres)`. `distance(a, b)` and `bearing(a, b)` measure the gap between two points, in metres and in degrees clockwise from north. `within(point, area)` is the function form of `point matches area`, and `within(point, "waypoint_name")` reuses a named waypoint's own area rather than making the author repeat its coordinates.
 
 ### Text variation & localization functions
 

@@ -122,6 +122,8 @@ Body sa zapisujú literálom `@(lat, lng)` (pozri [Literály súradníc](02-logi
 | `area(p1, p2, p3, ...)`  | Uzavretý prstenec aspoň troch bodov; prstenec sa uzatvára sám            |
 | `circle(stred, metre)`   | Všetko do vzdialenosti `metre` od bodu                                   |
 | `buffer(tvar, metre)`    | Všetko do vzdialenosti `metre` od trasy, oblasti, kruhu alebo bodu       |
+| `distance(a, b)`         | Vzdialenosť dvoch bodov po veľkej kružnici, v metroch                    |
+| `bearing(a, b)`          | Smer z `a` do `b`, v stupňoch od severu                                  |
 
 ### Zmena kolekcií {#collection-mutation}
 
@@ -171,7 +173,7 @@ Polia podporujú volania v štýle metód:
 | `datetime("ISO-8601-string")`   | Vytvorí datetime z reťazca ISO 8601 (podporuje zástupné `*`)                  |
 | `duration("ISO-8601-duration")` | Vytvorí trvanie z reťazca trvania ISO 8601                                    |
 
-Geografický bod má literálovú syntax — `@(lat, lng)`, najprv zemepisná šírka (pozri [Sekciu 11](02-logic-data.md#_11-variables-data-types)) — pretože príbeh zasadený do reálneho miesta ich píše veľmi veľa. Všetko, čo má rozlohu, je bežné volanie nad bodmi: `circle(p, metre)`, `area(p1, p2, p3, ...)`, `path(p1, p2, ...)`, `buffer(tvar, metre)`. `within(bod, oblasť)` je funkcionálna podoba `bod matches oblasť` a `within(bod, "nazov_zastavky")` opätovne použije vlastnú oblasť pomenovanej zastávky namiesto toho, aby autor prepísal jej súradnice.
+Geografický bod má literálovú syntax — `@(lat, lng)`, najprv zemepisná šírka (pozri [Sekciu 11](02-logic-data.md#_11-variables-data-types)) — pretože príbeh zasadený do reálneho miesta ich píše veľmi veľa. Všetko, čo má rozlohu, je bežné volanie nad bodmi: `circle(p, metre)`, `area(p1, p2, p3, ...)`, `path(p1, p2, ...)`, `buffer(tvar, metre)`. `distance(a, b)` a `bearing(a, b)` merajú medzeru medzi dvoma bodmi — v metroch a v stupňoch od severu. `within(bod, oblasť)` je funkcionálna podoba `bod matches oblasť` a `within(bod, "nazov_zastavky")` opätovne použije vlastnú oblasť pomenovanej zastávky namiesto toho, aby autor prepísal jej súradnice.
 
 ### Funkcie variácie textu a lokalizácie {#text-variation-localization-functions}
 

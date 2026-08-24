@@ -595,7 +595,7 @@
           "name": "keyword.operator.logical.rea"
         },
         {
-          "match": "\\b(abs|min|max|round|random|clamp|length|upper|lower|trim|contains|replace|split|join|append|remove|shuffle|sort|plural|select|format|calendar|ordinal|path|area|circle|buffer)\\b",
+          "match": "\\b(abs|min|max|round|random|clamp|length|upper|lower|trim|contains|replace|split|join|append|remove|shuffle|sort|plural|select|format|calendar|ordinal|path|area|circle|buffer|distance|bearing)\\b",
           "name": "support.function.builtin.rea"
         },
         {

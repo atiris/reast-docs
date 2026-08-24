@@ -436,10 +436,23 @@ Každý polomer je v **metroch**. `area()` si prstenec uzatvára sama, takže zo
 {end if}
 ```
 
+Dvojica bodov odpovedá aj na otázky o priestore medzi nimi — vďaka tomu vie príbeh povedať *ako ďaleko* a *ktorým smerom*, nielen či čitateľ dorazil:
+
+| Meranie           | Popis                                                                        |
+| ----------------- | ----------------------------------------------------------------------------- |
+| `distance(a, b)`  | Vzdialenosť dvoch bodov po veľkej kružnici, v metroch.                        |
+| `bearing(a, b)`   | Počiatočný smer z `a` do `b`, v stupňoch od severu v smere hodinových ručičiek, `0` až `360`. |
+
+```rea
+{if distance(context.location, story.tower) > 400 begin}
+  Veža je ešte {round(distance(context.location, story.tower))} m ďaleko, smer {round(bearing(context.location, story.tower))}°.
+{end if}
+```
+
 Bod sa vypisuje ako `lat, lng` na šesť desatinných miest — asi 11 cm, jemnejšie než ktorékoľvek meranie GPS. Tvar je vo všetkých jazykoch rovnaký: jazyk, ktorý vykresľuje desatinný oddeľovač ako čiarku, by vypísal hodnotu, ktorú by nič neprečítalo späť.
 
 ::: warning Mená vstavaných funkcií
-`path`, `area`, `circle` a `buffer` sú jadrové vstavané funkcie a vstavanú funkciu nemožno predefinovať. Vlastná `{function area() begin}` sa ohlási ako [`link/redefines-builtin`](error-handling.md) a naďalej beží vstavaná — alternatíva, teda tichá výhra deklarácie, by bez slova rozbila každé geografické volanie v dokumente.
+`path`, `area`, `circle`, `buffer`, `distance` a `bearing` sú jadrové vstavané funkcie a vstavanú funkciu nemožno predefinovať. Vlastná `{function area() begin}` sa ohlási ako [`link/redefines-builtin`](error-handling.md) a naďalej beží vstavaná — alternatíva, teda tichá výhra deklarácie, by bez slova rozbila každé geografické volanie v dokumente.
 :::
 
 ### Zástupné znaky v dátume a čase {#datetime-wildcards}

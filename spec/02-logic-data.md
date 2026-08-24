@@ -498,10 +498,23 @@ Ask whether a point is inside an area with [`matches`](#_12-expressions-operator
 {end if}
 ```
 
+Two points also answer questions about the space between them, which is what lets a story say *how far* and *which way* rather than only whether the reader arrived:
+
+| Measurement       | Description                                                                          |
+| ----------------- | ------------------------------------------------------------------------------------ |
+| `distance(a, b)`  | Great-circle metres between two points.                                               |
+| `bearing(a, b)`   | Initial heading from `a` to `b`, in degrees clockwise from true north, `0` to `360`.  |
+
+```rea
+{if distance(context.location, story.tower) > 400 begin}
+  The tower is still {round(distance(context.location, story.tower))} m off, bearing {round(bearing(context.location, story.tower))}°.
+{end if}
+```
+
 A point prints as `lat, lng` at six decimals — about 11 cm, finer than any GPS reading. The form is the same in every locale: a locale that renders the decimal separator as a comma would print a value nothing could read back.
 
 ::: warning Built-in names
-`path`, `area`, `circle` and `buffer` are core built-ins, and a built-in cannot be redefined. A `{function area() begin}` of your own is reported as [`link/redefines-builtin`](error-handling.md) and the built-in keeps running — the alternative, letting the declaration win silently, would break every geographic call in the document with nothing said about it.
+`path`, `area`, `circle`, `buffer`, `distance` and `bearing` are core built-ins, and a built-in cannot be redefined. A `{function area() begin}` of your own is reported as [`link/redefines-builtin`](error-handling.md) and the built-in keeps running — the alternative, letting the declaration win silently, would break every geographic call in the document with nothing said about it.
 :::
 
 ### DateTime wildcards

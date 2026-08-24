@@ -856,7 +856,7 @@ export const FEATURES: Feature[] = [
       sk: 'Literály súradníc a algebra oblastí',
     },
     group: 'commands',
-    syntax: '@(lat, lng) · circle(p, m) · area(p1, p2, p3) · path(...) · buffer(shape, m) · a + b · a - b',
+    syntax: '@(lat, lng) · circle(p, m) · area(p1, p2, p3) · path(...) · buffer(shape, m) · distance(a, b) · bearing(a, b) · a + b · a - b',
     status: 'experimental',
     note: {
       en: 'A point is a literal because a story set in a real place writes a great many of them; everything with an extent is an ordinary call on points, so the shapes compose without syntax of their own. Both arguments of `@(lat, lng)` are expressions, `matches` asks whether a point is inside an area, and `+` / `-` are union and difference. Latitude comes first, radii are in metres.',
