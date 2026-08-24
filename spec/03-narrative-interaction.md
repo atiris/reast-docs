@@ -1353,6 +1353,14 @@ Waypoints have optional attributes:
 | `escape`    | Timeout duration (e.g. `duration("PT30M")`) after which the waypoint is skipped |
 | `escape_to` | Fallback anchor the reader is sent to instead of waiting indefinitely |
 
+Every attribute is written after the area, in any order. `require=`, `proximity=` and `escape=` take an expression; `hint=`, `icon=` and `escape_to=` take a quoted string; `hidden` is a bare flag, like a route's `sequential`:
+
+```rea
+{waypoint hidden_cave, circle(@(48.1490, 17.1099), 40), hint="Follow the stream past the fallen oak", proximity=1.5, icon="cave", hidden begin}
+  The stream disappears into the rock. So does the path.
+{end waypoint}
+```
+
 A waypoint whose passage condition depends on `context.*` (device, location, or time state outside the author's control) MUST declare `escape=` or `escape_to=` — an author who omits both gets `link/waypoint-no-escape` (warning, not error: a deliberate hard physical gate with no digital bypass is a valid design choice). A [`{route}`](#multi-stage-routes)'s constituent waypoints need the same when they depend on `context.*`.
 
 ```rea
