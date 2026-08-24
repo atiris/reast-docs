@@ -200,7 +200,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `link/context-no-fallback` | `warning` | block skipped when the source is unavailable |
 | `link/unknown-route-waypoint` | `error` | the stage is skipped; the route can never complete |
 
-#### `eval/` — Evaluating an expression (30)
+#### `eval/` — Evaluating an expression (33)
 
 | Code | Severity | What the reader gets |
 | ---- | -------- | -------------------- |
@@ -234,6 +234,9 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `eval/strict-undeclared-write` | `warning` | the write succeeds |
 | `eval/context-write-refused` | `error` | the write is dropped |
 | `eval/story-meta-write-refused` | `error` | the write is dropped |
+| `eval/card-write-refused` | `error` | the write is dropped |
+| `eval/unknown-card` | `warning` | `undefined` → empty |
+| `eval/unknown-card-property` | `warning` | `undefined` → empty |
 
 #### `flow/` — Running the story (19)
 

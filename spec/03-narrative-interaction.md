@@ -700,21 +700,60 @@ When an author redefinition and the implicit built-in collide, the author's decl
 
 ### Card property values
 
-A card's properties are **verbatim text**. Everything after `key:` is stored exactly as written, with one transformation: a `{variable}` placeholder is substituted with that variable's current value each time the card is queried, which is what lets a card show a live stat or an unlocked art tier.
+A card property is one of two things, and **quoting decides which**. An unquoted value that is a complete Rea literal — a number, a boolean, an `@(lat, lng)` point, an array — is a [typed property](#typed-card-properties): a real value the story can compare and compute with. Everything else is **verbatim text**, stored exactly as written, with one transformation: a `{variable}` placeholder is substituted with that variable's current value each time the card is queried, which is what lets a card show a live stat or an unlocked art tier.
 
 ```rea
 {define character elena name="Elena Voss", level="{story.elena.level}", home="@(48.14, 17.10)"}
 ```
 
-`level` is the *text* produced by substituting the variable, not a number. `home` is the text `@(48.14, 17.10)`, not a point — it resembles a coordinate literal without being one. A property is displayed, never computed with: a story that needs to compare or add a value keeps it in an ordinary variable and lets the card show it through a placeholder.
+`level` is the *text* produced by substituting the variable, not a number. `home` is quoted, so it is the text `@(48.14, 17.10)` and not a point — it resembles a coordinate literal without being one. Drop the quotes and it becomes one.
 
 ### Typed card properties
 
 <Feature id="typed-card-properties" />
 
-A card property should be able to hold a **real value** — a number, a boolean, a point, an array — rather than only text that looks like one. A card is the story's single source of truth for a narrative entity, and today that truth stops at the display layer: an author who writes `weight: 3` on an item, `home: @(48.14, 17.10)` on a character or `traits: [brave, literate]` on a card has written something the story itself cannot read back. The value has to be duplicated into a variable to be used, and a duplicated value is one that drifts — the card and the logic disagree the moment one of them is edited.
+A card is the story's single source of truth for a narrative entity, and a typed property is how the story reads that truth back. `weight=3` on an item is the number `3`, not the text `3`, so it goes into a comparison or a sum without being duplicated into a variable first — and a duplicated value is one that drifts, because the card and the logic disagree the moment one of them is edited.
 
-Typed properties would close that gap: a property's value is parsed as the language's own literal grammar, so it carries its type into comparisons and arithmetic the way any other value does, and a coordinate on a card is the same kind of thing as a coordinate anywhere else. The design has to settle two questions before it can be built — how a property is addressed from an expression (there is no path for reading card data today), and how a typed property coexists with the `{variable}` placeholder substitution that text properties rely on. Both are open; this section records the shape of the idea, not a commitment to a syntax.
+**Quoting decides, and the two readings never overlap.**
+
+| Written                       | Result                                                                        |
+| ----------------------------- | ------------------------------------------------------------------------------- |
+| `weight=3`                    | number `3` — typed                                                            |
+| `weight=-1.5`                 | number `-1.5` — typed                                                         |
+| `lit=false`                   | boolean `false` — typed                                                       |
+| `home=@(48.14, 17.10)`        | point — typed                                                                 |
+| `sizes=[1, 2, 3]`             | array of numbers — typed                                                      |
+| `traits=[brave, literate]`    | list of strings — `traits`/`tags` are list-parsed by the language itself       |
+| `weight="3"`                  | text `3` — display only                                                       |
+| `level="{story.elena.level}"` | text, substituted on every read                                               |
+| `rarity=rare`                 | text `rare` — a bare word is an identifier, not a literal                     |
+| `home="@(48.14, 17.10)"`      | text that resembles a coordinate                                              |
+
+A `{variable}` placeholder is not a literal, so a value carrying one can never be typed and a typed value can never carry one. There is no value where both readings apply and therefore no precedence rule to learn. Quoting a number is also how an author keeps a display string like `"007"` or `"3+"`.
+
+**A typed property is read as `story.card.<id>.<prop>`**, the way a deck's counters are read as `story.deck.<id>.remaining`:
+
+```rea
+{define item lantern name="Brass Lantern", weight=3, lit=false}
+{define character elena name="Elena Voss", home=@(48.14, 17.10), traits=[brave, literate]}
+
+{if story.card.lantern.weight > 2 begin} It drags at your belt. {end if}
+{set story.load = story.load + story.card.lantern.weight}
+{if distance(story.reader.position, story.card.elena.home) < 500 begin} She is close. {end if}
+{if "brave" in story.card.elena.traits begin} She goes first. {end if}
+```
+
+Three rules govern the path:
+
+- **Read-only.** `{set story.card.…}` is refused and reported. The definition is the source of truth; a writable mirror would re-open the drift the feature closes.
+- **Typed properties only.** A text property has no path: `story.card.elena.name` does not exist. A card's display text is display text, and mirroring it would make every card's prose reachable as a variable and every rename a broken expression.
+- **The name is checked against the card, not against a pattern.** An unknown card id and a card with no such typed property are each reported, so `story.card.lantern.wieght` is caught rather than quietly resolving to nothing.
+
+A card defined further down the file still resolves: properties are mirrored when the card is registered, which is a document-order pass that runs before play.
+
+**A typed value is a literal, not an expression.** It is fixed at definition time: `weight={story.base_weight}` is text, and `weight=story.base_weight` is text too, because a bare identifier is not a literal. A card that must show a live number keeps the `{variable}` text form or a `{face begin}` block, which resolves inline on every read. A bare flag (`mandatory`) is boolean `true`, as it always was. A value that is shaped like a literal but cannot be built — a latitude outside its range — stays text.
+
+The language's own fields are never typed: `name`, `title`, `image`, `description`, `scan`, `mark`, `listen`, `play`, `deck`, `role`, `require`, `trigger` and `match` have their own parsing, so `name=3` is the string `3`. `traits` and `tags` reach `story.card.<id>.traits` (or `.tags`) from the list the language already parses, under the name the author wrote.
 
 ### Dialogue attribution
 

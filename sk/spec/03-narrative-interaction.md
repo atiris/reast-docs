@@ -700,21 +700,60 @@ Keď sa autorská redefinícia zrazí s implicitnou vstavanou sadou, vyhráva de
 
 ### Hodnoty vlastností kariet {#card-property-values}
 
-Vlastnosti karty sú **doslovný text**. Všetko za `key:` sa uloží presne tak, ako je napísané, s jedinou úpravou: zástupný symbol `{premenná}` sa pri každom dopyte na kartu nahradí aktuálnou hodnotou tejto premennej — práve to umožňuje karte zobraziť živú štatistiku alebo odomknutú úroveň ilustrácie.
+Vlastnosť karty je jedna z dvoch vecí a **rozhoduje o tom úvodzovkovanie**. Hodnota bez úvodzoviek, ktorá je úplným literálom jazyka Rea — číslo, pravdivostná hodnota, bod `@(lat, lng)`, pole — je [typovaná vlastnosť](#typed-card-properties): skutočná hodnota, s ktorou vie príbeh porovnávať a počítať. Všetko ostatné je **doslovný text**, uložený presne tak, ako je napísaný, s jedinou úpravou: zástupný symbol `{premenná}` sa pri každom dopyte na kartu nahradí aktuálnou hodnotou tejto premennej — práve to umožňuje karte zobraziť živú štatistiku alebo odomknutú úroveň ilustrácie.
 
 ```rea
 {define character elena name="Elena Voss", level="{story.elena.level}", home="@(48.14, 17.10)"}
 ```
 
-`level` je *text* vzniknutý nahradením premennej, nie číslo. `home` je text `@(48.14, 17.10)`, nie bod — pripomína literál súradnice bez toho, aby ním bol. Vlastnosť sa zobrazuje, nikdy sa s ňou nepočíta: príbeh, ktorý potrebuje hodnotu porovnávať alebo sčítavať, si ju drží v bežnej premennej a karta ju ukáže cez zástupný symbol.
+`level` je *text* vzniknutý nahradením premennej, nie číslo. `home` je v úvodzovkách, takže je to text `@(48.14, 17.10)`, nie bod — pripomína literál súradnice bez toho, aby ním bol. Bez úvodzoviek by ním bol.
 
 ### Typované vlastnosti kariet {#typed-card-properties}
 
 <Feature id="typed-card-properties" />
 
-Vlastnosť karty by mala vedieť niesť **skutočnú hodnotu** — číslo, pravdivostnú hodnotu, bod, pole — nielen text, ktorý tak vyzerá. Karta je pre príbeh jediným zdrojom pravdy o narratívnej entite, no dnes sa tá pravda končí pri zobrazení: autor, ktorý napíše `weight: 3` na predmet, `home: @(48.14, 17.10)` na postavu alebo `traits: [brave, literate]` na kartu, napísal niečo, čo si samotný príbeh nevie prečítať späť. Hodnotu treba zduplikovať do premennej, aby sa dala použiť — a zduplikovaná hodnota je hodnota, ktorá sa rozíde: karta a logika si prestanú odpovedať v momente, keď sa upraví jedna z nich.
+Karta je pre príbeh jediným zdrojom pravdy o narratívnej entite a typovaná vlastnosť je spôsob, ako si príbeh tú pravdu prečíta späť. `weight=3` na predmete je číslo `3`, nie text `3`, takže vstúpi do porovnania alebo do súčtu bez toho, aby sa najprv zduplikovalo do premennej — a zduplikovaná hodnota je hodnota, ktorá sa rozíde: karta a logika si prestanú odpovedať v momente, keď sa upraví jedna z nich.
 
-Typované vlastnosti by túto medzeru zavreli: hodnota vlastnosti sa spracuje gramatikou literálov samotného jazyka, takže si nesie svoj typ do porovnaní aj do aritmetiky rovnako ako každá iná hodnota, a súradnica na karte je tá istá vec ako súradnica kdekoľvek inde. Návrh musí pred implementáciou vyriešiť dve otázky — ako sa na vlastnosť odkazuje z výrazu (cesta na čítanie údajov karty dnes neexistuje) a ako typovaná vlastnosť spolunažíva s nahrádzaním zástupných symbolov `{premenná}`, na ktorom stoja textové vlastnosti. Obe sú otvorené; táto sekcia zaznamenáva tvar myšlienky, nie záväzok k syntaxi.
+**Rozhoduje úvodzovkovanie a obe čítania sa nikdy neprekrývajú.**
+
+| Napísané                      | Výsledok                                                                        |
+| ----------------------------- | --------------------------------------------------------------------------------- |
+| `weight=3`                    | číslo `3` — typované                                                            |
+| `weight=-1.5`                 | číslo `-1.5` — typované                                                         |
+| `lit=false`                   | pravdivostná hodnota `false` — typované                                         |
+| `home=@(48.14, 17.10)`        | bod — typované                                                                  |
+| `sizes=[1, 2, 3]`             | pole čísel — typované                                                           |
+| `traits=[brave, literate]`    | zoznam reťazcov — `traits`/`tags` spracúva jazyk sám ako zoznam                  |
+| `weight="3"`                  | text `3` — iba na zobrazenie                                                    |
+| `level="{story.elena.level}"` | text, nahrádzaný pri každom čítaní                                              |
+| `rarity=rare`                 | text `rare` — holé slovo je identifikátor, nie literál                          |
+| `home="@(48.14, 17.10)"`      | text, ktorý pripomína súradnicu                                                 |
+
+Zástupný symbol `{premenná}` nie je literál, takže hodnota, ktorá ho nesie, nemôže byť nikdy typovaná a typovaná hodnota ho nemôže nikdy niesť. Neexistuje hodnota, na ktorú by platili obe čítania, a teda ani pravidlo prednosti, ktoré by sa bolo treba učiť. Úvodzovky okolo čísla sú zároveň spôsob, ako si autor udrží zobrazovaný reťazec ako `"007"` alebo `"3+"`.
+
+**Typovaná vlastnosť sa číta ako `story.card.<id>.<prop>`**, rovnako ako sa počítadlá balíčka čítajú ako `story.deck.<id>.remaining`:
+
+```rea
+{define item lantern name="Brass Lantern", weight=3, lit=false}
+{define character elena name="Elena Voss", home=@(48.14, 17.10), traits=[brave, literate]}
+
+{if story.card.lantern.weight > 2 begin} Ťahá ti opasok nadol. {end if}
+{set story.load = story.load + story.card.lantern.weight}
+{if distance(story.reader.position, story.card.elena.home) < 500 begin} Je blízko. {end if}
+{if "brave" in story.card.elena.traits begin} Ide prvá. {end if}
+```
+
+Pre túto cestu platia tri pravidlá:
+
+- **Iba na čítanie.** `{set story.card.…}` je odmietnutý a ohlásený. Zdrojom pravdy je definícia; zapisovateľná kópia by znovu otvorila presne to rozchádzanie, ktoré táto funkcia zatvára.
+- **Iba typované vlastnosti.** Textová vlastnosť nemá cestu: `story.card.elena.name` neexistuje. Zobrazovaný text karty je zobrazovaný text a jeho sprístupnenie by spravilo z prózy každej karty premennú a z každého premenovania rozbitý výraz.
+- **Meno sa overuje voči karte, nie voči vzoru.** Neznáme id karty aj karta bez takej typovanej vlastnosti sa hlásia samostatne, takže `story.card.lantern.wieght` sa zachytí a nerozplynie sa ticho do prázdna.
+
+Karta definovaná až nižšie v súbore sa stále vyrieši: vlastnosti sa zrkadlia pri registrácii karty, čo je priechod v poradí dokumentu a beží pred čítaním.
+
+**Typovaná hodnota je literál, nie výraz.** Je pevne daná v čase definície: `weight={story.base_weight}` je text a `weight=story.base_weight` je tiež text, pretože holý identifikátor nie je literál. Karta, ktorá musí ukazovať živé číslo, si ponechá textový tvar so `{premennou}` alebo blok `{face begin}`, ktorý sa vyhodnocuje priamo pri každom čítaní. Holý príznak (`mandatory`) je pravdivostná hodnota `true`, ako bol vždy. Hodnota, ktorá má tvar literálu, ale nedá sa z nej hodnotu postaviť — zemepisná šírka mimo rozsahu — zostáva textom.
+
+Vlastné polia jazyka sa nikdy netypujú: `name`, `title`, `image`, `description`, `scan`, `mark`, `listen`, `play`, `deck`, `role`, `require`, `trigger` a `match` majú vlastné spracovanie, takže `name=3` je reťazec `3`. `traits` a `tags` sa dostanú do `story.card.<id>.traits` (alebo `.tags`) zo zoznamu, ktorý jazyk už spracoval, pod menom, ktoré napísal autor.
 
 ### Pripísanie repliky {#dialogue-attribution}
 
