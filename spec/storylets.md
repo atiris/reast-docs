@@ -91,6 +91,29 @@ A card may declare several faces, each with its own `at=`, because a title at 15
 
 A `{face}` outside a card definition is reported and dropped, and an `at=` that is not a percentage is reported and ignored — the text still prints, in the default band.
 
+### What is written on the back {#card-detail}
+
+<Feature id="card-detail" />
+
+A card's **detail** is what the reader finds when they turn it over: the author's own prose about the card, as long as it needs to be.
+
+```rea
+{define card knight deck="roles", name="The Knight" begin}
+  {face at="12%" begin}**THE KNIGHT**{end face}
+  {detail begin}
+    **The Knight** was given a duty and a length of steel, in that order.
+
+    The duty came first and has never been withdrawn.
+  {end detail}
+  You ride out before the others are awake.
+{end card}
+```
+
+The detail is not the `description`: that is the one line a list shows beside the card. The detail is where a reader reads *about* the card — who the Knight is, what the Crown costs — without leaving the story they are in. It takes ordinary content, so paragraphs, emphasis, links and hints all work.
+
+A card that declares no detail simply turns over to its back. A `{detail}` outside a card definition is reported and dropped, and an unterminated one is auto-closed at the end of the file like any other block.
+
+The detail is **not** part of the body: turning a card over shows what is written there and never plays the card.
 ### Drawing and playing
 
 <Feature id="draw-play" />

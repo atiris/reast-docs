@@ -91,6 +91,29 @@ Karta môže deklarovať viac líc, každé s vlastným `at=`, pretože nadpis n
 
 `{face}` mimo definície karty sa nahlási a zahodí a `at=`, ktoré nie je percento, sa nahlási a ignoruje — text sa aj tak vytlačí, v predvolenom páse.
 
+### Čo je napísané na rube {#card-detail}
+
+<Feature id="card-detail" />
+
+**Detail** karty je to, čo čitateľ nájde, keď ju otočí: autorova vlastná próza o karte, taká dlhá, ako treba.
+
+```rea
+{define card knight deck="roles", name="Rytier" begin}
+  {face at="12%" begin}**RYTIER**{end face}
+  {detail begin}
+    **Rytier** dostal povinnosť a kus ocele, v tomto poradí.
+
+    Povinnosť bola prvá a nikdy nebola odvolaná.
+  {end detail}
+  Vyrážaš skôr, než sa ostatní zobudia.
+{end card}
+```
+
+Detail nie je `description`: to je jeden riadok, ktorý zoznam ukáže vedľa karty. Detail je miesto, kde si čitateľ prečíta *o* karte — kto je Rytier, čo stojí Koruna — bez toho, aby opustil príbeh. Berie bežný obsah, takže odseky, zvýraznenie, odkazy aj nápovedy fungujú.
+
+Karta, ktorá detail nedeklaruje, sa jednoducho otočí na rub. `{detail}` mimo definície karty sa nahlási a zahodí a neuzavretý sa automaticky zatvorí na konci súboru ako každý iný blok.
+
+Detail **nie je** súčasť tela: otočením karty sa ukáže, čo je na nej napísané, a karta sa nikdy nezahrá.
 ### Ťahanie a zahranie {#drawing-and-playing}
 
 <Feature id="draw-play" />

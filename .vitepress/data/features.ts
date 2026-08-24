@@ -1446,6 +1446,22 @@ export const FEATURES: Feature[] = [
     link: '/spec/storylets',
   },
   {
+    id: 'card-detail',
+    title: {
+      en: 'Card detail',
+      sk: 'Detail karty',
+    },
+    group: 'storylets',
+    syntax: '{detail begin} … {end detail}',
+    status: 'experimental',
+    since: '1.4',
+    note: {
+      en: "What the reader finds on the back of the card: the author's own prose about it, as long as it needs to be. Not the one-line `description` a list shows — this is where a reader reads about the Knight without leaving the story. Ordinary content, and never part of the body, so turning a card over never plays it.",
+      sk: 'To, čo čitateľ nájde na rube karty: autorova próza o nej, taká dlhá, ako treba. Nie jednoriadkový `description`, ktorý ukazuje zoznam — tu si čitateľ prečíta o Rytierovi bez toho, aby opustil príbeh. Bežný obsah, a nikdy nie súčasť tela, takže otočenie karty ju nikdy nezahrá.',
+    },
+    link: '/spec/storylets',
+  },
+  {
     id: 'define-deck',
     title: {
       en: 'Decks',
