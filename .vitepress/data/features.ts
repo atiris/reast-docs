@@ -1440,8 +1440,24 @@ export const FEATURES: Feature[] = [
     status: 'experimental',
     since: '1.4',
     note: {
-      en: 'What is printed on the card, as against the body, which is what plays. A block rather than an attribute, so it carries bold, italic, links and hints; `at=` places it as a percentage of the card height. Three coins that look alike and are worth 1, 2 and 5 differ only here.',
-      sk: 'To, čo je na karte vytlačené — na rozdiel od tela, ktoré sa prehrá. Blok, nie atribút, takže unesie tučné písmo, kurzívu, odkazy aj nápovedy; `at=` ho umiestni ako percento výšky karty. Tri mince, ktoré vyzerajú rovnako a majú hodnotu 1, 2 a 5, sa líšia iba tu.',
+      en: 'What is printed on the card, as against the body, which is what plays. A block rather than an attribute, so it carries bold, italic, links and hints; `at=` places it as a percentage of the card height and `x=` as a percentage of its width, which turns a band of text into a label on a point of the picture. Three coins that look alike and are worth 1, 2 and 5 differ only here.',
+      sk: 'To, čo je na karte vytlačené — na rozdiel od tela, ktoré sa prehrá. Blok, nie atribút, takže unesie tučné písmo, kurzívu, odkazy aj nápovedy; `at=` ho umiestni ako percento výšky karty a `x=` ako percento jej šírky, čím sa z pásu textu stane štítok na konkrétnom mieste obrázka. Tri mince, ktoré vyzerajú rovnako a majú hodnotu 1, 2 a 5, sa líšia iba tu.',
+    },
+    link: '/spec/storylets',
+  },
+  {
+    id: 'card-layer',
+    title: {
+      en: 'Card layers',
+      sk: 'Vrstvy karty',
+    },
+    group: 'storylets',
+    syntax: '{layer image="assets/shield.webp", at="20%", x="80%", size="18%", opacity="90%"}',
+    status: 'experimental',
+    since: '1.6',
+    note: {
+      en: 'A picture stacked over the card\'s art. Several layers and the face text are one card: they turn, scale and animate together. Positions are percentages of the card, so an overlay lands on the same spot in a thumbnail and full-screen, and a `when` clause is what turns an overlay on — the shield appears when the reader has one.',
+      sk: 'Obrázok navrstvený na kresbu karty. Viac vrstiev aj text líca tvoria jednu kartu: otáčajú sa, zväčšujú a animujú spolu. Pozície sú percentá karty, takže prekrytie padne na to isté miesto na náhľade aj na celej obrazovke, a klauzula `when` je to, čo prekrytie zapne — štít sa objaví, keď ho čitateľ má.',
     },
     link: '/spec/storylets',
   },

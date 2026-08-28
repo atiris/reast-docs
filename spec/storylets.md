@@ -86,10 +86,47 @@ A card's **face** is what is printed on the card; its **body** is what plays whe
 | Attribute | Description                                                                                                    |
 | --------- | ---------------------------------------------------------------------------------------------------------------- |
 | `at=`     | Where the text sits, as a percentage of the card's **height** from the top, clamped to `0%`–`100%`. Absent leaves it in the renderer's default band, under the art |
+| `x=`      | Where it sits across the card, as a percentage of its **width** from the left, clamped to `0%`–`100%`. Absent keeps the face a full-width band; given, the face is a label centred on that point |
 
-A card may declare several faces, each with its own `at=`, because a title at 15% and a value at 60% are one card and not two. `{variable}` placeholders inside a face resolve against live story state, exactly as they do in `name` and `description`, so `{face begin}{story.purse} gold{end face}` is live.
+A card may declare several faces, each with its own position, because a title at 15% and a value at 60% are one card and not two. `{variable}` placeholders inside a face resolve against live story state, exactly as they do in `name` and `description`, so `{face begin}{story.purse} gold{end face}` is live.
 
-A `{face}` outside a card definition is reported and dropped, and an `at=` that is not a percentage is reported and ignored — the text still prints, in the default band.
+`x=` is what puts a number on a symbol rather than in a line of its own — the 5 on the shield and the 7 on the sword. It is measured from the left of the picture in every reading direction, because a position on artwork is where the picture is.
+
+A `{face}` outside a card definition is reported and dropped, and a position that is not a percentage is reported and ignored — the text still prints, in the default band.
+
+### Pictures stacked on the card {#card-layer}
+
+<Feature id="card-layer" />
+
+A card's art is one picture; a **layer** is another one printed over it. One overlay of symbols is shared by sixty cards that each have their own portrait, so the two are declared separately and drawn as one card.
+
+```rea
+{define traveller mercenary deck="travellers", image="assets/cards/mercenary.webp", guard=5, blade=7 begin}
+  {layer image="assets/cards/symbols.webp", opacity="90%"}
+  {layer image="assets/cards/crown.webp", at="20%", x="80%", size="18%" when story.crowned}
+  {face at="19%", x="17%" begin}**{story.card.mercenary.guard}**{end face}
+  {face at="19%", x="82%" begin}**{story.card.mercenary.blade}**{end face}
+{end define}
+```
+
+`{layer}` is unpaired: a picture has no content, so everything it says is in the one line.
+
+| Attribute  | Description                                                                                                      |
+| ---------- | ---------------------------------------------------------------------------------------------------------------- |
+| `image=`   | The picture's archive-relative path, as `image=` on the card head is. Required — a layer with none is reported and dropped |
+| `at=`      | The layer's centre down the card, as a percentage of its height. Absent means the middle                          |
+| `x=`       | The layer's centre across the card, as a percentage of its width. Absent means the middle                         |
+| `size=`    | The layer's width as a percentage of the card's; its height follows the picture. Absent means the whole card      |
+| `opacity=` | How solid it is, as `85%` or `0.85`. Absent means fully opaque                                                    |
+| `when`     | The layer is drawn only while the clause holds, evaluated against live story state like every other condition      |
+
+Layers are drawn in the order they are declared, above the art and below the face text. A layer given no position covers the card, which is what an overlay drawn at card size wants; one given a `size=` is centred on its point.
+
+A card is **one object however many pictures it is made of**: the art, its layers and its faces are in the same box, so they turn together when the card is flipped, scale together in a thumbnail, and a reader can never see the card come apart.
+
+The `when` clause is how a story turns an overlay on. It is answered once, where the card is resolved, so every surface that draws the card — the hand, the Bag, the Collection, the editor's preview — draws the same one.
+
+A `{layer}` outside a card definition is reported and dropped, exactly as a stray `{face}` is.
 
 ### What is written on the back {#card-detail}
 

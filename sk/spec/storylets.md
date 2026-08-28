@@ -86,10 +86,47 @@ Tri atribúty niečo **robia**, nie opisujú:
 | Atribút | Popis                                                                                                          |
 | ------- | ------------------------------------------------------------------------------------------------------------- |
 | `at=`   | Kde text sedí, ako percento **výšky** karty zhora, orezané na `0 %`–`100 %`. Ak chýba, zostane v predvolenom páse vykresľovača, pod obrázkom |
+| `x=`    | Kde sedí naprieč kartou, ako percento jej **šírky** zľava, orezané na `0 %`–`100 %`. Ak chýba, líce zostane pásom cez celú šírku; ak je uvedené, líce je štítok vycentrovaný na tomto bode |
 
-Karta môže deklarovať viac líc, každé s vlastným `at=`, pretože nadpis na 15 % a hodnota na 60 % sú jedna karta, nie dve. Zástupné symboly `{variable}` v líci sa vyhodnocujú voči živému stavu príbehu presne ako v `name` a `description`, takže `{face begin}{story.purse} zlata{end face}` je živé.
+Karta môže deklarovať viac líc, každé s vlastnou pozíciou, pretože nadpis na 15 % a hodnota na 60 % sú jedna karta, nie dve. Zástupné symboly `{variable}` v líci sa vyhodnocujú voči živému stavu príbehu presne ako v `name` a `description`, takže `{face begin}{story.purse} zlata{end face}` je živé.
 
-`{face}` mimo definície karty sa nahlási a zahodí a `at=`, ktoré nie je percento, sa nahlási a ignoruje — text sa aj tak vytlačí, v predvolenom páse.
+`x=` je to, čo položí číslo na symbol namiesto do vlastného riadka — 5 na štíte a 7 na meči. Meria sa zľava obrázka v každom smere čítania, pretože pozícia na kresbe je tam, kde je kresba.
+
+`{face}` mimo definície karty sa nahlási a zahodí a pozícia, ktorá nie je percento, sa nahlási a ignoruje — text sa aj tak vytlačí, v predvolenom páse.
+
+### Obrázky navrstvené na karte {#card-layer}
+
+<Feature id="card-layer" />
+
+Kresba karty je jeden obrázok; **vrstva** je ďalší, vytlačený nad ním. Jedno prekrytie so symbolmi zdieľa šesťdesiat kariet, z ktorých každá má vlastný portrét, takže sa deklarujú oddelene a kreslia sa ako jedna karta.
+
+```rea
+{define traveller mercenary deck="travellers", image="assets/cards/mercenary.webp", guard=5, blade=7 begin}
+  {layer image="assets/cards/symbols.webp", opacity="90%"}
+  {layer image="assets/cards/crown.webp", at="20%", x="80%", size="18%" when story.crowned}
+  {face at="19%", x="17%" begin}**{story.card.mercenary.guard}**{end face}
+  {face at="19%", x="82%" begin}**{story.card.mercenary.blade}**{end face}
+{end define}
+```
+
+`{layer}` je nepárový: obrázok nemá obsah, takže všetko, čo hovorí, je v jednom riadku.
+
+| Atribút    | Popis                                                                                                            |
+| ---------- | ---------------------------------------------------------------------------------------------------------------- |
+| `image=`   | Cesta k obrázku relatívna k archívu, rovnako ako `image=` v hlavičke karty. Povinný — vrstva bez neho sa nahlási a zahodí |
+| `at=`      | Stred vrstvy zhora nadol, ako percento výšky karty. Ak chýba, znamená stred                                       |
+| `x=`       | Stred vrstvy naprieč kartou, ako percento jej šírky. Ak chýba, znamená stred                                      |
+| `size=`    | Šírka vrstvy ako percento šírky karty; výška ide podľa obrázka. Ak chýba, znamená celú kartu                      |
+| `opacity=` | Ako je krycia, ako `85%` alebo `0.85`. Ak chýba, je úplne krycia                                                  |
+| `when`     | Vrstva sa kreslí, len kým klauzula platí; vyhodnocuje sa voči živému stavu príbehu ako každá iná podmienka         |
+
+Vrstvy sa kreslia v poradí deklarácie, nad kresbou a pod textom líca. Vrstva bez pozície pokryje celú kartu, čo je presne to, čo chce prekrytie kreslené vo veľkosti karty; vrstva so `size=` je vycentrovaná na svojom bode.
+
+Karta je **jeden objekt, nech je zložená z akéhokoľvek počtu obrázkov**: kresba, jej vrstvy aj líca sú v tom istom rámci, takže sa otáčajú spolu pri prevrátení karty, spolu sa zmenšujú na náhľade a čitateľ nikdy neuvidí kartu rozpadnutú.
+
+Klauzula `when` je spôsob, ako príbeh prekrytie zapne. Odpovedá sa na ňu raz, tam, kde sa karta vyhodnocuje, takže každá plocha, ktorá kartu kreslí — ruka, Taška, Zbierka aj náhľad v editore — kreslí tú istú kartu.
+
+`{layer}` mimo definície karty sa nahlási a zahodí, presne ako zatúlané `{face}`.
 
 ### Čo je napísané na rube {#card-detail}
 
