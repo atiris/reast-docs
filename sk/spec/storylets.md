@@ -102,7 +102,7 @@ Kresba karty je jeden obrázok; **vrstva** je ďalší, vytlačený nad ním. Je
 
 ```rea
 {define traveller mercenary deck="travellers", image="assets/cards/mercenary.webp", guard=5, blade=7 begin}
-  {layer image="assets/cards/symbols.webp", opacity="90%"}
+  {layer image="assets/cards/symbols.webp"}
   {layer image="assets/cards/crown.webp", at="20%", x="80%", size="18%" when story.crowned}
   {face at="19%", x="17%" begin}**{story.card.mercenary.guard}**{end face}
   {face at="19%", x="82%" begin}**{story.card.mercenary.blade}**{end face}
@@ -117,10 +117,11 @@ Kresba karty je jeden obrázok; **vrstva** je ďalší, vytlačený nad ním. Je
 | `at=`      | Stred vrstvy zhora nadol, ako percento výšky karty. Ak chýba, znamená stred                                       |
 | `x=`       | Stred vrstvy naprieč kartou, ako percento jej šírky. Ak chýba, znamená stred                                      |
 | `size=`    | Šírka vrstvy ako percento šírky karty; výška ide podľa obrázka. Ak chýba, znamená celú kartu                      |
-| `opacity=` | Ako je krycia, ako `85%` alebo `0.85`. Ak chýba, je úplne krycia                                                  |
 | `when`     | Vrstva sa kreslí, len kým klauzula platí; vyhodnocuje sa voči živému stavu príbehu ako každá iná podmienka         |
 
 Vrstvy sa kreslia v poradí deklarácie, nad kresbou a pod textom líca. Vrstva bez pozície pokryje celú kartu, čo je presne to, čo chce prekrytie kreslené vo veľkosti karty; vrstva so `size=` je vycentrovaná na svojom bode.
+
+Ako je vrstva krycia, sa tu nepíše: polopriehľadné prekrytie je polopriehľadný obrázok. Druhé miesto, kde to povedať, by bola druhá odpoveď na tú istú otázku, a tie dve si odporujú vždy len v príbehu, ktorý sa zabudol zopakovať.
 
 Karta je **jeden objekt, nech je zložená z akéhokoľvek počtu obrázkov**: kresba, jej vrstvy aj líca sú v tom istom rámci, takže sa otáčajú spolu pri prevrátení karty, spolu sa zmenšujú na náhľade a čitateľ nikdy neuvidí kartu rozpadnutú.
 

@@ -102,7 +102,7 @@ A card's art is one picture; a **layer** is another one printed over it. One ove
 
 ```rea
 {define traveller mercenary deck="travellers", image="assets/cards/mercenary.webp", guard=5, blade=7 begin}
-  {layer image="assets/cards/symbols.webp", opacity="90%"}
+  {layer image="assets/cards/symbols.webp"}
   {layer image="assets/cards/crown.webp", at="20%", x="80%", size="18%" when story.crowned}
   {face at="19%", x="17%" begin}**{story.card.mercenary.guard}**{end face}
   {face at="19%", x="82%" begin}**{story.card.mercenary.blade}**{end face}
@@ -117,10 +117,11 @@ A card's art is one picture; a **layer** is another one printed over it. One ove
 | `at=`      | The layer's centre down the card, as a percentage of its height. Absent means the middle                          |
 | `x=`       | The layer's centre across the card, as a percentage of its width. Absent means the middle                         |
 | `size=`    | The layer's width as a percentage of the card's; its height follows the picture. Absent means the whole card      |
-| `opacity=` | How solid it is, as `85%` or `0.85`. Absent means fully opaque                                                    |
 | `when`     | The layer is drawn only while the clause holds, evaluated against live story state like every other condition      |
 
 Layers are drawn in the order they are declared, above the art and below the face text. A layer given no position covers the card, which is what an overlay drawn at card size wants; one given a `size=` is centred on its point.
+
+How solid a layer is is not written here: a half-transparent overlay is a half-transparent picture. A second place to say so would be a second answer to the same question, and the two only ever disagree in the story that forgot to repeat itself.
 
 A card is **one object however many pictures it is made of**: the art, its layers and its faces are in the same box, so they turn together when the card is flipped, scale together in a thumbnail, and a reader can never see the card come apart.
 
