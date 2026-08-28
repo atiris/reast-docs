@@ -150,8 +150,8 @@ A manifest may rename all four (`"domains": {"story": "物語"}`).
         back="assets/back.webp", play=reusable}
 {define card coin deck="basic", name="Coin" begin}  A card joins by naming its deck
   {layer image="assets/symbols.webp"}                A picture stacked over the art
-  {face at="60%" begin}**3 silver**{end face}       The face is what is printed on it
-  {face at="19%", x="17%" begin}**5**{end face}     `x=` puts it on a point of the picture
+  {face vertical="60%" begin}**3 silver**{end face}  The face is what is printed on it
+  {face vertical="19%", horizontal="17%" begin}**5**{end face}   on a point of the picture
   {detail begin} Small money. {end detail}          The detail is on the back of it
   {earn silver 3}                                   The body is what plays
 {end card}

@@ -74,8 +74,8 @@ Tri atribúty niečo **robia**, nie opisujú:
 
 ```rea
 {define card coin_gold deck="purse", image="assets/cards/coin.webp" begin}
-  {face at="15%" begin}**Zlatá**{end face}
-  {face at="60%" begin}hodnota **5**{end face}
+  {face vertical="15%" begin}**Zlatá**{end face}
+  {face vertical="60%" begin}hodnota **5**{end face}
   {earn gold=5}
   Vsunieš si mincu do dlane.
 {end card}
@@ -85,12 +85,12 @@ Tri atribúty niečo **robia**, nie opisujú:
 
 | Atribút | Popis                                                                                                          |
 | ------- | ------------------------------------------------------------------------------------------------------------- |
-| `at=`   | Kde text sedí, ako percento **výšky** karty zhora, orezané na `0 %`–`100 %`. Ak chýba, zostane v predvolenom páse vykresľovača, pod obrázkom |
-| `x=`    | Kde sedí naprieč kartou, ako percento jej **šírky** zľava, orezané na `0 %`–`100 %`. Ak chýba, líce zostane pásom cez celú šírku; ak je uvedené, líce je štítok vycentrovaný na tomto bode |
+| `vertical=`   | Kde text sedí, ako percento **výšky** karty zhora, orezané na `0 %`–`100 %`. Ak chýba, zostane v predvolenom páse vykresľovača, pod obrázkom |
+| `horizontal=` | Kde sedí naprieč kartou, ako percento jej **šírky** zľava, orezané na `0 %`–`100 %`. Ak chýba, líce zostane pásom cez celú šírku; ak je uvedené, líce je štítok vycentrovaný na tomto bode |
 
-Karta môže deklarovať viac líc, každé s vlastnou pozíciou, pretože nadpis na 15 % a hodnota na 60 % sú jedna karta, nie dve. Zástupné symboly `{variable}` v líci sa vyhodnocujú voči živému stavu príbehu presne ako v `name` a `description`, takže `{face begin}{story.purse} zlata{end face}` je živé.
+Karta môže deklarovať viac líc, každé s vlastnou pozíciou, pretože nadpis na 15 % a hodnota na 60 % sú jedna karta, nie dve. Pozície sa volajú `vertical` a `horizontal`, pretože kartu píše autor: `x` je súradnica, ktorú programátor pozná na prvý pohľad a pisateľa ju treba naučiť. Zástupné symboly `{variable}` v líci sa vyhodnocujú voči živému stavu príbehu presne ako v `name` a `description`, takže `{face begin}{story.purse} zlata{end face}` je živé.
 
-`x=` je to, čo položí číslo na symbol namiesto do vlastného riadka — 5 na štíte a 7 na meči. Meria sa zľava obrázka v každom smere čítania, pretože pozícia na kresbe je tam, kde je kresba.
+`horizontal=` je to, čo položí číslo na symbol namiesto do vlastného riadka — 5 na štíte a 7 na meči. Meria sa zľava obrázka v každom smere čítania, pretože pozícia na kresbe je tam, kde je kresba.
 
 `{face}` mimo definície karty sa nahlási a zahodí a pozícia, ktorá nie je percento, sa nahlási a ignoruje — text sa aj tak vytlačí, v predvolenom páse.
 
@@ -103,9 +103,9 @@ Kresba karty je jeden obrázok; **vrstva** je ďalší, vytlačený nad ním. Je
 ```rea
 {define traveller mercenary deck="travellers", image="assets/cards/mercenary.webp", guard=5, blade=7 begin}
   {layer image="assets/cards/symbols.webp"}
-  {layer image="assets/cards/crown.webp", at="20%", x="80%", size="18%" when story.crowned}
-  {face at="19%", x="17%" begin}**{story.card.mercenary.guard}**{end face}
-  {face at="19%", x="82%" begin}**{story.card.mercenary.blade}**{end face}
+  {layer image="assets/cards/crown.webp", vertical="20%", horizontal="80%", width="18%" when story.crowned}
+  {face vertical="19%", horizontal="17%" begin}**{story.card.mercenary.guard}**{end face}
+  {face vertical="19%", horizontal="82%" begin}**{story.card.mercenary.blade}**{end face}
 {end define}
 ```
 
@@ -114,12 +114,12 @@ Kresba karty je jeden obrázok; **vrstva** je ďalší, vytlačený nad ním. Je
 | Atribút    | Popis                                                                                                            |
 | ---------- | ---------------------------------------------------------------------------------------------------------------- |
 | `image=`   | Cesta k obrázku relatívna k archívu, rovnako ako `image=` v hlavičke karty. Povinný — vrstva bez neho sa nahlási a zahodí |
-| `at=`      | Stred vrstvy zhora nadol, ako percento výšky karty. Ak chýba, znamená stred                                       |
-| `x=`       | Stred vrstvy naprieč kartou, ako percento jej šírky. Ak chýba, znamená stred                                      |
-| `size=`    | Šírka vrstvy ako percento šírky karty; výška ide podľa obrázka. Ak chýba, znamená celú kartu                      |
+| `vertical=`   | Stred vrstvy zhora nadol, ako percento výšky karty. Ak chýba, znamená stred                                    |
+| `horizontal=` | Stred vrstvy naprieč kartou, ako percento jej šírky. Ak chýba, znamená stred                                   |
+| `width=`      | Šírka vrstvy ako percento šírky karty; výška ide podľa obrázka. Ak chýba, znamená celú kartu                   |
 | `when`     | Vrstva sa kreslí, len kým klauzula platí; vyhodnocuje sa voči živému stavu príbehu ako každá iná podmienka         |
 
-Vrstvy sa kreslia v poradí deklarácie, nad kresbou a pod textom líca. Vrstva bez pozície pokryje celú kartu, čo je presne to, čo chce prekrytie kreslené vo veľkosti karty; vrstva so `size=` je vycentrovaná na svojom bode.
+Vrstvy sa kreslia v poradí deklarácie, nad kresbou a pod textom líca. Vrstva bez pozície pokryje celú kartu, čo je presne to, čo chce prekrytie kreslené vo veľkosti karty; vrstva so `width=` je vycentrovaná na svojom bode.
 
 Ako je vrstva krycia, sa tu nepíše: polopriehľadné prekrytie je polopriehľadný obrázok. Druhé miesto, kde to povedať, by bola druhá odpoveď na tú istú otázku, a tie dve si odporujú vždy len v príbehu, ktorý sa zabudol zopakovať.
 
@@ -137,7 +137,7 @@ Klauzula `when` je spôsob, ako príbeh prekrytie zapne. Odpovedá sa na ňu raz
 
 ```rea
 {define card knight deck="roles", name="Rytier" begin}
-  {face at="12%" begin}**RYTIER**{end face}
+  {face vertical="12%" begin}**RYTIER**{end face}
   {detail begin}
     **Rytier** dostal povinnosť a kus ocele, v tomto poradí.
 

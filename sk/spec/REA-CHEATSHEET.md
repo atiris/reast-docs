@@ -135,8 +135,8 @@ Ahoj, {story.player.name}! Máš {story.player.gold} zlata.
         back="assets/back.webp", play=reusable}
 {define card coin deck="basic", name="Minca" begin} Karta vstupuje pomenovaním balíčka
   {layer image="assets/symbols.webp"}               Obrázok navrstvený na kresbe
-  {face at="60%" begin}**3 strieborné**{end face}   Líce je to, čo je na nej vytlačené
-  {face at="19%", x="17%" begin}**5**{end face}     `x=` ho položí na bod obrázka
+  {face vertical="60%" begin}**3 strieborné**{end face}   Líce je to, čo je na nej vytlačené
+  {face vertical="19%", horizontal="17%" begin}**5**{end face}   na bode obrázka
   {detail begin} Malé peniaze. {end detail}         Detail je na jej rube
   {earn silver 3}                                   Telo je to, čo sa zahrá
 {end card}

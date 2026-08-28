@@ -74,8 +74,8 @@ A card's **face** is what is printed on the card; its **body** is what plays whe
 
 ```rea
 {define card coin_gold deck="purse", image="assets/cards/coin.webp" begin}
-  {face at="15%" begin}**Gold**{end face}
-  {face at="60%" begin}worth **5**{end face}
+  {face vertical="15%" begin}**Gold**{end face}
+  {face vertical="60%" begin}worth **5**{end face}
   {earn gold=5}
   You slip the coin into your palm.
 {end card}
@@ -85,12 +85,12 @@ A card's **face** is what is printed on the card; its **body** is what plays whe
 
 | Attribute | Description                                                                                                    |
 | --------- | ---------------------------------------------------------------------------------------------------------------- |
-| `at=`     | Where the text sits, as a percentage of the card's **height** from the top, clamped to `0%`–`100%`. Absent leaves it in the renderer's default band, under the art |
-| `x=`      | Where it sits across the card, as a percentage of its **width** from the left, clamped to `0%`–`100%`. Absent keeps the face a full-width band; given, the face is a label centred on that point |
+| `vertical=`   | Where the text sits, as a percentage of the card's **height** from the top, clamped to `0%`–`100%`. Absent leaves it in the renderer's default band, under the art |
+| `horizontal=` | Where it sits across the card, as a percentage of its **width** from the left, clamped to `0%`–`100%`. Absent keeps the face a full-width band; given, the face is a label centred on that point |
 
-A card may declare several faces, each with its own position, because a title at 15% and a value at 60% are one card and not two. `{variable}` placeholders inside a face resolve against live story state, exactly as they do in `name` and `description`, so `{face begin}{story.purse} gold{end face}` is live.
+A card may declare several faces, each with its own position, because a title at 15% and a value at 60% are one card and not two. The positions are called `vertical` and `horizontal` because a card is written by an author: `x` is a coordinate a programmer recognises on sight and a writer has to be taught. `{variable}` placeholders inside a face resolve against live story state, exactly as they do in `name` and `description`, so `{face begin}{story.purse} gold{end face}` is live.
 
-`x=` is what puts a number on a symbol rather than in a line of its own — the 5 on the shield and the 7 on the sword. It is measured from the left of the picture in every reading direction, because a position on artwork is where the picture is.
+`horizontal=` is what puts a number on a symbol rather than in a line of its own — the 5 on the shield and the 7 on the sword. It is measured from the left of the picture in every reading direction, because a position on artwork is where the picture is.
 
 A `{face}` outside a card definition is reported and dropped, and a position that is not a percentage is reported and ignored — the text still prints, in the default band.
 
@@ -103,9 +103,9 @@ A card's art is one picture; a **layer** is another one printed over it. One ove
 ```rea
 {define traveller mercenary deck="travellers", image="assets/cards/mercenary.webp", guard=5, blade=7 begin}
   {layer image="assets/cards/symbols.webp"}
-  {layer image="assets/cards/crown.webp", at="20%", x="80%", size="18%" when story.crowned}
-  {face at="19%", x="17%" begin}**{story.card.mercenary.guard}**{end face}
-  {face at="19%", x="82%" begin}**{story.card.mercenary.blade}**{end face}
+  {layer image="assets/cards/crown.webp", vertical="20%", horizontal="80%", width="18%" when story.crowned}
+  {face vertical="19%", horizontal="17%" begin}**{story.card.mercenary.guard}**{end face}
+  {face vertical="19%", horizontal="82%" begin}**{story.card.mercenary.blade}**{end face}
 {end define}
 ```
 
@@ -114,12 +114,12 @@ A card's art is one picture; a **layer** is another one printed over it. One ove
 | Attribute  | Description                                                                                                      |
 | ---------- | ---------------------------------------------------------------------------------------------------------------- |
 | `image=`   | The picture's archive-relative path, as `image=` on the card head is. Required — a layer with none is reported and dropped |
-| `at=`      | The layer's centre down the card, as a percentage of its height. Absent means the middle                          |
-| `x=`       | The layer's centre across the card, as a percentage of its width. Absent means the middle                         |
-| `size=`    | The layer's width as a percentage of the card's; its height follows the picture. Absent means the whole card      |
+| `vertical=`   | The layer's centre down the card, as a percentage of its height. Absent means the middle                       |
+| `horizontal=` | The layer's centre across the card, as a percentage of its width. Absent means the middle                      |
+| `width=`      | The layer's width as a percentage of the card's; its height follows the picture. Absent means the whole card   |
 | `when`     | The layer is drawn only while the clause holds, evaluated against live story state like every other condition      |
 
-Layers are drawn in the order they are declared, above the art and below the face text. A layer given no position covers the card, which is what an overlay drawn at card size wants; one given a `size=` is centred on its point.
+Layers are drawn in the order they are declared, above the art and below the face text. A layer given no position covers the card, which is what an overlay drawn at card size wants; one given a `width=` is centred on its point.
 
 How solid a layer is is not written here: a half-transparent overlay is a half-transparent picture. A second place to say so would be a second answer to the same question, and the two only ever disagree in the story that forgot to repeat itself.
 
@@ -137,7 +137,7 @@ A card's **detail** is what the reader finds when they turn it over: the author'
 
 ```rea
 {define card knight deck="roles", name="The Knight" begin}
-  {face at="12%" begin}**THE KNIGHT**{end face}
+  {face vertical="12%" begin}**THE KNIGHT**{end face}
   {detail begin}
     **The Knight** was given a duty and a length of steel, in that order.
 
