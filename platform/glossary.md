@@ -15,11 +15,16 @@ Key terms used across the Reast platform.
 | **Command**       | A `{keyword}` instruction in Rea that controls logic, media, or behavior.                       |
 | **Variable**      | A named value (`{set domain.name = value}`) whose domain — `part.`, `story.`, `shared.` — decides how long it lives.                |
 | **Reader**        | A person consuming/playing an interactive story.                                                |
-| **Author**        | A person who writes and publishes interactive stories on the platform.                          |
+| **Account**       | Your login. One account, one person — and several public identities if you want them.           |
+| **Persona**       | A public identity: its own name, address, picture and description. Reast does not connect one persona to another. |
+| **Member page**   | The persona you set up quests, join groups and write reviews under. It never shows your author pages. |
+| **Author page**   | A persona you publish stories under — a pen name. You may hold up to three.                      |
+| **Blogger page**  | A persona you publish blog posts under, meant to be a public, promotable name.                   |
 | **Player**        | The runtime component that renders and executes Rea stories in the browser.                     |
 | **Shelf**         | A reader's personal collection of saved/bookmarked stories.                                     |
 | **Reading group** | Multiple readers experiencing the same story together with synchronized decisions.              |
 | **Role**          | A character assignment in cooperative reading — each reader takes a different role.             |
+| **Quest**         | A coordinated reading event. Whoever sets one up runs it under their member page — anyone can.  |
 | **Progress**      | The reader's current position and state within a story (auto-saved).                            |
 | **Bookmark**      | A named save point within a story that the reader can return to.                                |
 

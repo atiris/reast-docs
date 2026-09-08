@@ -97,6 +97,12 @@ A high-contrast theme is available for improved readability. Cycle through theme
 
 Yes. Reading stories on Reast is free. Some stories may be premium or paid — see [For Authors](for-authors) for how authors set pricing.
 
+### What is my member page?
+
+It is the identity other readers see when you set up a quest, own or help run a group, or write a review — your name, your picture and whatever description you write. It has an address of its own, and it starts private: nobody can open it until you make it public.
+
+You choose what else it shows. Three sections are available and all three are off unless you turn them on: the groups you own, the groups you help run, and your active and upcoming quests. Finished quests are never listed, and neither are author or blogger pages — if you write under a pen name, your member page will not lead anyone to it.
+
 ### Do I need an account to read stories?
 
 No. You can browse and read public stories without creating an account. An account is needed for saving progress across devices and cooperative features.

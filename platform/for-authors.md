@@ -52,6 +52,20 @@ Pricing is independent of visibility: a published story can be free, premium (be
 
 Publishing a story adds it to your author page — a customisable profile showcasing your published works to readers, with basic analytics on how readers engage with each story.
 
+## Author pages, and writing under more than one name
+
+An author page is a **persona**: a public identity with its own name, address, picture and description. Your account holds up to **three** author pages. If you need more, ask the moderators and say why.
+
+Reast will not connect one of your author pages to another. Nothing on a page names your other pages, your stories carry only the page they were published under, and your member page — the identity you use for quests, groups and reviews — never lists an author page at all. Which page a story goes out under is chosen when you publish it, and writing a story commits you to nothing: a draft has no page attached until you pick one.
+
+Two things Reast cannot separate for you: the same picture on two pages, and the same biography pasted twice. Both are visible to anyone who looks, and both are yours to avoid.
+
+If you publish as a company, your legal details are filled in once for the account, not per page. An author page may show that it belongs to a company and the trading name you chose; the registration number, country and website are never shown on it.
+
+## Writing a blog
+
+A blogger page is another persona — the one your blog posts are signed with, meant to be a public name you can promote. It works the same way as an author page and is separate from every other identity you hold. It is not a privilege or a rank; it is simply a different kind of page.
+
 ## Keyboard Shortcuts
 
 | Key      | Action                |
@@ -62,6 +76,10 @@ Publishing a story adds it to your author page — a customisable profile showca
 | `Ctrl+M` | Toggle metadata panel |
 
 ## FAQ
+
+### Can readers tell that two author pages are mine?
+
+Not from anything Reast publishes. What can give it away is what you do yourself: reusing the same picture, the same biography, or the same links. Moderation, payouts and lawful requests do connect your identities internally — see the privacy policy.
 
 ### Can I write stories in my own language?
 
