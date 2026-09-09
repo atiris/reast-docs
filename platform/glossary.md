@@ -16,10 +16,10 @@ Key terms used across the Reast platform.
 | **Variable**      | A named value (`{set domain.name = value}`) whose domain — `part.`, `story.`, `shared.` — decides how long it lives.                |
 | **Reader**        | A person consuming/playing an interactive story.                                                |
 | **Account**       | Your login. One account, one person — and several public identities if you want them.           |
-| **Persona**       | A public identity: its own name, address, picture and description. Reast does not connect one persona to another. |
-| **Member page**   | The persona you set up quests, join groups and write reviews under. It never shows your author pages. |
-| **Author page**   | A persona you publish stories under — a pen name. You may hold up to three.                      |
-| **Blogger page**  | A persona you publish blog posts under, meant to be a public, promotable name.                   |
+| **Identity**       | A public face of your account: its own name, address, picture and description. Reast does not connect one identity to another. |
+| **Member page**   | The identity you set up quests, join groups and write reviews under. It never shows your author pages. |
+| **Author page**   | An identity you publish stories under — a pen name. You may hold up to three.                      |
+| **Blogger page**  | An identity you publish blog posts under, meant to be a public, promotable name.                   |
 | **Player**        | The runtime component that renders and executes Rea stories in the browser.                     |
 | **Shelf**         | A reader's personal collection of saved/bookmarked stories.                                     |
 | **Reading group** | Multiple readers experiencing the same story together with synchronized decisions.              |
