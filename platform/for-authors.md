@@ -54,7 +54,7 @@ Publishing a story adds it to your author page — a customisable profile showca
 
 ## Author pages, and writing under more than one name
 
-An author page is a **identity**: a public identity with its own name, address, picture and description. Your account holds up to **three** author pages. If you need more, ask the moderators and say why.
+An author page is an **identity**: a public face with its own name, address, picture and description. Your account holds up to **three** author pages. If you need more, ask the moderators and say why.
 
 Reast will not connect one of your author pages to another. Nothing on a page names your other pages, your stories carry only the page they were published under, and your member page — the identity you use for quests, groups and reviews — never lists an author page at all. Which page a story goes out under is chosen when you publish it, and writing a story commits you to nothing: a draft has no page attached until you pick one.
 
