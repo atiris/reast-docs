@@ -685,6 +685,8 @@ To convert between types explicitly, use conversion functions:
 {end if}
 ```
 
+A conditional written on one line may share that line with prose, before it, after it, or both: `The lamp is heavy.{if story.card.lantern.weight > 2 begin} It drags at your belt.{end if}` prints the first sentence always and the second only when the condition holds. The same holds for `{set}`, `{goto}` and `{label}`. To write one of these as text rather than run it, escape the brace (`\{if ...}`) or put it in an inline code span.
+
 ### Switch / Case
 
 <Feature id="switch-case" />
