@@ -623,6 +623,8 @@ Na explicitný prevod medzi typmi slúžia konverzné funkcie:
 {end if}
 ```
 
+Podmienka napísaná na jednom riadku môže zdieľať riadok s textom — pred ňou, za ňou alebo z oboch strán: `Lampáš je ťažký.{if story.card.lantern.weight > 2 begin} Ťahá ti opasok nadol.{end if}` vypíše prvú vetu vždy a druhú len vtedy, keď podmienka platí. To isté platí pre `{set}`, `{goto}` a `{label}`. Ak ich chceš zapísať ako text a nie spustiť, escapuj zátvorku (`\{if ...}`) alebo ich daj do inline kódu.
+
 ### Switch / Case {#switch-case}
 
 <Feature id="switch-case" />
