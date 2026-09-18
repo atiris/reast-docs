@@ -1,0 +1,2 @@
+# One representation on disk: LF, the same thing every tool in this toolchain writes (prettier, eslint, vitest snapshots). A CRLF checkout makes each such write look like a modification to git although the content is identical, which dirties the working tree and blocks the orchestrator's submodule pre-commit hook.
+* text=auto eol=lf
