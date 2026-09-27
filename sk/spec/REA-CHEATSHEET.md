@@ -240,6 +240,10 @@ Lokál a politiku formátovania dodáva hostiteľ. `calendar()` je stále vo vý
 {broadcast begin} Počujú to všetci. {end broadcast}
 {wait readers=all begin} Čaká sa… {end wait}
 {set shared.score = shared.score + 1}  Zdieľaná premenná
+
+{exclusive action="open_chest" begin}  Dostane to len prvý čitateľ;
+  Vypáčiš truhlicu.                    ostatní čítajú ďalej za blokom
+{end exclusive}
 ```
 
 ---

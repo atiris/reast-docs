@@ -1083,17 +1083,37 @@ Po `auto=off` sa zmeny šíria len vtedy, keď sa výslovne zavolá `{synchroniz
 
 ### Riešenie konfliktov {#conflict-resolution}
 
-<Feature id="conflict-resolution" />
+Keď sa viacerí čitatelia pokúsia o protichodné akcie súčasne, platforma konflikty vyrieši.
 
-Keď sa viacerí čitatelia pokúsia o protichodné akcie súčasne, platforma konflikty vyrieši:
+#### Výhradné bloky {#exclusive-blocks}
+
+<Feature id="exclusive" />
+
+`{exclusive}` je obsah, ktorý dostane práve jeden čitateľ relácie:
 
 ```rea
 {exclusive action="open_chest" begin}
-  {comment Truhlicu môže otvoriť len jeden čitateľ}
   K truhlici sa dostaneš prvý a vypáčiš ju.
   {set shared.chest_opened = true}
+  {set story.opened_it = true}
 {end exclusive}
 
+{if not story.opened_it begin}
+  Na veku už leží ruka niekoho iného.
+{end if}
+```
+
+- **`action=` pomenúva nárok.** Práve ono robí z blokov dvoch čitateľov ten istý blok, preto je povinné; blok bez neho je `parse/missing-exclusive-action` a preskočí sa. Dva bloky s rovnakou akciou kdekoľvek v príbehu sú jeden nárok — kto vyhrá prvý, drží aj druhý
+- **Dosiahnuť blok znamená nárokovať si ho.** Príbeh na bloku zastane, kým platforma rozhodne, tak ako zastane na `{wait}`. Čitateľ, ktorý tam bol prvý, si prečíta obsah a jeho účinky prebehnú raz; každý iný čitateľ číta ďalej za blokom, takže príbeh za blokom je miesto, kde sa ostatní dozvedia, že boli druhí
+- **Nárok je prenájom, nie príznak.** Trvá, kým je jeho držiteľ pripojený, a 30 sekúnd po odpojení (pozri [Odpojenie](#disconnection)); potom si ho nárokuje ďalší čitateľ, ktorý blok dosiahne. Držiteľ, ktorý sa pripojí v ochrannej lehote, si ho ponechá
+- **Späť ho neuvoľní.** Od toho, kto otvoril truhlicu, závisí stav ostatných čitateľov, takže čítanie späť za blok ho nechá nárokovaný (pozri [Krok späť a spätná navigácia](#undo-back-navigation))
+- **Osamote si ho čitateľ nárokuje okamžite** — bez relácie aj vtedy, keď platforma nie je dosiahnuteľná (pozri [Správanie v sólo režime](#solo-mode-behavior))
+
+#### Preteky {#races}
+
+<Feature id="race" />
+
+```rea
 {race timeout=10 begin}
   {comment Vyhráva prvý čitateľ, ktorý to dokončí}
   * [Chyť drahokam]

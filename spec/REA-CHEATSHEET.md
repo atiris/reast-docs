@@ -257,6 +257,10 @@ The host supplies locale and formatting policy. `calendar()` is still in develop
 {broadcast begin} Everyone hears. {end broadcast}
 {wait readers=all begin} Waiting... {end wait}
 {set shared.score = shared.score + 1}  Shared variable
+
+{exclusive action="open_chest" begin}  Only the first reader here gets this;
+  You pry the chest open.              the rest read on past it
+{end exclusive}
 ```
 
 ---

@@ -97,7 +97,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `ext/requires-missing` | `fatal` | load refused |
 | `ext/unbound-alias` | `error` | call yields `undefined` → empty |
 
-#### `parse/` — Reading one file (51)
+#### `parse/` — Reading one file (52)
 
 | Code | Severity | What the reader gets |
 | ---- | -------- | -------------------- |
@@ -134,6 +134,7 @@ Division by zero yields **nothing**, which renders as nothing. It used to yield 
 | `parse/layer-outside-card` | `warning` | the layer is dropped |
 | `parse/layer-without-image` | `warning` | the layer is dropped |
 | `parse/missing-checkpoint-name` | `error` | the command does nothing |
+| `parse/missing-exclusive-action` | `error` | the block is skipped |
 | `parse/manifest-not-first` | `warning` | the metadata is ignored |
 | `parse/duplicate-embedded-file` | `error` | the first declaration is used |
 | `parse/invalid-storylet-match` | `error` | storylet never eligible |

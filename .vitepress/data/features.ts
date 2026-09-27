@@ -1952,19 +1952,35 @@ export const FEATURES: Feature[] = [
     link: '/spec/03-narrative-interaction#state-synchronization',
   },
   {
-    id: 'conflict-resolution',
+    id: 'exclusive',
     title: {
-      en: 'Exclusive blocks & races',
-      sk: 'Výhradné bloky a preteky',
+      en: 'Exclusive blocks',
+      sk: 'Výhradné bloky',
     },
     group: 'cooperative',
-    syntax: '{exclusive action="open_chest" begin} · {race timeout=10 begin}',
+    syntax: '{exclusive action="open_chest" begin} … {end exclusive}',
+    status: 'experimental',
+    since: '1.8',
+    note: {
+      en: 'Content exactly one reader of a session gets: the platform decides who was first, the claim is a lease that outlives a disconnection by the grace period, undo never releases it, and a lone reader claims instantly. It is the primitive group decks are built on.',
+      sk: 'Obsah, ktorý dostane práve jeden čitateľ relácie: kto bol prvý, rozhodne platforma, nárok je prenájom, ktorý prežije odpojenie o ochrannú lehotu, späť ho nikdy neuvoľní a osamelý čitateľ si ho nárokuje okamžite. Je to primitívum, na ktorom stoja skupinové balíčky.',
+    },
+    link: '/spec/03-narrative-interaction#exclusive-blocks',
+  },
+  {
+    id: 'race',
+    title: {
+      en: 'Races',
+      sk: 'Preteky',
+    },
+    group: 'cooperative',
+    syntax: '{race timeout=10 begin}',
     status: 'draft',
     note: {
-      en: 'First-reader-wins primitives with defined disconnection behaviour. Specified in detail; implementation waits on the shared-state layer they depend on.',
-      sk: 'Primitíva typu „vyhráva prvý čitateľ" s definovaným správaním pri odpojení. Podrobne špecifikované; implementácia čaká na vrstvu zdieľaného stavu, od ktorej závisia.',
+      en: 'The first reader to complete the block wins, with defined timeout and disconnection behaviour. Specified; nothing built.',
+      sk: 'Vyhráva prvý čitateľ, ktorý blok dokončí, s definovaným správaním pri vypršaní času a odpojení. Špecifikované; nič nie je postavené.',
     },
-    link: '/spec/03-narrative-interaction#conflict-resolution',
+    link: '/spec/03-narrative-interaction#races',
   },
   {
     id: 'presence',

@@ -1083,17 +1083,37 @@ After `auto=off`, changes only propagate when `{synchronize out}` or `{synchroni
 
 ### Conflict resolution
 
-<Feature id="conflict-resolution" />
+When multiple readers attempt conflicting actions simultaneously, the platform resolves conflicts.
 
-When multiple readers attempt conflicting actions simultaneously, the platform resolves conflicts:
+#### Exclusive blocks
+
+<Feature id="exclusive" />
+
+`{exclusive}` is content exactly one reader of a session gets:
 
 ```rea
 {exclusive action="open_chest" begin}
-  {comment Only one reader can open the chest}
   You reach the chest first and pry it open.
   {set shared.chest_opened = true}
+  {set story.opened_it = true}
 {end exclusive}
 
+{if not story.opened_it begin}
+  Somebody else's hand is already on the lid.
+{end if}
+```
+
+- **`action=` names the claim.** It is what makes two readers' blocks the same block, so it is required; a block without one is `parse/missing-exclusive-action` and is skipped. Two blocks with the same action anywhere in the story are one claim — whoever wins the first also holds the second
+- **Reaching the block is the claim.** The story stops on the block while the platform decides, the way it stops on a `{wait}`. The reader who got there first reads the content, and its effects run once; every other reader reads straight on past it, so the story after the block is where the others learn they were second
+- **The claim is a lease, not a flag.** It lives as long as its holder is connected, and 30 seconds past a disconnection (see [Disconnection](#disconnection)); after that another reader reaching the block claims it. A holder who reconnects within the grace period keeps it
+- **Undo does not release it.** Other readers' state depends on who opened the chest, so reading back past the block leaves it claimed (see [Undo & back navigation](#undo-back-navigation))
+- **Alone, the reader claims instantly** — with no session, and when the platform cannot be reached (see [Solo mode behavior](#solo-mode-behavior))
+
+#### Races
+
+<Feature id="race" />
+
+```rea
 {race timeout=10 begin}
   {comment First reader to complete wins}
   * [Grab the gem]
