@@ -67,6 +67,7 @@ All events are `CustomEvent` instances that bubble.
 | `rea-waiting` | `{ waiting }` | Waiting state changed. |
 | `rea-choice` | `{ nodeId, index }` | Reader selected a choice. |
 | `rea-undo` | `{ nodeId }` | Reader reverted a choice. |
+| `rea-restore` | `{ name }` | A `{restore}` put the reader back at the named checkpoint. |
 | `rea-progress` | `{ chapter, paragraph }` | A block finished revealing. |
 | `rea-complete` | — | Story reached its end. |
 | `rea-error` | `{ message }` | A load/parse/runtime error occurred. |

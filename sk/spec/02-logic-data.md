@@ -870,13 +870,39 @@ Platforma automaticky ukladá postup čitateľa po každej voľbe. Autori môžu
 {restore name="before_boss"}
 ```
 
+Obnovenie MÔŽE niesť voliteľnú podmienku — klauzulu `when`, poslednú v hlavičke ako podmienku každého bloku — vyhodnotenú v okamihu obnovenia voči aktuálnemu `context.*` a vlastným zaznamenaným metadátam kontrolného bodu:
+
+```rea
+{restore name="before_boss" when context.time.now - checkpoint.saved_at < duration("PT10M")}
+```
+
+`checkpoint.saved_at` je implicitné pole každého pomenovaného kontrolného bodu — čas uloženia v milisekundách epochy — a existuje iba v podmienke obnovenia. Ak sa podmienka vyhodnotí ako nepravdivá, obnovenie sa odmietne (`flow/restore-condition-failed`, info) a čítanie pokračuje z aktuálnej pozície; to je niečo iné ako obnovenie kontrolného bodu, ktorý vôbec neexistuje (`link/unknown-checkpoint`). Oba príkazy potrebujú `name`; príkaz bez neho je `parse/missing-checkpoint-name`. Pomenované obnovenie je blokované rovnako ako `{undo}`, keď od kontrolného bodu nastal nevratný účinok (aktívny zámok `{exclusive}`, prebiehajúce `{vote}`) — rovnaký kód `env/undo-blocked`, nie samostatný.
+
+Kontrolný bod sa zaznamená, keď ním čitateľ prejde prvýkrát. Ďalší prechod nič nemení, iba ak boli voľby, ktoré k nemu viedli, vzaté späť — vtedy sa zaznamená nanovo. Obnovenie pôsobí v okamihu, keď k nemu čitateľ dôjde: celý stav sa nahradí stavom kontrolného bodu a čítanie pokračuje odtiaľ, takže text medzi poslednou voľbou a obnovením sa nikdy nezobrazí. Ak má čitateľ najprv vidieť, čo sa pokazilo, dajte obnovenie pod voľbu:
+
+```rea
+{checkpoint name="bridge"}
+
+Most nad roklinou vŕzga.
+
+* [Prejsť po ňom]
+  Lano praskne. Padáš.
+  * * [Skúsiť znova]
+    {restore name="bridge"}
+* [Obísť ho]
+  Ideš dlhšou cestou.
+```
+
+Obnovenie nerobí nič, ak čitateľ daným kontrolným bodom na svojej ceste neprešiel alebo odvtedy nič nezvolil. Pomenované kontrolné body cestujú s uložením, takže obnovenie funguje aj potom, čo čitateľ príbeh zavrie a vráti sa k nemu.
+
 #### Čo snímka zachytáva {#what-a-snapshot-captures}
 
 Snímka (či už automatické uloženie, alebo pomenovaný kontrolný bod) zachytáva **kompletný stav čitateľa**:
 
 | Kategória            | Čo sa ukladá                                                                       |
 | -------------------- | ---------------------------------------------------------------------------------- |
-| Premenné             | Všetky hodnoty `{set}` vrátane vnorených vlastností a premenných v rozsahu nadpisu |
+| Premenné             | Všetky hodnoty `{set}` v `part.`, `story.` a (kooperatívne) `shared.` — `context.*` sa neukladá nikdy; pozri nižšie |
+| Pozícia náhodného prúdu | Pozícia zasiateho náhodného prúdu, aby sa funkcia, ktorá naň spolieha (náhodné rozhodnutie remízy vo `{vote}`, kockový zápis), pri obnovení nerozišla |
 | Pozícia              | Aktuálna pasáž, posun v riadku, zásobník aktívnych volieb                          |
 | Počty návštev        | Koľkokrát bola každá kotva či nadpis navštívená                                    |
 | Atribúty čitateľa    | Jazyk, meno, rola, vlastné metadáta                                                |
@@ -888,6 +914,8 @@ Snímka (či už automatické uloženie, alebo pomenovaný kontrolný bod) zachy
 | Stav balíčka         | Ktoré storylety už boli vytiahnuté a čo ostáva vo výbere                           |
 | Stav časovačov       | Aktívne časovače sa pri uložení **pozastavia** a pri obnovení **pokračujú**        |
 | Prehrávanie médií    | Pozície zvuku a videa sa **neukladajú** — médiá sa pri obnovení spustia odznova    |
+
+Hodnoty `context.*` sa čítajú naživo a nikdy sa do snímky nezmrazia — obnovenie uloženia znovu prečíta aktuálny stav senzorov a platformy namiesto prehrávania zastaraných hodnôt (uloženie, ktoré by si zapamätalo včerajšiu polohu GPS, by bolo po obnovení vyslovene chybné). Stav `part.` sa ukladá ako každá iná doména; obnovenie kontrolného bodu zaznamenaného uprostred časti vráti jeho hodnoty `part.` neporušené a tie zostanú neporušené, kým čitateľ naozaj nezmení časť — samotné obnovenie je nahradenie stavu, nie prechod medzi časťami, takže nespustí bežné vynulovanie `part.`.
 
 Pri kooperatívnom čítaní snímka navyše zachytáva:
 

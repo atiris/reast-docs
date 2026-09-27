@@ -303,6 +303,9 @@
           "include": "#command-label-goto"
         },
         {
+          "include": "#command-checkpoint"
+        },
+        {
           "include": "#command-require"
         },
         {
@@ -421,6 +424,22 @@
         },
         "2": {
           "name": "entity.name.label.rea"
+        }
+      }
+    },
+    "command-checkpoint": {
+      "comment": "A named restore point and the way back to it: {checkpoint name=\"x\"}, {restore name=\"x\" when <condition>}.",
+      "match": "\\{(checkpoint|restore)\\b([^}]*)\\}",
+      "captures": {
+        "1": {
+          "name": "keyword.control.flow.rea"
+        },
+        "2": {
+          "patterns": [
+            {
+              "include": "#command-params"
+            }
+          ]
         }
       }
     },

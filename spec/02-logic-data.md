@@ -934,13 +934,30 @@ Readers can restore to any checkpoint via the platform UI. Authors can also rest
 {restore name="before_boss"}
 ```
 
-Restore MAY carry an optional guard, evaluated at the moment of restore against current `context.*` and the checkpoint's own recorded metadata:
+Restore MAY carry an optional guard — a `when` clause, last in the head like every block's condition — evaluated at the moment of restore against current `context.*` and the checkpoint's own recorded metadata:
 
 ```rea
-{restore name="before_boss", when=context.time.now - checkpoint.saved_at < duration("PT10M")}
+{restore name="before_boss" when context.time.now - checkpoint.saved_at < duration("PT10M")}
 ```
 
-`checkpoint.saved_at` is an implicit field on every named checkpoint — the timestamp at save time. If `when=` evaluates false, the restore is refused (`flow/restore-condition-failed`, info): reading continues from the current position, distinct from restoring a checkpoint that doesn't exist at all (`link/unknown-checkpoint`). Named-checkpoint restore is blocked the same way `{undo}` is when an irretractable effect (an active `{exclusive}` lock, an in-progress `{vote}`) happened since the checkpoint — same `env/undo-blocked` code, not a separate one.
+`checkpoint.saved_at` is an implicit field on every named checkpoint — the timestamp at save time, in epoch milliseconds — and exists only inside a restore's guard. If the guard evaluates false, the restore is refused (`flow/restore-condition-failed`, info): reading continues from the current position, distinct from restoring a checkpoint that doesn't exist at all (`link/unknown-checkpoint`). Both commands need a `name`; one without is `parse/missing-checkpoint-name`. Named-checkpoint restore is blocked the same way `{undo}` is when an irretractable effect (an active `{exclusive}` lock, an in-progress `{vote}`) happened since the checkpoint — same `env/undo-blocked` code, not a separate one.
+
+A checkpoint is recorded the first time the reader passes it. Passing it again changes nothing, unless the choices that led to it were taken back — then it is recorded afresh. A restore acts the moment the reader reaches it: the whole state is replaced by the checkpoint's and reading continues from there, so text between the last choice and the restore is never shown. To let the reader see what went wrong first, put the restore under a choice:
+
+```rea
+{checkpoint name="bridge"}
+
+The bridge creaks over the gorge.
+
+* [Cross it]
+  The rope snaps. You fall.
+  * * [Try again]
+    {restore name="bridge"}
+* [Walk around]
+  You take the long way.
+```
+
+A restore does nothing when the reader has not passed that checkpoint on the path they are on, or has chosen nothing since it. Named checkpoints travel with a save, so a restore still works after the reader closes the story and comes back.
 
 #### What a snapshot captures
 

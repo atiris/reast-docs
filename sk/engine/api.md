@@ -67,6 +67,7 @@ Všetky udalosti sú inštancie `CustomEvent`, ktoré bublajú.
 | `rea-waiting` | `{ waiting }` | Stav čakania sa zmenil. |
 | `rea-choice` | `{ nodeId, index }` | Čitateľ vybral voľbu. |
 | `rea-undo` | `{ nodeId }` | Čitateľ vrátil voľbu. |
+| `rea-restore` | `{ name }` | `{restore}` vrátil čitateľa na pomenovaný kontrolný bod. |
 | `rea-progress` | `{ chapter, paragraph }` | Blok dokončil odhaľovanie. |
 | `rea-complete` | — | Príbeh dosiahol koniec. |
 | `rea-error` | `{ message }` | Nastala chyba načítania/parsovania/runtime. |
