@@ -315,14 +315,14 @@ Centrálna kotva rozbočovača, do ktorej sa čitatelia vracajú po preskúmaní
 [#town_square]
 Stojíš na námestí.
 
-{once name=visit_market begin}
+{once begin}
   * [Navštív trh]
     Preskúmaš rušné trhové stánky.
     {set story.flag.visited_market = true}
     -> town_square
 {end once}
 
-{once name=visit_temple begin}
+{once begin}
   * [Vstúp do chrámu]
     V chráme je ticho a chlad.
     {set story.flag.temple_blessing = true}
@@ -348,7 +348,7 @@ Viaceré dejové línie, ktoré napredujú nezávisle a v kľúčových chvíľa
     [#elena_journey]
     Elena putuje na západ cez les.
     {set story.elena.location = "forest"}
-    {wait gareth_thread.reached("bridge") begin}{end wait}
+    {wait when gareth_thread.reached("bridge") begin}{end wait}
     Stretnú sa pri moste.
   {end thread}
 
@@ -1203,7 +1203,7 @@ Kooperatívne príbehy musia byť hrateľné jediným čitateľom bez úprav. Pl
 | --------------------------------------- | ----------------------------------------- | ---------------------------------------------------- |
 | `{vote timeout=N begin}`                | Všetci hlasujú, vyhráva väčšina           | Voľba čitateľa vyhráva **okamžite** (bez čakania)    |
 | `{wait readers=all begin}...{end wait}` | Blokuje, kým nedorazia všetci             | **Okamžitý prechod**                                 |
-| `{wait VÝRAZ begin}...{end wait}`        | Blokuje, kým výraz nie je pravdivý        | **Bez zmeny** — podmienka môže závisieť od času či stavu |
+| `{wait when VÝRAZ begin}...{end wait}`        | Blokuje, kým výraz nie je pravdivý        | **Bez zmeny** — podmienka môže závisieť od času či stavu |
 | `{exclusive begin}`                     | Akciu si môže nárokovať len jeden čitateľ | **Vždy dostupné** — čitateľ si ju nárokuje okamžite  |
 | `{race timeout=N begin}`                | Vyhráva prvý, kto to dokončí              | Čitateľ **vždy vyhráva okamžite** (bez čakania)      |
 | `{whisper to=ROLA begin}`               | Text vidí len cieľová rola                | Zobrazí sa ako **bežný text**                        |
@@ -1262,7 +1262,8 @@ Pridanie `optional` znamená, že funkcia príbeh obohatí, ale nie je nutná. F
 {if has("nfc") begin}
   Prilož zariadenie k NFC štítku ukrytému pod lavičkou.
 {else}
-  Napíš kód vytlačený na lavičke: {input type="text", name=bench_code}
+  Napíš kód vytlačený na lavičke:
+  {input type="text", name=part.bench_code}
 {end if}
 ```
 
@@ -1275,7 +1276,7 @@ Každá brána v príbehu — `{if}`, `condition` voľby, `when` storyletu, str�
 | Režim          | Zápis                                                                          | Význam                                                            | Vyžaduje únik                   |
 | -------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------ | ------------------------------- |
 | **teraz**      | `{if}`, `condition` voľby, `visible:` špendlíka                                | vyhodnotí sa vo chvíli, keď k nej čitateľ dôjde                    | nie                             |
-| **kým**        | `{wait EXPR begin} … {end wait}`, `{waypoint}`                                 | príbeh sa tu zastaví a pokračuje, keď sa výraz stane pravdivým      | áno, keď výraz číta `context.*` |
+| **kým**        | `{wait when EXPR begin} … {end wait}`, `{waypoint}`                                 | príbeh sa tu zastaví a pokračuje, keď sa výraz stane pravdivým      | áno, keď výraz číta `context.*` |
 | **kedykoľvek** | `{on EVENT when GUARD}`, `when` storyletu, `{zone}` `on enter` / `on exit` | spúšťa sa na hrane, môže sa spustiť opakovane                       | neaplikuje sa                   |
 
 Autor volí sloveso jedinou otázkou — *zastaví sa tu príbeh?* — a vo všetkých troch prípadoch píše ten istý jazyk výrazov. Nové schopnosti preto prichádzajú ako nové podstromy `context.` a nové funkcie, nikdy nie ako nová gramatika.
@@ -1284,7 +1285,7 @@ Autor volí sloveso jedinou otázkou — *zastaví sa tu príbeh?* — a vo vše
 
 <Feature id="conditional-wait" />
 
-`{wait EXPR begin} … {end wait}` zastaví príbeh, kým sa `EXPR` nestane pravdivým. Telo je to, čo čitateľ vidí **počas** čakania; keď sa brána otvorí, telo sa nahradí a príbeh pokračuje za `{end wait}`.
+`{wait when EXPR begin} … {end wait}` zastaví príbeh, kým sa `EXPR` nestane pravdivým. Telo je to, čo čitateľ vidí **počas** čakania; keď sa brána otvorí, telo sa nahradí a príbeh pokračuje za `{end wait}`.
 
 ```rea
 {wait escape=duration("PT3H"), escape_to="dry_night" when context.weather = "rain" and context.time.hour >= 20 begin}
@@ -1304,15 +1305,15 @@ Prvé kvapky dopadajú na dlažbu. Pod podlubím už niekto čaká.
 Zo sémantiky vyplývajú tri veci a autor potrebuje všetky tri:
 
 - **Podmienka môže byť `unknown`.** Keď je zdroj, ktorý číta, zamietnutý, nedostupný alebo zastaraný, výraz nie je ani pravdivý, ani nepravdivý. Čakanie berie `unknown` ako *čakaj ďalej* a nechá rozhodnúť únik — zamietnutý senzor nesmie potichu odpovedať „nie“ a zavrieť bránu, o ktorej sa čitateľ nikdy nedozvedel. `{if}` ho berie ako nepravdu, a preto `link/context-no-fallback` pýta `{else}`.
-- **Termíny sú absolútne a zmeškané okno sa ráta.** Príbeh sa zavrie na lavičke a otvorí o tri hodiny neskôr; `escape=duration("PT3H")` je dovtedy vyčerpaný bez ohľadu na to, či aplikácia bežala. Navše: čakanie, ktoré sa stalo pravdivým, kým bol príbeh zatvorený, sa všimne pri návrate — `{wait context.time.hour = 22}` sa spustí čitateľovi, ktorý bol preč od deviatej do pol dvanástej, lebo engine prehrá hodiny, ktoré prespal, namiesto toho, aby sa pýtal len na okamih prebudenia. Platí to pre všetko odvodené od hodín; včerajšie počasie si nikto nezaznamenal, takže dopytovaný zdroj sa rozhodne až v okamihu návratu.
+- **Termíny sú absolútne a zmeškané okno sa ráta.** Príbeh sa zavrie na lavičke a otvorí o tri hodiny neskôr; `escape=duration("PT3H")` je dovtedy vyčerpaný bez ohľadu na to, či aplikácia bežala. Navše: čakanie, ktoré sa stalo pravdivým, kým bol príbeh zatvorený, sa všimne pri návrate — `{wait when context.time.hour = 22}` sa spustí čitateľovi, ktorý bol preč od deviatej do pol dvanástej, lebo engine prehrá hodiny, ktoré prespal, namiesto toho, aby sa pýtal len na okamih prebudenia. Platí to pre všetko odvodené od hodín; včerajšie počasie si nikto nezaznamenal, takže dopytovaný zdroj sa rozhodne až v okamihu návratu.
 - **Čakanie posunie príbeh, keď ho nabudúce otvoríš, nie skôr.** Žiadne čakanie nebeží pri zatvorenej aplikácii — web nemá určovanie polohy na pozadí ani spoľahlivé naplánované miestne upozornenie — takže príbeh nikdy nie je *pred* čitateľom, len dobehnutý k okamihu jeho návratu. O čakaní sa nikam nič neposiela: rozhoduje sa na zariadení, podľa jeho hodín. Čitateľ teda nedostane ťuknutie po pleci a `escape=` je to, čo chráni príbeh pred tým, kto sa už nevráti.
 
 Pre podmienky, s ktorými sa čakanie zvyčajne píše, existujú tri funkcie:
 
 ```rea
-{wait between(context.time, "22:00", "06:00") begin}     {comment po desiatej večer, vrátane po polnoci}
-{wait elapsed(story.started) >= duration("PT30M") begin} {comment o pol hodinu čítania neskôr}
-{wait within(context.location, "old_bridge") begin}      {comment vnútri oblasti pomenovanej zastávky}
+{wait when between(context.time, "22:00", "06:00") begin}     {comment po desiatej večer, vrátane po polnoci}
+{wait when elapsed(story.started) >= duration("PT30M") begin} {comment o pol hodinu čítania neskôr}
+{wait when within(context.location, "old_bridge") begin}      {comment vnútri oblasti pomenovanej zastávky}
 ```
 
 Holé `{wait begin} … {end wait}` bez výrazu ostáva nezmenené: je to pauza, nie brána.
@@ -1365,7 +1366,7 @@ Poloha sa zapisuje [bodovým literálom `@(lat, lng)`](02-logic-data.md#coordina
 
 <Feature id="waypoints" />
 
-Zastávky, inšpirované geocachingom, definujú pomenované miesta, ktoré musí čitateľ navštíviť. Zastávka je [`{wait}`](#waiting-for-a-condition) plus miesto na mape — `{waypoint name, AREA, require=EXPR}` je `{wait context.location matches AREA and EXPR}` s metaúdajmi mapy — takže `hint=` je jej text počas čakania, telo je obsah po príchode a o oboch rozhoduje ten istý plánovač a to isté pravidlo úniku:
+Zastávky, inšpirované geocachingom, definujú pomenované miesta, ktoré musí čitateľ navštíviť. Zastávka je [`{wait}`](#waiting-for-a-condition) plus miesto na mape — `{waypoint name, AREA, require=EXPR}` je `{wait when context.location matches AREA and EXPR}` s metaúdajmi mapy — takže `hint=` je jej text počas čakania, telo je obsah po príchode a o oboch rozhoduje ten istý plánovač a to isté pravidlo úniku:
 
 ```rea
 {waypoint old_bridge, circle(@(48.1432, 17.1056), 50) begin}
@@ -1420,7 +1421,7 @@ Príbeh zasadený do reálneho miesta môže ukázať vlastnú mapu namiesto vš
 {end map}
 ```
 
-`bounds=` udáva severozápadný a juhovýchodný roh obrázka ako dva bodové literály a jadro každý špendlík naň premietne ekvidištantne. `at:` špendlíka prijíma ľubovoľný bodový výraz — literál alebo `context.location` pre špendlík, ktorý sleduje čitateľa — takže sa špendlík môže pohybovať s čítaním alebo sa objaviť až po nastavení premennej (`visible`).
+`bounds=` udáva severozápadný a juhovýchodný roh obrázka ako dva bodové literály a jadro každý špendlík naň premietne ekvidištantne. `at=` špendlíka prijíma ľubovoľný bodový výraz — literál alebo `context.location` pre špendlík, ktorý sleduje čitateľa — takže sa špendlík môže pohybovať s čítaním alebo sa objaviť až po nastavení premennej (`visible`).
 
 Nič z tohto bloku sa zatiaľ nevykresľuje — parser mu rozumie, výpočet projekcie je napísaný a zostávajúcim dielom je plátno na strane čitateľa.
 

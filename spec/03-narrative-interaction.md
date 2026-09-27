@@ -315,14 +315,14 @@ A central hub anchor that readers return to after exploring branches. Combined w
 [#town_square]
 You stand in the town square.
 
-{once name=visit_market begin}
+{once begin}
   * [Visit the market]
     You explore the bustling market stalls.
     {set story.flag.visited_market = true}
     -> town_square
 {end once}
 
-{once name=visit_temple begin}
+{once begin}
   * [Enter the temple]
     The temple is quiet and cool inside.
     {set story.flag.temple_blessing = true}
@@ -348,7 +348,7 @@ Multiple storylines that advance independently and converge at key moments:
     [#elena_journey]
     Elena travels west through the forest.
     {set story.elena.location = "forest"}
-    {wait gareth_thread.reached("bridge") begin}{end wait}
+    {wait when gareth_thread.reached("bridge") begin}{end wait}
     They meet at the bridge.
   {end thread}
 
@@ -1203,7 +1203,7 @@ Cooperative stories must be playable by a single reader without modification. Th
 | --------------------------------------- | ---------------------------------------- | ------------------------------------------------- |
 | `{vote timeout=N begin}`                | All readers vote, majority wins          | Reader's choice wins **instantly** (no timeout)   |
 | `{wait readers=all begin}...{end wait}` | Blocks until all readers reach the point | **Instant pass**                                  |
-| `{wait EXPR begin}...{end wait}`        | Blocks until expression is true          | **Unchanged** — condition may be time/state-based |
+| `{wait when EXPR begin}...{end wait}`        | Blocks until expression is true          | **Unchanged** — condition may be time/state-based |
 | `{exclusive begin}`                     | Only one reader can claim the action     | **Always available** — reader claims instantly    |
 | `{race timeout=N begin}`                | First reader to complete wins            | Reader **always wins instantly** (no timeout)     |
 | `{whisper to=ROLE begin}`               | Only target role sees the text           | Shown as **normal text**                          |
@@ -1262,7 +1262,8 @@ Adding `optional` means the feature enhances the story but isn't required. The `
 {if has("nfc") begin}
   Tap the NFC tag hidden under the bench.
 {else}
-  Type the code printed on the bench: {input type="text", name=part.bench_code}
+  Type the code printed on the bench:
+  {input type="text", name=part.bench_code}
 {end if}
 ```
 
@@ -1275,7 +1276,7 @@ Every gate in a story — an `{if}`, a choice's `condition`, a storylet's `when`
 | Mode         | Written as                                                                        | Semantics                                                            | Escape required                                    |
 | ------------ | --------------------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------------------- |
 | **now**      | `{if}`, a choice's `condition`, a pin's `visible:`                                | evaluated at the moment the reader reaches it                        | no                                                 |
-| **until**    | `{wait EXPR begin} … {end wait}`, `{waypoint}`                                    | the story pauses here and continues when the expression turns true   | yes, when the expression reads `context.*`         |
+| **until**    | `{wait when EXPR begin} … {end wait}`, `{waypoint}`                                    | the story pauses here and continues when the expression turns true   | yes, when the expression reads `context.*`         |
 | **whenever** | `{on EVENT when GUARD}`, a storylet's `when`, `{zone}` `on enter` / `on exit` | edge-triggered, may fire repeatedly                                  | not applicable                                     |
 
 The author picks a verb by asking one question — *does the story stop here?* — and writes the same expression language in all three. New capabilities therefore arrive as new `context.` subtrees and new functions, never as new grammar.
@@ -1284,7 +1285,7 @@ The author picks a verb by asking one question — *does the story stop here?* �
 
 <Feature id="conditional-wait" />
 
-`{wait EXPR begin} … {end wait}` pauses the story until `EXPR` becomes true. Its body is what the reader sees **while** waiting; once the gate opens the body is replaced and the story continues after `{end wait}`.
+`{wait when EXPR begin} … {end wait}` pauses the story until `EXPR` becomes true. Its body is what the reader sees **while** waiting; once the gate opens the body is replaced and the story continues after `{end wait}`.
 
 ```rea
 {wait escape=duration("PT3H"), escape_to="dry_night" when context.weather = "rain" and context.time.hour >= 20 begin}
@@ -1304,15 +1305,15 @@ A wait whose expression reads `context.*` — device, location or weather state 
 Three things follow from the semantics, and authors need all three:
 
 - **A condition can be `unknown`.** When a source it reads is denied, unavailable or stale, the expression is neither true nor false. A wait treats `unknown` as *keep waiting* and lets the escape decide — a denied sensor must never silently answer "no" and close a gate the reader was never told about. An `{if}` treats it as false, which is why `link/context-no-fallback` asks for an `{else}`.
-- **Deadlines are absolute, and a missed window still counts.** A story is closed on a bench and reopened three hours later; `escape=duration("PT3H")` has expired by then, whether or not the app was running. More than that, a wait that *became* true while the story was shut is noticed on the way back in: `{wait context.time.hour = 22}` fires for a reader who was away from nine until half past eleven, because the engine replays the hours it slept through rather than only asking about the moment it woke. That works for anything derived from the clock; nothing recorded yesterday's weather, so a poll source is decided at the moment you return.
+- **Deadlines are absolute, and a missed window still counts.** A story is closed on a bench and reopened three hours later; `escape=duration("PT3H")` has expired by then, whether or not the app was running. More than that, a wait that *became* true while the story was shut is noticed on the way back in: `{wait when context.time.hour = 22}` fires for a reader who was away from nine until half past eleven, because the engine replays the hours it slept through rather than only asking about the moment it woke. That works for anything derived from the clock; nothing recorded yesterday's weather, so a poll source is decided at the moment you return.
 - **A wait moves the story when you next open it, not before.** No wait runs while the app is closed — the web platform has no background geolocation and no reliable scheduled local notification — so a story is never *ahead* of the reader, only ever caught up with the instant they return. Nothing about a wait is sent anywhere: it is decided on the device, from the device's clock. The reader is therefore not tapped on the shoulder, and `escape=` is what protects a story from one who never comes back at all.
 
 Three functions exist for the conditions a wait is usually written with:
 
 ```rea
-{wait between(context.time, "22:00", "06:00") begin}    {comment after ten in the evening, including past midnight}
-{wait elapsed(story.started) >= duration("PT30M") begin} {comment half an hour of reading later}
-{wait within(context.location, "old_bridge") begin}      {comment inside a named waypoint's own area}
+{wait when between(context.time, "22:00", "06:00") begin}    {comment after ten in the evening, including past midnight}
+{wait when elapsed(story.started) >= duration("PT30M") begin} {comment half an hour of reading later}
+{wait when within(context.location, "old_bridge") begin}      {comment inside a named waypoint's own area}
 ```
 
 A bare `{wait begin} … {end wait}` with no expression is unchanged: it is a pause beat, not a gate.
@@ -1365,7 +1366,7 @@ A position is written with the [`@(lat, lng)` point literal](02-logic-data.md#co
 
 <Feature id="waypoints" />
 
-Inspired by geocaching, waypoints define named locations that the reader must visit. A waypoint is a [`{wait}`](#waiting-for-a-condition) plus a place on the map — `{waypoint name, AREA, require=EXPR}` is `{wait context.location matches AREA and EXPR}` with map metadata — so `hint=` is its waiting text, its body is arrival content, and the same scheduler and the same escape rule decide both:
+Inspired by geocaching, waypoints define named locations that the reader must visit. A waypoint is a [`{wait}`](#waiting-for-a-condition) plus a place on the map — `{waypoint name, AREA, require=EXPR}` is `{wait when context.location matches AREA and EXPR}` with map metadata — so `hint=` is its waiting text, its body is arrival content, and the same scheduler and the same escape rule decide both:
 
 ```rea
 {waypoint old_bridge, circle(@(48.1432, 17.1056), 50) begin}
@@ -1428,7 +1429,7 @@ A story set in a real place can show its own map instead of a generic one: an au
 {end map}
 ```
 
-`bounds=` gives the north-west and south-east corners of the image as two point literals, and the engine projects each pin onto it equirectangularly. A pin's `at:` takes any point expression — a literal, or `context.location` for a pin that follows the reader — so a pin can move with the reading or appear only once a variable is set (`visible`).
+`bounds=` gives the north-west and south-east corners of the image as two point literals, and the engine projects each pin onto it equirectangularly. A pin's `at=` takes any point expression — a literal, or `context.location` for a pin that follows the reader — so a pin can move with the reading or appear only once a variable is set (`visible`).
 
 Nothing in this block renders yet — the parser understands it, the projection maths is written, and the reader-side canvas is the remaining piece.
 

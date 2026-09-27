@@ -346,8 +346,7 @@ Príbeh prichádza presne v jednom z dvoch tvarov a každý má vlastné pravidl
 <Feature id="define-manifest" />
 
 ```rea
-{define manifest type="story", title="Posledný lampáš", language="sk", genre="mystery",
-                 audience_min=12, audience_max=99, version="1.0.0"}
+{define manifest type="story", title="Posledný lampáš", language="sk", genre="mystery", audience_min=12, audience_max=99, version="1.0.0"}
 
 # Prvá kapitola
 

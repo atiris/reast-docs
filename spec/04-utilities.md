@@ -350,8 +350,7 @@ A story arrives in exactly one of two shapes, and each has its own rule for wher
 <Feature id="define-manifest" />
 
 ```rea
-{define manifest type="story", title="The Last Lantern", language="sk", genre="mystery",
-                 audience_min=12, audience_max=99, version="1.0.0"}
+{define manifest type="story", title="The Last Lantern", language="sk", genre="mystery", audience_min=12, audience_max=99, version="1.0.0"}
 
 # The first chapter
 
