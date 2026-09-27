@@ -1830,6 +1830,22 @@ export const FEATURES: Feature[] = [
 
   // ── Cooperative reading ───────────────────────────────────────────────────
   {
+    id: 'group-decks',
+    title: {
+      en: 'Group decks',
+      sk: 'Skupinové balíčky',
+    },
+    group: 'cooperative',
+    syntax: '{define deck roles scope="group", reclaim=120} · taken("king") · {on missed deck="roles"}',
+    status: 'experimental',
+    since: '1.8',
+    note: {
+      en: 'One deck for the whole session, dealt once by the platform, where a card one reader takes is gone for everyone. A reader who misses a card is dealt again from what remains; `reclaim` sets how long a dropped holder keeps theirs. Alone, the deck is dealt to the reader.',
+      sk: 'Jeden balíček pre celú reláciu, ktorý raz rozdá platforma a v ktorom karta, čo si vezme jeden čitateľ, zmizne pre všetkých. Čitateľ, ktorý kartu minie, dostane znova zo zvyšku; `reclaim` určuje, ako dlho si odpojený držiteľ svoju kartu ponechá. Osamote sa balíček rozdá čitateľovi.',
+    },
+    link: '/spec/storylets#group-decks',
+  },
+  {
     id: 'roles',
     title: {
       en: 'Reader roles',

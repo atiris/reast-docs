@@ -209,6 +209,34 @@ Zostáva {story.deck.basic.remaining} zo {story.deck.basic.size} kariet.
 
 Počítadlo sa predvolene ukazuje, lebo skrytá veľkosť balíčka je práve to, čo čitatelia čítajú ako podvod. `eligible()` vráti zásobu bez rozdania, takže autor, ktorý chce rozloženie, aké vstavaná ruka nedáva, si karty vykreslí sám — výber zostáva engine, prezentácia zostáva autorovi.
 
+### Skupinové balíčky {#group-decks}
+
+<Feature id="group-decks" />
+
+Balíček so `scope="group"` je jeden balíček pre celú kooperatívnu reláciu: kartu, ktorú si vezme jeden čitateľ, už nemá nikto pri stole. Presne to potrebuje balíček rolí — jeden Kráľ, pre toho, kto príde prvý.
+
+```rea
+{define deck roles back="assets/cards/role-back.webp",
+                   scope="group", play="consumed", face="down", reclaim=120}
+
+{draw deck="roles"}
+
+{if taken("king") and not drawn("king") begin}
+  Korunu má {holder("king")} a celý večer sa to bude vedieť.
+{end if}
+
+{on missed deck="roles" begin}
+  {set story.second_choice = true}
+{end on}
+```
+
+- **Rozdáva platforma, nie zariadenie čitateľa.** Prvý čitateľ, ktorý k balíčku dôjde, dá platforme balíček zamiešať a každý ďalší dostane to isté poradie, takže dvaja čitatelia sa nikdy nepozerajú na rôzne ruky z jedného balíčka a počítadlo „zostávajú 4 zo 6" hovorí všetkým to isté. Ruka čitateľa je prvých `deal` kariet, ktoré v tom poradí ešte ležia na stole
+- **Vziať si kartu je nárok** — ten istý, aký robí `{exclusive}` (pozri [Výhradné bloky](/sk/spec/03-narrative-interaction#exclusive-blocks)). Rozdanie lícom nadol si nárokuje zvrchu; ruka lícom nahor si nárokuje kartu, ktorú čitateľ vyberie. Príbeh na nárok počká a potom pokračuje presne ako ťahanie z čitateľského balíčka
+- **Prehrať preteky je príbeh, nie chyba.** Čitateľ, ktorý siahol po karte, ktorú už dostal niekto iný, ju *minul*. Bez obsluhy engine rozdá znova zo zvyšku a čitateľ sa to dozvie jedným riadkom; `{on missed deck=…}` (alebo `card=`, `set=`) sa spustí namiesto toho riadku pre autora, ktorý chce tú chvíľu napísať sám
+- **`reclaim=` je prenájom.** Karta, ktorej držiteľ sa odpojí, sa po toľkých sekundách vráti do balíčka (ochranná lehota platformy, 30 s, keď balíček nič neuvádza); `reclaim="never"` ju drží natrvalo. `{return card="…"}` ju vráti okamžite
+- `taken(id)` hovorí, či kartu má ktokoľvek pri stole; `holder(id)` kto, menom, a je prázdne, kým ju nemá nikto. `role=` na skupinovej karte priraďuje `context.group.role` a balíček rolí so `play="consumed"` a `scope="group"` je `{define role max=1}` už zo svojej podstaty
+- **Osamote sa balíček čitateľovi jednoducho rozdá** — bez relácie aj vtedy, keď platforma nie je dosiahnuteľná. Každý kooperatívny príbeh musí byť hrateľný osamote a skupinový balíček čítaný osamote je čitateľský balíček
+
 ### Karty v balíku {#cards-in-the-package}
 
 Karta je text v Rea a súbor je len jedno z miest, kde môže žiť. Balík môže niesť adresár `deck/`, ktorého podadresáre sú balíčky a súbory `.rea` v nich sú karty:

@@ -1224,7 +1224,8 @@ Kooperatívne príbehy musia byť hrateľné jediným čitateľom bez úprav. Pl
 | `{vote timeout=N begin}`                | Všetci hlasujú, vyhráva väčšina           | Voľba čitateľa vyhráva **okamžite** (bez čakania)    |
 | `{wait readers=all begin}...{end wait}` | Blokuje, kým nedorazia všetci             | **Okamžitý prechod**                                 |
 | `{wait when VÝRAZ begin}...{end wait}`        | Blokuje, kým výraz nie je pravdivý        | **Bez zmeny** — podmienka môže závisieť od času či stavu |
-| `{exclusive begin}`                     | Akciu si môže nárokovať len jeden čitateľ | **Vždy dostupné** — čitateľ si ju nárokuje okamžite  |
+| `{exclusive action=… begin}`            | Akciu si môže nárokovať len jeden čitateľ | **Vždy dostupné** — čitateľ si ju nárokuje okamžite  |
+| `{draw}` / `{play}` zo `scope="group"` balíčka | Jeden balíček pre reláciu; vzatá karta zmizne pre všetkých | **Vždy dostupné** — balíček sa rozdá čitateľovi |
 | `{race timeout=N begin}`                | Vyhráva prvý, kto to dokončí              | Čitateľ **vždy vyhráva okamžite** (bez čakania)      |
 | `{whisper to=ROLA begin}`               | Text vidí len cieľová rola                | Zobrazí sa ako **bežný text**                        |
 | `{broadcast begin}`                     | Správu vidia všetci                       | Zobrazí sa ako **bežný text**                        |

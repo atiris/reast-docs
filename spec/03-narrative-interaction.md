@@ -1224,7 +1224,8 @@ Cooperative stories must be playable by a single reader without modification. Th
 | `{vote timeout=N begin}`                | All readers vote, majority wins          | Reader's choice wins **instantly** (no timeout)   |
 | `{wait readers=all begin}...{end wait}` | Blocks until all readers reach the point | **Instant pass**                                  |
 | `{wait when EXPR begin}...{end wait}`        | Blocks until expression is true          | **Unchanged** — condition may be time/state-based |
-| `{exclusive begin}`                     | Only one reader can claim the action     | **Always available** — reader claims instantly    |
+| `{exclusive action=… begin}`            | Only one reader can claim the action     | **Always available** — reader claims instantly    |
+| `{draw}` / `{play}` from a `scope="group"` deck | One deck for the session; a taken card is gone for all | **Always available** — the deck is dealt to the reader |
 | `{race timeout=N begin}`                | First reader to complete wins            | Reader **always wins instantly** (no timeout)     |
 | `{whisper to=ROLE begin}`               | Only target role sees the text           | Shown as **normal text**                          |
 | `{broadcast begin}`                     | All readers see the message              | Shown as **normal text**                          |

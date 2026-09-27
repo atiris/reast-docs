@@ -209,6 +209,34 @@ A `face="down"` hand is shuffled and taken off the top: a deal the reader cannot
 
 The counter is shown by default, because a hidden deck size is the thing readers read as rigged. `eligible()` returns the pool without dealing it, so an author who wants a layout the built-in hand does not give can render the cards themselves — the selection stays the engine's, the presentation stays the author's.
 
+### Group decks {#group-decks}
+
+<Feature id="group-decks" />
+
+A deck with `scope="group"` is one deck for the whole cooperative session: a card one reader takes is gone for everyone at the table. That is what a role deck needs — one King, whoever gets there first.
+
+```rea
+{define deck roles back="assets/cards/role-back.webp",
+                   scope="group", play="consumed", face="down", reclaim=120}
+
+{draw deck="roles"}
+
+{if taken("king") and not drawn("king") begin}
+  {holder("king")} has the crown. You will be answering to them.
+{end if}
+
+{on missed deck="roles" begin}
+  {set story.second_choice = true}
+{end on}
+```
+
+- **The platform deals, not the reader's device.** The first reader to reach the deck has the platform shuffle it, and every reader after gets that same order, so two readers never look at different hands from one deck and the "4 of 6 remain" counter tells everyone the same thing. A reader's hand is the first `deal` cards still on the table in that order
+- **Taking a card is a claim** — the same one `{exclusive}` makes (see [Exclusive blocks](/spec/03-narrative-interaction#exclusive-blocks)). A face-down deal claims off the top; a face-up hand claims the card the reader picks. The story waits on the claim, then goes on exactly as a reader-scope draw does
+- **Losing the race is story, not an error.** The reader who reached for a card somebody else got first *missed* it. Without a handler the engine deals again from what remains and the reader is told so in one line; `{on missed deck=…}` (or `card=`, `set=`) runs instead of that line, for an author who wants to write the moment
+- **`reclaim=` is the lease.** A card whose holder disconnects returns to the deck after that many seconds (the platform grace period, 30 s, when the deck says nothing); `reclaim="never"` keeps it held for good. `{return card="…"}` gives it back at once
+- `taken(id)` is whether anyone at the table has the card; `holder(id)` is who, by name, and is empty while nobody does. `role=` on a group card is how `context.group.role` is assigned, and a `play="consumed"` group deck of role cards is `{define role max=1}` by construction
+- **Alone, the deck is simply dealt to the reader** — with no session, and when the platform cannot be reached. Every cooperative story must be playable solo, and a group deck read alone is a reader deck
+
 ### Cards in the package
 
 A card is Rea text, and a file is one of the places it can live. A package may carry a `deck/` directory whose subdirectories are decks and whose `.rea` files are cards:
